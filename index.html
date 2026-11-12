@@ -85,6 +85,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;color:#fff;font
 #announce.champ .a-main{font-family:var(--jp);font-size:clamp(40px,8vw,110px)}
 #announce.champ.anubis .a-main{background:linear-gradient(#fff8e0 20%,#f0c46a 55%,#1d3f8a 95%);-webkit-background-clip:text;background-clip:text;color:transparent}
 #announce.champ.thor .a-main{background:linear-gradient(#ffffff 20%,#c8b0ff 55%,#5a3aa0 95%);-webkit-background-clip:text;background-clip:text;color:transparent}
+#announce.champ.susanoo .a-main{background:linear-gradient(#ffffff 20%,#9fffd8 55%,#1b5a4a 95%);-webkit-background-clip:text;background-clip:text;color:transparent}
 #announce.champ.poseidon .a-main{background:linear-gradient(#f2fffe 20%,#5ff0e6 55%,#0a5a7a 90%);-webkit-background-clip:text;background-clip:text;filter:drop-shadow(0 4px 0 #032a38) drop-shadow(0 0 24px rgba(80,240,230,.6))}
 
 /* ---------- super cut-in ---------- */
@@ -95,6 +96,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;color:#fff;font
 .ci-band.zeus{background:linear-gradient(90deg,rgba(10,20,60,.0),rgba(20,40,110,.92) 18%,rgba(40,80,180,.92) 60%,rgba(10,20,60,0));border-top:2px solid #cfe4ff;border-bottom:2px solid #cfe4ff;box-shadow:0 0 40px rgba(130,180,255,.6)}
 .ci-band.anubis{background:linear-gradient(90deg,rgba(10,20,50,0),rgba(29,63,138,.92) 18%,rgba(60,90,170,.92) 60%,rgba(10,20,50,0));border-top:2px solid #f0c46a;border-bottom:2px solid #f0c46a}
 .ci-band.thor{background:linear-gradient(90deg,rgba(30,10,60,0),rgba(60,30,120,.92) 18%,rgba(100,70,180,.92) 60%,rgba(30,10,60,0));border-top:2px solid #e4d8ff;border-bottom:2px solid #e4d8ff;box-shadow:0 0 40px rgba(180,150,255,.55)}
+.ci-band.susanoo{background:linear-gradient(90deg,rgba(5,30,30,0),rgba(15,60,70,.92) 18%,rgba(30,110,100,.92) 60%,rgba(5,30,30,0));border-top:2px solid #d8fff0;border-bottom:2px solid #d8fff0;box-shadow:0 0 40px rgba(140,255,210,.5)}
 .ci-band.poseidon{background:linear-gradient(90deg,rgba(0,40,50,0),rgba(0,80,100,.92) 18%,rgba(0,130,140,.92) 60%,rgba(0,40,50,0));border-top:2px solid #b8fff6;border-bottom:2px solid #b8fff6;box-shadow:0 0 40px rgba(80,240,230,.5)}
 .ci-band:before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(100deg,rgba(255,255,255,.08) 0 2px,transparent 2px 22px);animation:streak .6s linear infinite}
 @keyframes streak{to{background-position:220px 0}}
@@ -138,7 +140,7 @@ body:not(.portrait) .portrait-only{display:none}
 #movesBody{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
 #movesBody section{border:1px solid rgba(232,192,106,.4);padding:16px 18px;background:rgba(255,255,255,.03)}
 #movesBody h3{font-size:22px;margin-bottom:6px}
-#movesBody .zeus h3{color:var(--zeus)} #movesBody .poseidon h3{color:var(--pos)} #movesBody .anubis h3{color:#f0c46a} #movesBody .thor h3{color:#c8b0ff}
+#movesBody .zeus h3{color:var(--zeus)} #movesBody .poseidon h3{color:var(--pos)} #movesBody .anubis h3{color:#f0c46a} #movesBody .thor h3{color:#c8b0ff} #movesBody .susanoo h3{color:#9fffd8}
 #movesBody h3 small{font-size:12px;margin-left:10px;opacity:.7;letter-spacing:.2em}
 #movesBody h4{font-size:12px;letter-spacing:.3em;color:var(--gold);margin:12px 0 4px}
 #movesBody ul{list-style:none;font-size:14px;line-height:1.8}
@@ -242,7 +244,7 @@ body.portrait #ctrl button{font-size:11px;padding:6px 8px}
 .picks{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .pick{position:relative;flex:1;display:flex;align-items:center;gap:10px;padding:10px 12px;color:rgba(255,255,255,.7);font-family:var(--jp);font-weight:800;font-size:14px;letter-spacing:.08em;background:rgba(10,6,18,.78);border:2px solid rgba(255,255,255,.15);cursor:pointer;transition:all .15s;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
 .pick .emb{width:34px;height:34px;flex:none}
-.pick.zeus{color:var(--zeus)}.pick.poseidon{color:var(--pos)}.pick.anubis{color:#f0c46a}.pick.thor{color:#c8b0ff}
+.pick.zeus{color:var(--zeus)}.pick.poseidon{color:var(--pos)}.pick.anubis{color:#f0c46a}.pick.thor{color:#c8b0ff}.pick.susanoo{color:#9fffd8}
 .pick:not(.on){opacity:.6}
 .pick:hover{opacity:1;border-color:rgba(255,255,255,.5)}
 .pick.on{opacity:1;border-color:var(--gold2);background:rgba(50,36,10,.7);box-shadow:0 0 22px rgba(255,200,90,.5)}
@@ -273,7 +275,7 @@ body.cine #hud,body.cine .meter,body.cine #ctrl,body.cine .keyhelp,body.cine .co
 #cineTitle{position:fixed;left:0;right:0;top:50%;transform:translateY(-50%);text-align:center;z-index:18;pointer-events:none;opacity:0}
 #cineTitle b{display:block;font-size:clamp(54px,11vw,150px);font-weight:800;letter-spacing:.18em;line-height:1;background:linear-gradient(#fff 20%,var(--cc) 70%,#222);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 30px var(--cc)) drop-shadow(0 6px 0 #000)}
 #cineTitle small{display:block;margin-top:10px;font-size:clamp(14px,2.2vw,28px);letter-spacing:.5em;color:#fff;text-shadow:0 0 14px var(--cc),0 2px 4px #000}
-#cineTitle.zeus{--cc:#ffd77a}#cineTitle.poseidon{--cc:#5ff0e6}#cineTitle.anubis{--cc:#f0c46a}#cineTitle.thor{--cc:#c8b0ff}
+#cineTitle.zeus{--cc:#ffd77a}#cineTitle.poseidon{--cc:#5ff0e6}#cineTitle.anubis{--cc:#f0c46a}#cineTitle.thor{--cc:#c8b0ff}#cineTitle.susanoo{--cc:#9fffd8}
 #cineTitle.show{animation:ctl 1.6s cubic-bezier(.2,.8,.2,1) forwards}
 @keyframes ctl{0%{opacity:0;transform:translateY(-50%) scale(1.8);filter:blur(10px)}12%{opacity:1;transform:translateY(-50%) scale(1);filter:none}80%{opacity:1;transform:translateY(-50%) scale(1.05)}100%{opacity:0;transform:translateY(-50%) scale(1.12)}}
 </style>
@@ -655,6 +657,72 @@ const THOR_MOVES = {
     anim: [[0, 'superCall'], [0.18, 'superCall'], [0.26, 'dashRush']],
   },
 };
+const SUSANOO_MOVES = {
+  s_cut: {
+    name: '抜き打ち', type: 'normal', dur: 0.3, cancel: [0.12, 0.3],
+    anim: [[0, 'stance'], [0.05, 'slashWind'], [0.1, 'slash'], [0.18, 'slashEnd'], [0.3, 'stance']],
+    hits: [H({ t0: 0.07, t1: 0.12, dmg: 32, range: [0.2, 1.9], y: [0.6, 1.9], hs: 0.34, bs: 0.18, kb: 1.5, stop: 0.05, fx: 'gale' })],
+  },
+  s_kesa: {
+    name: '袈裟斬り', type: 'normal', dur: 0.44, cancel: [0.18, 0.44],
+    anim: [[0, 'stance'], [0.09, 'slashWind'], [0.16, 'slash'], [0.26, 'slashEnd'], [0.44, 'stance']],
+    hits: [H({ t0: 0.12, t1: 0.19, dmg: 50, range: [0.2, 2.0], y: [0.5, 2.1], hs: 0.42, kb: 2.1, stop: 0.08, fx: 'gale' })],
+  },
+  s_thrust: {
+    name: '突き', type: 'normal', dur: 0.34, cancel: [0.13, 0.34],
+    anim: [[0, 'stance'], [0.08, 'thrust'], [0.16, 'thrust'], [0.34, 'stance']],
+    hits: [H({ t0: 0.08, t1: 0.14, dmg: 36, range: [0.3, 2.1], y: [0.7, 1.9], hs: 0.36, kb: 1.8, stop: 0.06 })],
+  },
+  s_spin: {
+    name: '旋風斬', type: 'normal', dur: 0.58, cancel: [0.36, 0.58],
+    anim: [[0, 'stance'], [0.06, 'spinA'], [0.18, 'spinB'], [0.3, 'spinC'], [0.4, 'spinD'], [0.58, 'stance']],
+    hits: [
+      H({ t0: 0.1, t1: 0.15, dmg: 28, range: [0.0, 1.95], y: [0.5, 1.9], hs: 0.45, kb: 0.8, stop: 0.05, fx: 'gale' }),
+      H({ t0: 0.27, t1: 0.33, dmg: 36, range: [0.0, 2.0], y: [0.5, 1.9], hs: 0.42, kb: 2.4, stop: 0.08, fx: 'gale' }),
+    ],
+  },
+  s_rise: {
+    name: '昇竜斬', type: 'normal', dur: 0.56, cancel: [0.25, 0.56],
+    anim: [[0, 'stance'], [0.09, 'riseWind'], [0.16, 'rise'], [0.32, 'rise'], [0.56, 'stance']],
+    hits: [H({ t0: 0.14, t1: 0.23, dmg: 60, range: [0.2, 1.9], y: [0.2, 2.9], hs: 0.5, kb: 1.2, launch: 10, stop: 0.1, fx: 'gale' })],
+  },
+  s_sweep: {
+    name: '足薙ぎ', type: 'normal', dur: 0.5, cancel: [0.22, 0.5],
+    anim: [[0, 'stance'], [0.08, 'sweepWind'], [0.15, 'sweep'], [0.3, 'sweep'], [0.5, 'stance']],
+    hits: [H({ t0: 0.13, t1: 0.2, dmg: 48, range: [0.2, 2.0], y: [0.0, 0.8], hs: 0.5, kb: 1.5, kd: true, stop: 0.08, fx: 'gale' })],
+  },
+  s_kabuto: {
+    name: '兜割り', type: 'normal', dur: 0.64, cancel: [0.3, 0.64],
+    anim: [[0, 'stance'], [0.12, 'waveWind'], [0.22, 'superSlam'], [0.38, 'superSlam'], [0.64, 'stance']],
+    hits: [H({ t0: 0.19, t1: 0.28, dmg: 76, range: [0.2, 1.95], y: [0.2, 3.0], hs: 0.5, kb: 2.2, kd: true, bounce: true, stop: 0.12, fx: 'storm' })],
+  },
+  s_dash: {
+    name: '迅雷一閃', type: 'special', dur: 0.62, glow: 'trident',
+    motion: [{ t0: 0.12, t1: 0.32, vx: 18 }],
+    anim: [[0, 'dashWind'], [0.11, 'dashWind'], [0.15, 'dashThrust'], [0.42, 'dashThrust'], [0.62, 'stance']],
+    hits: [H({ t0: 0.14, t1: 0.35, dmg: 96, range: [0.3, 2.1], y: [0.3, 2.6], hs: 0.5, kb: 5.5, launch: 5.5, kd: true, stop: 0.13, fx: 'storm', chip: 0.15 })],
+    reach: 3.8,
+  },
+  s_gale: {
+    name: '叢雲風刃', type: 'special', dur: 0.58, glow: 'trident',
+    anim: [[0, 'stance'], [0.12, 'slashWind'], [0.2, 'slash'], [0.3, 'slashEnd'], [0.58, 'stance']],
+    proj: { t: 0.2, kind: 'gale', vx: 12.5, y: 1.2, dmg: 54, hits: 1, hs: 0.44, kb: 3, w: 0.5, h: 0.75, fx: 'gale' },
+  },
+  s_air: {
+    name: '落鷹斬', type: 'air', dur: 0.5,
+    anim: [[0, 'airWind'], [0.08, 'airStab'], [0.5, 'airStab']],
+    hits: [H({ t0: 0.08, t1: 0.42, dmg: 58, range: [0.0, 1.9], y: [-1.1, 0.9], hs: 0.46, kb: 2.0, stop: 0.08, fx: 'gale' })],
+  },
+  s_super: {
+    name: '八岐大蛇討ち・天羽々斬', type: 'super', dur: 2.3, glow: 'trident',
+    anim: [[0, 'superCall'], [0.16, 'superCall'], [0.24, 'dashThrust']],
+  },
+};
+(function () {
+  const a = SUSANOO_MOVES.s_super.anim;
+  for (let i = 0; i < 8; i++) a.push([0.38 + i * 0.105, i % 2 ? 'superThrustB' : 'spinD'], [0.43 + i * 0.105, i % 2 ? 'superThrustA' : 'slashEnd']);
+  a.push([1.22, 'superSlamWind'], [1.5, 'superSlamWind'], [1.6, 'superSlam'], [1.95, 'superSlam'], [2.3, 'stance']);
+})();
 // Thor swings an oversized Mjolnir: every hammer move is slower to come out, hits much harder
 // and reaches further. [time scale, damage scale, extra reach]
 (function () {
@@ -682,6 +750,7 @@ const THOR_MOVES = {
   set(POSEIDON_MOVES.p_sweep, 'low'); set(POSEIDON_MOVES.p_air, 'mid');
   set(ANUBIS_MOVES.a_low, 'low'); set(ANUBIS_MOVES.a_kick, 'mid'); set(ANUBIS_MOVES.a_air, 'mid');
   set(THOR_MOVES.t_low, 'low'); set(THOR_MOVES.t_slam, 'mid'); set(THOR_MOVES.t_air, 'mid');
+  set(SUSANOO_MOVES.s_sweep, 'low'); set(SUSANOO_MOVES.s_kabuto, 'mid'); set(SUSANOO_MOVES.s_air, 'mid');
 })();
 
 // Poseidon flurry anim generated
@@ -755,6 +824,21 @@ const CHARS = {
       ['t_low', 't_upper', 'SUPER'],
     ],
   },
+  susanoo: {
+    key: 'susanoo', name: 'スサノオ', en: 'SUSANOO', title: '嵐の荒神', hp: 1060, walk: 3.2, back: 2.7, dash: 11,
+    jumpV: 11, jumpX: 4.5, width: 0.38, height: 2.1, moves: SUSANOO_MOVES, air: 's_air', super: 's_super',
+    guard: 0.55, aggro: 0.85,
+    routes: [
+      ['s_cut', 's_cut', 's_kesa'],
+      ['s_cut', 's_kesa', 's_spin', 's_rise', 's_dash'],
+      ['s_sweep', 's_kabuto'],
+      ['s_cut', 's_sweep'],
+      ['s_thrust', 's_kesa', 's_rise', 's_dash'],
+      ['s_spin', 's_rise', 's_dash'],
+      ['s_cut', 's_kesa', 's_rise', 'SUPER'],
+      ['s_kesa', 's_spin', 'SUPER'],
+    ],
+  },
 };
 
 // ------------------------------------------------------------
@@ -814,6 +898,11 @@ const HUMAN = {
     K: { n: 't_slam', f: 't_shoulder', b: 't_slam', d: 't_low', u: 't_upper' },
     L: { n: 't_throw', f: 't_dash', b: 't_throw', d: 't_throw', u: 't_throw' },
   },
+  susanoo: {
+    J: { n: 's_cut', f: 's_kesa', b: 's_thrust', d: 's_sweep', u: 's_rise' },
+    K: { n: 's_kabuto', f: 's_spin', b: 's_kabuto', d: 's_sweep', u: 's_rise' },
+    L: { n: 's_gale', f: 's_dash', b: 's_gale', d: 's_gale', u: 's_gale' },
+  },
 };
 
 // CPU strength, 1 (weakest) .. 5 (strongest). Scales how often the AI guards, reads
@@ -833,6 +922,7 @@ const AUTO = {
   poseidon: ['p_thrust', 'p_slash', 'p_spin', 'p_rise', 'p_dash', 'SUPER'],
   anubis: ['a_jab', 'a_slash', 'a_twin', 'a_rise', 'a_dash', 'SUPER'],
   thor: ['t_jab', 't_swing', 't_upper', 't_dash', 'SUPER'],
+  susanoo: ['s_cut', 's_kesa', 's_spin', 's_rise', 's_dash', 'SUPER'],
 };
 
 class Sim {
@@ -1545,6 +1635,54 @@ class Sim {
           else this.hitstop = 0.12;
         });
       }
+    } else if (f.key === 'susanoo') {
+      // SUSANOO: wind-step slash, the storm lifts the foe, eight-serpent flurry from every side, plunge out of the storm
+      if (t < 0.28) {
+        once('lunge0', () => { s.lx0 = f.x; s.lx1 = clamp(o.x - f.facing * 1.2, -STAGE, STAGE); if (Math.abs(o.x - f.x) < 1.2) s.lx1 = f.x; });
+        f.y = 0;
+        if (t > 0.16) f.x = lerp(s.lx0, s.lx1, easeOut((t - 0.16) / 0.12));
+      }
+      if (t >= 0.28) once('connect', () => {
+        s.tx = o.x;
+        this.emit('storm', { side: f.side, x: o.x });
+        if (this.canLock(o)) { this.lock(f, o); s.lock = true; s.oy = o.y; this.superHit(f, o, 32, 'storm', { stop: 0.07 }); }
+      });
+      if (locked) {
+        if (t < 1.52) o.y = lerp(s.oy, 1.9, easeOut(clamp((t - 0.28) / 0.45, 0, 1))) + Math.sin(t * 25) * 0.04;
+        else if (t < 1.66) o.y = lerp(1.9, 0.05, easeIn((t - 1.52) / 0.14));
+        else o.y = 0.05;
+        o.x = clamp(o.x, -STAGE, STAGE);
+      }
+      if (t >= 0.38 && t < 1.22) {
+        const i = Math.min(7, Math.floor((t - 0.38) / 0.105));
+        once('sv' + i, () => {
+          const side = i % 2 ? 1 : -1;
+          const cx = s.lock ? o.x : s.tx;
+          f.x = clamp(cx + side * 1.15, -STAGE, STAGE);
+          f.facing = Math.sign(cx - f.x) || -side;
+          f.y = 0.9 + (i % 3) * 0.45;
+          this.emit('serpent', { side: f.side, x: f.x, y: f.y, tx: cx, ty: (s.lock ? o.y : 0) + 1.1, i });
+          if (s.lock && o.state === 'locked') this.superHit(f, o, 14, i % 2 ? 'gale' : 'mid', { stop: 0.025 });
+        });
+      } else if (t >= 1.22 && t < 1.52) {
+        once('rise', () => {
+          s.rx0 = f.x; s.ry0 = f.y;
+          s.rx1 = clamp((s.lock ? o.x : s.tx) - f.facing * 0.7, -STAGE, STAGE);
+          this.emit('superDash', { side: f.side });
+        });
+        const k = easeOut((t - 1.22) / 0.3);
+        f.x = lerp(s.rx0, s.rx1, k); f.y = lerp(s.ry0, 4.4, k);
+        if (t >= 1.4) once('charge', () => this.emit('stormCharge', { side: f.side, x: f.x, y: f.y }));
+      } else if (t >= 1.52 && t < 1.66) {
+        f.y = lerp(4.4, 0, easeIn((t - 1.52) / 0.14));
+      } else if (t >= 1.66) {
+        f.y = 0;
+        once('final', () => {
+          this.emit('superImpact', { side: f.side, x: s.lock ? o.x : f.x + f.facing * 0.8, kind: 'storm' });
+          if (s.lock && o.state === 'locked') this.superHit(f, o, 150, 'storm', { final: true, launch: 7, kb: 6, stop: 0.26 });
+          else this.hitstop = 0.12;
+        });
+      }
     } else {
       // POSEIDON
       if (t >= 0.3) once('connect', () => {
@@ -1681,8 +1819,9 @@ class Sim {
           if (f.key === 'zeus') this.startMove(f, d < 1.4 ? 'z_upper' : 'z_dash');
           else if (f.key === 'anubis') this.startMove(f, d < 1.4 ? 'a_rise' : 'a_dash');
           else if (f.key === 'thor') this.startMove(f, d < 1.5 ? 't_upper' : 't_dash');
+          else if (f.key === 'susanoo') this.startMove(f, d < 1.7 ? 's_rise' : 's_dash');
           else this.startMove(f, d < 1.8 ? 'p_rise' : 'p_dash');
-          if (d < 1.8) f.plan = f.key === 'zeus' ? ['z_hammer', 'z_dash'] : f.key === 'anubis' ? ['a_dash'] : f.key === 'thor' ? ['t_slam', 't_dash'] : ['p_dash'];
+          if (d < 1.8) f.plan = f.key === 'zeus' ? ['z_hammer', 'z_dash'] : f.key === 'anubis' ? ['a_dash'] : f.key === 'thor' ? ['t_slam', 't_dash'] : f.key === 'susanoo' ? ['s_dash'] : ['p_dash'];
           return;
         }
       }
@@ -1694,7 +1833,7 @@ class Sim {
 
     // opponent on the floor -> reposition
     if (o.state === 'down' || o.state === 'getup' || o.state === 'locked') {
-      const want = f.key === 'zeus' ? 1.5 : f.key === 'thor' ? 1.6 : f.key === 'anubis' ? 1.3 : 2.2;
+      const want = f.key === 'zeus' ? 1.5 : f.key === 'thor' ? 1.6 : f.key === 'anubis' ? 1.3 : f.key === 'susanoo' ? 1.8 : 2.2;
       if (d > want + 0.6) this.walk(f, toward, 0.25);
       else if (d < want - 0.6) this.walk(f, -toward, 0.2);
       else this.idle(f, 0.15);
@@ -1752,6 +1891,22 @@ class Sim {
         if (r < c.aggro * L.aggro) this.startRoute(f, o);
         else if (r < 0.94) this.dash(f, -toward, 0.22);
         else this.idle(f, 0.15);
+      }
+    } else if (f.key === 'susanoo') {
+      if (d > 4.6) {
+        if (r < 0.3) this.startMove(f, 's_gale');
+        else if (r < 0.62) this.dash(f, toward, 0.38);
+        else this.walk(f, toward, 0.4);
+      } else if (d > 1.8) {
+        if (r < 0.2) this.startMove(f, 's_dash');
+        else if (r < 0.3) this.jump(f, toward);
+        else if (r < 0.4 && d > 3) this.startMove(f, 's_gale');
+        else if (r < 0.55) this.dash(f, toward, 0.22);
+        else this.walk(f, toward, 0.25);
+      } else {
+        if (r < c.aggro * L.aggro) this.startRoute(f, o);
+        else if (r < 0.92) this.walk(f, -toward, 0.3);
+        else this.idle(f, 0.2);
       }
     } else {
       if (d > 4.6) {
@@ -2152,7 +2307,9 @@ TP.hurtLow = mk(TP.hurtLow, { lSh: [-0.6, 0, 0.08], lEl: [-1.3, 0, 0], rSh: [-0.
   TP.crouchBlock = mk(TP.block, Object.assign({ y: -0.44, z: 0.02 }, CRT, { spine: [0.45, 0.05, 0], head: [-0.2, 0.1, 0] }));
 }
 
-const POSES = { zeus: ZP, poseidon: PP, anubis: AP, thor: TP };
+// Susanoo wields Kusanagi along the hand's +Z exactly like Poseidon's trident shaft, so he shares the polearm library
+SKEL.susanoo = Object.assign({}, SKEL.poseidon);
+const POSES = { zeus: ZP, poseidon: PP, anubis: AP, thor: TP, susanoo: PP };
 
 // ------------------------------------------------------------
 //  Blending helpers
@@ -3389,7 +3546,261 @@ function buildThor(T) {
 }
 
 
-return { canvasTex, enhanceModel, buildZeus, buildPoseidon, updateCape, buildAnubis, buildThor, SPH };
+// ============================================================
+//  SUSANOO  (storm god of Izumo: black lacquered lamellar, white kinu and indigo hakama,
+//            shimenawa rope belt, magatama, wind-blown hair, storm shawl, Kusanagi no Tsurugi)
+// ============================================================
+function cloudTex() {
+  return canvasTex(512, 256, (g, w, h) => {
+    g.fillStyle = '#f2efe6'; g.fillRect(0, 0, w, h);
+    for (let i = 0; i < 2200; i++) { g.fillStyle = `rgba(120,110,90,${Math.random() * 0.05})`; g.fillRect(Math.random() * w, Math.random() * h, 2, 2); }
+    // indigo swirl-cloud (kumo) motifs
+    g.strokeStyle = 'rgba(31,46,94,0.55)'; g.lineWidth = 3; g.lineCap = 'round';
+    for (let k = 0; k < 9; k++) {
+      const cx = (k % 3) * 180 + 60 + (k > 2 ? 40 : 0), cy = Math.floor(k / 3) * 90 + 45;
+      for (let r = 6; r < 30; r += 7) { g.beginPath(); g.arc(cx, cy, r, Math.PI * 0.2, Math.PI * 1.7); g.stroke(); }
+      g.beginPath(); g.moveTo(cx + 26, cy + 8); g.quadraticCurveTo(cx + 60, cy + 20, cx + 90, cy); g.stroke();
+    }
+  }, { repeat: [2, 2] });
+}
+function lacquerTex() {
+  // black lacquered lamellar plates laced with red cord
+  return canvasTex(256, 256, (g, w, h) => {
+    g.fillStyle = '#07070a'; g.fillRect(0, 0, w, h);
+    const rows = 8, cols = 10, rw = w / cols, rh = h / rows;
+    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+      const x = c * rw, y = r * rh;
+      const gr = g.createLinearGradient(x, y, x, y + rh);
+      gr.addColorStop(0, '#3a3a44'); gr.addColorStop(0.35, '#15151b'); gr.addColorStop(1, '#050507');
+      g.fillStyle = gr; g.fillRect(x + 1.5, y + 1.5, rw - 3, rh - 6);
+    }
+    g.fillStyle = '#b3241c';
+    for (let r = 0; r < rows; r++) { g.fillRect(0, r * rh + rh - 5, w, 3); for (let c = 0; c < cols; c++) g.fillRect(c * rw + rw / 2 - 1.5, r * rh + rh - 9, 3, 8); }
+  }, { repeat: [3, 1] });
+}
+
+function susanooSword(T, mt) {
+  const { steel, storm, gold, ironDark, wrap, same } = mt;
+  const sw = new THREE.Group();
+  const SP = new PartSet();
+  // ---- blade: curved katana (sori), extruded with a bevel so the edge catches the light ----
+  const L = 1.02, B0 = 0.4, N = 36, W = 0.036;
+  const spine = [], edge = [], hamon = [];
+  for (let i = 0; i <= N; i++) {
+    const t = i / N, x = t * L;
+    const sori = 0.065 * t * t;                                   // curve rises toward the tip
+    let w = W * (1 - 0.18 * t);
+    let ys = sori + w * 0.5, ye = sori - w * 0.5;
+    if (t > 0.9) { const k = (t - 0.9) / 0.1; ye = lerpN(ye, ys - 0.004, Math.pow(k, 0.7)); }   // kissaki
+    spine.push([x, ys]); edge.push([x, ye]);
+    hamon.push([x, ye + w * (0.26 + 0.08 * Math.sin(t * 46))]);
+  }
+  const sh = new THREE.Shape();
+  sh.moveTo(spine[0][0], spine[0][1]);
+  for (let i = 1; i <= N; i++) sh.lineTo(spine[i][0], spine[i][1]);
+  for (let i = N; i >= 0; i--) sh.lineTo(edge[i][0], edge[i][1]);
+  sh.closePath();
+  const bg = new THREE.ExtrudeGeometry(sh, { depth: 0.006, bevelEnabled: true, bevelThickness: 0.004, bevelSize: 0.003, bevelSegments: 2, curveSegments: 4 });
+  bg.translate(0, 0, -0.003); bg.rotateY(-Math.PI / 2);               // shape x -> local +Z (along the grip axis)
+  SP.add(sw, bg, steel, [0, 0, B0]);
+  const tube = (pts, r, mat, dz = 0) => SP.add(sw, new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts.map(([x, y]) => new V3(dz, y, x + B0))), 64, r, 5), mat);
+  tube(edge.map(([x, y]) => [x, y - 0.0025]), 0.0022, storm);                 // glowing cutting edge
+  for (const dz of [-0.0072, 0.0072]) tube(hamon.slice(1, N - 2), 0.0016, storm, dz);   // wavy hamon line on both faces
+  // habaki collar, tsuba guard, seppa washers
+  SP.add(sw, new THREE.BoxGeometry(0.016, 0.048, 0.05), gold, [0, 0, B0 + 0.015]);
+  SP.add(sw, new THREE.CylinderGeometry(0.078, 0.078, 0.014, 32).rotateX(Math.PI / 2), ironDark, [0, 0, B0 - 0.012], [0, 0, 0], [0.92, 1, 1]);
+  SP.add(sw, new THREE.TorusGeometry(0.078, 0.005, 6, 40), gold, [0, 0, B0 - 0.012], [0, 0, 0], [0.92, 1, 1]);
+  for (let i = 0; i < 8; i++) { const a = (i / 8) * Math.PI * 2; SP.ell(sw, storm, [Math.cos(a) * 0.05, Math.sin(a) * 0.05, B0 - 0.012], [0.006, 0.006, 0.009]); }
+  for (const dz of [-0.025, 0.004]) SP.add(sw, new THREE.CylinderGeometry(0.03, 0.03, 0.006, 20).rotateX(Math.PI / 2), gold, [0, 0, B0 + dz]);
+  // tsuka: white ray-skin core, black diamond wrap, gold menuki, kashira cap
+  const T0 = -0.16, T1 = B0 - 0.03;
+  SP.add(sw, new THREE.CylinderGeometry(0.018, 0.02, T1 - T0, 14).rotateX(Math.PI / 2), same, [0, 0, (T0 + T1) / 2], [0, 0, 0], [0.85, 1, 1]);
+  for (let i = 0; i < 12; i++) {
+    const z = T0 + 0.03 + i * ((T1 - T0 - 0.05) / 11);
+    for (const s of [-1, 1]) SP.add(sw, new THREE.BoxGeometry(0.008, 0.044, 0.016), wrap, [0, 0, z], [0, s * 0.0, s * 0.62]);
+  }
+  for (const s of [-1, 1]) SP.ell(sw, gold, [s * 0.017, 0, (T0 + T1) / 2 + 0.04], [0.006, 0.012, 0.024]);
+  SP.add(sw, lathe([[0, -0.03], [0.02, -0.026], [0.022, 0.0], [0.02, 0.012]], 20).rotateX(-Math.PI / 2), ironDark, [0, 0, T0 + 0.005], [0, 0, 0], [0.85, 1, 1]);
+  // tassel cord hanging from the pommel
+  SP.add(sw, new THREE.CylinderGeometry(0.004, 0.004, 0.16, 6), mt.rope, [0, -0.08, T0 - 0.01]);
+  SP.ell(sw, mt.rope, [0, -0.17, T0 - 0.01], [0.012, 0.025, 0.012]);
+  SP.build();
+  sw.position.set(0, -SKEL.susanoo.hand * 0.6, 0);
+  const glow = glowSprite(T.glow, 0x9fffd8, 1.2);
+  glow.position.set(0, 0.03, B0 + 0.55);
+  sw.add(glow);
+  return { sw, glow };
+}
+function lerpN(a, b, k) { return a + (b - a) * k; }
+
+function buildSusanoo(T) {
+  const M = makeSkeleton('susanoo');
+  const { j } = M;
+  const P = new PartSet();
+
+  const skin = new THREE.MeshPhysicalMaterial({ color: 0xc08a64, roughness: 0.47, sheen: 0.35, sheenColor: new THREE.Color(0xc8ffe8), sheenRoughness: 0.5, clearcoat: 0.15, clearcoatRoughness: 0.5 });
+  const hair = new THREE.MeshPhysicalMaterial({ color: 0x0c0c10, roughness: 0.45, sheen: 1, sheenColor: new THREE.Color(0x5fd8b0), sheenRoughness: 0.35 });
+  const lacquer = new THREE.MeshStandardMaterial({ color: 0xffffff, map: lacquerTex(), metalness: 0.55, roughness: 0.22, envMapIntensity: 1.3 });
+  const black = new THREE.MeshPhysicalMaterial({ color: 0x0b0b10, metalness: 0.4, roughness: 0.18, clearcoat: 1, clearcoatRoughness: 0.08 });
+  const gold = new THREE.MeshStandardMaterial({ color: 0xe8b85a, metalness: 1, roughness: 0.22, envMapIntensity: 1.3 });
+  const kinu = new THREE.MeshStandardMaterial({ color: 0xffffff, map: cloudTex(), roughness: 0.8, side: THREE.DoubleSide });
+  const hakama = new THREE.MeshStandardMaterial({ color: 0x1b2448, roughness: 0.82, side: THREE.DoubleSide });
+  const rope = new THREE.MeshStandardMaterial({ color: 0xe9dfc6, roughness: 0.9 });
+  const red = new THREE.MeshStandardMaterial({ color: 0xb3241c, roughness: 0.6 });
+  const jade = new THREE.MeshPhysicalMaterial({ color: 0x2fbf86, roughness: 0.12, transmission: 0, clearcoat: 1, clearcoatRoughness: 0.05, sheen: 0.6, sheenColor: new THREE.Color(0xb0ffd8) });
+  const leather = new THREE.MeshStandardMaterial({ color: 0x2c2018, roughness: 0.75 });
+  const steel = new THREE.MeshPhysicalMaterial({ color: 0xd8e2ea, metalness: 1, roughness: 0.1, clearcoat: 1, clearcoatRoughness: 0.04, envMapIntensity: 1.7 });
+  const storm = new THREE.MeshStandardMaterial({ color: 0x08201a, emissive: new THREE.Color(0.55, 1.8, 1.25), emissiveIntensity: 0.8, roughness: 0.3 });
+  const ironDark = new THREE.MeshStandardMaterial({ color: 0x24242a, metalness: 0.9, roughness: 0.35 });
+  const same = new THREE.MeshStandardMaterial({ color: 0xece6d8, roughness: 0.6 });
+  const eye = new THREE.MeshBasicMaterial({ color: new THREE.Color(0.9, 3.2, 2.2) });
+
+  // ---- hips: hakama waist, shimenawa rope belt with shide paper streamers ----
+  P.add(j.hips, lathe([[0, -0.17], [0.16, -0.15], [0.24, -0.08], [0.255, 0.02], [0.245, 0.15], [0, 0.17]]), hakama, [0, 0, 0], [0, 0, 0], [1, 1, 0.7]);
+  P.add(j.hips, lathe([[0.25, 0.05], [0.28, -0.12], [0.31, -0.3]], 48), hakama, [0, 0, 0], [0, 0, 0], [1, 1, 0.8]);
+  P.add(j.hips, new THREE.TorusGeometry(0.262, 0.036, 10, 48), rope, [0, 0.07, 0], [Math.PI / 2, 0, 0], [1, 0.7, 1]);
+  for (let i = 0; i < 18; i++) {                                  // twisted rope look
+    const a = (i / 18) * Math.PI * 2;
+    P.add(j.hips, new THREE.TorusGeometry(0.03, 0.007, 5, 12), i % 3 ? rope : red, [Math.sin(a) * 0.262, 0.07, Math.cos(a) * 0.183], [0.5, a, 0.6]);
+  }
+  P.ell(j.hips, rope, [0, 0.07, 0.19], [0.06, 0.045, 0.03]);       // front knot
+  for (const s of [-1, 1]) {
+    P.add(j.hips, new THREE.CylinderGeometry(0.018, 0.012, 0.26, 8).translate(0, -0.13, 0), rope, [s * 0.04, 0.05, 0.2], [-0.1, 0, s * 0.18]);
+    // zigzag shide streamers
+    for (let k = 0; k < 3; k++) P.add(j.hips, new THREE.BoxGeometry(0.045, 0.06, 0.004), kinu, [s * (0.11 + k * 0.012), 0.0 - k * 0.055, 0.19 - k * 0.006], [-0.15, 0, (k % 2 ? 1 : -1) * 0.35]);
+  }
+  // front lacquered tasset plates over the hakama
+  for (let i = 0; i < 5; i++) {
+    const a = ((i - 2) / 2) * 0.9;
+    P.add(j.hips, new THREE.BoxGeometry(0.11, 0.2, 0.014).translate(0, -0.1, 0), lacquer, [Math.sin(a) * 0.27, 0.02, Math.cos(a) * 0.19], [-0.18, a, 0, 'YXZ']);
+  }
+
+  // ---- abdomen + chest: white kinu under black lamellar cuirass ----
+  P.add(j.spine, lathe([[0, -0.06], [0.235, -0.05], [0.24, 0.06], [0.248, 0.16], [0.262, 0.26], [0.27, 0.31], [0, 0.32]]), kinu, [0, 0, 0], [0, 0, 0], [1, 1, 0.68]);
+  P.add(j.spine, lathe([[0.245, 0.0], [0.252, 0.1], [0.264, 0.22], [0.274, 0.32]], 48), lacquer, [0, 0, 0], [0, 0, 0], [1.03, 1, 0.71]);
+  const chProf = [[0, -0.07], [0.26, -0.06], [0.295, 0.04], [0.325, 0.15], [0.318, 0.23], [0.27, 0.3], [0.15, 0.335], [0, 0.345]];
+  P.add(j.chest, lathe(chProf, 40), lacquer, [0, 0, 0], [0, 0, 0], [1, 1, 0.66]);
+  for (const s of [-1, 1]) P.ell(j.chest, black, [s * 0.11, 0.14, 0.172], [0.12, 0.085, 0.05], [0.15, 0, s * 0.15]);
+  P.add(j.chest, new THREE.TorusGeometry(0.29, 0.012, 8, 48), gold, [0, -0.05, 0], [Math.PI / 2, 0, 0], [1, 0.66, 1]);
+  // V of the white kinu collar showing at the throat
+  for (const s of [-1, 1]) P.add(j.chest, new THREE.BoxGeometry(0.05, 0.24, 0.02), kinu, [s * 0.05, 0.25, 0.19], [-0.35, 0, s * 0.55]);
+  P.ell(j.chest, skin, [0, 0.27, 0.15], [0.07, 0.06, 0.04]);
+  for (const s of [-1, 1]) P.ell(j.chest, skin, [s * 0.13, 0.3, -0.02], [0.12, 0.065, 0.085], [0, 0, -s * 0.45]);   // traps
+  // magatama necklace
+  for (let i = 0; i < 15; i++) {
+    const a = ((i - 7) / 7) * 1.15;
+    P.ell(j.chest, i % 2 ? gold : jade, [Math.sin(a) * 0.15, 0.3 - Math.cos(a) * 0.075 + 0.04, 0.175 + Math.cos(a) * 0.03], [0.014, 0.014, 0.014]);
+  }
+  for (const [x, sz] of [[-0.075, 0.8], [0, 1.2], [0.075, 0.8]]) {
+    P.ell(j.chest, jade, [x, 0.245 - (x === 0 ? 0.02 : 0), 0.215], [0.024 * sz, 0.024 * sz, 0.018 * sz]);
+    P.add(j.chest, new THREE.ConeGeometry(0.014 * sz, 0.045 * sz, 10), jade, [x + 0.012 * sz, 0.215 - (x === 0 ? 0.02 : 0), 0.214], [0, 0, 0.6]);
+  }
+
+  // ---- neck + fierce head: heavy brow, wild beard, wind-blown hair, hachimaki ----
+  P.add(j.neck, lathe([[0, -0.04], [0.088, -0.03], [0.08, 0.07], [0.076, 0.14], [0, 0.16]]), skin);
+  const H = j.head;
+  P.ell(H, skin, [0, 0.1, 0], [0.106, 0.126, 0.118]);
+  P.ell(H, skin, [0, 0.03, 0.03], [0.085, 0.07, 0.096]);
+  P.ell(H, skin, [0, 0.092, 0.116], [0.021, 0.038, 0.028], [-0.25, 0, 0]);
+  P.ell(H, hair, [0, 0.135, 0.098], [0.088, 0.018, 0.028], [0.2, 0, 0]);
+  for (const s of [-1, 1]) {
+    P.ell(H, hair, [s * 0.045, 0.137, 0.105], [0.04, 0.012, 0.02], [0, 0, s * -0.4]);     // angry brows
+    P.ell(H, skin, [s * 0.07, 0.07, 0.085], [0.031, 0.026, 0.028]);
+    P.ell(H, skin, [s * 0.105, 0.095, 0.0], [0.018, 0.034, 0.024]);
+    P.ell(H, eye, [s * 0.041, 0.108, 0.108], [0.018, 0.0105, 0.011], [0, 0, s * -0.15]);
+    P.ell(H, hair, [s * 0.035, 0.055, 0.112], [0.042, 0.013, 0.018], [0, 0, s * 0.35]);   // moustache
+  }
+  // full wild beard
+  P.ell(H, hair, [0, 0.005, 0.07], [0.092, 0.085, 0.07]);
+  for (let i = 0; i < 9; i++) {
+    const a = ((i - 4) / 4) * 0.9, L = 0.13 + (1 - Math.abs(i - 4) / 4) * 0.08;
+    P.add(H, new THREE.ConeGeometry(0.03, L, 7), hair, [Math.sin(a) * 0.07, -0.05 - L * 0.3, 0.07 + Math.cos(a) * 0.02], [Math.PI + 0.35, 0, a * 0.5]);
+  }
+  // hair mass swept back by the storm
+  P.ell(H, hair, [0, 0.155, -0.04], [0.12, 0.115, 0.13]);
+  for (let i = 0; i < 17; i++) {
+    const a = (i / 16 - 0.5) * 2.6, L = 0.26 + Math.cos(a) * 0.14 + hsh(i, 41) * 0.06;
+    const up = 0.12 + hsh(i, 42) * 0.3;                            // streams back, only slightly lifted by the wind
+    P.add(H, new THREE.ConeGeometry(0.04, L, 7).translate(0, -L / 2, 0), hair, [Math.sin(a) * 0.1, 0.15 + Math.cos(a) * 0.03, -0.07 - Math.cos(a) * 0.04], [Math.PI / 2 + up, 0, a * 0.3]);
+  }
+  // hachimaki headband with trailing ends
+  P.add(H, new THREE.TorusGeometry(0.122, 0.016, 8, 40), kinu, [0, 0.165, -0.01], [Math.PI / 2 - 0.18, 0, 0], [1, 1.04, 1]);
+  P.add(H, new THREE.TorusGeometry(0.123, 0.004, 6, 40), red, [0, 0.165, -0.01], [Math.PI / 2 - 0.18, 0, 0], [1, 1.04, 1]);
+  P.ell(H, black, [0, 0.19, 0.115], [0.03, 0.022, 0.01]);
+  P.ell(H, storm, [0, 0.19, 0.122], [0.013, 0.01, 0.005]);
+  for (const s of [-1, 1]) P.add(H, new THREE.BoxGeometry(0.035, 0.26, 0.006).translate(0, -0.13, 0), kinu, [s * 0.03, 0.18, -0.14], [1.15, s * 0.2, s * 0.25]);
+
+  // ---- arms: lacquered sode shoulder guards, wide kinu sleeves, kote gauntlets ----
+  for (const [s, sg] of [['l', 1], ['r', -1]]) {
+    const sh = j[s + 'Sh'], el = j[s + 'El'], wr = j[s + 'Wr'];
+    P.add(sh, muscleLimb(0.32, 0.086, 0.066, 0.014, 0.6), skin);
+    P.ell(sh, skin, [sg * 0.015, -0.02, 0], [0.1, 0.106, 0.1]);
+    P.add(sh, lathe([[0.1, 0.0], [0.118, -0.08], [0.122, -0.18], [0.1, -0.23]], 32), kinu, [0, 0, 0], [0, 0, 0], [1, 1, 0.95]);   // puffed sleeve
+    P.add(sh, new THREE.TorusGeometry(0.098, 0.008, 6, 26), red, [0, -0.225, 0], [Math.PI / 2, 0, 0]);
+    // sode: three rows of curved plates hanging off the shoulder
+    for (let r = 0; r < 3; r++) {
+      const g = new THREE.CylinderGeometry(0.135, 0.145, 0.07, 20, 1, true, -0.9, 1.8);
+      P.add(sh, g, lacquer, [sg * 0.035, 0.02 - r * 0.068, 0], [0, sg > 0 ? -Math.PI / 2 : Math.PI / 2, sg * -0.18]);
+      P.add(sh, new THREE.CylinderGeometry(0.146, 0.146, 0.008, 20, 1, true, -0.9, 1.8), red, [sg * 0.035, -0.017 - r * 0.068, 0], [0, sg > 0 ? -Math.PI / 2 : Math.PI / 2, sg * -0.18]);
+    }
+    P.ell(sh, gold, [sg * 0.15, 0.035, 0], [0.012, 0.018, 0.018]);
+    P.add(el, muscleLimb(0.28, 0.074, 0.05, 0.014, 0.72), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.88]);
+    P.add(el, lathe([[0.058, -0.27], [0.062, -0.24], [0.074, -0.1], [0.072, -0.04]], 28), black, [0, 0, 0], [0, 0, 0], [1, 1, 0.92]);
+    for (const y of [-0.08, -0.15, -0.22]) P.add(el, new THREE.TorusGeometry(0.072 - (y + 0.08) * 0.07, 0.005, 6, 26), gold, [0, y, 0], [Math.PI / 2, 0, 0], [1, 0.92, 1]);
+    P.ell(el, storm, [0, -0.15, 0.068], [0.01, 0.016, 0.005]);
+    // hands
+    P.ell(wr, skin, [0, -0.05, 0.008], [0.048, 0.06, 0.055]);
+    P.ell(wr, skin, [0, -0.095, 0.022], [0.045, 0.03, 0.04]);
+    P.ell(wr, skin, [sg * -0.035, -0.055, 0.04], [0.018, 0.032, 0.018], [0.4, 0, 0]);
+    // legs: billowing hakama tied below the knee (ashi-yui), straw-rope wraps, sandals
+    const hp = j[s + 'Hip'], kn = j[s + 'Kn'], an = j[s + 'An'];
+    P.add(hp, lathe([[0.13, 0.04], [0.15, -0.12], [0.155, -0.3], [0.14, -0.44], [0.11, -0.48]], 30), hakama);
+    P.add(kn, lathe([[0.11, 0.02], [0.12, -0.05], [0.105, -0.12], [0.07, -0.16]], 28), hakama);
+    P.add(kn, new THREE.TorusGeometry(0.068, 0.012, 6, 22), red, [0, -0.15, 0], [Math.PI / 2, 0, 0]);
+    P.add(kn, muscleLimb(0.45, 0.07, 0.046, 0.0, 0.7), skin);
+    P.ell(kn, skin, [0, -0.12, -0.035], [0.056, 0.105, 0.05]);
+    for (let k = 0; k < 5; k++) P.add(kn, new THREE.TorusGeometry(0.056 - k * 0.002, 0.008, 6, 22), rope, [0, -0.22 - k * 0.042, 0], [Math.PI / 2 + (k % 2 ? 0.2 : -0.2), 0, 0]);
+  }
+  addDetail(P, j, { skin, hair, sole: leather, strap: rope, metal: gold }, { k: 0.86, eye: [0.041, 0.108, 0.108], lip: 0x8a5040, curls: false, armored: true });
+  P.build();
+
+  // ---- Kusanagi no Tsurugi in the right hand ----
+  const { sw, glow } = susanooSword(T, { steel, storm, gold, ironDark, wrap: black, same, rope });
+  j.rWr.add(sw);
+
+  // ---- hire: long storm shawl streaming from the shoulders ----
+  const capeGeo = new THREE.PlaneGeometry(0.64, 1.28, 10, 18);
+  capeGeo.translate(0, -0.64, 0);
+  {
+    const cols = [];
+    const pos = capeGeo.attributes.position;
+    for (let i = 0; i < pos.count; i++) if (pos.getY(i) > 0) pos.setY(i, 0);
+    const cTop = new THREE.Color(0x15204a), cMid = new THREE.Color(0x2d6f7a), cBot = new THREE.Color(0xdff6ee);
+    for (let i = 0; i < pos.count; i++) {
+      const v = -pos.getY(i) / 1.28, u = Math.abs(pos.getX(i)) / 0.32;
+      const c = v < 0.55 ? cTop.clone().lerp(cMid, v / 0.55) : cMid.clone().lerp(cBot, (v - 0.55) / 0.45);
+      if (u > 0.9) c.lerp(new THREE.Color(0xe8b85a), 0.6);
+      cols.push(c.r, c.g, c.b);
+    }
+    capeGeo.setAttribute('color', new THREE.Float32BufferAttribute(cols, 3));
+  }
+  const capeBase = capeGeo.attributes.position.array.slice();
+  const capeMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.6, metalness: 0.05, side: THREE.DoubleSide });
+  const cape = new THREE.Mesh(capeGeo, capeMat);
+  cape.castShadow = true;
+  cape.position.set(0, 0.3, -0.225);
+  j.chest.add(cape);
+
+  M.trident = sw; M.triGlow = glow; M.sword = sw;
+  M.cape = { mesh: cape, geo: capeGeo, base: capeBase, sway: 0 };
+  M.mats = { skin, gold, gem: storm, eye };
+  M.color = new THREE.Color(0.6, 1.6, 1.2);
+  enhanceModel(M.root, 0x9fffd8, 0.5);
+  return M;
+}
+
+
+return { canvasTex, enhanceModel, buildZeus, buildPoseidon, updateCape, buildAnubis, buildThor, buildSusanoo, SPH };
 })();
 
 // ======== fx.js ========
@@ -3659,7 +4070,7 @@ return { makeFxTextures, Particles, Bolts, waterMaterial, Timed };
 const __game = (() => {
 const { Sim, DT, STAGE, CHARS } = __sim;
 const { SKEL, POSES, JOINTS, sampleAnim, blend, copyPose, cyclePose } = __poses;
-const { canvasTex, buildZeus, buildPoseidon, buildAnubis, buildThor, updateCape } = __models;
+const { canvasTex, buildZeus, buildPoseidon, buildAnubis, buildThor, buildSusanoo, updateCape } = __models;
 const { makeFxTextures, Particles, Bolts, waterMaterial, Timed } = __fx;
 // ============================================================
 //  GAME : renderer, stage, fighters' visuals, camera, HUD, audio
@@ -4103,9 +4514,28 @@ const COL = {
   spark: [2.0, 1.6, 0.9],
   block: [0.9, 1.2, 2.0],
   thor: [1.1, 0.75, 2.0],
+  storm: [0.7, 1.9, 1.35],
 };
 const VIOLET = new THREE.Color(1.0, 0.5, 1.9);
 const violetBolt = (a, b, o = {}) => bolts.spawn(a, b, Object.assign({ color: VIOLET }, o));
+const STORMC = new THREE.Color(0.75, 1.9, 1.4);
+const stormBolt = (a, b, o = {}) => bolts.spawn(a, b, Object.assign({ color: STORMC }, o));
+function skyBoltStorm(x, big) {
+  const top = new V3(x + rand(-2, 2), 16, rand(-2, -0.5)), bot = new V3(x, 0.02, 0);
+  stormBolt(top, bot, { r: big ? 0.085 : 0.05, life: big ? 0.5 : 0.3, segs: 24, branches: big ? 4 : 2, jag: 1.2 });
+  ring(x, 0.05, 0, 0xb8ffe0, big ? 6 : 3.5, 0.45);
+  glowPuff(x, 1.0, 0.2, 0xa8ffd8, big ? 6 : 3.5, 0.35);
+  lightFlash(x, 2, 0x9fffd0, big ? 140 : 60);
+  if (big) shake = Math.max(shake, 0.25);
+  sfx.bolt(big);
+}
+// a ring of wind streaks spiralling up around x (tornado)
+function tornado(x, h, n, r0 = 0.9) {
+  for (let i = 0; i < n; i++) {
+    const a = Math.random() * Math.PI * 2, y = Math.random() * h, r = r0 + y * 0.18;
+    normP.spawn(x + Math.cos(a) * r, y, Math.sin(a) * r, -Math.sin(a) * 7, 2.5, Math.cos(a) * 7, 0.5, 0.11, 0.04, 0.85, 1, 0.95, 0.7, 1, 0);
+  }
+}
 
 function ring(x, y, z, color, size, life, vertical = false, opacity = 1) {
   const m = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: FT.ring, color, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, opacity }));
@@ -4137,6 +4567,14 @@ function hitFx(e) {
     glowPuff(x, y, z, big ? 0x9ff3ff : 0xffd98a, 1.8 * p, 0.25);
     ring(x, y, z, big ? 0xcff8ff : 0xffe6a0, 2.2 * p, 0.22, true);
     if (big) bolts.spawn(new V3(x, y, z), new V3(x + rand(-1, 1), y + rand(-0.8, 0.8), z + rand(-0.4, 0.4)), { r: 0.012, life: 0.14, segs: 6, branches: 0 });
+  } else if (e.fx === 'gale' || e.fx === 'storm') {
+    const big = e.fx === 'storm';
+    addP.burst(big ? 42 : 24, x, y, z, big ? 9 : 7, { life: [0.12, 0.38], size: [0.05, 0.14], color: COL.storm, drag: 4 });
+    normP.burst(big ? 18 : 10, x, y, z, 6, { life: [0.3, 0.6], size: [0.05, 0.12], color: [0.85, 1, 0.95], alpha: 0.75, drag: 2.5, grav: 1 });
+    glowPuff(x, y, z, 0xb8ffe0, (big ? 2.4 : 1.7) * p, 0.24);
+    ring(x, y, z, 0xd8fff0, (big ? 2.6 : 1.9) * p, 0.24, true);
+    if (big) { for (let i = 0; i < 2; i++) stormBolt(new V3(x, y, z), new V3(x + rand(-1.3, 1.3), y + rand(-1, 1.2), z + rand(-0.5, 0.5)), { r: 0.02, life: 0.2, segs: 8, branches: 0 }); lightFlash(x, y, 0x9fffd0, 80 * p); }
+    else lightFlash(x, y, 0xb8ffe0, 35 * p);
   } else if (e.fx === 'thunder') {
     addP.burst(40, x, y, z, 9, { life: [0.15, 0.45], size: [0.06, 0.16], color: COL.thor, drag: 4 });
     for (let i = 0; i < 3; i++) violetBolt(new V3(x, y, z), new V3(x + rand(-1.4, 1.4), y + rand(-1, 1.2), z + rand(-0.5, 0.5)), { r: 0.022, life: 0.22, segs: 8, branches: 0 });
@@ -4203,6 +4641,15 @@ function projSpawn(p) {
     jav.rotation.z = p.vx > 0 ? -Math.PI / 2 : Math.PI / 2;
     jav.position.x = p.vx > 0 ? 0.2 : -0.2;
     g.add(jav);
+  } else if (p.kind === 'gale') {
+    const dir = Math.sign(p.vx) || 1;
+    const core = new THREE.Mesh(new THREE.TorusGeometry(0.62, 0.05, 8, 40, Math.PI * 0.9), new THREE.MeshBasicMaterial({ color: new THREE.Color(2.2, 3.4, 2.8) }));
+    const halo = new THREE.Mesh(new THREE.TorusGeometry(0.6, 0.14, 8, 40, Math.PI * 0.9), new THREE.MeshBasicMaterial({ color: new THREE.Color(0.4, 1.4, 1.0), transparent: true, opacity: 0.45, blending: THREE.AdditiveBlending, depthWrite: false }));
+    for (const m of [core, halo]) { m.rotation.set(0, 0, -Math.PI * 0.45); m.scale.set(dir * 0.55, 1.1, 1); }
+    const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: FT.glow, color: 0x9fffd8, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false }));
+    s.scale.set(1.9, 1.9, 1.9);
+    g.add(core, halo, s);
+    g.userData.mats = [];
   } else {
     const mat = waterMaterial(0x0a6a8a, 0x8ffcff, 0.95, 1.6);
     const crest = new THREE.Mesh(new THREE.TorusGeometry(0.62, 0.24, 16, 40, Math.PI), mat);
@@ -4227,6 +4674,7 @@ function projEnd(p, hit) {
   projViews.delete(p.id);
   if (p.kind === 'bolt') { addP.burst(20, p.x, p.y, 0.1, 6, { life: [0.1, 0.3], size: [0.05, 0.12], color: COL.zeus, drag: 4 }); glowPuff(p.x, p.y, 0.1, 0x9fcfff, 2, 0.25); }
   else if (p.kind === 'hammer') { addP.burst(16, p.x, p.y, 0.1, 4, { life: [0.1, 0.3], size: [0.05, 0.12], color: COL.thor, drag: 4 }); glowPuff(p.x, p.y, 0.1, 0xc8a8ff, 1.6, 0.2); }
+  else if (p.kind === 'gale') { addP.burst(26, p.x, p.y, 0.1, 6, { life: [0.12, 0.35], size: [0.05, 0.13], color: COL.storm, drag: 4 }); glowPuff(p.x, p.y, 0.1, 0xb8ffe0, 2, 0.25); }
   else { normP.burst(30, p.x, 0.6, 0.1, 5, { life: [0.4, 0.9], size: [0.08, 0.18], color: [0.8, 0.97, 1], alpha: 0.85, grav: 12, up: 3, drag: 1 }); }
 }
 function updateProjViews(dt) {
@@ -4251,6 +4699,11 @@ function updateProjViews(dt) {
       v.g.position.y = p.y + Math.sin(v.t * 18) * 0.06;
       v.g.rotation.z += dt * 12;
       addP.burst(3, p.x, p.y, 0.1, 1, { life: [0.15, 0.3], size: [0.08, 0.16], color: COL.soul, drag: 2 });
+    } else if (p.kind === 'gale') {
+      v.g.position.y = p.y;
+      v.g.rotation.x = Math.sin(v.t * 30) * 0.15;
+      addP.burst(3, p.x - Math.sign(p.vx) * 0.2, p.y + rand(-0.6, 0.6), 0.1, 1.5, { life: [0.12, 0.3], size: [0.07, 0.15], color: COL.storm, drag: 2 });
+      normP.burst(2, p.x, p.y + rand(-0.7, 0.7), rand(-0.3, 0.3), 2, { life: [0.25, 0.45], size: [0.04, 0.1], color: [0.85, 1, 0.95], alpha: 0.7, dir: [-Math.sign(p.vx), 0, 0], cone: 0.3, drag: 1 });
     } else {
       v.g.position.y = 0.0 + Math.sin(v.t * 14) * 0.03;
       for (const m of v.g.userData.mats) m.uniforms.uTime.value = v.t;
@@ -4325,6 +4778,24 @@ function geyser(x) {
 
 function superImpact(e) {
   const x = e.x;
+  if (e.kind === 'storm') {
+    for (let i = 0; i < 4; i++) setTimeout(() => skyBoltStorm(x + rand(-1.2, 1.2), i === 0), i * 60);
+    for (let i = 0; i < 8; i++) {
+      const a = (i / 8) * Math.PI * 2;
+      stormBolt(new V3(x, 0.3, 0), new V3(x + Math.cos(a) * rand(3, 5), rand(0.1, 1.2), Math.sin(a) * rand(1.2, 2.6)), { r: 0.04, life: 0.5, segs: 14, branches: 2 });
+    }
+    ring(x, 0.06, 0, 0xd8fff0, 13, 0.9); ring(x, 0.06, 0, 0x5fe0b0, 8, 0.6);
+    ring(x, 1.3, 0.3, 0xffffff, 10, 0.5, true);
+    glowPuff(x, 1.2, 0.3, 0xd8fff0, 11, 0.55);
+    tornado(x, 6, 160, 0.6);
+    addP.burst(150, x, 0.6, 0, 16, { life: [0.3, 1.0], size: [0.06, 0.18], color: COL.storm, drag: 2.5, up: 5, grav: 4 });
+    dust(x, 40, 2.4);
+    stage.flash = Math.max(stage.flash, 1);
+    screenFlash(0.85, '#e6fff4');
+    shake = 0.6;
+    sfx.boom(1.4);
+    return;
+  }
   if (e.kind === 'judgment') {
     ring(x, 0.06, 0, 0xfff0c0, 12, 0.9);
     ring(x, 1.4, 0.3, 0x9ff3ff, 9, 0.6, true);
@@ -4589,6 +5060,16 @@ class FighterView {
         addP.burst(2, p.x, p.y, p.z, 2, { life: [0.1, 0.25], size: [0.05, 0.1], color: COL.thor, drag: 3 });
       }
       updateCape(M, t, f.vx * f.facing + (f.state === 'dash' ? 6 : 0), f.state === 'attack' ? 1 : 0.3);
+    } else if (f.key === 'susanoo') {
+      const flick = 0.8 + Math.random() * 0.4;
+      M.triGlow.material.opacity = (0.2 + this.glow * 0.9) * flick;
+      M.mats.gem.emissiveIntensity = 0.8 + this.glow * 3 * flick;
+      if (this.glow > 0.3 && Math.random() < 0.7 * this.glow) {
+        const p = new V3(rand(-0.02, 0.02), 0.02, rand(0.45, 1.4)); M.sword.localToWorld(p);
+        addP.burst(1, p.x, p.y, p.z, 1.2, { life: [0.15, 0.35], size: [0.06, 0.13], color: COL.storm, drag: 2 });
+        if (Math.random() < 0.25) stormBolt(p, p.clone().add(new V3(rand(-0.5, 0.5), rand(-0.5, 0.5), rand(-0.3, 0.3))), { r: 0.01, life: 0.08, segs: 5, branches: 0 });
+      }
+      updateCape(M, t, f.vx * f.facing + (f.state === 'dash' ? 6 : 0), f.state === 'attack' ? 1 : 0.45);
     } else {
       M.triGlow.material.opacity = 0.25 + this.glow * 0.9;
       M.mats.gem.emissiveIntensity = 0.8 + this.glow * 3;
@@ -4619,6 +5100,10 @@ class FighterView {
         addP.burst(4, p.x, p.y + rand(-0.6, 0.4), rand(-0.3, 0.3), 1, { life: [0.15, 0.35], size: [0.1, 0.22], color: COL.thor, drag: 2 });
         if (Math.random() < 0.6) violetBolt(p.clone(), p.clone().add(new V3(-f.facing * rand(0.8, 1.8), rand(-0.8, 0.8), rand(-0.3, 0.3))), { r: 0.017, life: 0.1, segs: 7, branches: 0 });
         if (f.grounded && Math.random() < 0.5) dust(f.x, 2, 0.5);
+      } else if (f.key === 'susanoo') {
+        addP.burst(4, p.x, p.y + rand(-0.6, 0.4), rand(-0.3, 0.3), 1.2, { life: [0.15, 0.35], size: [0.08, 0.18], color: COL.storm, drag: 2 });
+        normP.burst(3, p.x, p.y + rand(-0.8, 0.5), rand(-0.3, 0.3), 3, { life: [0.25, 0.5], size: [0.04, 0.1], color: [0.85, 1, 0.95], alpha: 0.7, dir: [-f.facing, 0, 0], cone: 0.3, drag: 1.5 });
+        if (Math.random() < 0.4) stormBolt(p.clone(), p.clone().add(new V3(-f.facing * rand(0.8, 1.6), rand(-0.7, 0.7), rand(-0.3, 0.3))), { r: 0.014, life: 0.1, segs: 7, branches: 0 });
       } else {
         normP.burst(4, p.x, p.y + rand(-0.8, 0.3), rand(-0.3, 0.3), 2, { life: [0.3, 0.6], size: [0.08, 0.18], color: [0.8, 0.97, 1], alpha: 0.8, grav: 6, up: 1, drag: 2 });
         addP.burst(2, p.x, p.y, 0, 1, { life: [0.2, 0.4], size: [0.15, 0.3], color: COL.water, drag: 2 });
@@ -4671,7 +5156,7 @@ function shot(id, pos, look, fov, roll, rate) {
 }
 function cineShot(f, o, t, portrait) {
   const s = f.facing, fx = f.x, ox = o.x, fw = portrait ? 1.35 : 1;
-  if (f.key === 'anubis') {
+  if (f.key === 'anubis' || f.key === 'susanoo') {
     // frame by the highest fighter: the lock lifts the victim and the final launch can take them well above the stage
     // (the super can start on a juggled victim, so the start shot must frame them too)
     const top = Math.max(o.y, f.y) + 2.5;
@@ -4787,6 +5272,15 @@ function cineUpdate(dt) {
       screenFlash(0.8, '#fff3d0'); lightFlash(o.x, 2.5, 0xffe0a0, 100); shake = Math.max(shake, 0.55);
       cineTitle(f);
     }
+  } else if (f.key === 'susanoo') {
+    if (t > 0.3 && t < 1.55) {
+      tornado(o.x, 4.5, 5);
+      if (Math.random() < 0.18) stormBolt(new V3(o.x + rand(-1.5, 1.5), 5, rand(-1, 0)), new V3(o.x + rand(-0.6, 0.6), o.y + 1, 0), { r: 0.025, life: 0.12, segs: 10, branches: 1 });
+    }
+    if (t >= 1.66 && !cineFin) {
+      cineFin = true;
+      cineTitle(f);
+    }
   } else {
     if (t > 0.3 && t < 1.8) {
       for (let i = 0; i < 5; i++) { const a = t * 7 + i * 1.26, r = 1.6 + (i % 2) * 0.5, y = ((t * 1.6 + i * 0.2) % 1) * 4; normP.spawn(o.x + Math.cos(a) * r, y, Math.sin(a) * r, -Math.sin(a) * 5, 2, Math.cos(a) * 5, 0.6, 0.14, 0.06, 0.7, 0.95, 1, 0.8, 1, 0); }
@@ -4809,6 +5303,7 @@ function cineSlow() {
   if (c.f.key === 'zeus') return c.t > 1.56 && c.t < 1.82 ? 0.3 : 1;
   if (c.f.key === 'anubis') return c.t > 1.74 && c.t < 1.95 ? 0.3 : 1;
   if (c.f.key === 'thor') return c.t > 1.72 && c.t < 1.96 ? 0.3 : 1;
+  if (c.f.key === 'susanoo') return c.t > 1.62 && c.t < 1.86 ? 0.3 : 1;
   return c.t > 1.8 && c.t < 2.05 ? 0.3 : 1;
 }
 function cineTitle(f) {
@@ -5219,7 +5714,7 @@ function handleEvents() {
         break;
       case 'fight': announce('FIGHT!', '', 'fight', 0.9); sfx.boom(0.6); break;
       case 'move':
-        if (e.mtype === 'special') { callout(e.side, e.name, false); sfx.whoosh(1.5); if (f.key === 'zeus' || f.key === 'thor') sfx.bolt(false); else sfx.water(0.7); }
+        if (e.mtype === 'special') { callout(e.side, e.name, false); sfx.whoosh(1.5); if (f.key === 'zeus' || f.key === 'thor' || f.key === 'susanoo') sfx.bolt(false); else sfx.water(0.7); }
         else if (e.mtype === 'super') { }
         else sfx.whoosh(e.mtype === 'air' ? 1.2 : 0.8);
         break;
@@ -5240,7 +5735,7 @@ function handleEvents() {
       case 'comboEnd':
         showCombo(e.side, e.hits, e.dmg, true);
         break;
-      case 'projSpawn': projSpawn(e.proj); if (e.proj.kind === 'wave') sfx.water(1); break;
+      case 'projSpawn': projSpawn(e.proj); if (e.proj.kind === 'wave') sfx.water(1); else if (e.proj.kind === 'gale') sfx.whoosh(2); break;
       case 'projEnd': projEnd(e.proj, e.hit); break;
       case 'clash':
         glowPuff(e.x, e.y, 0.2, 0xffffff, 4, 0.4); ring(e.x, e.y, 0.2, 0xffffff, 4, 0.4, true);
@@ -5250,8 +5745,8 @@ function handleEvents() {
         break;
       case 'super':
         cutin(f, e.name);
-        sfx.superFlash(f.key === 'zeus' || f.key === 'thor');
-        screenFlash(0.6, f.key === 'zeus' ? '#cfe4ff' : f.key === 'thor' ? '#e4d8ff' : f.key === 'anubis' ? '#fff0c8' : '#c8fff6');
+        sfx.superFlash(f.key === 'zeus' || f.key === 'thor' || f.key === 'susanoo');
+        screenFlash(0.6, f.key === 'zeus' ? '#cfe4ff' : f.key === 'thor' ? '#e4d8ff' : f.key === 'anubis' ? '#fff0c8' : f.key === 'susanoo' ? '#dcfff0' : '#c8fff6');
         stage.dimT = 1;
         callout(e.side, '超必殺技!', true);
         break;
@@ -5273,6 +5768,16 @@ function handleEvents() {
         if (e.big) { ring(e.x, yy, 0.2, 0xd8c4ff, 4, 0.3, true); lightFlash(e.x, yy, 0xb090ff, 110); }
         break;
       }
+      case 'storm': tornado(e.x, 4, 60, 0.7); ring(e.x, 0.06, 0, 0xb8ffe0, 5, 0.45); skyBoltStorm(e.x + rand(-0.5, 0.5), false); sfx.whoosh(2.5); break;
+      case 'serpent': {
+        const a = new V3(e.x, e.y + 1.0, 0.1), b = new V3(e.tx, e.ty, 0.1);
+        stormBolt(a, b, { r: 0.02, life: 0.12, segs: 8, branches: 0 });
+        addP.burst(18, (a.x + b.x) / 2, (a.y + b.y) / 2, 0.1, 5, { life: [0.12, 0.3], size: [0.06, 0.14], color: COL.storm, drag: 3 });
+        glowPuff(e.x, e.y + 1, 0, 0xb8ffe0, 1.8, 0.25);
+        sfx.whoosh(1.4);
+        break;
+      }
+      case 'stormCharge': skyBoltStorm(e.x, true); tornado(e.x, 6, 50, 0.5); break;
       case 'thorCharge': skyBoltViolet(e.x, true); break;
       case 'catch': { const v = views[e.side]; if (v) glowPuff(v.f.x, v.f.y + 1.4, 0.2, 0xc8a8ff, 1.4, 0.25); sfx.whoosh(0.8); break; }
       case 'ko':
@@ -5397,7 +5902,7 @@ const lastTap = { left: -9, right: -9 };
 const modelCache = {};
 function modelFor(side, key) {
   const id = side + key;
-  if (!modelCache[id]) modelCache[id] = key === 'zeus' ? buildZeus(FT) : key === 'anubis' ? buildAnubis(FT) : key === 'thor' ? buildThor(FT) : buildPoseidon(FT);
+  if (!modelCache[id]) modelCache[id] = key === 'zeus' ? buildZeus(FT) : key === 'anubis' ? buildAnubis(FT) : key === 'thor' ? buildThor(FT) : key === 'susanoo' ? buildSusanoo(FT) : buildPoseidon(FT);
   return modelCache[id];
 }
 
@@ -5436,6 +5941,7 @@ const GOD = {
   poseidon: { acc: '#5ff0e6', acc2: '#0d6f90', emb: `<svg viewBox="0 0 64 64" class="emb"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/><g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12v40M20 16v12c0 6 5 9 12 9s12-3 12-9V16"/><path d="M26 49h12"/></g><path d="M20 10l-3 7h6zM32 6l-3 7h6zM44 10l-3 7h6z" fill="currentColor"/></svg>`, tag: '大海の支配者', desc: '三叉槍と海流を自在に操る身軽な覇者。長い間合いと素早い動きで、攻防を支配する。', stats: [['攻撃', 3], ['速度', 5], ['射程', 5], ['防御', 2]] },
   anubis: { acc: '#f0c46a', acc2: '#1d3f8a', emb: `<svg viewBox="0 0 64 64" class="emb"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/><path d="M14 40 26 22 32 30 38 22 50 40 40 46 32 42 24 46Z" fill="currentColor"/><path d="M32 30v22" stroke="currentColor" stroke-width="3"/></svg>`, tag: '冥府の審判者', desc: '冥府の双剣を舞わせる俊敏な審判者。瞬間的な踏み込みで間合いを潰し、天秤の裁きで敵の魂を断つ。', stats: [['攻撃', 3], ['速度', 5], ['射程', 2], ['防御', 3]] },
   thor: { acc: '#c8b0ff', acc2: '#5a3aa0', emb: `<svg viewBox="0 0 64 64" class="emb"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/><path d="M18 14h28v14H18z" fill="currentColor"/><path d="M29 28h6v20h-6z" fill="currentColor"/><circle cx="32" cy="51" r="3.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M36 30 30 38h5l-3 6" fill="none" stroke="currentColor" stroke-width="2" opacity=".8"/></svg>`, tag: '雷槌の戦神', desc: '鉄の籠手と神鎚ミョルニルを振るう北欧の戦神。一撃一撃が重く、投げた鎚は雷をまとって手元へ戻る。', stats: [['攻撃', 5], ['速度', 2], ['射程', 3], ['防御', 5]] },
+  susanoo: { acc: '#9fffd8', acc2: '#1b5a4a', emb: `<svg viewBox="0 0 64 64" class="emb"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/><path d="M20 50 46 12" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/><path d="M17 44l9 6" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M14 30c6-8 14-6 14 0s-8 6-8 0M36 46c6 2 14-2 12-8s-8-2-6 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity=".85"/></svg>`, tag: '嵐の荒神', desc: '草薙の剣を振るう出雲の荒ぶる神。風の刃と雷をまとう踏み込みで、攻めと間合いの両方をこなす万能型。', stats: [['攻撃', 4], ['速度', 4], ['射程', 4], ['防御', 3]] },
 };
 function panelHTML(side) {
   const key = selState.keys[side], G = GOD[key], c = CHARS[key];
@@ -5444,7 +5950,7 @@ function panelHTML(side) {
   const stat = G.stats.map(([n, v]) => `<div class="stat"><span>${n}</span><div class="bar5">${[1, 2, 3, 4, 5].map((k) => `<i class="${k <= v ? 'on' : ''}"></i>`).join('')}</div></div>`).join('');
   const mv = c.moves;
   const names = (type) => Object.values(mv).filter((x) => x.type === type).map((x) => `<span>${x.name}${x.lv === 'low' ? '〔下段〕' : x.lv === 'mid' ? '〔中段〕' : ''}</span>`).join('');
-  const picks = ['zeus', 'poseidon', 'anubis', 'thor'].map((k) => `<button class="pick ${k} ${k === key ? 'on' : ''}" data-side="${side}" data-key="${k}">${GOD[k].emb}<span>${CHARS[k].name}</span></button>`).join('');
+  const picks = ['zeus', 'poseidon', 'anubis', 'thor', 'susanoo'].map((k) => `<button class="pick ${k} ${k === key ? 'on' : ''}" data-side="${side}" data-key="${k}">${GOD[k].emb}<span>${CHARS[k].name}</span></button>`).join('');
   return `<div class="pside"><i>${side + 1}P</i>${who}</div>
     <div class="pinfo" style="--acc:${G.acc};--acc2:${G.acc2}">
       <div class="en">${c.en}</div><h3 style="color:${G.acc}">${c.name}</h3><div class="ttl">${G.tag}</div>
@@ -5634,7 +6140,7 @@ function boot() {
 
 function buildMoveList() {
   const html = [];
-  for (const k of ['zeus', 'poseidon', 'anubis', 'thor']) {
+  for (const k of ['zeus', 'poseidon', 'anubis', 'thor', 'susanoo']) {
     const c = CHARS[k];
     const mv = c.moves;
     const list = (type) => Object.entries(mv).filter(([, m]) => m.type === type).map(([, m]) => `<li>${m.name}${m.lv === 'low' ? '〔下段〕' : m.lv === 'mid' ? '〔中段〕' : ''}</li>`).join('');
