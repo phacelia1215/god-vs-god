@@ -2918,100 +2918,287 @@ function updateCape(M, t, vx, intensity) {
   c.geo.computeVertexNormals();
 }
 
+// banded gold / lapis cloth for the nemes headdress and front apron
+function nemesTex() {
+  return canvasTex(64, 512, (g, w, h) => {
+    const n = 12, s = h / n;
+    for (let i = 0; i < n; i++) {
+      const y = i * s;
+      const gr = g.createLinearGradient(0, y, 0, y + s);
+      if (i % 2) { gr.addColorStop(0, '#2b55b8'); gr.addColorStop(0.5, '#1d3f8a'); gr.addColorStop(1, '#10224f'); }
+      else { gr.addColorStop(0, '#fff0b0'); gr.addColorStop(0.45, '#e2b14f'); gr.addColorStop(1, '#8a5a14'); }
+      g.fillStyle = gr; g.fillRect(0, y, w, s);
+      g.fillStyle = 'rgba(20,10,0,0.55)'; g.fillRect(0, y, w, 2);
+    }
+  });
+}
+// usekh broad collar: concentric bead rows of lapis, gold, turquoise and carnelian drops
+function collarTex() {
+  return canvasTex(512, 256, (g, w, h) => {
+    const rows = [['#1d3f8a', 'bead'], ['#e6b65e', 'bar'], ['#2fb5a8', 'bead'], ['#e6b65e', 'bar'], ['#1d3f8a', 'bead'], ['#b8462a', 'drop'], ['#e6b65e', 'bar']];
+    const rh = h / rows.length;
+    rows.forEach(([c, kind], r) => {
+      const y = r * rh;
+      g.fillStyle = '#2a1a08'; g.fillRect(0, y, w, rh);
+      if (kind === 'bar') {
+        const gr = g.createLinearGradient(0, y, 0, y + rh);
+        gr.addColorStop(0, '#fff2c0'); gr.addColorStop(0.5, c); gr.addColorStop(1, '#7a4c10');
+        g.fillStyle = gr; g.fillRect(0, y + 3, w, rh - 6);
+      } else {
+        const step = kind === 'drop' ? 32 : 20;
+        for (let x = step / 2; x < w; x += step) {
+          const gr = g.createRadialGradient(x - 3, y + rh * 0.35, 1, x, y + rh / 2, rh * 0.6);
+          gr.addColorStop(0, '#ffffff'); gr.addColorStop(0.25, c); gr.addColorStop(1, '#05070f');
+          g.fillStyle = gr; g.beginPath();
+          if (kind === 'drop') { g.moveTo(x, y + 4); g.quadraticCurveTo(x + step * 0.45, y + rh * 0.6, x, y + rh - 3); g.quadraticCurveTo(x - step * 0.45, y + rh * 0.6, x, y + 4); }
+          else g.ellipse(x, y + rh / 2, step * 0.42, rh * 0.38, 0, 0, Math.PI * 2);
+          g.fill();
+        }
+      }
+    });
+  }, { repeat: [6, 1] });
+}
+// pleated linen kilt with a gold hem band
+function kiltTex() {
+  return canvasTex(512, 128, (g, w, h) => {
+    g.fillStyle = '#e4d6b2'; g.fillRect(0, 0, w, h);
+    for (let x = 0; x < w; x += 8) {
+      const gr = g.createLinearGradient(x, 0, x + 8, 0);
+      gr.addColorStop(0, 'rgba(255,255,255,0.25)'); gr.addColorStop(0.6, 'rgba(0,0,0,0.0)'); gr.addColorStop(1, 'rgba(60,40,10,0.28)');
+      g.fillStyle = gr; g.fillRect(x, 0, 8, h);
+    }
+    const gr = g.createLinearGradient(0, 0, 0, 18);
+    gr.addColorStop(0, '#fff0b0'); gr.addColorStop(0.5, '#d9a843'); gr.addColorStop(1, '#7a4c10');
+    g.fillStyle = gr; g.fillRect(0, 0, w, 18);
+    g.fillStyle = '#1d3f8a'; for (let x = 0; x < w; x += 24) g.fillRect(x + 6, 5, 12, 8);
+  }, { repeat: [4, 1] });
+}
+
+// ---- twin blades of the underworld: curved obsidian-steel blade, soul-lit edge, winged gold guard ----
+function anubisBlade(P, wr, mt) {
+  const { blade, soul, gold, lapis, grip } = mt;
+  const L = 0.52, N = 28, Y0 = -0.215;
+  const spine = [], edge = [], mid = [];
+  for (let i = 0; i <= N; i++) {
+    const t = i / N, y = -t * L;
+    const bend = 0.04 * Math.sin(t * Math.PI * 0.85);                         // gentle khopesh-like sweep
+    const ws = 0.017 * (1 - Math.pow(t, 2.2)) + 0.0015;
+    const we = (0.022 + 0.016 * Math.sin(t * Math.PI * 0.9)) * (1 - Math.pow(t, 3.5)) + 0.0015;
+    spine.push(new V2(bend + ws, y)); edge.push(new V2(bend - we, y)); mid.push([bend + (ws - we) * 0.5, y, t]);
+  }
+  const sh = new THREE.Shape();
+  sh.moveTo(spine[0].x, spine[0].y);
+  for (let i = 1; i <= N; i++) sh.lineTo(spine[i].x, spine[i].y);
+  for (let i = N; i >= 0; i--) sh.lineTo(edge[i].x, edge[i].y);
+  sh.closePath();
+  const bg = new THREE.ExtrudeGeometry(sh, { depth: 0.007, bevelEnabled: true, bevelThickness: 0.0055, bevelSize: 0.0045, bevelSegments: 2, curveSegments: 4 });
+  bg.translate(0, 0, -0.0035);
+  P.add(wr, bg, blade, [0, Y0, 0.02]);
+  // glowing cutting edge
+  const ep = edge.map((p) => new V3(p.x - 0.0035, p.y + Y0, 0.02));
+  P.add(wr, new THREE.TubeGeometry(new THREE.CatmullRomCurve3(ep), 48, 0.0026, 5), soul);
+  // gold-inlaid fuller with soul gems on both faces
+  for (const z of [-1, 1]) {
+    const fp = mid.filter((m) => m[2] > 0.06 && m[2] < 0.68).map((m) => new V3(m[0], m[1] + Y0, 0.02 + z * 0.0092));
+    P.add(wr, new THREE.TubeGeometry(new THREE.CatmullRomCurve3(fp), 24, 0.0022, 4), gold);
+    for (const k of [6, 11, 16]) P.add(wr, new THREE.OctahedronGeometry(0.0065), soul, [mid[k][0], mid[k][1] + Y0, 0.02 + z * 0.0095], [0, 0, 0], [0.8, 1.4, 0.5]);
+  }
+  // winged crossguard swept toward the blade
+  const gs = new THREE.Shape();
+  const GW = 0.09;
+  gs.moveTo(-GW - 0.012, -0.058);
+  for (let i = 0; i <= 16; i++) { const x = -GW + (i / 16) * GW * 2; gs.lineTo(x, 0.014 - 0.05 * Math.pow(x / GW, 2)); }
+  gs.lineTo(GW + 0.012, -0.058);
+  for (let i = 16; i >= 0; i--) { const x = -GW + (i / 16) * GW * 2; gs.lineTo(x * 0.92, -0.012 - 0.034 * Math.pow(x / GW, 2)); }
+  gs.closePath();
+  const gg = new THREE.ExtrudeGeometry(gs, { depth: 0.018, bevelEnabled: true, bevelThickness: 0.004, bevelSize: 0.0035, bevelSegments: 2, curveSegments: 4 });
+  gg.translate(0, 0, -0.009);
+  P.add(wr, gg, gold, [0, -0.2, 0.02]);
+  for (const z of [-1, 1]) {
+    P.ell(wr, lapis, [0, -0.2, 0.02 + z * 0.014], [0.017, 0.02, 0.008]);
+    P.ell(wr, soul, [0, -0.2, 0.02 + z * 0.019], [0.008, 0.01, 0.005]);
+  }
+  // wrapped grip, gold bands, jackal-ear pommel
+  P.add(wr, new THREE.CylinderGeometry(0.0145, 0.016, 0.18, 12), grip, [0, -0.105, 0.02]);
+  for (let i = 0; i < 6; i++) P.add(wr, new THREE.TorusGeometry(0.0165, 0.0032, 6, 16), gold, [0, -0.02 - i * 0.032, 0.02], [Math.PI / 2, 0, 0]);
+  P.add(wr, lathe([[0, 0.05], [0.012, 0.045], [0.024, 0.02], [0.02, 0.0], [0.016, -0.008]], 20), gold, [0, -0.012, 0.02]);
+  P.ell(wr, lapis, [0, 0.016, 0.02], [0.012, 0.014, 0.012]);
+  for (const s of [-1, 1]) P.add(wr, new THREE.ConeGeometry(0.008, 0.05, 6), gold, [s * 0.013, 0.05, 0.02], [0, 0, -s * 0.28]);
+}
+
 // ============================================================
-//  ANUBIS  (jackal-headed judge, linen and lapis, twin daggers)
+//  ANUBIS  (jackal-headed judge of the dead: obsidian body, gold & lapis regalia, night cloak, twin soul blades)
 // ============================================================
 function buildAnubis(T) {
   const M = makeSkeleton('anubis');
   const { j } = M;
   const P = new PartSet();
 
-  const skin = new THREE.MeshPhysicalMaterial({ color: 0x2a2030, roughness: 0.4, sheen: 0.6, sheenColor: new THREE.Color(0x8a7cff), sheenRoughness: 0.45, clearcoat: 0.3, clearcoatRoughness: 0.35 });
-  const fur = new THREE.MeshStandardMaterial({ color: 0x17141c, roughness: 0.85, metalness: 0.05 });
-  const linen = new THREE.MeshStandardMaterial({ color: 0xd9ccaa, roughness: 0.8, side: THREE.DoubleSide });
-  const lapis = new THREE.MeshStandardMaterial({ color: 0x1d3f8a, roughness: 0.35, metalness: 0.3, envMapIntensity: 1.1 });
-  const gold = new THREE.MeshStandardMaterial({ color: 0xe6b65e, metalness: 1, roughness: 0.22, envMapIntensity: 1.3 });
-  const leather = new THREE.MeshStandardMaterial({ color: 0x3a2a1c, roughness: 0.7 });
-  const steel = new THREE.MeshPhysicalMaterial({ color: 0xcfeaff, metalness: 1, roughness: 0.12, emissive: new THREE.Color(0.3, 0.9, 1.3), emissiveIntensity: 0.6, clearcoat: 1 });
-  const eye = new THREE.MeshBasicMaterial({ color: new THREE.Color(3.0, 2.2, 0.5) });
+  const skin = new THREE.MeshPhysicalMaterial({ color: 0x1c1724, roughness: 0.38, sheen: 0.7, sheenColor: new THREE.Color(0x6f7cff), sheenRoughness: 0.4, clearcoat: 0.45, clearcoatRoughness: 0.3 });
+  const fur = new THREE.MeshPhysicalMaterial({ color: 0x0f0d13, roughness: 0.62, sheen: 1, sheenColor: new THREE.Color(0x4f62d8), sheenRoughness: 0.45, clearcoat: 0.25, clearcoatRoughness: 0.4 });
+  const gold = new THREE.MeshStandardMaterial({ color: 0xf0c060, metalness: 1, roughness: 0.2, envMapIntensity: 1.4 });
+  const goldDark = new THREE.MeshStandardMaterial({ color: 0xa8742a, metalness: 1, roughness: 0.32 });
+  const lapis = new THREE.MeshPhysicalMaterial({ color: 0x1f46a8, roughness: 0.18, metalness: 0.1, clearcoat: 1, clearcoatRoughness: 0.1, envMapIntensity: 1.2 });
+  const nemes = new THREE.MeshStandardMaterial({ color: 0xffffff, map: nemesTex(), metalness: 0.55, roughness: 0.32, side: THREE.DoubleSide });
+  const collar = new THREE.MeshStandardMaterial({ color: 0xffffff, map: collarTex(), metalness: 0.5, roughness: 0.3, side: THREE.DoubleSide });
+  const kilt = new THREE.MeshStandardMaterial({ color: 0xffffff, map: kiltTex(), roughness: 0.75, side: THREE.DoubleSide });
+  const grip = new THREE.MeshStandardMaterial({ color: 0x241a2e, roughness: 0.6 });
+  const blade = new THREE.MeshPhysicalMaterial({ color: 0x3a4660, metalness: 1, roughness: 0.14, clearcoat: 1, clearcoatRoughness: 0.05, envMapIntensity: 1.6 });
+  const soul = new THREE.MeshStandardMaterial({ color: 0x0a1a20, emissive: new THREE.Color(0.45, 1.35, 1.8), emissiveIntensity: 0.8, roughness: 0.3 });
+  const eye = new THREE.MeshBasicMaterial({ color: new THREE.Color(3.4, 2.3, 0.45) });
+  const nose = new THREE.MeshPhysicalMaterial({ color: 0x050407, roughness: 0.15, clearcoat: 1 });
 
-  // ---- hips: shendyt loincloth with gold belt ----
+  // ---- hips: pleated shendyt, jeweled belt, banded front apron ----
   P.add(j.hips, lathe([[0, -0.15], [0.14, -0.14], [0.2, -0.07], [0.21, 0.02], [0.2, 0.13], [0, 0.15]]), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.66]);
-  P.add(j.hips, lathe([[0.2, 0.04], [0.23, -0.12], [0.27, -0.3], [0.1, -0.44], [0, -0.42]], 36), linen, [0, 0, 0.02], [0, 0, 0], [1, 1, 0.8]);
-  P.add(j.hips, new THREE.TorusGeometry(0.205, 0.022, 8, 40), gold, [0, 0.05, 0], [Math.PI / 2, 0, 0], [1, 0.7, 1]);
-  P.ell(j.hips, lapis, [0, 0.05, 0.2], [0.05, 0.035, 0.02]);
-  // ---- abdomen + lean chest ----
-  P.add(j.spine, lathe([[0, -0.06], [0.19, -0.05], [0.2, 0.06], [0.2, 0.18], [0.19, 0.27], [0, 0.29]]), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.62]);
-  for (const s of [-1, 1]) P.ell(j.spine, skin, [s * 0.15, 0.1, 0.02], [0.05, 0.12, 0.05], [0, 0, s * 0.18]);
-  P.add(j.chest, lathe([[0, -0.07], [0.2, -0.06], [0.235, 0.05], [0.26, 0.15], [0.245, 0.23], [0.19, 0.27], [0, 0.28]], 40), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.64]);
-  // broad lapis collar with gold rings (usekh)
-  for (let i = 0; i < 4; i++) P.add(j.chest, new THREE.TorusGeometry(0.2 + i * 0.022, 0.012, 6, 40), i % 2 ? gold : lapis, [0, 0.22 - i * 0.02, 0.0], [Math.PI / 2, 0, 0], [1, 0.45, 1]);
-  P.add(j.chest, new THREE.TorusGeometry(0.2, 0.02, 6, 36), gold, [0, 0.07, 0], [Math.PI / 2, 0, 0], [1, 0.9, 1]);
-  // ---- neck + jackal head ----
-  P.add(j.neck, lathe([[0, -0.04], [0.068, -0.03], [0.062, 0.06], [0.058, 0.13], [0, 0.14]]), skin);
-  const H = j.head;
-  P.ell(H, fur, [0, 0.09, 0], [0.1, 0.1, 0.105]);
-  P.ell(H, fur, [0, 0.07, 0.07], [0.085, 0.08, 0.08]);
-  // long tapered snout pointing forward (+Z)
-  P.add(H, lathe([[0, 0], [0.052, 0.01], [0.058, 0.07], [0.048, 0.15], [0.03, 0.2], [0, 0.22]], 24), fur, [0, 0.055, 0.04], [Math.PI / 2, 0, 0], [1, 1, 1]);
-  P.ell(H, skin, [0, 0.0, 0.14], [0.03, 0.02, 0.05]);
-  P.ell(H, eye, [0.0, 0.035, 0.27], [0.012, 0.01, 0.012]);
-  for (const s of [-1, 1]) {
-    // tall pointed ears
-    P.add(H, new THREE.ConeGeometry(0.038, 0.24, 8), fur, [s * 0.058, 0.2, -0.03], [-0.12, 0, s * 0.16], [1, 1, 0.5]);
-    P.ell(H, skin, [s * 0.06, 0.12, 0.0], [0.03, 0.03, 0.03]);
-    // almond eye with gold kohl line
-    P.ell(H, eye, [s * 0.052, 0.1, 0.095], [0.02, 0.011, 0.012], [0, s * 0.2, 0]);
-    P.add(H, new THREE.TorusGeometry(0.028, 0.004, 5, 14), gold, [s * 0.052, 0.1, 0.1], [0, s * 0.2, 0]);
-    // nemes headcloth panels
-    P.add(H, new THREE.BoxGeometry(0.05, 0.28, 0.13).translate(0, -0.12, 0), linen, [s * 0.1, 0.1, -0.02], [0, 0, s * 0.12]);
-    P.add(H, new THREE.BoxGeometry(0.052, 0.012, 0.13), gold, [s * 0.1, -0.02, -0.02], [0, 0, s * 0.12]);
+  P.add(j.hips, lathe([[0.205, 0.04], [0.225, -0.1], [0.26, -0.26], [0.29, -0.4]], 48), kilt, [0, 0, 0.0], [0, 0, 0], [1, 1, 0.78]);
+  P.add(j.hips, lathe([[0.2, -0.0], [0.215, 0.02], [0.215, 0.09], [0.2, 0.11]], 48), gold, [0, 0, 0], [0, 0, 0], [1, 1, 0.7]);
+  for (let i = 0; i < 14; i++) {
+    const a = (i / 14) * Math.PI * 2;
+    P.add(j.hips, new THREE.BoxGeometry(0.036, 0.05, 0.012), i % 2 ? lapis : goldDark, [Math.sin(a) * 0.218, 0.055, Math.cos(a) * 0.153], [0, a, 0]);
   }
-  P.add(H, new THREE.TorusGeometry(0.1, 0.012, 6, 32), gold, [0, 0.19, 0.0], [Math.PI / 2, 0, 0], [1, 0.8, 1]);
-  P.ell(H, gold, [0, 0.2, 0.09], [0.02, 0.025, 0.02]);
-  // ---- arms: slim with bracer and dagger ----
+  P.add(j.hips, new THREE.BoxGeometry(0.13, 0.36, 0.008).translate(0, -0.18, 0), nemes, [0, 0.0, 0.2], [-0.12, 0, 0]);
+  for (const s of [-1, 1]) P.add(j.hips, new THREE.BoxGeometry(0.008, 0.36, 0.012).translate(0, -0.18, 0), gold, [s * 0.068, 0.0, 0.2], [-0.12, 0, 0]);
+  P.add(j.hips, new THREE.BoxGeometry(0.14, 0.02, 0.014), gold, [0, -0.355, 0.245], [-0.12, 0, 0]);
+  P.ell(j.hips, soul, [0, 0.055, 0.162], [0.026, 0.026, 0.01]);
+  P.add(j.hips, new THREE.TorusGeometry(0.034, 0.007, 6, 24), gold, [0, 0.055, 0.162]);
+
+  // ---- abdomen + lean, defined chest ----
+  P.add(j.spine, lathe([[0, -0.06], [0.19, -0.05], [0.2, 0.06], [0.2, 0.18], [0.19, 0.27], [0, 0.29]]), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.62]);
+  for (const s of [-1, 1]) {
+    P.ell(j.spine, skin, [s * 0.15, 0.1, 0.02], [0.05, 0.12, 0.05], [0, 0, s * 0.18]);
+    for (let r = 0; r < 3; r++) P.ell(j.spine, skin, [s * 0.045, 0.02 + r * 0.075, 0.105], [0.04, 0.032, 0.022]);  // abs
+  }
+  P.add(j.chest, lathe([[0, -0.07], [0.2, -0.06], [0.235, 0.05], [0.26, 0.15], [0.245, 0.23], [0.19, 0.27], [0, 0.28]], 40), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.64]);
+  for (const s of [-1, 1]) P.ell(j.chest, skin, [s * 0.1, 0.12, 0.12], [0.1, 0.075, 0.05], [0.1, 0, s * 0.1]);   // pecs
+  // usekh broad collar
+  P.add(j.chest, lathe([[0.13, 0.3], [0.19, 0.27], [0.25, 0.21], [0.29, 0.13], [0.3, 0.1]], 56), collar, [0, 0, 0], [0, 0, 0], [1, 1, 0.72]);
+  P.add(j.chest, new THREE.TorusGeometry(0.3, 0.008, 6, 56), gold, [0, 0.1, 0], [Math.PI / 2, 0, 0], [1, 0.72, 1]);
+  P.add(j.chest, new THREE.TorusGeometry(0.13, 0.01, 6, 40), gold, [0, 0.3, 0], [Math.PI / 2, 0, 0], [1, 0.72, 1]);
+  // winged scarab pectoral holding the soul gem
+  P.ell(j.chest, gold, [0, 0.045, 0.172], [0.034, 0.045, 0.018]);
+  P.ell(j.chest, soul, [0, 0.055, 0.186], [0.018, 0.022, 0.008]);
+  for (const s of [-1, 1]) {
+    for (let k = 0; k < 3; k++) P.ell(j.chest, k % 2 ? gold : lapis, [s * (0.06 + k * 0.026), 0.06 - k * 0.006, 0.166 - k * 0.012], [0.04 - k * 0.005, 0.012, 0.008], [0, s * 0.25, s * (0.2 + k * 0.12)]);
+  }
+
+  // ---- neck + jackal head ----
+  P.add(j.neck, lathe([[0, -0.04], [0.07, -0.03], [0.064, 0.06], [0.058, 0.13], [0, 0.14]]), fur);
+  const H = j.head;
+  P.ell(H, fur, [0, 0.095, -0.01], [0.094, 0.1, 0.11]);                               // cranium
+  P.ell(H, fur, [0, 0.125, 0.068], [0.07, 0.024, 0.05]);                               // brow ridge
+  for (const s of [-1, 1]) P.ell(H, fur, [s * 0.052, 0.058, 0.058], [0.048, 0.05, 0.062]);   // cheeks
+  P.add(H, lathe([[0, 0], [0.054, 0.01], [0.056, 0.06], [0.044, 0.14], [0.026, 0.2], [0.012, 0.235], [0, 0.24]], 28), fur, [0, 0.07, 0.05], [Math.PI / 2, 0, 0], [0.82, 1, 0.68]);   // muzzle
+  P.ell(H, fur, [0, 0.098, 0.15], [0.026, 0.018, 0.1], [-0.12, 0, 0]);                 // nasal bridge
+  P.ell(H, fur, [0, 0.025, 0.14], [0.032, 0.016, 0.1], [0.08, 0, 0]);                  // lower jaw
+  P.ell(H, nose, [0, 0.07, 0.288], [0.02, 0.015, 0.018]);
+  P.add(H, new THREE.TorusGeometry(0.035, 0.0035, 5, 18, Math.PI), gold, [0, 0.045, 0.21], [Math.PI / 2, 0, Math.PI], [1, 2.4, 1]);   // gold mouth line
+  for (const s of [-1, 1]) {
+    // tall, sharp ears with lapis inner and gold rims / rings
+    P.add(H, new THREE.ConeGeometry(0.046, 0.3, 4).translate(0, 0.15, 0), fur, [s * 0.058, 0.14, -0.04], [-0.16, s * 0.785, s * 0.15], [1, 1, 0.55]);
+    P.add(H, new THREE.ConeGeometry(0.03, 0.22, 4).translate(0, 0.12, 0), lapis, [s * 0.058, 0.15, -0.026], [-0.16, s * 0.785, s * 0.15], [1, 1, 0.3]);
+    for (const k of [0, 1]) P.add(H, new THREE.TorusGeometry(0.036 - k * 0.006, 0.004, 6, 18), gold, [s * (0.064 + k * 0.006), 0.175 + k * 0.04, -0.045], [Math.PI / 2 - 0.16, 0, s * 0.15], [1, 0.55, 1]);
+    // glowing almond eyes with Horus-style kohl wing
+    P.ell(H, eye, [s * 0.048, 0.105, 0.105], [0.021, 0.0095, 0.012], [0, s * 0.35, s * -0.18]);
+    P.add(H, new THREE.CapsuleGeometry(0.0038, 0.07, 3, 6), gold, [s * 0.078, 0.1, 0.075], [Math.PI / 2, s * 0.62, 0]);
+    P.add(H, new THREE.CapsuleGeometry(0.0034, 0.04, 3, 6), gold, [s * 0.05, 0.08, 0.1], [0.4, 0, s * 0.2]);
+    // nemes headcloth lappets falling over the collar
+    P.add(H, new THREE.BoxGeometry(0.06, 0.34, 0.11).translate(0, -0.15, 0), nemes, [s * 0.098, 0.1, -0.035], [0.05, 0, s * 0.16]);
+    P.add(H, new THREE.BoxGeometry(0.064, 0.016, 0.114), gold, [s * 0.15, -0.235, -0.02], [0.05, 0, s * 0.16]);
+  }
+  P.ell(H, nemes, [0, 0.11, -0.055], [0.108, 0.11, 0.1]);                              // nemes over the crown
+  P.add(H, new THREE.CylinderGeometry(0.05, 0.03, 0.18, 12).translate(0, -0.09, 0), nemes, [0, 0.03, -0.12], [-0.3, 0, 0]);   // queue
+  P.add(H, new THREE.TorusGeometry(0.105, 0.011, 8, 40), gold, [0, 0.14, -0.01], [Math.PI / 2 + 0.15, 0, 0], [1, 1.05, 1]);   // diadem
+  // uraeus cobra rising from the brow
+  P.add(H, new THREE.CapsuleGeometry(0.011, 0.04, 4, 8), gold, [0, 0.168, 0.095], [-0.3, 0, 0]);
+  P.ell(H, gold, [0, 0.2, 0.098], [0.022, 0.026, 0.008]);
+  P.ell(H, soul, [0, 0.2, 0.104], [0.008, 0.01, 0.004]);
+  // halo disk of judgement behind the head
+  P.add(H, new THREE.TorusGeometry(0.2, 0.009, 8, 64), gold, [0, 0.16, -0.2], [0, 0, 0]);
+  P.add(H, new THREE.TorusGeometry(0.175, 0.004, 6, 64), soul, [0, 0.16, -0.2], [0, 0, 0]);
+  for (let i = 0; i < 12; i++) {
+    const a = (i / 12) * Math.PI * 2;
+    P.add(H, new THREE.ConeGeometry(0.012, 0.05, 4), i % 3 ? goldDark : gold, [Math.sin(a) * 0.228, 0.16 + Math.cos(a) * 0.228, -0.2], [0, 0, -a]);
+  }
+
+  // ---- arms: gold pauldrons, lapis-banded bracers with soul runes, hands gripping the twin blades ----
   for (const [s, sg] of [['l', 1], ['r', -1]]) {
     const sh = j[s + 'Sh'], el = j[s + 'El'], wr = j[s + 'Wr'];
-    P.add(sh, muscleLimb(0.28, 0.066, 0.05, 0.01, 0.6), skin);
-    P.ell(sh, skin, [sg * 0.01, -0.02, 0], [0.078, 0.086, 0.078]);
-    P.add(sh, lathe([[0.06, -0.1], [0.07, -0.02], [0.082, 0.02], [0.0, 0.02]], 24), linen, [sg * 0.05, 0.02, 0], [0, 0, sg * 0.5], [1, 1, 0.7]);
-    P.add(el, muscleLimb(0.27, 0.058, 0.04, 0.012, 0.72), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.9]);
-    P.add(el, new THREE.TorusGeometry(0.06, 0.008, 6, 24), gold, [0, -0.12, 0], [Math.PI / 2, 0, 0]);
-    P.add(el, lathe([[0.05, -0.25], [0.054, -0.22], [0.06, -0.12], [0.056, -0.08]], 24), lapis, [0, 0, 0], [0, 0, 0], [1, 1, 0.9]);
-    // hand gripping the dagger
-    P.ell(wr, skin, [0, -0.05, 0.008], [0.04, 0.052, 0.046]);
-    P.ell(wr, skin, [0, -0.095, 0.02], [0.038, 0.026, 0.034]);
-    P.ell(wr, skin, [sg * -0.03, -0.055, 0.035], [0.016, 0.028, 0.016], [0.4, 0, 0]);
-    // dagger: wrap, guard, blade pointing down the forearm
-    P.add(wr, new THREE.CylinderGeometry(0.014, 0.014, 0.12, 10), leather, [0, -0.1, 0.02]);
-    P.add(wr, new THREE.BoxGeometry(0.1, 0.02, 0.03), gold, [0, -0.17, 0.02]);
-    P.add(wr, new THREE.ConeGeometry(0.03, 0.36, 4).translate(0, -0.18, 0), steel, [0, -0.19, 0.02], [0, 0, 0], [1, 1, 0.42]);
-    // legs: slim and long
+    P.add(sh, muscleLimb(0.28, 0.068, 0.05, 0.012, 0.6), skin);
+    P.ell(sh, skin, [sg * 0.01, -0.02, 0], [0.08, 0.088, 0.08]);
+    // layered pauldron
+    for (let k = 0; k < 3; k++) {
+      P.add(sh, new THREE.SphereGeometry(0.11 - k * 0.012, 28, 10, 0, Math.PI * 2, 0, Math.PI * 0.42), k === 1 ? lapis : gold, [sg * (0.015 + k * 0.012), 0.02 - k * 0.045, 0], [0, 0, sg * -(0.35 + k * 0.12)], [1, 0.7, 0.95]);
+    }
+    P.ell(sh, soul, [sg * 0.075, 0.035, 0], [0.012, 0.016, 0.016]);
+    P.add(sh, new THREE.TorusGeometry(0.072, 0.009, 6, 26), gold, [0, -0.2, 0], [Math.PI / 2, 0, 0]);
+    P.add(el, muscleLimb(0.27, 0.058, 0.042, 0.012, 0.72), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.9]);
+    P.add(el, lathe([[0.05, -0.27], [0.056, -0.24], [0.064, -0.14], [0.066, -0.07], [0.062, -0.05]], 28), gold, [0, 0, 0], [0, 0, 0], [1, 1, 0.9]);
+    for (const y of [-0.1, -0.2]) P.add(el, new THREE.TorusGeometry(0.066 - (y + 0.1) * 0.05, 0.007, 6, 26), lapis, [0, y, 0], [Math.PI / 2, 0, 0], [1, 0.9, 1]);
+    P.add(el, new THREE.TorusGeometry(0.061, 0.003, 4, 26), soul, [0, -0.15, 0], [Math.PI / 2, 0, 0], [1, 0.9, 1]);
+    P.ell(el, soul, [0, -0.15, 0.058], [0.012, 0.018, 0.006]);
+    // hand gripping the blade
+    P.ell(wr, skin, [0, -0.05, 0.008], [0.042, 0.054, 0.048]);
+    P.ell(wr, skin, [0, -0.097, 0.022], [0.04, 0.026, 0.036]);
+    P.ell(wr, skin, [sg * -0.03, -0.055, 0.037], [0.016, 0.028, 0.016], [0.4, 0, 0]);
+    anubisBlade(P, wr, { blade, soul, gold, lapis, grip });
+
+    // legs: lean, gold greaves and knee guards, jeweled sandals
     const hp = j[s + 'Hip'], kn = j[s + 'Kn'], an = j[s + 'An'];
-    P.add(hp, muscleLimb(0.46, 0.1, 0.06, 0.014, 0.6), skin);
-    P.ell(hp, skin, [0, -0.2, 0.035], [0.06, 0.14, 0.055]);
-    P.add(kn, muscleLimb(0.45, 0.06, 0.04, 0.0, 0.7), skin);
+    P.add(hp, muscleLimb(0.46, 0.1, 0.062, 0.016, 0.6), skin);
+    P.ell(hp, skin, [0, -0.2, 0.035], [0.062, 0.14, 0.056]);
+    P.add(kn, muscleLimb(0.45, 0.062, 0.042, 0.0, 0.7), skin);
     P.ell(kn, skin, [0, -0.12, -0.03], [0.05, 0.1, 0.045]);
-    P.add(kn, lathe([[0.05, -0.4], [0.058, -0.3], [0.062, -0.12], [0.06, -0.02]], 24), linen, [0, 0, 0.006], [0, 0, 0], [1, 1, 0.9]);
+    P.add(kn, lathe([[0.048, -0.41], [0.056, -0.33], [0.064, -0.16], [0.07, -0.06], [0.074, -0.02]], 26), gold, [0, 0, 0.006], [0, 0, 0], [1, 1, 0.9]);
+    for (const y of [-0.12, -0.26]) P.add(kn, new THREE.TorusGeometry(0.066 - (y + 0.12) * 0.06, 0.006, 6, 24), lapis, [0, y, 0.006], [Math.PI / 2, 0, 0], [1, 0.9, 1]);
+    P.add(kn, new THREE.SphereGeometry(0.068, 20, 10, 0, Math.PI * 2, 0, Math.PI * 0.5), gold, [0, 0.0, 0.02], [Math.PI / 2 - 0.3, 0, 0], [1, 1, 0.75]);
+    P.ell(kn, soul, [0, -0.005, 0.07], [0.014, 0.018, 0.008]);
     P.ell(an, skin, [0, -0.03, 0.045], [0.042, 0.032, 0.1]);
-    // sandal straps
-    P.add(an, new THREE.TorusGeometry(0.048, 0.006, 6, 20), gold, [0, -0.02, 0.0], [Math.PI / 2, 0, 0]);
-    P.add(an, new THREE.BoxGeometry(0.07, 0.012, 0.22).translate(0, -0.05, 0.05), leather, [0, -0.02, 0.0]);
+    P.ell(an, goldDark, [0, -0.07, 0.05], [0.05, 0.01, 0.12]);
+    P.add(an, new THREE.TorusGeometry(0.05, 0.007, 6, 20), gold, [0, -0.015, 0.0], [Math.PI / 2, 0, 0]);
+    P.add(an, new THREE.TorusGeometry(0.04, 0.006, 6, 20, Math.PI), gold, [0, -0.05, 0.08], [0, 0, 0]);
   }
   P.build();
 
-  // ---- glowing blade anchor (right dagger) ----
+  // ---- soul glow on both blades (shared material so both follow the right blade's intensity) ----
   const bladeAnchor = new THREE.Group();
-  bladeAnchor.position.set(0, -0.3, 0.02);
+  bladeAnchor.position.set(0, -0.42, 0.02);
   j.rWr.add(bladeAnchor);
-  const bladeGlow = glowSprite(T.glow, 0x9ff3ff, 0.8);
-  bladeGlow.position.set(0, -0.32, 0.02);
+  const bladeGlow = glowSprite(T.glow, 0x7fe8ff, 0.9);
+  bladeGlow.position.set(0, -0.42, 0.02);
   j.rWr.add(bladeGlow);
+  const lGlow = new THREE.Sprite(bladeGlow.material);
+  lGlow.scale.copy(bladeGlow.scale); lGlow.position.copy(bladeGlow.position);
+  j.lWr.add(lGlow);
+
+  // ---- night cloak: deep lapis to black, gold-bordered hem ----
+  const capeGeo = new THREE.PlaneGeometry(0.62, 1.22, 10, 18);
+  capeGeo.translate(0, -0.61, 0);
+  {
+    const cols = [];
+    const pos = capeGeo.attributes.position;
+    for (let i = 0; i < pos.count; i++) if (pos.getY(i) > 0) pos.setY(i, 0);   // float error would make updateCape's pow() NaN
+    const cTop = new THREE.Color(0x0c1230), cBot = new THREE.Color(0x05060c), cGold = new THREE.Color(0xd9a440), cLap = new THREE.Color(0x1d3f8a);
+    for (let i = 0; i < pos.count; i++) {
+      const v = -pos.getY(i) / 1.22, u = Math.abs(pos.getX(i)) / 0.31;
+      const c = cTop.clone().lerp(cBot, Math.pow(v, 0.9));
+      if (v > 0.86) c.copy(v > 0.93 ? cGold : cLap);
+      else if (u > 0.9) c.lerp(cGold, 0.8);
+      cols.push(c.r, c.g, c.b);
+    }
+    capeGeo.setAttribute('color', new THREE.Float32BufferAttribute(cols, 3));
+  }
+  const capeBase = capeGeo.attributes.position.array.slice();
+  const capeMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.55, metalness: 0.35, side: THREE.DoubleSide });
+  const cape = new THREE.Mesh(capeGeo, capeMat);
+  cape.castShadow = true;
+  cape.position.set(0, 0.27, -0.17);
+  j.chest.add(cape);
 
   M.trident = bladeAnchor; M.triGlow = bladeGlow;
-  M.mats = { skin, gold, gem: steel, eye };
+  M.cape = { mesh: cape, geo: capeGeo, base: capeBase, sway: 0 };
+  M.mats = { skin, gold, gem: soul, eye };
   M.color = new THREE.Color(0.6, 1.2, 1.5);
-  enhanceModel(M.root, 0x9fe8ff, 0.5);
+  enhanceModel(M.root, 0x8fdcff, 0.55);
   return M;
 }
 
@@ -5147,6 +5334,7 @@ function ambient(dt) {
   if (Math.random() < 0.4) addP.spawn(rand(-14, 14), rand(0, 1), rand(-8, 4), rand(-0.2, 0.2), rand(0.3, 0.8), rand(-0.1, 0.1), rand(3, 6), 0.05, 0.02, 1.6, 0.9, 0.5, 0.7, 0.1, -0.02);
 }
 
+let koBySuper = false;
 function frame(now) {
   requestAnimationFrame(frame);
   let rdt = Math.min(0.05, (now - last) / 1000);
@@ -5156,7 +5344,9 @@ function frame(now) {
     runTime += rdt;
     if (!fpsChecked && runTime > 2) { fpsAcc += rdt; fpsN++; if (fpsN > 150) { fpsChecked = true; const fps = fpsN / fpsAcc; if (fps < 32 && quality === 'high') { quality = 'low'; applyQuality(); } } }
   }
-  const ts = sim.timeScale() * cineSlow();
+  // a KO landed by a super already has its own finisher slow-motion: don't stack the KO slow-mo on top
+  if (sim.phase === 'ko') { if (cineState()) koBySuper = true; } else koBySuper = false;
+  const ts = koBySuper ? cineSlow() : sim.timeScale() * cineSlow();
   const vdt = paused ? 0 : rdt * speed * ts;
   if (screen !== 'match') menuUpdate(rdt, clock);
   else if (started && !paused) {
@@ -5244,7 +5434,7 @@ function showScreen(name) {
 const GOD = {
   zeus: { acc: '#ffd77a', acc2: '#b3741a', emb: `<svg viewBox="0 0 64 64" class="emb"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/><path d="M36 6 18 35h11l-5 23 22-31H33z" fill="currentColor"/></svg>`, tag: '天空の雷神', desc: '雷を拳に宿し、鍛え上げた肉体ひとつで敵を粉砕する主神。重い一撃と圧倒的な耐久力で押し切る。', stats: [['攻撃', 5], ['速度', 2], ['射程', 2], ['防御', 4]] },
   poseidon: { acc: '#5ff0e6', acc2: '#0d6f90', emb: `<svg viewBox="0 0 64 64" class="emb"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/><g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12v40M20 16v12c0 6 5 9 12 9s12-3 12-9V16"/><path d="M26 49h12"/></g><path d="M20 10l-3 7h6zM32 6l-3 7h6zM44 10l-3 7h6z" fill="currentColor"/></svg>`, tag: '大海の支配者', desc: '三叉槍と海流を自在に操る身軽な覇者。長い間合いと素早い動きで、攻防を支配する。', stats: [['攻撃', 3], ['速度', 5], ['射程', 5], ['防御', 2]] },
-  anubis: { acc: '#f0c46a', acc2: '#1d3f8a', emb: `<svg viewBox="0 0 64 64" class="emb"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/><path d="M14 40 26 22 32 30 38 22 50 40 40 46 32 42 24 46Z" fill="currentColor"/><path d="M32 30v22" stroke="currentColor" stroke-width="3"/></svg>`, tag: '冥府の審判者', desc: '両手の短剣を舞わせる俊敏な審判者。瞬間的な踏み込みで間合いを潰し、天秤の裁きで敵の魂を断つ。', stats: [['攻撃', 3], ['速度', 5], ['射程', 2], ['防御', 3]] },
+  anubis: { acc: '#f0c46a', acc2: '#1d3f8a', emb: `<svg viewBox="0 0 64 64" class="emb"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/><path d="M14 40 26 22 32 30 38 22 50 40 40 46 32 42 24 46Z" fill="currentColor"/><path d="M32 30v22" stroke="currentColor" stroke-width="3"/></svg>`, tag: '冥府の審判者', desc: '冥府の双剣を舞わせる俊敏な審判者。瞬間的な踏み込みで間合いを潰し、天秤の裁きで敵の魂を断つ。', stats: [['攻撃', 3], ['速度', 5], ['射程', 2], ['防御', 3]] },
   thor: { acc: '#c8b0ff', acc2: '#5a3aa0', emb: `<svg viewBox="0 0 64 64" class="emb"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/><path d="M18 14h28v14H18z" fill="currentColor"/><path d="M29 28h6v20h-6z" fill="currentColor"/><circle cx="32" cy="51" r="3.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M36 30 30 38h5l-3 6" fill="none" stroke="currentColor" stroke-width="2" opacity=".8"/></svg>`, tag: '雷槌の戦神', desc: '鉄の籠手と神鎚ミョルニルを振るう北欧の戦神。一撃一撃が重く、投げた鎚は雷をまとって手元へ戻る。', stats: [['攻撃', 5], ['速度', 2], ['射程', 3], ['防御', 5]] },
 };
 function panelHTML(side) {
