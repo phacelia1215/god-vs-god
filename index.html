@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>神々の闘技場 ― ゼウス vs ポセイドン</title>
+<title>神々の闘技場</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Shippori+Mincho+B1:wght@700;800&display=swap" rel="stylesheet">
@@ -115,7 +115,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;color:#fff;font
 
 /* ---------- start overlay ---------- */
 .overlay{position:fixed;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:24px}
-#start{background:radial-gradient(ellipse at 50% 55%,rgba(20,10,30,.2),rgba(5,3,10,.82) 80%);overflow:hidden}
+#start{background:radial-gradient(ellipse at 50% 50%,rgba(10,5,20,.35),rgba(5,3,10,.15) 45%,rgba(5,3,10,.72) 95%);overflow:hidden}
 #start .t-en{font-family:var(--en);font-weight:900;letter-spacing:.5em;font-size:clamp(11px,1.4vw,16px);color:var(--gold);margin-bottom:10px}
 #start h1{font-weight:800;font-size:clamp(40px,8vw,100px);letter-spacing:.12em;line-height:1.1;background:linear-gradient(#fffbe6 15%,#ffd25a 55%,#8a4a06 90%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 4px 0 #2a1600) drop-shadow(0 0 30px rgba(255,180,60,.45))}
 #start .vs{display:flex;align-items:center;gap:clamp(14px,3vw,40px);margin:18px 0 8px;font-weight:800;font-size:clamp(18px,3vw,34px)}
@@ -196,6 +196,11 @@ body.portrait #ctrl button{font-size:11px;padding:6px 8px}
 #start .z .emb{color:var(--zeus)} #start .p .emb{color:var(--pos)}
 #btnStart{animation:pulse 2.4s ease-in-out infinite}
 @keyframes pulse{50%{box-shadow:0 0 54px rgba(255,200,80,.9)}}
+#start .subt{font-weight:800;font-size:clamp(15px,2vw,24px);letter-spacing:.9em;padding-left:.9em;color:var(--gold2);text-shadow:0 0 16px rgba(255,190,80,.6),0 2px 4px #000;margin-top:4px}
+#start .roster{display:flex;gap:clamp(10px,2.4vw,30px);margin:18px 0 6px;flex-wrap:wrap;justify-content:center}
+#start .roster span{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:clamp(11px,1.2vw,14px);font-weight:800;letter-spacing:.2em;padding-left:.2em;text-shadow:0 2px 6px #000;animation:cardIn .8s both}
+#start .roster .emb{width:clamp(34px,4vw,48px);height:clamp(34px,4vw,48px);filter:drop-shadow(0 0 10px currentColor)}
+#start .roster b{color:#fff;font-weight:800}
 #start .press{font-family:var(--en);letter-spacing:.5em;font-size:11px;margin-top:18px;color:var(--gold2);animation:blink 1.6s steps(2) infinite;padding-left:.5em}
 @keyframes blink{50%{opacity:.25}}
 
@@ -330,12 +335,13 @@ body.cine #hud,body.cine .meter,body.cine #ctrl,body.cine .keyhelp,body.cine .co
 <div class="overlay" id="start">
   <div class="rays"></div><div class="embers" id="embers"></div><div class="vig"></div>
   <div class="frame"><i></i><i></i><i></i><i></i></div>
-  <div class="t-top">ΟΛΥΜΠΟΣ ・ ΠΟΣΕΙΔΩΝ</div>
-  <div class="t-en">CLASH OF THE GODS</div>
+  <div class="t-top">OLYMPUS ・ DUAT ・ ASGARD ・ TAKAMAGAHARA</div>
+  <div class="t-en">CLASH OF THE PANTHEONS</div>
   <h1><span>神々の闘技場</span></h1>
   <div class="orn"><i></i><b>◆</b><i></i></div>
-  <div class="vs"><span class="z"><svg viewBox="0 0 64 64" class="emb"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/><path d="M36 6 18 35h11l-5 23 22-31H33z" fill="currentColor"/></svg>天空神ゼウス</span><em>VS</em><span class="p">海神ポセイドン<svg viewBox="0 0 64 64" class="emb"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/><g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12v40M20 16v12c0 6 5 9 12 9s12-3 12-9V16"/><path d="M26 49h12"/></g><path d="M20 10l-3 7h6zM32 6l-3 7h6zM44 10l-3 7h6z" fill="currentColor"/></svg></span></div>
-  <p class="desc">雷を拳に宿す剛力の主神と、三叉槍を操る大海の覇者。<br>神々の戦いを、その手で。</p>
+  <div class="subt">五柱神話大戦</div>
+  <div class="roster" id="roster"></div>
+  <p class="desc">オリュンポスの雷霆、ナイルの冥府、北欧の雷槌、出雲の嵐。<br>神話の垣根を越えて集いし五柱が、最強の座を懸けて激突する。</p>
   <button id="btnStart" class="bigbtn"><span>はじめる</span></button>
   <div class="press">PRESS ENTER</div>
   <div class="hint">効果音が鳴ります<span class="portrait-only">　・　横画面がおすすめです</span></div>
@@ -5371,6 +5377,7 @@ function updateCamera(dt, t) {
     look = new V3(w.x, 1.45, 0);
     rate = 2.5;
   }
+  updateMenuBackdrops(dt, t);
   const mc = menuCam(t, portrait);
   if (mc) { pos = mc.pos; look = mc.look; fov = mc.fov; rate = mc.rate; }
   camState.pos.x = damp(camState.pos.x, pos.x, rate, dt);
@@ -6006,7 +6013,7 @@ function menuUpdate(dt, t) {
   });
   // ambient storm and sea for atmosphere
   menuFx -= dt;
-  if (menuFx <= 0 && screen !== 'select') {
+  if (false) {   // the title backdrop has its own distant storm (updateMenuBackdrops)
     menuFx = 2.5 + Math.random() * 3;
     if (Math.random() < 0.6) { skyBolt((Math.random() < 0.5 ? -1 : 1) * rand(6, 11), false); stage.flash = Math.max(stage.flash, 0.5); }
   }
@@ -6015,12 +6022,12 @@ function menuCam(t, portrait) {
   if (screen === 'match' || !sim) return null;
   const w = portrait ? 1.4 : 1;
   if (screen === 'title') {
-    const a = Math.sin(t * 0.09) * 0.35;
-    return { pos: new V3(Math.sin(a) * 9, 0.85, Math.cos(a) * 9), look: new V3(0, 1.75, 0), fov: 40 * w, rate: 2 };
+    const a = Math.sin(t * 0.07);
+    return { pos: new V3(a * 3.2, 1.7 + Math.sin(t * 0.11) * 0.4, 11), look: new V3(a * 0.8, 7.5, -30), fov: 50 * w, rate: 1.2 };
   }
   if (screen === 'mode') {
-    const a = t * 0.05;
-    return { pos: new V3(Math.sin(a) * 4, 4.2, 12 + Math.cos(a) * 1.5), look: new V3(0, 1.4, -2), fov: 42 * w, rate: 1.5 };
+    const a = Math.sin(t * 0.05);
+    return { pos: new V3(a * 5, 4.5, 3), look: new V3(a * 2, 9.5, -34), fov: 54 * w, rate: 1.2 };
   }
   // select: the two chosen gods centred between the info panels
   const s = Math.sin(t * 0.25) * 0.4;
@@ -6084,9 +6091,401 @@ window.addEventListener('keyup', (e) => {
 });
 window.addEventListener('blur', () => { for (const k in held) held[k] = false; const f = humanFighter(); if (f) syncCmd(f); });
 
+// ============================================================
+//  Menu backdrops: dedicated title / mode and character-select scenes (the arena is hidden outside matches)
+// ============================================================
+const MENU_KEYS = ['zeus', 'poseidon', 'anubis', 'thor', 'susanoo'];
+const MENU_COL = { zeus: 0xffd77a, poseidon: 0x5ff0e6, anubis: 0xf0c46a, thor: 0xc8b0ff, susanoo: 0x9fffd8 };
+const menuBG = { title: null, select: null, arena: null, t: 0, flash: 0, boltT: 2 };
+
+// collect everything a builder adds to the scene into one group so whole backdrops can be toggled
+function sceneGroup(build) {
+  const before = new Set(scene.children);
+  build();
+  const g = new THREE.Group();
+  for (const o of [...scene.children]) if (!before.has(o)) g.add(o);
+  scene.add(g);
+  return g;
+}
+
+// heavenly storm sky: spiralling cloud vortex around a divine light, god-rays, stars, lightning
+function menuSkyMat(mode) {
+  return new THREE.ShaderMaterial({
+    uniforms: { uTime: { value: 0 }, uFlash: { value: 0 }, uMode: { value: mode } },
+    vertexShader: `varying vec3 vDir; void main(){ vDir = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`,
+    fragmentShader: `varying vec3 vDir; uniform float uTime; uniform float uFlash; uniform float uMode;
+      float h(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7))) * 43758.5453); }
+      float n2(vec2 p){ vec2 i=floor(p), f=fract(p); f=f*f*(3.0-2.0*f); return mix(mix(h(i),h(i+vec2(1,0)),f.x), mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x), f.y); }
+      float fbm(vec2 p){ float s=0.0, a=0.5; for(int i=0;i<6;i++){ s+=a*n2(p); p*=2.02; a*=0.5; } return s; }
+      void main(){
+        vec3 d = normalize(vDir);
+        vec3 c = normalize(vec3(0.0, mix(0.32, 0.2, uMode), -1.0));
+        float cd = clamp(dot(d, c), -1.0, 1.0);
+        float r = acos(cd);
+        vec3 ax = normalize(cross(c, vec3(0.0,1.0,0.0))), ay = cross(ax, c);
+        float ang = atan(dot(d, ay), dot(d, ax));
+        // base gradient
+        vec3 top = mix(vec3(0.015,0.02,0.07), vec3(0.01,0.01,0.03), uMode);
+        vec3 hor = mix(vec3(0.42,0.2,0.22), vec3(0.08,0.06,0.14), uMode);
+        vec3 col = mix(hor, top, smoothstep(-0.05, 0.6, d.y));
+        // stars
+        vec2 sp = floor(d.xz / max(d.y, 0.05) * 140.0);
+        float st = step(0.997, h(sp)) * smoothstep(0.15, 0.6, d.y) * (0.6 + 0.4 * sin(uTime * 3.0 + h(sp) * 40.0));
+        col += vec3(0.8, 0.85, 1.0) * st * (1.0 - uMode * 0.5);
+        // spiral cloud vortex
+        float sw = ang * 1.0 + r * 5.5 - uTime * 0.06;
+        vec2 q = vec2(cos(sw), sin(sw)) * (1.0 + r * 3.0);
+        float n = fbm(q * 1.6 + vec2(r * 3.0 - uTime * 0.05, 0.0));
+        float clouds = smoothstep(0.38, 0.8, n) * smoothstep(1.6, 0.15, r);
+        float core = exp(-r * mix(3.2, 4.5, uMode));
+        vec3 gold = mix(vec3(1.0, 0.7, 0.36), vec3(0.55, 0.75, 1.0), uMode * 0.6);
+        vec3 lit = mix(vec3(0.14, 0.08, 0.22), gold * 1.15, clamp(core * 1.6 + n * 0.3, 0.0, 1.0));
+        col = mix(col, lit, clouds * 0.92);
+        // divine light + god rays
+        float rays = pow(abs(sin(ang * 9.0 + sin(ang * 4.0 + uTime * 0.2) * 1.2)), 6.0);
+        col += gold * (pow(max(cd, 0.0), 220.0) * 3.0 + pow(max(cd, 0.0), 18.0) * 0.55 + core * rays * 0.35 * (1.0 - clouds * 0.6));
+        // lightning lights up the clouds
+        col += vec3(0.6, 0.75, 1.0) * uFlash * (0.15 + clouds * 1.4);
+        col *= 1.0 - uMode * 0.25;
+        gl_FragColor = vec4(col, 1.0);
+        #include <tonemapping_fragment>
+        #include <colorspace_fragment>
+      }`,
+    side: THREE.BackSide, depthWrite: false, fog: false,
+  });
+}
+
+// spinning golden sigil: concentric rings, rune ticks and five pantheon nodes
+function makeSigil(R, withNodes) {
+  const g = new THREE.Group();
+  const goldGlow = new THREE.MeshBasicMaterial({ color: new THREE.Color(2.0, 1.45, 0.62), fog: false });
+  const goldDim = new THREE.MeshBasicMaterial({ color: new THREE.Color(0.9, 0.62, 0.26), fog: false });
+  const rings = [];
+  const mkRing = (r, tube, mat, ticks, tickLen) => {
+    const ring = new THREE.Group();
+    ring.add(new THREE.Mesh(new THREE.TorusGeometry(r, tube, 6, 160), mat));
+    if (ticks) {
+      const tg = [];
+      for (let i = 0; i < ticks; i++) {
+        const a = (i / ticks) * Math.PI * 2, L = i % 6 === 0 ? tickLen * 2 : tickLen;
+        tg.push(new THREE.BoxGeometry(tube * 1.6, L, tube * 1.6).translate(0, r + L / 2 + tube, 0).rotateZ(a));
+      }
+      ring.add(new THREE.Mesh(mergeGeometries(tg), mat));
+    }
+    g.add(ring); rings.push(ring); return ring;
+  };
+  mkRing(R, R * 0.012, goldGlow, 72, R * 0.05);
+  mkRing(R * 0.86, R * 0.006, goldDim, 0);
+  const mid = mkRing(R * 0.7, R * 0.009, goldGlow, 36, R * 0.04);
+  mkRing(R * 0.42, R * 0.008, goldDim, 12, R * 0.06);
+  // five-pointed star connecting the pantheons
+  const star = [];
+  for (let i = 0; i < 5; i++) {
+    const a0 = Math.PI / 2 + (i / 5) * Math.PI * 2, a1 = Math.PI / 2 + (((i + 2) % 5) / 5) * Math.PI * 2;
+    const p0 = new V3(Math.cos(a0) * R * 0.7, Math.sin(a0) * R * 0.7, 0), p1 = new V3(Math.cos(a1) * R * 0.7, Math.sin(a1) * R * 0.7, 0);
+    const len = p0.distanceTo(p1);
+    star.push(new THREE.BoxGeometry(R * 0.008, len, R * 0.008).rotateZ(Math.atan2(p1.y - p0.y, p1.x - p0.x) - Math.PI / 2).translate((p0.x + p1.x) / 2, (p0.y + p1.y) / 2, 0));
+  }
+  mid.add(new THREE.Mesh(mergeGeometries(star), goldDim));
+  if (withNodes) {
+    MENU_KEYS.forEach((k, i) => {
+      const a = Math.PI / 2 + (i / 5) * Math.PI * 2;
+      const c = new THREE.Color(MENU_COL[k]).multiplyScalar(2.4);
+      const node = new THREE.Mesh(new THREE.SphereGeometry(R * 0.035, 16, 12), new THREE.MeshBasicMaterial({ color: c, fog: false }));
+      node.position.set(Math.cos(a) * R * 0.7, Math.sin(a) * R * 0.7, 0);
+      const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: FT.glow, color: MENU_COL[k], transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, fog: false }));
+      sp.scale.setScalar(R * 0.35);
+      node.add(sp);
+      mid.add(node);
+    });
+  }
+  const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: FT.glow, color: 0xffc870, transparent: true, opacity: 0.35, blending: THREE.AdditiveBlending, depthWrite: false, fog: false }));
+  halo.scale.setScalar(R * 2.6);
+  g.add(halo);
+  g.userData.rings = rings;
+  return g;
+}
+
+// additive light shaft that fades toward its top
+function lightBeam(color, r0, r1, h, op = 0.5) {
+  const m = new THREE.ShaderMaterial({
+    uniforms: { uCol: { value: new THREE.Color(color) }, uOp: { value: op } },
+    vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`,
+    fragmentShader: `varying vec2 vUv; uniform vec3 uCol; uniform float uOp; void main(){ float a = pow(1.0 - vUv.y, 1.6) * (0.55 + 0.45 * sin(vUv.x * 6.2832 * 3.0) * sin(vUv.x * 6.2832 * 3.0)); gl_FragColor = vec4(uCol * 1.6, a * uOp); }`,
+    transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide, fog: false,
+  });
+  return new THREE.Mesh(new THREE.CylinderGeometry(r1, r0, h, 32, 1, true).translate(0, h / 2, 0), m);
+}
+
+// emblem floor disc: concentric gold rings, meander band, radiating lines
+function floorDiscTex(base, line) {
+  return canvasTex(1024, 1024, (g, w, h) => {
+    const cx = w / 2, cy = h / 2;
+    g.fillStyle = base; g.fillRect(0, 0, w, h);
+    for (let i = 0; i < 2500; i++) { g.fillStyle = `rgba(255,255,255,${Math.random() * 0.03})`; g.fillRect(Math.random() * w, Math.random() * h, 2, 2); }
+    g.strokeStyle = line; g.lineCap = 'round';
+    for (const [r, lw] of [[500, 6], [470, 2], [400, 3], [300, 5], [280, 1.5], [170, 3], [90, 4]]) { g.lineWidth = lw; g.beginPath(); g.arc(cx, cy, r, 0, Math.PI * 2); g.stroke(); }
+    g.lineWidth = 2;
+    for (let i = 0; i < 60; i++) { const a = (i / 60) * Math.PI * 2; g.beginPath(); g.moveTo(cx + Math.cos(a) * 300, cy + Math.sin(a) * 300); g.lineTo(cx + Math.cos(a) * 400, cy + Math.sin(a) * 400); g.stroke(); }
+    // meander between 400 and 470
+    g.lineWidth = 3;
+    for (let i = 0; i < 48; i++) {
+      const a0 = (i / 48) * Math.PI * 2, a1 = ((i + 0.7) / 48) * Math.PI * 2;
+      const P = (a, r) => [cx + Math.cos(a) * r, cy + Math.sin(a) * r];
+      g.beginPath(); g.moveTo(...P(a0, 410)); g.lineTo(...P(a0, 460)); g.lineTo(...P(a1, 460)); g.lineTo(...P(a1, 425)); g.lineTo(...P((a0 + a1) / 2, 425)); g.stroke();
+    }
+    // five-point star
+    g.lineWidth = 3; g.beginPath();
+    for (let i = 0; i <= 5; i++) { const a = -Math.PI / 2 + ((i * 2) % 5) / 5 * Math.PI * 2; const x = cx + Math.cos(a) * 280, y = cy + Math.sin(a) * 280; i ? g.lineTo(x, y) : g.moveTo(x, y); }
+    g.stroke();
+  });
+}
+
+function buildTitleBackdrop() {
+  return sceneGroup(() => {
+    const sky = new THREE.Mesh(new THREE.SphereGeometry(500, 48, 24), menuSkyMat(0));
+    sky.renderOrder = -10; scene.add(sky);
+    menuBG.titleSky = sky.material;
+    // cloud sea far below
+    const sea = new THREE.Mesh(new THREE.PlaneGeometry(900, 900), new THREE.ShaderMaterial({
+      uniforms: { uTime: { value: 0 }, uFlash: { value: 0 } },
+      vertexShader: `varying vec3 vW; void main(){ vec4 w = modelMatrix * vec4(position,1.0); vW = w.xyz; gl_Position = projectionMatrix * viewMatrix * w; }`,
+      fragmentShader: `varying vec3 vW; uniform float uTime; uniform float uFlash;
+        float h(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7))) * 43758.5453); }
+        float n2(vec2 p){ vec2 i=floor(p), f=fract(p); f=f*f*(3.0-2.0*f); return mix(mix(h(i),h(i+vec2(1,0)),f.x), mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x), f.y); }
+        float fbm(vec2 p){ float s=0.0, a=0.5; for(int i=0;i<5;i++){ s+=a*n2(p); p*=2.07; a*=0.5; } return s; }
+        void main(){
+          vec2 p = vW.xz * 0.03 + vec2(uTime * 0.015, uTime * 0.006);
+          float n = fbm(p);
+          vec3 col = mix(vec3(0.05,0.03,0.09), vec3(0.75,0.45,0.32), smoothstep(0.4, 0.85, n));
+          float glow = exp(-length(vW.xz - vec2(0.0, -120.0)) * 0.012);
+          col += vec3(1.0, 0.65, 0.3) * glow * 0.5 * n;
+          col += vec3(0.5, 0.65, 1.0) * uFlash * 0.35 * n;
+          col = mix(col, vec3(0.3,0.17,0.2), smoothstep(60.0, 380.0, length(vW.xz)));
+          gl_FragColor = vec4(col, 1.0);
+          #include <tonemapping_fragment>
+          #include <colorspace_fragment>
+        }`,
+      fog: false,
+    }));
+    sea.rotation.x = -Math.PI / 2; sea.position.y = -22; scene.add(sea);
+    menuBG.titleSea = sea.material;
+
+    // the sigil hanging in the sky behind the logo
+    const sig = makeSigil(9, true);
+    sig.position.set(0, 13, -34);
+    scene.add(sig);
+    menuBG.titleSigil = sig;
+
+    // foreground floating altar: octagonal marble dais, emblem disc, steps, gold rim
+    const marble = new THREE.MeshStandardMaterial({ color: 0xd8d0c4, roughness: 0.42, metalness: 0.05 });
+    const darkStone = new THREE.MeshStandardMaterial({ color: 0x3a3340, roughness: 0.85 });
+    const goldM = new THREE.MeshStandardMaterial({ color: 0xe0b060, metalness: 1, roughness: 0.25 });
+    const disc = new THREE.MeshStandardMaterial({ color: 0xffffff, map: floorDiscTex('#cfc6b8', '#b8862e'), roughness: 0.35, metalness: 0.1 });
+    const dais = new THREE.Group();
+    dais.add(new THREE.Mesh(new THREE.CylinderGeometry(6.2, 6.6, 0.7, 8), marble));
+    const top = new THREE.Mesh(new THREE.CircleGeometry(5.6, 64), disc); top.rotation.x = -Math.PI / 2; top.position.y = 0.351; dais.add(top);
+    const rim = new THREE.Mesh(new THREE.TorusGeometry(6.0, 0.08, 8, 8), goldM); rim.rotation.x = Math.PI / 2; rim.rotation.z = Math.PI / 8; rim.position.y = 0.36; dais.add(rim);
+    // jagged rock underside
+    const rockG = new THREE.ConeGeometry(6.4, 7, 9, 4);
+    { const p = rockG.attributes.position; for (let i = 0; i < p.count; i++) { const y = p.getY(i); if (y < 3.4) { p.setX(i, p.getX(i) * (0.85 + Math.random() * 0.3)); p.setZ(i, p.getZ(i) * (0.85 + Math.random() * 0.3)); } } rockG.computeVertexNormals(); }
+    const rock = new THREE.Mesh(rockG, darkStone); rock.rotation.x = Math.PI; rock.position.y = -3.85; dais.add(rock);
+    for (let i = 0; i < 3; i++) { const st = new THREE.Mesh(new THREE.BoxGeometry(4.2 - i * 0.6, 0.3, 0.9), marble); st.position.set(0, 0.2 - (i + 1) * 0.3, 6.3 + i * 0.7); dais.add(st); }
+    dais.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+    dais.position.set(0, -0.36, -6);
+    scene.add(dais);
+    // twin braziers on the altar
+    for (const sx of [-1, 1]) {
+      const b = new THREE.Group();
+      b.add(new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.2, 1.6, 12).translate(0, 0.8, 0), goldM));
+      b.add(new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.25, 0.35, 20).translate(0, 1.75, 0), goldM));
+      const fire = new THREE.Sprite(new THREE.SpriteMaterial({ map: FT.glow, color: 0xff9a40, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false }));
+      fire.scale.setScalar(2.2); fire.position.y = 2.2; b.add(fire);
+      const l = new THREE.PointLight(0xff8a3a, 22, 16, 1.6); l.position.y = 2.6; b.add(l);
+      b.position.set(sx * 4.4, 0, -4.2);
+      scene.add(b);
+      (menuBG.fires = menuBG.fires || []).push({ fire, l, x: sx * 4.4, z: -4.2 });
+    }
+
+    // five colossi of the pantheon standing on cliffs, glowing eyes and a beam of their colour
+    const bronze = new THREE.MeshStandardMaterial({ color: 0x2a2530, metalness: 0.55, roughness: 0.42 });
+    const cliffM = new THREE.MeshStandardMaterial({ color: 0x2a2232, roughness: 0.95, flatShading: true });
+    const builders = { zeus: buildZeus, poseidon: buildPoseidon, anubis: buildAnubis, thor: buildThor, susanoo: buildSusanoo };
+    MENU_KEYS.forEach((k, i) => {
+      const u = (i - 2) / 2;                                   // -1..1
+      const x = u * 30, z = -44 + Math.abs(u) * 10, y = 1.5 - Math.abs(u) * 2.5;
+      const M = builders[k](FT);
+      M.root.traverse((o) => {
+        if (o.isSprite) o.visible = false;
+        else if (o.isMesh) {
+          if (o.material && o.material.isMeshBasicMaterial) { o.material = new THREE.MeshBasicMaterial({ color: new THREE.Color(MENU_COL[k]).multiplyScalar(3) }); }
+          else o.material = bronze;
+          o.castShadow = false; o.receiveShadow = false;
+        }
+      });
+      const p = POSES[k].win;
+      for (const jn of JOINTS) { const sg = jn.charCodeAt(0) === 114 ? -1 : 1; M.j[jn].rotation.set(p[jn][0], sg * p[jn][1], sg * p[jn][2]); }
+      M.body.position.y = SKEL[k].hipH;
+      if (M.cape) updateCape(M, 0, 0, 0);
+      M.root.scale.setScalar(5.4);
+      M.root.position.set(x, y, z);
+      M.root.rotation.y = -u * 0.5;
+      scene.add(M.root);
+      // cliff pillar under each colossus
+      const cl = new THREE.Mesh(new THREE.CylinderGeometry(3.2, 5.5, 30, 7, 3), cliffM);
+      { const pp = cl.geometry.attributes.position; for (let q = 0; q < pp.count; q++) { pp.setX(q, pp.getX(q) * (0.8 + Math.random() * 0.4)); pp.setZ(q, pp.getZ(q) * (0.8 + Math.random() * 0.4)); } cl.geometry.computeVertexNormals(); }
+      cl.position.set(x, y - 15, z);
+      scene.add(cl);
+      const beam = lightBeam(MENU_COL[k], 3.5, 1.2, 60, 0.32);
+      beam.position.set(x, y, z - 2);
+      scene.add(beam);
+      const rimL = new THREE.PointLight(MENU_COL[k], 60, 30, 1.5);
+      rimL.position.set(x, y + 9, z - 5);
+      scene.add(rimL);
+    });
+
+    // floating rock shards
+    menuBG.shards = [];
+    for (let i = 0; i < 16; i++) {
+      const m = new THREE.Mesh(new THREE.DodecahedronGeometry(0.4 + Math.random() * 1.4, 0), darkStone);
+      const a = (i / 16) * Math.PI * 2;
+      m.position.set(Math.cos(a) * (12 + Math.random() * 14), -2 + Math.random() * 10, -14 + Math.sin(a) * 10 - Math.random() * 10);
+      m.rotation.set(Math.random() * 3, Math.random() * 3, 0);
+      scene.add(m);
+      menuBG.shards.push({ m, y0: m.position.y, ph: Math.random() * 6, sp: 0.3 + Math.random() * 0.4 });
+    }
+  });
+}
+
+function buildSelectBackdrop() {
+  return sceneGroup(() => {
+    const sky = new THREE.Mesh(new THREE.SphereGeometry(480, 48, 24), menuSkyMat(1));
+    sky.renderOrder = -10; scene.add(sky);
+    menuBG.selSky = sky.material;
+    // polished obsidian floor with the pantheon disc inlaid in gold
+    const floor = new THREE.Mesh(new THREE.CircleGeometry(26, 96), new THREE.MeshStandardMaterial({ color: 0x15121c, metalness: 0.6, roughness: 0.22, envMapIntensity: 1.4 }));
+    floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; scene.add(floor);
+    const inlay = new THREE.Mesh(new THREE.CircleGeometry(5.5, 96), new THREE.MeshStandardMaterial({ color: 0xffffff, map: floorDiscTex('#100d16', '#c8963a'), emissive: 0xffffff, emissiveMap: floorDiscTex('#000000', '#6a4a18'), emissiveIntensity: 0.9, metalness: 0.5, roughness: 0.3 }));
+    inlay.rotation.x = -Math.PI / 2; inlay.position.y = 0.005; inlay.receiveShadow = true; scene.add(inlay);
+    // a pedestal + light column per side, tinted with the chosen god's colour
+    menuBG.peds = [];
+    const goldM = new THREE.MeshStandardMaterial({ color: 0xe0b060, metalness: 1, roughness: 0.25 });
+    const stoneM = new THREE.MeshStandardMaterial({ color: 0x1d1a24, metalness: 0.4, roughness: 0.35 });
+    for (const sx of [-1, 1]) {
+      const g = new THREE.Group();
+      const base = new THREE.Mesh(new THREE.CylinderGeometry(0.85, 0.95, 0.12, 48), stoneM); base.position.y = -0.05; base.receiveShadow = true; g.add(base);
+      const rim = new THREE.Mesh(new THREE.TorusGeometry(0.9, 0.025, 8, 64), goldM); rim.rotation.x = Math.PI / 2; rim.position.y = 0.012; g.add(rim);
+      const glowMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(0.72, 0.018, 6, 64), glowMat); ring.rotation.x = Math.PI / 2; ring.position.y = 0.016; g.add(ring);
+      const beam = lightBeam(0xffffff, 0.85, 0.6, 9, 0.28); g.add(beam);
+      const l = new THREE.PointLight(0xffffff, 6, 7, 1.6); l.position.set(0, 0.6, 0.6); g.add(l);
+      const back = new THREE.PointLight(0xffffff, 25, 9, 1.5); back.position.set(0, 2.2, -1.6); g.add(back);
+      g.position.set(sx * 1.15, 0, 0);
+      scene.add(g);
+      menuBG.peds.push({ glowMat, beam, l, back, col: new THREE.Color(0xffffff) });
+    }
+    // colonnade of the hall of the gods
+    const pillarM = new THREE.MeshStandardMaterial({ color: 0x2a2530, metalness: 0.35, roughness: 0.4 });
+    const capG = new THREE.CylinderGeometry(0.75, 0.55, 0.5, 20);
+    for (let i = 0; i < 13; i++) {
+      const a = Math.PI + (i / 12) * Math.PI;
+      const x = Math.cos(a) * 10.5, z = Math.sin(a) * 7.5 - 2.5;
+      const col = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.55, 14, 24), pillarM); col.position.set(x, 7, z); scene.add(col);
+      const cap = new THREE.Mesh(capG, goldM); cap.position.set(x, 14.2, z); scene.add(cap);
+      const foot = new THREE.Mesh(new THREE.CylinderGeometry(0.75, 0.8, 0.4, 20), goldM); foot.position.set(x, 0.2, z); scene.add(foot);
+      // gold inlaid flutes
+      const strip = new THREE.Mesh(new THREE.BoxGeometry(0.06, 13, 0.06), new THREE.MeshBasicMaterial({ color: new THREE.Color(1.3, 0.95, 0.4) }));
+      strip.position.set(x * 0.95, 7, z + 0.52); scene.add(strip);
+    }
+    // banners of the five pantheons hanging between the columns
+    MENU_KEYS.forEach((k, i) => {
+      const a = Math.PI + ((i + 0.5) / 5) * Math.PI * 0.86 + Math.PI * 0.07;
+      const x = Math.cos(a) * 9.6, z = Math.sin(a) * 6.8 - 2.6;
+      const c = '#' + new THREE.Color(MENU_COL[k]).getHexString();
+      const tex = canvasTex(256, 768, (g, w, h) => {
+        const gr = g.createLinearGradient(0, 0, 0, h); gr.addColorStop(0, '#120e1a'); gr.addColorStop(1, '#07060b');
+        g.fillStyle = gr; g.fillRect(0, 0, w, h);
+        g.strokeStyle = c; g.lineWidth = 6; g.strokeRect(14, 14, w - 28, h - 70);
+        g.fillStyle = c; g.beginPath(); g.moveTo(14, h - 56); g.lineTo(w / 2, h - 6); g.lineTo(w - 14, h - 56); g.closePath(); g.fill();
+        g.font = '900 120px serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
+        const glyph = { zeus: 'Ζ', poseidon: 'Ψ', anubis: '𓁢', thor: 'ᚦ', susanoo: '嵐' }[k];
+        g.shadowColor = c; g.shadowBlur = 30; g.fillText(glyph, w / 2, h * 0.38);
+        g.shadowBlur = 0; g.font = '700 30px serif'; g.fillText(CHARS[k].en, w / 2, h * 0.62);
+      });
+      const ban = new THREE.Mesh(new THREE.PlaneGeometry(1.5, 4.5), new THREE.MeshStandardMaterial({ map: tex, emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: 0.55, roughness: 0.8, side: THREE.DoubleSide }));
+      ban.position.set(x, 8.2, z);
+      ban.lookAt(0, 8.2, 4);
+      scene.add(ban);
+    });
+    // great sigil window behind the stage
+    const sig = makeSigil(4.6, true);
+    sig.position.set(0, 7.4, -10.5);
+    scene.add(sig);
+    menuBG.selSigil = sig;
+    const shaft = lightBeam(0xffd890, 3.5, 6, 18, 0.12);
+    shaft.rotation.x = -Math.PI * 0.62; shaft.position.set(0, 7.4, -10.5);
+    scene.add(shaft);
+  });
+}
+
+function buildMenuBackdrops(arena) {
+  menuBG.arena = arena;
+  menuBG.title = buildTitleBackdrop();
+  menuBG.select = buildSelectBackdrop();
+  menuBG.title.visible = menuBG.select.visible = false;
+}
+
+const FOG = { arena: [0x6b4a66, 70, 420], title: [0x24152e, 40, 260], select: [0x0a0810, 14, 60] };
+function updateMenuBackdrops(dt, t) {
+  if (!menuBG.arena) return;
+  const which = screen === 'title' || screen === 'mode' ? 'title' : screen === 'select' ? 'select' : 'arena';
+  menuBG.arena.visible = which === 'arena';
+  menuBG.title.visible = which === 'title';
+  menuBG.select.visible = which === 'select';
+  const fg = FOG[which]; scene.fog.color.setHex(fg[0]); scene.fog.near = fg[1]; scene.fog.far = fg[2];
+  // gods only stand in the hall of the gods: hide fighters on the title / mode screens
+  for (const v of views) v.m.root.visible = which !== 'title';
+  if (which === 'arena') return;
+  menuBG.flash = Math.max(0, menuBG.flash - dt * 2.5);
+  if (which === 'title') {
+    menuBG.boltT -= dt;
+    if (menuBG.boltT <= 0) {
+      menuBG.boltT = 1.6 + Math.random() * 3;
+      const x = rand(-40, 40), z = rand(-90, -50);
+      stormBolt(new V3(x + rand(-6, 6), 60, z), new V3(x, -20, z + rand(-5, 5)), { r: 0.35, life: 0.35, segs: 26, branches: 3, jag: 1.4, color: new THREE.Color(1.6, 1.8, 2.6) });
+      menuBG.flash = 1;
+      if (Math.random() < 0.5) setTimeout(() => { menuBG.flash = 0.7; }, 120);
+    }
+    menuBG.titleSky.uniforms.uTime.value = t; menuBG.titleSky.uniforms.uFlash.value = menuBG.flash;
+    menuBG.titleSea.uniforms.uTime.value = t; menuBG.titleSea.uniforms.uFlash.value = menuBG.flash;
+    const R = menuBG.titleSigil.userData.rings;
+    R.forEach((r, i) => { r.rotation.z += dt * (i % 2 ? -0.05 : 0.07) * (1 + i * 0.3); });
+    for (const s of menuBG.shards) { s.m.position.y = s.y0 + Math.sin(t * s.sp + s.ph) * 0.6; s.m.rotation.y += dt * 0.1; }
+    for (const f of menuBG.fires) { const k = 0.85 + Math.random() * 0.3; f.fire.scale.setScalar(2.2 * k); f.l.intensity = 22 * k; }
+    // embers rising from the braziers and drifting across the sky
+    if (Math.random() < 0.7) for (const f of menuBG.fires) addP.spawn(f.x + rand(-0.3, 0.3), 2.2, f.z + rand(-0.3, 0.3), rand(-0.4, 0.4), rand(1.2, 2.4), rand(-0.2, 0.2), rand(1.2, 2.2), 0.07, 0.02, 1.8, 0.9, 0.35, 1, 0.4, -0.3);
+    if (Math.random() < 0.5) addP.spawn(rand(-14, 14), -3, rand(-20, 2), rand(-0.3, 0.3), rand(0.8, 1.6), 0, rand(4, 7), 0.06, 0.02, 1.6, 1.0, 0.5, 0.8, 0, -0.1);
+  } else {
+    menuBG.selSky.uniforms.uTime.value = t; menuBG.selSky.uniforms.uFlash.value = 0;
+    const R = menuBG.selSigil.userData.rings;
+    R.forEach((r, i) => { r.rotation.z += dt * (i % 2 ? -0.08 : 0.1); });
+    selState.keys.forEach((k, i) => {
+      const P = menuBG.peds[i];
+      P.col.lerp(new THREE.Color(MENU_COL[k]), 1 - Math.exp(-6 * dt));
+      const pulse = 0.85 + 0.15 * Math.sin(t * 2.4 + i);
+      P.glowMat.color.copy(P.col).multiplyScalar(2.6 * pulse);
+      P.beam.material.uniforms.uCol.value.copy(P.col);
+      P.l.color.copy(P.col); P.back.color.copy(P.col);
+    });
+    // dust motes in the light
+    if (Math.random() < 0.6) normP.spawn(rand(-4, 4), rand(0.2, 4), rand(-3, 1.5), rand(-0.1, 0.1), rand(0.05, 0.2), rand(-0.1, 0.1), rand(3, 5), 0.03, 0.03, 1, 0.9, 0.7, 0.5, 0.2, -0.02);
+  }
+}
+
 function boot() {
-  buildStage();
+  const arena = sceneGroup(() => buildStage());
   initFx();
+  buildMenuBackdrops(arena);
   setupMatch(ATTRACT);
   applyQuality();
   hud.announce.classList.remove('show');
@@ -6134,6 +6533,7 @@ function boot() {
   $('btnMoves').addEventListener('click', () => $('moves').classList.toggle('hidden'));
   $('moves').addEventListener('click', (e) => { if (e.target.id === 'moves' || e.target.classList.contains('close')) $('moves').classList.add('hidden'); });
   buildMoveList();
+  $('roster').innerHTML = MENU_KEYS.map((k, i) => `<span style="color:${GOD[k].acc};animation-delay:${0.3 + i * 0.08}s">${GOD[k].emb}<b>${CHARS[k].name}</b></span>`).join('');
   $('loading').classList.add('hidden');
   requestAnimationFrame(frame);
 }
