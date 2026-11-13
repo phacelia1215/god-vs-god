@@ -336,6 +336,11 @@ body.compact.landscape .cards{flex-direction:row;width:96vw;margin-top:52px}
 body.compact.landscape .card{grid-template-columns:40px 1fr;padding:10px}
 body.compact.landscape .card .ico{width:38px;height:38px}
 body.compact.landscape .card span{font-size:10.5px}
+body.compact.landscape .card span,body.compact.landscape .card small{display:none}
+body.compact.landscape .card b{font-size:14px;letter-spacing:.08em}
+body.compact.landscape .card{grid-template-columns:34px 1fr;padding:8px}
+body.compact.landscape .card .ico{width:30px;height:30px;grid-row:1}
+body.compact #keysHelp{display:none}
 /* character select: name chips, one row of emblem picks, controls at the bottom */
 body.compact #select .head .t-en{display:none}
 body.compact .panel{top:calc(max(8px,env(safe-area-inset-top)) + 40px);bottom:auto!important;width:calc(50vw - 16px);gap:6px}
@@ -413,8 +418,8 @@ body.compact .vctrl .sub{padding:8px 10px;font-size:12px}
 body.compact.landscape .vpanel{top:56px;bottom:56px;height:auto;right:auto;width:min(300px,40vw)}
 body.compact.landscape .vinfo{top:auto;bottom:52px}
 body:not(.compact) .cards{flex-wrap:nowrap;max-width:1240px;gap:clamp(10px,1.4vw,20px)}
-body:not(.compact) .card{width:clamp(190px,21vw,260px);min-height:clamp(260px,42vh,340px);padding:24px 16px 18px}
-body:not(.compact) .card span{font-size:12.5px;line-height:1.75}
+body:not(.compact) .card{width:clamp(168px,17.6vw,232px);min-height:clamp(260px,42vh,340px);padding:24px 16px 18px}
+body:not(.compact) .card span{font-size:12px;line-height:1.7}
 
 .stagePick{display:flex;align-items:center;gap:6px;background:rgba(10,6,18,.78);border:1px solid rgba(232,192,106,.45);padding:4px 6px;pointer-events:auto}
 .stagePick .sub{padding:7px 11px}
@@ -428,6 +433,25 @@ body.compact .selfoot{flex-wrap:wrap;row-gap:6px}
 body.compact.portrait .stagePick{order:-1;flex-basis:100%;justify-content:center}
 body.compact.portrait .dummy-opt{bottom:calc(max(10px,env(safe-area-inset-bottom)) + 100px)!important}
 body.compact.portrait .vsmark{bottom:calc(max(10px,env(safe-area-inset-bottom)) + 148px)!important}
+
+/* ================= story ================= */
+#story{background:radial-gradient(ellipse at 50% 50%,rgba(6,3,12,.45),rgba(4,2,10,.86) 85%)}
+.sbox{width:min(760px,92vw);display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center}
+.schap{font-size:clamp(22px,3.2vw,34px);font-weight:800;letter-spacing:.25em;color:var(--gold2);text-shadow:0 2px 10px #000;animation:cardIn .6s both}
+.schap small{display:block;font-family:var(--en);font-size:11px;letter-spacing:.5em;color:var(--gold);margin-bottom:6px}
+.svs{display:flex;align-items:center;gap:clamp(14px,4vw,40px);animation:cardIn .6s .1s both}
+.svs em{font-family:var(--en);font-style:normal;font-weight:900;font-size:clamp(22px,3.4vw,34px);color:#fff;text-shadow:0 0 18px rgba(255,190,60,.8)}
+.sgod{display:flex;flex-direction:column;align-items:center;gap:4px}
+.sgod .emb{width:clamp(54px,7vw,76px);height:clamp(54px,7vw,76px);filter:drop-shadow(0 0 14px currentColor)}
+.sgod b{font-size:clamp(16px,2vw,22px);letter-spacing:.15em;color:#fff}
+.sgod small{font-size:11px;letter-spacing:.25em;opacity:.8}
+.stext{width:100%;background:rgba(8,5,16,.7);border-top:1px solid rgba(232,192,106,.45);border-bottom:1px solid rgba(232,192,106,.45);padding:16px clamp(14px,3vw,28px);text-align:left;max-height:46vh;overflow:auto}
+.stext p{font-size:clamp(13px,1.6vw,16px);line-height:1.95;margin:4px 0;opacity:0;animation:sline .6s forwards;text-shadow:0 1px 4px #000}
+.stext p b{margin-right:4px}
+.stext .sfin{display:block;text-align:center;letter-spacing:.4em;color:var(--gold2);margin-top:8px}
+@keyframes sline{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.sbtns{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+.sbtns button{opacity:0;animation:sline .5s forwards}
 </style>
 <script type="importmap">
 { "imports": {
@@ -497,6 +521,10 @@ body.compact.portrait .vsmark{bottom:calc(max(10px,env(safe-area-inset-bottom)) 
   <div class="vig"></div>
   <div class="head"><div class="t-en">MODE SELECT</div><h2>モード選択</h2><div class="orn"><i></i><b>◆</b><i></i></div></div>
   <div class="cards">
+    <button class="card c0" data-mode="story"><em>★</em>
+      <svg viewBox="0 0 64 64" class="ico"><g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"><path d="M10 46 14 20l12 12 6-18 6 18 12-12 4 26z"/><path d="M10 52h44"/></g><circle cx="32" cy="12" r="2.6" fill="currentColor"/></svg>
+      <b>ストーリー</b><small>CLAIM THE THRONE</small>
+      <span>神々の頂を決める「神座決戦」。因縁の神々と4度戦い、神座を目指せ。</span><u>4連戦・相手のステージで対決</u></button>
     <button class="card c1" data-mode="player"><em>Ⅰ</em>
       <svg viewBox="0 0 64 64" class="ico"><g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 50 32 30M20 52l-6-6M16 56l-6-6"/><path d="M52 50 32 30M44 52l6-6M48 56l6-6"/><path d="M32 30 22 10l2-2 18 14M32 30 42 10l-2-2-18 14" opacity=".0"/><path d="M22 8l10 14 10-14"/></g></svg>
       <b>プレイヤー対戦</b><small>VS CPU</small>
@@ -540,6 +568,11 @@ body.compact.portrait .vsmark{bottom:calc(max(10px,env(safe-area-inset-bottom)) 
   <button id="btnToTitle">タイトルへ</button>
 </div>
 <div class="keyhelp hidden" id="keyhelp">A/D 移動 ・ W ジャンプ ・ S しゃがみ ・ 後ろ入力でガード ・ J 弱(連打で簡易コンボ) ・ K 強 ・ L 必殺 ・ O 超必殺 ・ ダブルタップでダッシュ</div>
+
+<div class="overlay hidden" id="story">
+  <div class="vig"></div>
+  <div class="sbox"><div class="schap" id="sChap"></div><div class="svs" id="sVs"></div><div class="stext" id="sText"></div><div class="sbtns" id="sBtns"></div></div>
+</div>
 
 <div class="overlay hidden" id="viewer">
   <div class="vhead"><button class="sub" id="vBack">◀ 戻る</button><div class="vt"><small>MOVE LIST</small><b>技確認</b></div></div>
@@ -7670,7 +7703,8 @@ function frame(now) {
   bgm.intense = damp(bgm.intense, cineFlag || sim.fighters.some((f) => f.hp < f.c.hp * 0.3) ? 1 : 0, 2, rdt);
   updateCamera(rdt, clock);
   updateHUD(paused ? 0 : rdt);
-  if (screen === 'match' && cfg.mode !== 'auto' && sim.phase === 'matchEnd' && sim.phaseT > 1.6) $('endpanel').classList.remove('hidden');
+  if (screen === 'match' && cfg.story && sim.phase === 'matchEnd' && sim.phaseT > 2.6) storyAfterMatch();
+  else if (screen === 'match' && cfg.mode !== 'auto' && !cfg.story && sim.phase === 'matchEnd' && sim.phaseT > 1.6) $('endpanel').classList.remove('hidden');
   if (quality === 'high') composer.render(); else renderer.render(scene, camera);
 }
 
@@ -7718,8 +7752,9 @@ function setupMatch(c) {
 
 function showScreen(name) {
   screen = name;
-  bgm.play(name === 'match' ? (cfg.mode === 'practice' ? 'practice' : STAGES[curStage].bgm) : name === 'viewer' ? 'practice' : name);
+  bgm.play(name === 'match' ? (cfg.mode === 'practice' ? 'practice' : STAGES[curStage].bgm) : name === 'viewer' ? 'practice' : name === 'story' ? 'mode' : name);
   $('viewer').classList.toggle('hidden', name !== 'viewer');
+  $('story').classList.toggle('hidden', name !== 'story');
   $('start').classList.toggle('hidden', name !== 'title');
   $('mode').classList.toggle('hidden', name !== 'mode');
   $('select').classList.toggle('hidden', name !== 'select');
@@ -7773,13 +7808,15 @@ function stepStage(d) {
 function renderSelect() {
   renderStagePick();
   const m = selState.mode;
-  $('selTitle').textContent = { player: 'プレイヤー対戦', auto: '自動戦闘', practice: 'プラクティス' }[m];
+  $('selTitle').textContent = { player: 'プレイヤー対戦', auto: '自動戦闘', practice: 'プラクティス', story: 'ストーリー' }[m];
   $('panel0').innerHTML = panelHTML(0);
-  $('panel1').innerHTML = panelHTML(1);
+  $('panel1').innerHTML = m === 'story' ? `<div class="pside"><i>2P</i>CPU</div><div class="pinfo" style="--acc:#e8c06a;--acc2:#8a5a10"><div class="en">RIVALS</div><h3 style="color:var(--gold2)">？？？</h3><div class="ttl">神座決戦</div><p class="desc2">因縁の神々が、選んだ神の前に立ちはだかる。4柱すべてを下し、神座を目指せ。対戦は相手のステージで行われる。</p></div>` : panelHTML(1);
+  document.querySelector('.stagePick').classList.toggle('hidden', m === 'story');
+  $('btnFight').innerHTML = `<span>${m === 'story' ? 'ストーリー開始' : '試合開始'}</span>`;
   document.querySelectorAll('.pick').forEach((b) => b.addEventListener('click', () => { selState.keys[+b.dataset.side] = b.dataset.key; renderSelect(); refreshPreview(false, +b.dataset.side); }));
   $('dummyOpt').classList.toggle('hidden', m !== 'practice');
   $('levelOpt').classList.toggle('hidden', m === 'practice');
-  $('levelLbl').textContent = m === 'auto' ? 'AIの強さ' : 'CPUの強さ';
+  $('levelLbl').textContent = m === 'auto' ? 'AIの強さ' : m === 'story' ? '敵の強さ' : 'CPUの強さ';
   document.querySelectorAll('#levelOpt button').forEach((b) => b.classList.toggle('on', +b.dataset.level === selState.level));
   document.querySelectorAll('.dummy-opt button[data-dummy]').forEach((b) => b.classList.toggle('on', b.dataset.dummy === selState.dummy));
   $('keysHelp').classList.toggle('hidden', m === 'auto');
@@ -7963,13 +8000,121 @@ function viewerUpdate(dt) {
   if (viewer.repeat && viewer.wait > 0.9) viewerPlay();
 }
 
+// ============================================================
+//  Story mode: 神座決戦 — four bouts against rival gods on their home stages, then an ending
+// ============================================================
+const STORY = {
+  prologue: [
+    '天上、海原、冥府、そして遥か異国の神域――。',
+    '幾千年の時を経て、世界の神話は一つの闘技場に交わった。',
+    '神々の頂、万神の座「神座」に就く者を決める戦い――「神座決戦」。',
+    '勝ち残った者だけが、すべての神話を統べる王となる。',
+  ],
+  gods: {
+    zeus: { motive: '神座は初めからオリュンポスの王たる我のもの。異国の神々にも、それを思い知らせるまでよ。', path: ['anubis', 'susanoo', 'poseidon', 'hades'],
+      challenge: '我こそ天空の王。神座は初めから我がもの――退け。', reply: '神座を狙うか。ならば雷霆の裁きを受けよ！', lose: '……見事だ。天もまた、汝を認めるやもしれぬ。',
+      ending: ['雷鳴とともに、ゼウスは神座へと昇った。', '「天は一つ、王もまた一つ。」', '異国の神々もまた、その雷霆に膝を折る。', 'オリュンポスの栄光は、いまや全ての神話を照らしている――。'] },
+    poseidon: { motive: '弟に天を、己には海を――あの籤の日から、ずっと待っていた。海はすべてを呑む。神座も例外ではない。', path: ['heracles', 'susanoo', 'hades', 'zeus'],
+      challenge: '海は全てを呑む。神々の頂とて例外ではない。', reply: '大海を前に立つ覚悟はあるか。', lose: '潮は引いた……だが、海は必ず満ちる。',
+      ending: ['大海の覇者は、ついに天の座をも手にした。', '「籤など要らぬ。力で決まったのだ。」', '世界の果てまで潮が満ち、神々はその水面に姿を映す。', '新たな王の時代は、波音とともに始まった――。'] },
+    anubis: { motive: '神々の魂もまた量られねばならぬ。神座に相応しき心臓を持つ者は誰か――この秤で確かめる。', path: ['heracles', 'thor', 'susanoo', 'hades'],
+      challenge: '汝の魂、我が秤にかけさせてもらう。', reply: '審判の時だ。心臓が羽より重ければ――冥府へ。', lose: '秤は傾いた……汝の魂は、羽よりも軽い。',
+      ending: ['すべての神の魂は量られ、秤は静かに釣り合った。', '「神座とは、玉座にあらず。秤の要に立つことだ。」', 'アヌビスは座に就かず、その傍らに立った。', '以来、神々は皆、己の心臓の重さを恐れるようになった――。'] },
+    thor: { motive: 'ハハッ！世界中の強ぇ神が集まってるって？神座なんぞおまけだ、全員ぶっ飛ばしてやる！', path: ['susanoo', 'heracles', 'poseidon', 'zeus'],
+      challenge: 'ハハッ、強い奴と戦えるなら神座なんぞおまけだ！', reply: 'いいぜ、ミョルニルの重さを教えてやる！', lose: 'ちくしょう……最高に楽しかったぜ！',
+      ending: ['最後の雷鳴が鳴り止んだとき、立っていたのはトールだった。', '「神座？ 座ってたら体がなまっちまう！」', '彼は玉座に腰掛けることなく、次の戦いを求めて虹の橋を駆けていく。', '神々の宴は、今宵もアースガルズで続く――。'] },
+    susanoo: { motive: '高天原を追われた荒ぶる神が、神々の頂を獲る。これ以上の痛快があるか。', path: ['thor', 'anubis', 'hades', 'poseidon'],
+      challenge: '荒ぶる嵐を止められる神がいるなら、見せてみろ。', reply: 'いい度胸だ。八雲の彼方まで吹き飛ばしてやる。', lose: 'くっ……嵐が、やんだか。',
+      ending: ['八雲立つ空の下、スサノオは天叢雲の剣を掲げた。', '「追放された神が頂に立つ。神話ってのは、こうでなくちゃな。」', '嵐は世界を巡り、古き秩序を洗い流していく。', '荒ぶる神の治世は、きっと騒がしく、自由だ――。'] },
+    heracles: { motive: '人の子として生まれ、十二の試練を越えた。最後の試練は――神々そのものだ。', path: ['thor', 'anubis', 'hades', 'zeus'],
+      challenge: '十二の試練を越えたこの腕、神々に通じるか試させてもらう！', reply: '半神だと侮るなよ。この棍棒は神をも砕く！', lose: 'まだだ……まだ、試練は終わっちゃいない……！',
+      ending: ['半神の英雄は、ついに神々の頂に手をかけた。', '「父上。これが、人の子の力です。」', 'ゼウスは静かに笑い、息子に雷の冠を授けた。', '人と神の境は、この日をもって消えた――。'] },
+    hades: { motive: '兄たちは天と海を選んだ。だがいずれ、全ての神も我が冥府へ還る。ならば頂にも、冥府の王が座すべきだ。', path: ['anubis', 'susanoo', 'poseidon', 'zeus'],
+      challenge: '生ある者も神もいずれ冥府に還る。早いか遅いかの違いだ。', reply: '跪け。冥府の王の前では、神もただの魂にすぎぬ。', lose: '……ふん。冥府の門は、いつでも開いている。',
+      ending: ['神座は、静かに闇へと沈んだ。', '「天も海も、いずれ皆ここへ来る。私はただ、待てばよい。」', '冥府の王は、初めて地上を見下ろした。', '永遠の静寂が、すべての神話を包み込んでいく――。'] },
+  },
+  // rivalries: player>opponent  -> [[speaker 'p'|'o', line], ...]
+  vs: {
+    'zeus>hades': [['o', '兄上……天を選んだあの日から、この時を待っていた。'], ['p', 'ハデス、冥府の王が日の下に出るか。籤の結果を覆すつもりか？'], ['o', '籤ではない。今日決めるのは、力だ。']],
+    'hades>zeus': [['p', '久しいな、兄上。天の座は居心地がよいか？'], ['o', 'ハデス……冥府に籠もっておれば良いものを。'], ['p', '冥府の静寂は、兄上の玉座にこそ相応しい。']],
+    'zeus>poseidon': [['o', 'ゼウス。天を得た籤の日の借り、返してもらうぞ。'], ['p', '兄上、まだあの日のことを根に持っておるのか。'], ['o', '海は忘れぬ。決して、な。']],
+    'poseidon>zeus': [['p', 'ゼウス、天の座を明け渡す時が来た。'], ['o', '兄上……海だけでは満足できぬか。'], ['p', '満たされぬのが海というものだ。']],
+    'poseidon>hades': [['o', '海の兄か。地上の水では、冥府の炎は消えぬぞ。'], ['p', 'ハデス、お前の闇ごと呑み込んでくれる。']],
+    'hades>poseidon': [['o', 'ハデス、陰気な冥府から何の用だ。'], ['p', '兄上の海も、いずれは冥府の川に注ぐ。それを教えに来た。']],
+    'heracles>zeus': [['o', '……来たか、我が息子よ。'], ['p', '父上。最後の試練は、あなたです。'], ['o', 'よかろう。人の子の力、この雷霆で量ってやろう。']],
+    'zeus>heracles': [['o', '父上……！？ 俺は、あなたを越えるために来た。'], ['p', 'ヘラクレスよ、その意気や良し。だが神座は譲らぬ。']],
+    'thor>zeus': [['o', '北の雷神か。雷を名乗る神が二柱、要らぬな。'], ['p', '同感だ！ どっちの雷が本物か、決めようぜ！']],
+    'zeus>thor': [['o', 'あんたがギリシャの雷神か！ 雷比べといこうじゃねえか！'], ['p', '若造が。雷霆の本当の重さを見せてやろう。']],
+    'anubis>hades': [['o', '異国の冥府の番人か。冥界に王は二人も要らぬ。'], ['p', '我は王ではない。死者を量る者。ハデス、汝の魂もまた例外ではない。']],
+    'hades>anubis': [['o', 'ハデス、汝の冥府の死者も、我が秤を待っている。'], ['p', '死者は皆、我がものだ。量る必要などない。']],
+    'susanoo>poseidon': [['o', '海を統べると言ったか、異国の荒神よ。'], ['p', 'かつて俺も海原を任された身だ。どっちが本物の海の神か、決めようぜ！']],
+    'poseidon>susanoo': [['o', 'あんたが西の海の神か。海原を治めるのは俺の役目だったんだがな。'], ['p', '任された海を捨てた者に、海を語る資格はない。']],
+    'thor>susanoo': [['o', '雷鎚の神か。嵐と雷、相性は悪くなさそうだ。'], ['p', 'ハハッ、気が合いそうだな！ だが手加減はなしだ！']],
+    'susanoo>thor': [['o', 'お前が東の嵐の神か！ 雷と嵐、どっちが空を揺らすか勝負だ！'], ['p', '望むところだ。天叢雲の切れ味、とくと味わえ！']],
+    'heracles>hades': [['o', 'ケルベロスを盗み出した不届き者が、今度は私の首を狙うか。'], ['p', 'あれも試練の一つだった。今度は冥府の王、あなた自身だ！']],
+    'hades>heracles': [['o', '冥府の王よ、また会ったな。ケルベロスは元気か？'], ['p', '……貴様には、冥府の最も深い場所を用意してある。']],
+    'anubis>heracles': [['o', '犬頭の神か。冥府の番犬なら、前に一匹連れ出したことがあるぜ。'], ['p', '汝の傲りは、秤の上で重さを増すばかりだ。']],
+  },
+};
+const story = { key: null, level: 3, idx: 0, active: false, handled: false };
+function storyLines(a, b) {
+  const sp = STORY.vs[`${a}>${b}`];
+  if (sp) return sp;
+  return [['o', STORY.gods[b].reply.replace('神座を狙うか。', '神座を狙うか。')], ['p', STORY.gods[a].challenge]];
+}
+function storyScene({ chap, vs, lines, buttons, bgmName }) {
+  $('sChap').innerHTML = chap || '';
+  $('sVs').innerHTML = vs || '';
+  $('sText').innerHTML = lines.map((l, i) => `<p style="animation-delay:${0.2 + i * 0.55}s">${l}</p>`).join('');
+  $('sBtns').innerHTML = '';
+  buttons.forEach(([label, fn, cls], i) => { const b = document.createElement('button'); b.className = cls || 'bigbtn'; b.innerHTML = `<span>${label}</span>`; b.style.animationDelay = `${0.4 + lines.length * 0.55}s`; b.addEventListener('click', () => { sfx.init(); fn(); }); $('sBtns').appendChild(b); });
+  showScreen('story');
+  if (bgmName) bgm.play(bgmName);
+}
+const godTag = (k) => `<span class="sgod" style="color:${GOD[k].acc}">${GOD[k].emb}<b>${CHARS[k].name}</b><small>${CHARS[k].title}</small></span>`;
+const say = (k, text) => `<b style="color:${GOD[k].acc}">${CHARS[k].name}</b>「${text}」`;
+function startStory() {
+  story.key = selState.keys[0]; story.level = selState.level; story.idx = 0; story.active = true;
+  const G = STORY.gods[story.key];
+  storyScene({ chap: '<small>PROLOGUE</small>神座決戦', vs: godTag(story.key),
+    lines: [...STORY.prologue, say(story.key, G.motive)],
+    buttons: [['第一戦へ', storyPreFight]] });
+}
+const ORD = ['一', '二', '三', '四'];
+function storyPreFight() {
+  const a = story.key, b = STORY.gods[a].path[story.idx], st = STAGE_IDS.find((id) => STAGES[id].owner === b) || 'olympus';
+  const lines = storyLines(a, b).map(([who, t]) => say(who === 'p' ? a : b, t));
+  storyScene({ chap: `<small>BATTLE ${story.idx + 1} / 4 ・ ${STAGES[st].en}</small>第${ORD[story.idx]}戦　${STAGES[st].name}`,
+    vs: `${godTag(a)}<em>VS</em>${godTag(b)}`, lines,
+    buttons: [['戦う', () => { story.handled = false; setupMatch({ mode: 'player', keys: [a, b], level: story.level, stage: st, story: true }); showScreen('match'); }]] });
+}
+function storyAfterMatch() {
+  if (story.handled) return; story.handled = true;
+  const a = story.key, b = STORY.gods[a].path[story.idx];
+  if (sim.matchWinner === 0) {
+    story.idx++;
+    if (story.idx >= 4) {
+      const G = STORY.gods[a];
+      storyScene({ chap: '<small>ENDING</small>神座の主', vs: godTag(a), lines: [say(b, STORY.gods[b].lose), ...G.ending, '<span class="sfin">― 神座決戦　完 ―</span>'], bgmName: 'victory',
+        buttons: [['タイトルへ', () => { story.active = false; $('btnToTitle').click(); }], ['もう一度', () => startStory(), 'sub']] });
+    } else {
+      storyScene({ chap: `<small>VICTORY</small>第${ORD[story.idx - 1]}戦　勝利`, vs: godTag(a),
+        lines: [say(b, STORY.gods[b].lose), `${CHARS[b].name}を下した。神座まで、残る神はあと${4 - story.idx}柱――。`],
+        buttons: [[`第${ORD[story.idx]}戦へ`, storyPreFight]] });
+    }
+  } else {
+    storyScene({ chap: '<small>DEFEAT</small>敗北', vs: godTag(b), lines: [say(b, STORY.gods[b].challenge.replace('――退け。', '')), `${CHARS[a].name}は膝をついた……。`], bgmName: 'defeat',
+      buttons: [['再挑戦', storyPreFight], ['タイトルへ', () => { story.active = false; $('btnToTitle').click(); }, 'sub']] });
+  }
+}
+
 function chooseMode(m) {
   if (m === 'viewer') { openViewer(selState.keys[0]); return; }
   selState.mode = m; renderSelect(); refreshPreview(true); showScreen('select');
 }
 let modeFocus = 1;
 function focusCard(i) {
-  modeFocus = (i + 4) % 4;
+  modeFocus = (i + 5) % 5;
   document.querySelectorAll('.card').forEach((c, k) => c.classList.toggle('focus', k === modeFocus));
 }
 // keyboard -> human fighter (P1)
@@ -7984,8 +8129,8 @@ window.addEventListener('keydown', (e) => {
   if (screen === 'mode') {
     if (e.code === 'ArrowLeft' || e.code === 'KeyA') focusCard(modeFocus - 1);
     else if (e.code === 'ArrowRight' || e.code === 'KeyD') focusCard(modeFocus + 1);
-    else if (['Digit1', 'Digit2', 'Digit3', 'Digit4'].includes(e.code)) chooseMode(['player', 'auto', 'practice', 'viewer'][+e.code.slice(5) - 1]);
-    else if (e.code === 'Enter') chooseMode(['player', 'auto', 'practice', 'viewer'][modeFocus]);
+    else if (['Digit1', 'Digit2', 'Digit3', 'Digit4', 'Digit5'].includes(e.code)) chooseMode(['story', 'player', 'auto', 'practice', 'viewer'][+e.code.slice(5) - 1]);
+    else if (e.code === 'Enter') chooseMode(['story', 'player', 'auto', 'practice', 'viewer'][modeFocus]);
     else if (e.code === 'Escape') showScreen('title');
     else return;
     e.preventDefault(); return;
@@ -8407,13 +8552,13 @@ function buildMenuBackdrops(arena) {
 const FOG = { arena: [0x6b4a66, 70, 420], title: [0x24152e, 40, 260], select: [0x0a0810, 14, 60] };
 function updateMenuBackdrops(dt, t) {
   if (!menuBG.arena) return;
-  const which = screen === 'title' || screen === 'mode' ? 'title' : screen === 'select' ? 'select' : 'arena';
+  const which = screen === 'title' || screen === 'mode' || screen === 'story' ? 'title' : screen === 'select' ? 'select' : 'arena';
   updateStages(dt, t, which === 'arena');
   menuBG.title.visible = which === 'title';
   menuBG.select.visible = which === 'select';
   const fg = which === 'arena' ? STAGES[curStage].fog : FOG[which]; scene.fog.color.setHex(fg[0]); scene.fog.near = fg[1]; scene.fog.far = fg[2];
   // gods only stand in the hall of the gods: hide fighters on the title / mode screens
-  for (const v of views) v.m.root.visible = which !== 'title';
+  for (const v of views) v.m.root.visible = which !== 'title' && !(screen === 'select' && selState.mode === 'story' && v.f.side === 1);
   if (which === 'arena') return;
   menuBG.flash = Math.max(0, menuBG.flash - dt * 2.5);
   if (which === 'title') {
@@ -8758,6 +8903,7 @@ function boot() {
   $('btnFight').addEventListener('click', () => {
     sfx.init();
     if (sfx.ctx && sfx.ctx.state !== 'running') sfx.ctx.resume();
+    if (selState.mode === 'story') { startStory(); return; }
     setupMatch({ mode: selState.mode, keys: selState.keys.slice(), dummy: selState.dummy, level: selState.level, stage: resolveStage(selState.stage, selState.keys) });
     showScreen('match');
   });
