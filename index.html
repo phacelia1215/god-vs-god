@@ -725,7 +725,7 @@ const POSEIDON_MOVES = {
   p_wave: {
     name: '波濤', type: 'special', dur: 0.62, glow: 'trident',
     anim: [[0, 'stance'], [0.14, 'waveWind'], [0.24, 'wave'], [0.44, 'wave'], [0.62, 'stance']],
-    proj: { t: 0.24, kind: 'wave', vx: 10, y: 0.75, dmg: 44, hits: 2, hs: 0.42, kb: 2.5, w: 0.55, h: 0.8, fx: 'water' },
+    proj: { t: 0.24, kind: 'wave', vx: 10, y: 0.6, dmg: 44, hits: 2, hs: 0.42, kb: 2.5, w: 0.5, h: 0.55, fx: 'water' },
   },
   p_air: {
     name: '落潮槍', type: 'air', dur: 0.5,
@@ -781,7 +781,7 @@ const ANUBIS_MOVES = {
   },
   a_blink: {
     name: '影走り', type: 'special', dur: 0.62, glow: 'blades', ghost: [0.08, 0.36], flipEnd: true,
-    motion: [{ t0: 0.1, t1: 0.3, vx: 21 }],
+    motion: [{ t0: 0.1, t1: 0.3, vx: 21 }], passFlip: 0.95,
     anim: [[0, 'dashWind'], [0.08, 'dashWind'], [0.12, 'dashSlash'], [0.2, 'blinkPass'], [0.3, 'blinkEnd'], [0.62, 'blinkEnd']],
     hits: [
       H({ t0: 0.13, t1: 0.2, dmg: 34, range: [-1.2, 1.5], y: [0.3, 2.2], hs: 0.45, kb: 0.3, stop: 0.05, fx: 'soul' }),
@@ -1024,7 +1024,7 @@ const HADES_MOVES = {
   hd_dog: {
     name: 'ケルベロス', type: 'special', dur: 0.66, glow: 'bident',
     anim: [[0, 'stance'], [0.12, 'summonWind'], [0.24, 'summon'], [0.42, 'summon'], [0.66, 'stance']],
-    proj: { t: 0.26, kind: 'cerberus', vx: 9, y: 0.7, dmg: 30, hits: 3, hs: 0.4, kb: 2.6, w: 0.7, h: 0.6, fx: 'hell', kd: true },
+    proj: { t: 0.26, kind: 'cerberus', vx: 9, y: 0.6, dmg: 30, hits: 3, hs: 0.4, kb: 2.6, w: 0.6, h: 0.45, fx: 'hell', kd: true },
   },
   hd_hands: {
     name: '亡者の手', type: 'special', dur: 0.7, glow: 'bident',
@@ -1180,7 +1180,8 @@ function stretchTail(m, from, newDur) {
       const hl = m.hits[m.hits.length - 1];
       if (hl.grab) continue;
       const heavy = hl.kd || hl.launch || hl.bounce || m.armor || hl.dmg >= 65;
-      const tier = m.type === 'special' ? 'special' : heavy ? 'heavy' : hl.dmg >= 45 ? 'medium' : 'light';
+      // the cross-up shadow run ends right behind the foe: only mildly minus so it is not a free punish
+      const tier = m.passFlip ? 'medium' : m.type === 'special' ? 'special' : heavy ? 'heavy' : hl.dmg >= 45 ? 'medium' : 'light';
       m.tier = tier;
       const rec = m.dur - hl.t1, bs = hl.bs ?? 0.2;
       if (FD[tier] === null) continue;
@@ -1585,7 +1586,7 @@ class Sim {
     f.state = 'attack'; f.st = 0;
     f.move = m; f.moveId = id; f.mt = 0;
     f.hitDone = m.hits ? m.hits.map(() => false) : [];
-    f.contact = false; f.projFired = false; f.armorUsed = false; f.tpDone = false; f.fxDone = {};
+    f.contact = false; f.projFired = false; f.armorUsed = false; f.tpDone = false; f.passFlipped = false; f.fxDone = {};
     if (m.invuln) f.invuln = Math.max(f.invuln, m.invuln);
     f.serial++;
     if (m.type !== 'air') f.vx = 0;
@@ -1663,6 +1664,20 @@ class Sim {
           if (m.type !== 'air') {
             f.vx = 0;
             if (m.motion) for (const s of m.motion) if (t >= s.t0 && t < s.t1) f.vx = s.vx * f.facing;
+          }
+          // Anubis' shadow run: stop just behind the foe and spin round to face them at once
+          if (m.passFlip && !f.passFlipped && t >= 0.1 && Math.abs(o.x - f.x) < 4) {
+            const past = (f.x - o.x) * f.facing + Math.abs(f.vx) * dt;   // where this frame's step would leave him
+            if (past >= m.passFlip) {
+              f.passFlipped = true; f.vx = 0;
+              f.x = clamp(o.x + f.facing * m.passFlip, -STAGE, STAGE);
+              f.facing = -f.facing;
+              f.move = Object.assign({}, m, {
+                motion: [],
+                anim: m.anim.map(([tt, n]) => [tt, n === 'blinkEnd' ? 'twinB' : n === 'blinkPass' ? 'blinkTurn' : n]),
+                hits: m.hits.map((h) => Object.assign({}, h, { range: [-h.range[1], -h.range[0]] })),
+              });
+            }
           }
           // Helm of Darkness: vanish and reappear behind the foe
           if (m.teleport && !f.tpDone && t >= m.teleport.t) {
@@ -1793,10 +1808,12 @@ class Sim {
     }
   }
 
-  hurt(o) {
+  hurt(o, proj = false) {
     const w = o.c.width;
     let y0 = o.y, y1 = o.y + o.c.height * 0.92;
     if (o.state === 'down' || o.state === 'ko') y1 = o.y + 0.5;
+    // airborne: the legs are tucked, so the hurtbox starts higher - makes jumping over low projectiles reliable
+    else if (proj && o.y > 0.2 && (o.state === 'jump' || (o.state === 'attack' && o.move && o.move.type === 'air'))) y0 = o.y + 0.5;
     else if (o.state === 'crouch' || (o.state === 'block' && o.crouchG)) y1 = o.y + o.c.height * 0.55;
     return { x0: o.x - w, x1: o.x + w, y0, y1 };
   }
@@ -2011,8 +2028,9 @@ class Sim {
       const o = this.fighters[1 - p.owner];
       const f = this.fighters[p.owner];
       if (p.cd <= 0 && !p.spent) {
-        const hb = this.hurt(o);
-        if (p.x + p.w >= hb.x0 && p.x - p.w <= hb.x1 && p.y + p.h >= hb.y0 && p.y - p.h <= hb.y1) {
+        const hb = this.hurt(o, true);
+        const pw = o.y > 0.2 ? p.w * 0.85 : p.w;   // a little leniency for a foe already in the air
+        if (p.x + pw >= hb.x0 && p.x - pw <= hb.x1 && p.y + p.h >= hb.y0 && p.y - p.h <= hb.y1) {
           if (o.invuln > 0 || o.state === 'down' || o.state === 'getup' || o.state === 'ko' || o.state === 'locked') continue;
           const last = p.hitsLeft <= 1;
           const h = { dmg: p.dmg, hs: p.hs, bs: 0.25, kb: last ? p.kb : 0.6, stop: 0.07, fx: p.fx, chip: 0.15, kd: last && p.kd, launch: last ? p.launch : 0, lv: p.lv, y: [0, 0] };
@@ -3082,6 +3100,7 @@ AP.spinB = mk(AP.twinA, { ry: Math.PI * 2 });
 AP.slide = mk(AP.lowSlash, { z: 0.18, y: (AP.lowSlash.y || 0) - 0.05 });
 AP.blinkPass = mk(AP.dashSlash, { ry: Math.PI * 0.6 });
 AP.blinkEnd = mk(AP.twinB, { ry: Math.PI });
+AP.blinkTurn = mk(AP.dashSlash, { ry: -Math.PI * 0.4 });   // blinkPass seen from the new facing
 // Thor's wide chest: keep the low-hit flinch arms outside the torso
 TP.hurtLow = mk(TP.hurtLow, { lSh: [-0.6, 0, 0.08], lEl: [-1.3, 0, 0], rSh: [-0.5, 0, 0.08], rEl: [-1.2, 0, 0] });
 {
@@ -7375,7 +7394,7 @@ class FighterView {
       }
     }
     // trails on dashing specials
-    if (f.state === 'attack' && m && m.motion && f.mt > m.motion[0].t0 && f.mt < m.motion[0].t1 + 0.05) {
+    if (f.state === 'attack' && m && m.motion && m.motion.length && f.mt > m.motion[0].t0 && f.mt < m.motion[0].t1 + 0.05) {
       const p = new V3(); M.j.chest.getWorldPosition(p);
       if (f.key === 'zeus') {
         addP.burst(4, p.x, p.y + rand(-0.6, 0.4), rand(-0.3, 0.3), 1, { life: [0.15, 0.35], size: [0.1, 0.22], color: COL.zeus, drag: 2 });
