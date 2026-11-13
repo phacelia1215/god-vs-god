@@ -6192,6 +6192,48 @@ function trailSpark(kind, p, speed) {
   else if (kind === 'hell') { addP.burst(2, p.x, p.y, p.z, 1.2, { life: [0.2, 0.45], size: [0.06, 0.13], color: COL.hell, drag: 2, up: 1.5 }); }
 }
 
+// ---------------- per-god entrances ----------------
+const chestOf = (v) => { const p = new V3(); v.m.j.chest.getWorldPosition(p); return p; };
+const handOf = (v, s) => { const p = new V3(0, -0.06, 0.02); v.m.j[s + 'Wr'].localToWorld(p); return p; };
+const INTRO = {
+  zeus: {
+    anim: [[0, 'superFinish'], [0.5, 'superFinish'], [0.95, 'superCharge'], [1.75, 'superCharge'], [2.15, 'intro'], [2.6, 'stance']],
+    fx: [[0.02, (f) => { skyBolt(f.x, true); ring(f.x, 0.05, 0, 0xbfe0ff, 5, 0.5); dust(f.x, 24, 1.6); }],
+      [1.0, (f, v) => { for (const s of ['l', 'r']) { const p = handOf(v, s); for (let i = 0; i < 4; i++) setTimeout(() => bolts.spawn(p.clone(), p.clone().add(new V3(rand(-0.8, 0.8), rand(-0.2, 1.2), rand(-0.4, 0.4))), { r: 0.014, life: 0.1, segs: 6, branches: 0 }), i * 120); } sfx.bolt(false); }],
+      [1.5, (f, v) => { const p = chestOf(v); glowPuff(p.x, p.y, p.z, 0xa8d0ff, 3, 0.4); }]],
+  },
+  poseidon: {
+    anim: [[0, 'superCall'], [1.2, 'superCall'], [1.55, 'spinD'], [2.0, 'intro'], [2.6, 'stance']],
+    fx: [[0.02, (f) => geyser(f.x)], [1.2, (f, v) => { normP.burst(60, f.x, 1.2, 0, 6, { life: [0.4, 0.9], size: [0.06, 0.16], color: [0.8, 0.97, 1], alpha: 0.9, grav: 10, up: 3 }); sfx.water(1); }]],
+  },
+  anubis: {
+    anim: [[0, 'superCall'], [0.8, 'superCall'], [1.0, 'twinA'], [1.25, 'twinB'], [1.5, 'superSlash'], [1.95, 'intro'], [2.6, 'stance']],
+    fx: [[0.02, (f) => { for (let i = 0; i < 40; i++) { const a = Math.random() * 6.28, r = 0.9; addP.spawn(f.x + Math.cos(a) * r, Math.random() * 2.2, Math.sin(a) * r, -Math.sin(a) * 3, 1, Math.cos(a) * 3, 0.9, 0.12, 0.03, 0.55, 0.95, 1.3, 1, 1, 0); } glowPuff(f.x, 1.1, 0, 0x9ff3ff, 3, 0.5); sfx.whoosh(2); }],
+      [1.0, () => sfx.swing('blade', 0.6)], [1.25, () => sfx.swing('blade', 0.6)], [1.5, (f, v) => { const p = chestOf(v); ring(p.x, p.y, 0.2, 0xffe6a0, 2.5, 0.3, true); sfx.swing('blade', 1); }]],
+  },
+  thor: {
+    anim: [[0, 'superRaise'], [0.75, 'superRaise'], [0.95, 'slam'], [1.55, 'slam'], [1.95, 'intro'], [2.6, 'stance']],
+    fx: [[0.2, (f, v) => { if (v.m.hammer) { const p = new V3(0, 0, 0.68); v.m.hammer.localToWorld(p); violetBolt(new V3(p.x + rand(-1, 1), 12, -1), p, { r: 0.05, life: 0.4, segs: 18, branches: 2 }); } sfx.bolt(false); }],
+      [0.95, (f) => { skyBoltViolet(f.x + f.facing * 0.9, true); dust(f.x + f.facing * 0.9, 30, 2); ring(f.x + f.facing * 0.9, 0.05, 0, 0xd8c4ff, 6, 0.5); shake = Math.max(shake, 0.35); sfx.boom(1); }]],
+  },
+  susanoo: {
+    anim: [[0, 'iaiWind'], [0.95, 'iaiWind'], [1.1, 'iaiEnd'], [1.6, 'iaiEnd'], [2.1, 'stance'], [2.6, 'stance']],
+    fx: [[0.02, (f) => { tornado(f.x, 3, 80, 0.6); sfx.noise(0.8, 600, 2500, 'bandpass', 0.7, 0.2); }],
+      [1.1, (f, v) => { const p = chestOf(v); slashStreak(p.x + f.facing * 0.6, p.y, 0.3, 3.2, 0.35, f.facing * 1.35, [1.2, 2.6, 2.0], 0.4); skyBoltStorm(f.x + f.facing * 1.5, false); sfx.swing('blade', 1); }]],
+  },
+  heracles: {
+    anim: [[0, 'win'], [0.95, 'win'], [1.15, 'smashWind'], [1.32, 'smashEnd'], [1.85, 'smashEnd'], [2.25, 'intro'], [2.6, 'stance']],
+    fx: [[0.3, (f, v) => { const p = chestOf(v); glowPuff(p.x, p.y, p.z, 0xffc070, 2.5, 0.4); sfx.tone(120, 80, 0.4, 'sine', 0.2); }],
+      [1.32, (f) => { const x = f.x + f.facing * 1.1; dust(x, 40, 2.4); ring(x, 0.05, 0, 0xffc070, 7, 0.5); addP.burst(40, x, 0.3, 0, 8, { life: [0.2, 0.5], size: [0.06, 0.14], color: COL.might, drag: 3, up: 3 }); shake = Math.max(shake, 0.4); stage.flash = Math.max(stage.flash, 0.3); sfx.boom(1.1); }]],
+  },
+  hades: {
+    anim: [[0, 'shadeWind'], [0.6, 'shadeWind'], [0.95, 'superCall'], [1.6, 'superCall'], [1.95, 'palm'], [2.3, 'intro'], [2.6, 'stance']],
+    fx: [[0.02, (f) => { normP.burst(50, f.x, 0.8, 0, 3, { life: [0.6, 1.2], size: [0.18, 0.4], color: [0.06, 0.02, 0.04], alpha: 0.85, drag: 2, up: 1.5 }); addP.burst(40, f.x, 0.2, 0, 4, { life: [0.4, 0.9], size: [0.08, 0.18], color: COL.hell, up: 5, drag: 1 }); sfx.tone(70, 40, 1.0, 'sawtooth', 0.08); }],
+      [0.95, (f) => { const b = lightBeam(0xff3060, 0.8, 1.4, 6, 0.6); b.position.set(f.x, 0, 0); b.material.userData.own = true; const op = b.material.uniforms.uOp; timed.add(b, 0.9, (o, k) => { o.scale.set(1, Math.min(1, k * 4), 1); op.value = 0.6 * (1 - k); }); }],
+      [1.95, (f, v) => { const p = handOf(v, 'l'); glowPuff(p.x, p.y, p.z, 0xff4a70, 2, 0.4); addP.burst(20, p.x, p.y, p.z, 2, { life: [0.3, 0.6], size: [0.06, 0.13], color: COL.hell, up: 2, drag: 1 }); }]],
+  },
+};
+
 class FighterView {
   constructor(f, model) {
     this.f = f; this.m = model;
@@ -6216,9 +6258,14 @@ class FighterView {
     this.spinDirect = false;
     switch (f.state) {
       case 'intro': {
-        // same calm entrance for every god: no body turn, so nobody shows their back on intro
-        const anim = [[0, 'stance'], [0.6, 'stance'], [1.0, 'intro'], [3, 'intro']];
-        sampleAnim(L, anim, f.st, out); rate = 14;
+        // signature entrance per god (2.6 s), ending in the fighting stance
+        const I = INTRO[f.key];
+        sampleAnim(L, I ? I.anim : [[0, 'stance'], [0.6, 'stance'], [1.0, 'intro'], [3, 'intro']], f.st, out); rate = 16;
+        if (I && screen === 'match') {
+          if (f.st < (this.introLast ?? 9)) this.introFired = {};
+          this.introLast = f.st;
+          I.fx.forEach(([t, fn], i) => { if (f.st >= t && !this.introFired[i]) { this.introFired[i] = true; fn(f, this); } });
+        }
         break;
       }
       case 'idle': {
