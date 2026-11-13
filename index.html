@@ -666,52 +666,52 @@ const THOR_MOVES = {
 const SUSANOO_MOVES = {
   s_cut: {
     name: '抜き打ち', type: 'normal', dur: 0.3, cancel: [0.12, 0.3],
-    anim: [[0, 'stance'], [0.05, 'slashWind'], [0.1, 'slash'], [0.18, 'slashEnd'], [0.3, 'stance']],
+    anim: [[0, 'stance'], [0.05, 'cutWind'], [0.1, 'cutEnd'], [0.2, 'cutEnd'], [0.3, 'stance']],
     hits: [H({ t0: 0.07, t1: 0.12, dmg: 32, range: [0.2, 1.9], y: [0.6, 1.9], hs: 0.34, bs: 0.18, kb: 1.5, stop: 0.05, fx: 'gale' })],
   },
   s_kesa: {
     name: '袈裟斬り', type: 'normal', dur: 0.44, cancel: [0.18, 0.44],
-    anim: [[0, 'stance'], [0.09, 'slashWind'], [0.16, 'slash'], [0.26, 'slashEnd'], [0.44, 'stance']],
+    anim: [[0, 'stance'], [0.09, 'kesaWind'], [0.16, 'kesaEnd'], [0.28, 'kesaEnd'], [0.44, 'stance']],
     hits: [H({ t0: 0.12, t1: 0.19, dmg: 50, range: [0.2, 2.0], y: [0.5, 2.1], hs: 0.42, kb: 2.1, stop: 0.08, fx: 'gale' })],
   },
   s_thrust: {
-    name: '突き', type: 'normal', dur: 0.34, cancel: [0.13, 0.34],
-    anim: [[0, 'stance'], [0.08, 'thrust'], [0.16, 'thrust'], [0.34, 'stance']],
-    hits: [H({ t0: 0.08, t1: 0.14, dmg: 36, range: [0.3, 2.1], y: [0.7, 1.9], hs: 0.36, kb: 1.8, stop: 0.06 })],
+    name: '諸手突き', type: 'normal', dur: 0.36, cancel: [0.14, 0.36],
+    anim: [[0, 'stance'], [0.06, 'thrustWind'], [0.11, 'thrust'], [0.2, 'thrust'], [0.36, 'stance']],
+    hits: [H({ t0: 0.09, t1: 0.15, dmg: 38, range: [0.3, 2.1], y: [0.7, 1.9], hs: 0.36, kb: 1.9, stop: 0.06, fx: 'gale' })],
   },
   s_spin: {
-    name: '旋風斬', type: 'normal', dur: 0.58, cancel: [0.36, 0.58],
-    anim: [[0, 'stance'], [0.06, 'spinA'], [0.18, 'spinB'], [0.3, 'spinC'], [0.4, 'spinD'], [0.58, 'stance']],
+    name: '颶風二連', type: 'normal', dur: 0.6, cancel: [0.36, 0.6],
+    anim: [[0, 'stance'], [0.05, 'cutWind'], [0.11, 'cutEnd'], [0.2, 'jodan'], [0.29, 'slamEnd'], [0.42, 'slamEnd'], [0.6, 'stance']],
     hits: [
-      H({ t0: 0.1, t1: 0.15, dmg: 28, range: [0.0, 1.95], y: [0.5, 1.9], hs: 0.45, kb: 0.8, stop: 0.05, fx: 'gale' }),
-      H({ t0: 0.27, t1: 0.33, dmg: 36, range: [0.0, 2.0], y: [0.5, 1.9], hs: 0.42, kb: 2.4, stop: 0.08, fx: 'gale' }),
+      H({ t0: 0.08, t1: 0.13, dmg: 28, range: [0.1, 1.95], y: [0.5, 1.9], hs: 0.45, kb: 0.8, stop: 0.05, fx: 'gale' }),
+      H({ t0: 0.26, t1: 0.32, dmg: 40, range: [0.1, 2.0], y: [0.2, 2.6], hs: 0.44, kb: 2.4, stop: 0.09, fx: 'storm' }),
     ],
   },
   s_rise: {
     name: '昇竜斬', type: 'normal', dur: 0.56, cancel: [0.25, 0.56],
-    anim: [[0, 'stance'], [0.09, 'riseWind'], [0.16, 'rise'], [0.32, 'rise'], [0.56, 'stance']],
+    anim: [[0, 'stance'], [0.09, 'riseWind'], [0.16, 'riseEnd'], [0.32, 'riseEnd'], [0.56, 'stance']],
     hits: [H({ t0: 0.14, t1: 0.23, dmg: 60, range: [0.2, 1.9], y: [0.2, 2.9], hs: 0.5, kb: 1.2, launch: 10, stop: 0.1, fx: 'gale' })],
   },
   s_sweep: {
     name: '足薙ぎ', type: 'normal', dur: 0.5, cancel: [0.22, 0.5],
-    anim: [[0, 'stance'], [0.08, 'sweepWind'], [0.15, 'sweep'], [0.3, 'sweep'], [0.5, 'stance']],
+    anim: [[0, 'stance'], [0.08, 'sweepWind'], [0.15, 'sweepEnd'], [0.3, 'sweepEnd'], [0.5, 'stance']],
     hits: [H({ t0: 0.13, t1: 0.2, dmg: 48, range: [0.2, 2.0], y: [0.0, 0.8], hs: 0.5, kb: 1.5, kd: true, stop: 0.08, fx: 'gale' })],
   },
   s_kabuto: {
     name: '兜割り', type: 'normal', dur: 0.64, cancel: [0.3, 0.64],
-    anim: [[0, 'stance'], [0.12, 'waveWind'], [0.22, 'superSlam'], [0.38, 'superSlam'], [0.64, 'stance']],
+    anim: [[0, 'stance'], [0.12, 'jodan'], [0.22, 'slamEnd'], [0.38, 'slamEnd'], [0.64, 'stance']],
     hits: [H({ t0: 0.19, t1: 0.28, dmg: 76, range: [0.2, 1.95], y: [0.2, 3.0], hs: 0.5, kb: 2.2, kd: true, bounce: true, stop: 0.12, fx: 'storm' })],
   },
   s_dash: {
     name: '迅雷一閃', type: 'special', dur: 0.62, glow: 'trident',
     motion: [{ t0: 0.12, t1: 0.32, vx: 18 }],
-    anim: [[0, 'dashWind'], [0.11, 'dashWind'], [0.15, 'dashThrust'], [0.42, 'dashThrust'], [0.62, 'stance']],
+    anim: [[0, 'iaiWind'], [0.11, 'iaiWind'], [0.15, 'iaiEnd'], [0.42, 'iaiEnd'], [0.62, 'stance']],
     hits: [H({ t0: 0.14, t1: 0.35, dmg: 96, range: [0.3, 2.1], y: [0.3, 2.6], hs: 0.5, kb: 5.5, launch: 5.5, kd: true, stop: 0.13, fx: 'storm', chip: 0.15 })],
     reach: 3.8,
   },
   s_gale: {
     name: '叢雲風刃', type: 'special', dur: 0.58, glow: 'trident',
-    anim: [[0, 'stance'], [0.12, 'slashWind'], [0.2, 'slash'], [0.3, 'slashEnd'], [0.58, 'stance']],
+    anim: [[0, 'stance'], [0.12, 'kesaWind'], [0.2, 'kesaEnd'], [0.32, 'kesaEnd'], [0.58, 'stance']],
     proj: { t: 0.2, kind: 'gale', vx: 12.5, y: 1.2, dmg: 54, hits: 1, hs: 0.44, kb: 3, w: 0.5, h: 0.75, fx: 'gale' },
   },
   s_air: {
@@ -720,15 +720,10 @@ const SUSANOO_MOVES = {
     hits: [H({ t0: 0.08, t1: 0.42, dmg: 58, range: [0.0, 1.9], y: [-1.1, 0.9], hs: 0.46, kb: 2.0, stop: 0.08, fx: 'gale' })],
   },
   s_super: {
-    name: '八岐大蛇討ち・天羽々斬', type: 'super', dur: 2.3, glow: 'trident',
-    anim: [[0, 'superCall'], [0.16, 'superCall'], [0.24, 'dashThrust']],
+    name: '八岐大蛇・天羽々斬', type: 'super', dur: 2.3, glow: 'trident',
+    anim: [[0, 'kesaWind'], [0.18, 'kesaWind'], [0.26, 'kesaEnd'], [0.36, 'superCall'], [1.2, 'superCall'], [1.26, 'jodan'], [1.5, 'jodan'], [1.6, 'slamEnd'], [1.95, 'slamEnd'], [2.3, 'stance']],
   },
 };
-(function () {
-  const a = SUSANOO_MOVES.s_super.anim;
-  for (let i = 0; i < 8; i++) a.push([0.38 + i * 0.105, i % 2 ? 'superThrustB' : 'spinD'], [0.43 + i * 0.105, i % 2 ? 'superThrustA' : 'slashEnd']);
-  a.push([1.22, 'superSlamWind'], [1.5, 'superSlamWind'], [1.6, 'superSlam'], [1.95, 'superSlam'], [2.3, 'stance']);
-})();
 // Thor swings an oversized Mjolnir: every hammer move is slower to come out, hits much harder
 // and reaches further. [time scale, damage scale, extra reach]
 (function () {
@@ -1654,22 +1649,21 @@ class Sim {
         if (this.canLock(o)) { this.lock(f, o); s.lock = true; s.oy = o.y; this.superHit(f, o, 32, 'storm', { stop: 0.07 }); }
       });
       if (locked) {
-        if (t < 1.52) o.y = lerp(s.oy, 1.9, easeOut(clamp((t - 0.28) / 0.45, 0, 1))) + Math.sin(t * 25) * 0.04;
-        else if (t < 1.66) o.y = lerp(1.9, 0.05, easeIn((t - 1.52) / 0.14));
+        if (t < 1.52) o.y = lerp(s.oy, 2.2, easeOut(clamp((t - 0.28) / 0.5, 0, 1))) + Math.sin(t * 25) * 0.05;
+        else if (t < 1.66) o.y = lerp(2.2, 0.05, easeIn((t - 1.52) / 0.14));
         else o.y = 0.05;
         o.x = clamp(o.x, -STAGE, STAGE);
       }
-      if (t >= 0.38 && t < 1.22) {
-        const i = Math.min(7, Math.floor((t - 0.38) / 0.105));
-        once('sv' + i, () => {
-          const side = i % 2 ? 1 : -1;
+      // the eight heads of Yamata no Orochi burst from the storm and bite while Susanoo commands them, sword raised
+      if (t >= 0.28 && t < 1.22) f.y = 0;
+      for (let i = 0; i < 8; i++) {
+        if (t >= 0.4 + i * 0.1) once('oro' + i, () => {
           const cx = s.lock ? o.x : s.tx;
-          f.x = clamp(cx + side * 1.15, -STAGE, STAGE);
-          f.facing = Math.sign(cx - f.x) || -side;
-          f.y = 0.9 + (i % 3) * 0.45;
-          this.emit('serpent', { side: f.side, x: f.x, y: f.y, tx: cx, ty: (s.lock ? o.y : 0) + 1.1, i });
-          if (s.lock && o.state === 'locked') this.superHit(f, o, 14, i % 2 ? 'gale' : 'mid', { stop: 0.025 });
+          this.emit('orochi', { side: f.side, i, tx: cx, ty: (s.lock ? o.y : 0) + 1.1 });
+          if (s.lock && o.state === 'locked') this.superHit(f, o, 14, i % 2 ? 'storm' : 'gale', { stop: 0.03 });
         });
+      }
+      if (false) {
       } else if (t >= 1.22 && t < 1.52) {
         once('rise', () => {
           s.rx0 = f.x; s.ry0 = f.y;
@@ -1677,10 +1671,10 @@ class Sim {
           this.emit('superDash', { side: f.side });
         });
         const k = easeOut((t - 1.22) / 0.3);
-        f.x = lerp(s.rx0, s.rx1, k); f.y = lerp(s.ry0, 4.4, k);
+        f.x = lerp(s.rx0, s.rx1, k); f.y = lerp(s.ry0, 3.8, k);
         if (t >= 1.4) once('charge', () => this.emit('stormCharge', { side: f.side, x: f.x, y: f.y }));
       } else if (t >= 1.52 && t < 1.66) {
-        f.y = lerp(4.4, 0, easeIn((t - 1.52) / 0.14));
+        f.y = lerp(3.8, 0, easeIn((t - 1.52) / 0.14));
       } else if (t >= 1.66) {
         f.y = 0;
         once('final', () => {
@@ -2313,9 +2307,41 @@ TP.hurtLow = mk(TP.hurtLow, { lSh: [-0.6, 0, 0.08], lEl: [-1.3, 0, 0], rSh: [-0.
   TP.crouchBlock = mk(TP.block, Object.assign({ y: -0.44, z: 0.02 }, CRT, { spine: [0.45, 0.05, 0], head: [-0.2, 0.1, 0] }));
 }
 
-// Susanoo wields Kusanagi along the hand's +Z exactly like Poseidon's trident shaft, so he shares the polearm library
 SKEL.susanoo = Object.assign({}, SKEL.poseidon);
-const POSES = { zeus: ZP, poseidon: PP, anubis: AP, thor: TP, susanoo: PP };
+// ============================================================
+//  SUSANOO  (two-handed katana; arm angles solved numerically so the blade points where each pose needs it
+//            and the left hand stays on the hilt — see solve_sword.js)
+// ============================================================
+const SUP = {
+  stance: mk(null, {"lHip": [-0.75, 0, 0.24], "lKn": [0.95, 0, 0], "lAn": [-0.15, 0, 0], "rHip": [0.5, 0, 0.22], "rKn": [0.55, 0, 0], "rAn": [-0.6, 0, 0], "y": -0.17, "hips": [0, -0.3, 0], "spine": [0.08, -0.12, 0], "chest": [0.02, -0.15, 0], "neck": [0, 0.15, 0], "head": [-0.05, 0.25, 0], "lSh": [0.16, 0.09, -1.4], "lEl": [-1.35, 0, 0], "lWr": [-1.2, -0.24, 0], "rSh": [-1.08, -0.28, -0.63], "rEl": [-2.19, 0, 0], "rWr": [1.2, 0, 0]}),
+  kesaWind: mk(null, {"lHip": [-0.75, 0, 0.24], "lKn": [0.95, 0, 0], "lAn": [-0.15, 0, 0], "rHip": [0.5, 0, 0.22], "rKn": [0.55, 0, 0], "rAn": [-0.6, 0, 0], "y": -0.17, "hips": [0, -0.3, 0], "spine": [0.05, -0.2, 0], "chest": [0, -0.45, 0], "neck": [0, 0.15, 0], "head": [-0.05, 0.5, 0], "lSh": [-0.52, -0.05, -1.38], "lEl": [-1.6, 0, 0], "lWr": [-1.17, -0.5, 0], "rSh": [-1.7, -0.43, 0.09], "rEl": [-1.94, 0, 0], "rWr": [2.13, 1.3, 0]}),
+  kesaEnd: mk(null, {"lHip": [-1.05, 0, 0.16], "lKn": [1.05, 0, 0], "lAn": [0, 0, 0], "rHip": [0.75, 0, 0.14], "rKn": [0.15, 0, 0], "rAn": [-0.6, 0, 0], "y": -0.25, "z": 0.12, "hips": [0, -0.3, 0], "spine": [0.28, 0.25, 0], "chest": [0.15, 0.45, 0], "neck": [0, 0.15, 0], "head": [-0.2, -0.5, 0], "lSh": [0.15, -0.52, -0.37], "lEl": [-1.61, 0, 0], "lWr": [-1.05, -0.13, 0], "rSh": [-0.1, 0.92, -0.96], "rEl": [-0.11, 0, 0], "rWr": [1.09, -0.15, 0]}),
+  cutWind: mk(null, {"lHip": [-0.75, 0, 0.24], "lKn": [0.95, 0, 0], "lAn": [-0.15, 0, 0], "rHip": [0.5, 0, 0.22], "rKn": [0.55, 0, 0], "rAn": [-0.6, 0, 0], "y": -0.17, "hips": [0, -0.3, 0], "spine": [0.05, -0.25, 0], "chest": [0, -0.65, 0], "neck": [0, 0.15, 0], "head": [-0.05, 0.7, 0], "lSh": [0.57, -0.14, -0.78], "lEl": [-1.65, 0, 0], "lWr": [-0.47, 0.12, 0], "rSh": [-0.19, 0.09, -0.51], "rEl": [-1.45, 0, 0], "rWr": [1.2, 0.5, 0]}),
+  cutEnd: mk(null, {"lHip": [-1.05, 0, 0.16], "lKn": [1.05, 0, 0], "lAn": [0, 0, 0], "rHip": [0.75, 0, 0.14], "rKn": [0.15, 0, 0], "rAn": [-0.6, 0, 0], "y": -0.25, "z": 0.12, "hips": [0, -0.3, 0], "spine": [0.15, 0.3, 0], "chest": [0.05, 0.6, 0], "neck": [0, 0.15, 0], "head": [-0.12, -0.7, 0], "lSh": [-0.31, -0.51, -0.63], "lEl": [-1.66, 0, 0], "lWr": [-1.19, -0.3, 0], "rSh": [-1.24, 0.32, -0.71], "rEl": [-0.02, 0, 0], "rWr": [1.32, 0.12, 0]}),
+  jodan: mk(null, {"lHip": [-0.75, 0, 0.24], "lKn": [0.95, 0, 0], "lAn": [-0.15, 0, 0], "rHip": [0.5, 0, 0.22], "rKn": [0.55, 0, 0], "rAn": [-0.6, 0, 0], "y": -0.17, "hips": [0, -0.3, 0], "spine": [-0.1, 0, 0], "chest": [-0.12, -0.05, 0], "neck": [0, 0.15, 0], "head": [-0.1, 0, 0], "lSh": [-1.3, -1.6, 0.9], "lEl": [-0.43, 0, 0], "lWr": [-0.51, -0.54, 0], "rSh": [-1.53, 0.7, -1.1], "rEl": [-0.71, 0, 0], "rWr": [0.25, -0.85, 0]}),
+  slamEnd: mk(null, {"lHip": [-1.05, 0, 0.16], "lKn": [1.05, 0, 0], "lAn": [0, 0, 0], "rHip": [0.75, 0, 0.14], "rKn": [0.15, 0, 0], "rAn": [-0.6, 0, 0], "y": -0.32, "z": 0.12, "hips": [0, -0.3, 0], "spine": [0.45, 0, 0], "chest": [0.15, 0, 0], "neck": [0, 0.15, 0], "head": [-0.5, 0, 0], "lSh": [0.47, -0.79, -0.05], "lEl": [-2.27, 0, 0], "lWr": [0.7, 0.77, 0], "rSh": [-0.54, 0.18, -0.92], "rEl": [-0.75, 0, 0], "rWr": [1.36, 0.07, 0]}),
+  thrustWind: mk(null, {"lHip": [-0.75, 0, 0.24], "lKn": [0.95, 0, 0], "lAn": [-0.15, 0, 0], "rHip": [0.5, 0, 0.22], "rKn": [0.55, 0, 0], "rAn": [-0.6, 0, 0], "y": -0.17, "hips": [0, -0.3, 0], "spine": [0.05, -0.2, 0], "chest": [0, -0.5, 0], "neck": [0, 0.15, 0], "head": [-0.05, 0.55, 0], "lSh": [-0.12, 0.01, -1.14], "lEl": [0, 0, 0], "lWr": [0.3, 0, 0], "rSh": [0.88, -0.91, 1.35], "rEl": [-2.09, 0, 0], "rWr": [1.62, 0.37, 0]}),
+  thrust: mk(null, {"lHip": [-1.05, 0, 0.16], "lKn": [1.05, 0, 0], "lAn": [0, 0, 0], "rHip": [0.75, 0, 0.14], "rKn": [0.15, 0, 0], "rAn": [-0.6, 0, 0], "y": -0.25, "z": 0.12, "hips": [0, -0.3, 0], "spine": [0.25, 0.05, 0], "chest": [0.05, 0.1, 0], "neck": [0, 0.15, 0], "head": [-0.2, 0, 0], "lSh": [-0.2, -0.74, -1.03], "lEl": [-2.01, 0, 0], "lWr": [-0.57, -0.78, 0], "rSh": [-1.2, -0.18, -0.68], "rEl": [-1.26, 0, 0], "rWr": [2.07, 0.43, 0]}),
+  riseWind: mk(null, {"lHip": [-1.25, 0, 0.22], "lKn": [1.85, 0, 0], "lAn": [-0.55, 0, 0], "rHip": [-0.55, 0, 0.22], "rKn": [1.95, 0, 0], "rAn": [-0.9, 0, 0], "y": -0.45, "hips": [0, -0.3, 0], "spine": [0.45, -0.3, 0], "chest": [0.1, -0.3, 0], "neck": [0, 0.15, 0], "head": [-0.4, 0.3, 0], "lSh": [-0.11, 0.07, -0.8], "lEl": [-1.38, 0, 0], "lWr": [-1.2, -0.51, 0], "rSh": [0.18, 0.51, -0.81], "rEl": [-1.24, 0, 0], "rWr": [1.66, 1.17, 0]}),
+  riseEnd: mk(null, {"lHip": [-0.4, 0, 0.15], "lKn": [0.3, 0, 0], "lAn": [0, 0, 0], "rHip": [0.3, 0, 0.15], "rKn": [0.4, 0, 0], "rAn": [-0.5, 0, 0], "y": -0.02, "z": 0.1, "hips": [0, -0.3, 0], "spine": [-0.2, 0.1, 0], "chest": [-0.1, 0.2, 0], "neck": [0, 0.15, 0], "head": [-0.35, 0, 0], "lSh": [-1.31, -0.51, -0.84], "lEl": [-1.36, 0, 0], "lWr": [-0.55, 0.16, 0], "rSh": [-0.84, 0.91, -1.4], "rEl": [-0.97, 0, 0], "rWr": [1.84, -0.27, 0]}),
+  sweepWind: mk(null, {"lHip": [-1.25, 0, 0.22], "lKn": [1.85, 0, 0], "lAn": [-0.55, 0, 0], "rHip": [-0.55, 0, 0.22], "rKn": [1.95, 0, 0], "rAn": [-0.9, 0, 0], "y": -0.45, "hips": [0, -0.3, 0], "spine": [0.45, -0.3, 0], "chest": [0.05, -0.5, 0], "neck": [0, 0.15, 0], "head": [-0.4, 0.5, 0], "lSh": [0.06, -0.61, -0.34], "lEl": [-1.34, 0, 0], "lWr": [-0.97, 0.78, 0], "rSh": [-0.65, -0.06, -0.4], "rEl": [-0.81, 0, 0], "rWr": [1.29, 0.46, 0]}),
+  sweepEnd: mk(null, {"lHip": [-1.25, 0, 0.22], "lKn": [1.85, 0, 0], "lAn": [-0.55, 0, 0], "rHip": [-0.55, 0, 0.22], "rKn": [1.95, 0, 0], "rAn": [-0.9, 0, 0], "y": -0.45, "hips": [0, -0.3, 0], "spine": [0.6, 0.3, 0], "chest": [0.1, 0.45, 0], "neck": [0, 0.15, 0], "head": [-0.6, -0.4, 0], "lSh": [-0.43, -0.33, -0.73], "lEl": [-0.91, 0, 0], "lWr": [0.47, -0.64, 0], "rSh": [-1.21, -0.13, -0.33], "rEl": [0, 0, 0], "rWr": [1.06, -0.02, 0]}),
+  iaiWind: mk(null, {"lHip": [-1.25, 0, 0.22], "lKn": [1.85, 0, 0], "lAn": [-0.55, 0, 0], "rHip": [-0.55, 0, 0.22], "rKn": [1.95, 0, 0], "rAn": [-0.9, 0, 0], "y": -0.38, "hips": [0, -0.3, 0], "spine": [0.5, 0.35, 0], "chest": [0.1, 0.3, 0], "neck": [0, 0.15, 0], "head": [-0.5, -0.4, 0], "lSh": [-0.25, 0, 0.25], "lEl": [-1.3, 0, 0], "lWr": [0, 0, 0], "rSh": [0.56, 0.67, -1.32], "rEl": [0, 0, 0], "rWr": [2.3, 1.3, -0.15]}),
+  iaiEnd: mk(null, {"lHip": [-1.05, 0, 0.16], "lKn": [1.05, 0, 0], "lAn": [0, 0, 0], "rHip": [0.75, 0, 0.14], "rKn": [0.15, 0, 0], "rAn": [-0.6, 0, 0], "y": -0.25, "z": 0.12, "hips": [0, -0.3, 0], "spine": [0.2, -0.4, 0], "chest": [0.1, -0.6, 0], "neck": [0, 0.15, 0], "head": [-0.2, 0.7, 0], "lSh": [0.6, 0, 0.5], "lEl": [-0.3, 0, 0], "lWr": [0, 0, 0], "rSh": [-1.89, -0.36, -0.36], "rEl": [0, 0, 0], "rWr": [1.31, -0.01, 0]}),
+  airWind: mk(null, {"lHip": [-1.5, 0, 0.15], "lKn": [2.2, 0, 0], "lAn": [0.3, 0, 0], "rHip": [-1.0, 0, 0.15], "rKn": [2.0, 0, 0], "rAn": [0.3, 0, 0], "air": true, "hips": [0, -0.3, 0], "spine": [0.1, 0, 0], "chest": [0.02, -0.15, 0], "neck": [0, 0.15, 0], "head": [-0.05, 0.25, 0], "lSh": [-0.97, -0.22, -1.39], "lEl": [-1.64, 0, 0], "lWr": [-1.2, 0.06, 0], "rSh": [-1.84, 0.17, -1.4], "rEl": [-2.11, 0, 0], "rWr": [1.69, -0.61, 0]}),
+  airStab: mk(null, {"lHip": [-1.5, 0, 0.15], "lKn": [2.2, 0, 0], "lAn": [0.3, 0, 0], "rHip": [-1.0, 0, 0.15], "rKn": [2.0, 0, 0], "rAn": [0.3, 0, 0], "air": true, "hips": [0, -0.3, 0], "spine": [0.3, 0, 0], "chest": [0.1, 0, 0], "neck": [0, 0.15, 0], "head": [-0.4, 0, 0], "rx": 0.35, "lSh": [0.42, -0.52, -0.46], "lEl": [-1.62, 0, 0], "lWr": [-0.76, 0.76, 0], "rSh": [-0.48, 0.53, -0.65], "rEl": [0, 0, 0], "rWr": [1.04, -0.01, 0]}),
+  superCall: mk(null, {"lHip": [-0.75, 0, 0.24], "lKn": [0.95, 0, 0], "lAn": [-0.15, 0, 0], "rHip": [0.5, 0, 0.22], "rKn": [0.55, 0, 0], "rAn": [-0.6, 0, 0], "y": -0.17, "hips": [0, -0.3, 0], "spine": [-0.15, 0, 0], "chest": [-0.1, 0, 0], "neck": [0, 0.15, 0], "head": [-0.45, 0, 0], "lSh": [-1.11, 0.11, -1.4], "lEl": [-1.18, 0, 0], "lWr": [-1.12, 0.1, 0], "rSh": [-1.86, 1.25, -0.87], "rEl": [0, 0, 0], "rWr": [1.19, -0.12, 0.24]}),
+  block: mk(null, {"lHip": [-0.75, 0, 0.24], "lKn": [0.95, 0, 0], "lAn": [-0.15, 0, 0], "rHip": [0.5, 0, 0.22], "rKn": [0.55, 0, 0], "rAn": [-0.6, 0, 0], "y": -0.22, "hips": [0, -0.3, 0], "spine": [0.08, -0.12, 0], "chest": [0.05, -0.1, 0], "neck": [0, 0.15, 0], "head": [0.05, 0.1, 0], "lSh": [-1.23, -0.08, -0.84], "lEl": [-0.6, 0, 0], "lWr": [0, -0.76, 0], "rSh": [-1.3, -0.23, -0.72], "rEl": [-1.51, 0, 0], "rWr": [2.03, -1.12, 0]}),
+  run: mk(null, {"hips": [0, -0.3, 0], "spine": [0.45, 0, 0], "chest": [0.05, 0, 0], "neck": [0, 0.15, 0], "head": [-0.45, 0, 0], "lSh": [0.3, 0, 0.3], "lEl": [-0.8, 0, 0], "lWr": [0, 0, 0], "rSh": [-1.24, 1.57, 0.7], "rEl": [0, 0, 0], "rWr": [0.6, 1.09, 1.6]}),
+  intro: mk(null, {"lHip": [-0.15, 0, 0.16], "lKn": [0.15, 0, 0], "rHip": [0.1, 0, 0.16], "rKn": [0.15, 0, 0], "rAn": [-0.05, 0, 0], "hips": [0, 0, 0], "spine": [0, 0, 0], "chest": [-0.05, 0, 0], "neck": [0, 0.15, 0], "head": [-0.12, 0, 0], "lSh": [-0.35, -0.44, -0.52], "lEl": [-1.11, 0, 0], "lWr": [-1.19, -0.05, 0], "rSh": [0.19, 1.07, -0.71], "rEl": [0, 0, 0], "rWr": [1.4, 0.55, -1.18]}),
+  win: mk(null, {"lHip": [-0.75, 0, 0.24], "lKn": [0.95, 0, 0], "lAn": [-0.15, 0, 0], "rHip": [0.5, 0, 0.22], "rKn": [0.55, 0, 0], "rAn": [-0.6, 0, 0], "y": -0.17, "hips": [0, -0.3, 0], "spine": [-0.12, 0, 0], "chest": [-0.1, 0.1, 0], "neck": [0, 0.15, 0], "head": [-0.35, 0.1, 0], "lSh": [0.05, 0, 0.45], "lEl": [-1.7, 0, 0], "lWr": [0, 0, 0], "rSh": [-1.78, -1.37, 1.02], "rEl": [0, 0, 0], "rWr": [1.6, 0.16, -1.6]}),
+};
+Object.assign(SUP, generic(SUP.stance, true));
+SUP.backstep = mk(SUP.stance, { spine: [-0.1, -0.1, 0], lHip: [-0.2, 0, 0.12], lKn: [0.6, 0, 0], rHip: [0.1, 0, 0.12], rKn: [0.7, 0, 0] });
+SUP.jump = mk(SUP.airWind, { air: true });
+SUP.crouch = mk(SUP.stance, { y: -0.44, z: 0.04, spine: [0.3, -0.12, 0], chest: [0.1, -0.15, 0], head: [-0.25, 0.25, 0], lHip: [-1.2, 0, 0.2], lKn: [2.0, 0, 0], lAn: [-0.6, 0, 0], rHip: [-1.05, 0, 0.2], rKn: [2.0, 0, 0], rAn: [-0.7, 0, 0] });
+SUP.crouchBlock = mk(SUP.block, { y: -0.44, z: 0.02, spine: [0.4, 0, 0], head: [-0.2, 0.1, 0], lHip: [-1.2, 0, 0.2], lKn: [2.0, 0, 0], lAn: [-0.6, 0, 0], rHip: [-1.05, 0, 0.2], rKn: [2.0, 0, 0], rAn: [-0.7, 0, 0] });
+const POSES = { zeus: ZP, poseidon: PP, anubis: AP, thor: TP, susanoo: SUP };
 
 // ------------------------------------------------------------
 //  Blending helpers
@@ -3358,6 +3384,10 @@ function buildAnubis(T) {
   j.chest.add(cape);
 
   M.trident = bladeAnchor; M.triGlow = bladeGlow;
+  M.trails = [
+    { obj: j.rWr, a: new V3(0.0, -0.23, 0.02), b: new V3(0.02, -0.73, 0.02), color: [0.35, 1.3, 1.9], core: [1.4, 2.4, 2.8] },
+    { obj: j.lWr, a: new V3(0.0, -0.23, 0.02), b: new V3(0.02, -0.73, 0.02), color: [1.7, 1.1, 0.35], core: [2.6, 2.0, 1.0] },
+  ];
   M.cape = { mesh: cape, geo: capeGeo, base: capeBase, sway: 0 };
   M.mats = { skin, gold, gem: soul, eye };
   M.color = new THREE.Color(0.6, 1.2, 1.5);
@@ -3631,7 +3661,7 @@ function susanooSword(T, mt) {
   SP.add(sw, new THREE.CylinderGeometry(0.004, 0.004, 0.16, 6), mt.rope, [0, -0.08, T0 - 0.01]);
   SP.ell(sw, mt.rope, [0, -0.17, T0 - 0.01], [0.012, 0.025, 0.012]);
   SP.build();
-  sw.position.set(0, -SKEL.susanoo.hand * 0.6, 0);
+  sw.position.set(0, -SKEL.susanoo.hand * 0.6, -0.28);   // right hand just below the tsuba, left hand at the pommel
   const glow = glowSprite(T.glow, 0x9fffd8, 1.2);
   glow.position.set(0, 0.03, B0 + 0.55);
   sw.add(glow);
@@ -3798,6 +3828,7 @@ function buildSusanoo(T) {
   j.chest.add(cape);
 
   M.trident = sw; M.triGlow = glow; M.sword = sw;
+  M.trails = [{ obj: sw, a: new V3(0, 0.0, 0.44), b: new V3(0, 0.07, 1.42), color: [0.6, 1.9, 1.3], core: [1.6, 2.2, 2.0] }];
   M.cape = { mesh: cape, geo: capeGeo, base: capeBase, sway: 0 };
   M.mats = { skin, gold, gem: storm, eye };
   M.color = new THREE.Color(0.6, 1.6, 1.2);
@@ -4634,7 +4665,7 @@ function projSpawn(p) {
   } else if (p.kind === 'soul') {
     const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: FT.glow, color: 0x9ff3ff, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false }));
     s.scale.set(1.8, 1.8, 1.8);
-    const core = new THREE.Mesh(new THREE.SphereGeometry(0.14, 14, 10), new THREE.MeshBasicMaterial({ color: new THREE.Color(2.2, 2.6, 3.0) }));
+    const core = ankhMesh();
     g.add(s, core);
     g.userData.mats = [];
   } else if (p.kind === 'bolt') {
@@ -4703,8 +4734,9 @@ function updateProjViews(dt) {
       addP.burst(3, p.x, p.y, 0.1, 1, { life: [0.15, 0.3], size: [0.08, 0.16], color: COL.zeus, drag: 2 });
     } else if (p.kind === 'soul') {
       v.g.position.y = p.y + Math.sin(v.t * 18) * 0.06;
-      v.g.rotation.z += dt * 12;
+      v.g.rotation.y += dt * 9;
       addP.burst(3, p.x, p.y, 0.1, 1, { life: [0.15, 0.3], size: [0.08, 0.16], color: COL.soul, drag: 2 });
+      if (Math.random() < 0.4) addP.burst(1, p.x, p.y, 0.1, 0.6, { life: [0.2, 0.4], size: [0.1, 0.18], color: COL.gold, drag: 2 });
     } else if (p.kind === 'gale') {
       v.g.position.y = p.y;
       v.g.rotation.x = Math.sin(v.t * 30) * 0.15;
@@ -4782,9 +4814,100 @@ function geyser(x) {
   sfx.water(1.4);
 }
 
+// giant additive slash streak (crossing / sky-splitting finishers)
+function slashStreak(x, y, z, len, w, rot, color, life) {
+  const m = new THREE.MeshBasicMaterial({ color: new THREE.Color(...color), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide, map: FT.glow });
+  m.userData.own = true;
+  const mesh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), m);
+  mesh.position.set(x, y, z); mesh.rotation.z = rot;
+  timed.add(mesh, life, (o, k) => { const g = k < 0.15 ? k / 0.15 : 1; o.scale.set(w * (1 - k * 0.7), len * g, 1); m.opacity = 1 - Math.pow(k, 1.5); });
+}
+// Yamata no Orochi: a storm serpent erupts from the ground and strikes the victim
+function orochiHead(e) {
+  const i = e.i, side = i % 2 ? 1 : -1;
+  const x0 = e.tx + side * (1.8 + (i % 4) * 0.55), z0 = -1.4 - (i % 3) * 0.9;
+  const curve = new THREE.CatmullRomCurve3([
+    new V3(x0, -0.6, z0), new V3(x0 + side * 0.4, e.ty * 0.55, z0 * 0.7),
+    new V3(e.tx + side * 1.1, e.ty + 1.4, z0 * 0.35), new V3(e.tx + side * 0.15, e.ty + 0.1, 0.15)]);
+  const body = new THREE.TubeGeometry(curve, 60, 0.17 - (i % 3) * 0.02, 10, false);
+  const total = body.index.count;
+  const bm = new THREE.MeshStandardMaterial({ color: 0x0c2a28, emissive: new THREE.Color(0.15, 0.8, 0.6), emissiveIntensity: 1.2, metalness: 0.4, roughness: 0.3, transparent: true });
+  bm.userData.own = true;
+  const g = new THREE.Group();
+  const tube = new THREE.Mesh(body, bm); tube.frustumCulled = false; g.add(tube);
+  const head = new THREE.Group();
+  const skull = new THREE.Mesh(new THREE.ConeGeometry(0.2, 0.55, 8).rotateX(Math.PI / 2), bm); head.add(skull);
+  const jaw = new THREE.Mesh(new THREE.ConeGeometry(0.13, 0.4, 6).rotateX(Math.PI / 2), bm); jaw.position.set(0, -0.12, -0.04); jaw.rotation.x = 0.35; head.add(jaw);
+  const em = new THREE.MeshBasicMaterial({ color: new THREE.Color(3, 2.4, 0.4) }); em.userData.own = true;
+  for (const s2 of [-1, 1]) { const ey = new THREE.Mesh(new THREE.SphereGeometry(0.035, 8, 6), em); ey.position.set(s2 * 0.09, 0.07, -0.05); head.add(ey); }
+  g.add(head);
+  timed.add(g, 0.6, (o, k) => {
+    const grow = Math.min(1, k / 0.32);
+    body.setDrawRange(0, Math.floor(total * grow / 6) * 6);
+    const p = curve.getPoint(grow), tg = curve.getTangent(Math.min(0.999, grow));
+    head.position.copy(p); head.lookAt(p.clone().add(tg));
+    bm.opacity = k < 0.7 ? 1 : 1 - (k - 0.7) / 0.3;
+    if (k > 0.3 && !o.userData.bit) { o.userData.bit = true; glowPuff(e.tx, e.ty, 0.2, 0x9fffd8, 2.2, 0.25); addP.burst(26, e.tx, e.ty, 0.2, 7, { life: [0.15, 0.4], size: [0.06, 0.14], color: COL.storm, drag: 3 }); normP.burst(16, e.tx, e.ty, 0.2, 5, { life: [0.3, 0.7], size: [0.06, 0.14], color: [0.8, 1, 0.95], alpha: 0.8, grav: 8, up: 2 }); }
+  });
+  addP.burst(20, x0, 0.1, z0, 5, { life: [0.3, 0.7], size: [0.08, 0.2], color: COL.storm, up: 4, drag: 1.5 });
+  dust(x0, 8, 0.8);
+}
+// Anubis teleport afterimage: a frozen spectral copy of his current pose
+function ghostOf(v, color) {
+  if (!v) return;
+  const m = new THREE.MeshBasicMaterial({ color: new THREE.Color(...color), transparent: true, opacity: 0.55, blending: THREE.AdditiveBlending, depthWrite: false });
+  m.userData.own = true;
+  const g = v.m.root.clone(true);
+  g.traverse((o) => { if (o.isSprite) o.visible = false; else if (o.isMesh) { o.material = m; o.castShadow = false; if (o.geometry) o.geometry.userData.shared = true; } });
+  timed.add(g, 0.42, (o, k) => { m.opacity = 0.55 * (1 - k); o.scale.setScalar(1 + k * 0.06); });
+}
+// the scales of Ma'at weigh the victim's heart against the feather
+function maatScales(x, y) {
+  const gold = new THREE.MeshBasicMaterial({ color: new THREE.Color(2.0, 1.45, 0.55), transparent: true }); gold.userData.own = true;
+  const g = new THREE.Group(); g.position.set(x, y, -0.6);
+  g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.08, 2.2, 10).translate(0, -1.1, 0), gold));
+  g.add(new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.28, 8).translate(0, 0.14, 0), gold));
+  const beam = new THREE.Group(); g.add(beam);
+  beam.add(new THREE.Mesh(new THREE.BoxGeometry(2.6, 0.07, 0.07), gold));
+  const pans = [];
+  for (const s2 of [-1, 1]) {
+    const hang = new THREE.Group(); hang.position.x = s2 * 1.25; beam.add(hang);
+    for (const q of [-1, 0, 1]) { const ch = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.9, 4).translate(0, -0.45, 0), gold); ch.rotation.z = q * 0.25; hang.add(ch); }
+    const pan = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.18, 0.08, 20), gold); pan.position.y = -0.92; hang.add(pan);
+    pans.push(hang);
+  }
+  const feather = new THREE.Mesh(new THREE.SphereGeometry(0.1, 10, 8), new THREE.MeshBasicMaterial({ color: new THREE.Color(2.4, 2.4, 2.2), transparent: true })); feather.material.userData.own = true;
+  feather.scale.set(0.5, 2.2, 0.3); feather.position.y = -0.62; pans[0].add(feather);
+  const heart = new THREE.Mesh(new THREE.SphereGeometry(0.13, 12, 10), new THREE.MeshBasicMaterial({ color: new THREE.Color(2.6, 0.3, 0.25), transparent: true })); heart.material.userData.own = true;
+  heart.position.y = -0.74; pans[1].add(heart);
+  const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: FT.glow, color: 0xffd890, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false })); halo.material.userData.own = true;
+  halo.scale.setScalar(5); g.add(halo);
+  const mats = [gold, feather.material, heart.material, halo.material];
+  timed.add(g, 1.15, (o, k, dt, t) => {
+    const app = Math.min(1, k / 0.15);
+    o.scale.setScalar(0.4 + app * 0.6);
+    // waver, then the heavy heart sinks
+    beam.rotation.z = k < 0.55 ? Math.sin(t * 14) * 0.18 * (1 - k) : -0.35 * Math.min(1, (k - 0.55) / 0.15);
+    for (const pn of pans) pn.rotation.z = -beam.rotation.z;
+    const fade = k > 0.8 ? 1 - (k - 0.8) / 0.2 : 1;
+    for (const m of mats) m.opacity = fade * (m === halo.material ? 0.5 : 1);
+  });
+}
+// spectral ankh projectile mesh
+function ankhMesh() {
+  const g = new THREE.Group();
+  const m = new THREE.MeshBasicMaterial({ color: new THREE.Color(1.6, 2.6, 3.2) });
+  const loop = new THREE.Mesh(new THREE.TorusGeometry(0.13, 0.035, 8, 24), m); loop.scale.set(0.85, 1.15, 1); loop.position.y = 0.2; g.add(loop);
+  g.add(new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.07, 0.07), m));
+  const stem = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.42, 0.07), m); stem.position.y = -0.21; g.add(stem);
+  return g;
+}
+
 function superImpact(e) {
   const x = e.x;
   if (e.kind === 'storm') {
+    slashStreak(x, 6, 0.3, 18, 0.9, 0, [1.4, 2.8, 2.2], 0.7);
+    slashStreak(x, 6, 0.32, 18, 0.25, 0, [3, 3, 3], 0.5);
     for (let i = 0; i < 4; i++) setTimeout(() => skyBoltStorm(x + rand(-1.2, 1.2), i === 0), i * 60);
     for (let i = 0; i < 8; i++) {
       const a = (i / 8) * Math.PI * 2;
@@ -4803,6 +4926,8 @@ function superImpact(e) {
     return;
   }
   if (e.kind === 'judgment') {
+    slashStreak(x, 1.4, 0.4, 5.5, 0.5, Math.PI / 4, [2.4, 1.8, 0.7], 0.55);
+    slashStreak(x, 1.4, 0.45, 5.5, 0.5, -Math.PI / 4, [0.8, 2.2, 2.8], 0.55);
     ring(x, 0.06, 0, 0xfff0c0, 12, 0.9);
     ring(x, 1.4, 0.3, 0x9ff3ff, 9, 0.6, true);
     glowPuff(x, 1.2, 0.3, 0xfff1c4, 12, 0.6);
@@ -4873,6 +4998,43 @@ function superImpact(e) {
 // ============================================================
 //  Fighter views (animation)
 // ============================================================
+// blade afterglow ribbon: samples the blade base/tip each frame while attacking and fades them out
+class SwordTrail {
+  constructor(def, n = 14) {
+    this.def = def; this.n = n; this.hist = [];
+    this.life = 0.14;
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(new Float32Array(n * 2 * 3), 3));
+    g.setAttribute('color', new THREE.Float32BufferAttribute(new Float32Array(n * 2 * 3), 3));
+    const idx = []; for (let i = 0; i < n - 1; i++) { const k = i * 2; idx.push(k, k + 1, k + 2, k + 1, k + 3, k + 2); }
+    g.setIndex(idx);
+    this.mesh = new THREE.Mesh(g, new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide }));
+    this.mesh.frustumCulled = false;
+    scene.add(this.mesh);
+  }
+  update(dt, active) {
+    for (const h of this.hist) h.age += dt;
+    if (active) {
+      const a = this.def.obj.localToWorld(this.def.a.clone()), b = this.def.obj.localToWorld(this.def.b.clone());
+      this.hist.unshift({ a, b, age: 0 });
+    }
+    this.hist = this.hist.filter((h) => h.age < this.life).slice(0, this.n);
+    const pos = this.mesh.geometry.attributes.position, col = this.mesh.geometry.attributes.color;
+    const c = this.def.color, cc = this.def.core;
+    for (let i = 0; i < this.n; i++) {
+      const h = this.hist[Math.min(i, this.hist.length - 1)];
+      if (!h) { pos.setXYZ(i * 2, 0, -99, 0); pos.setXYZ(i * 2 + 1, 0, -99, 0); continue; }
+      const k = i < this.hist.length ? Math.pow(1 - h.age / this.life, 1.5) : 0;
+      pos.setXYZ(i * 2, h.a.x, h.a.y, h.a.z); pos.setXYZ(i * 2 + 1, h.b.x, h.b.y, h.b.z);
+      col.setXYZ(i * 2, c[0] * k * 0.35, c[1] * k * 0.35, c[2] * k * 0.35);
+      col.setXYZ(i * 2 + 1, cc[0] * k, cc[1] * k, cc[2] * k);
+    }
+    pos.needsUpdate = col.needsUpdate = true;
+    this.mesh.visible = this.hist.length > 1;
+  }
+  dispose() { scene.remove(this.mesh); this.mesh.geometry.dispose(); this.mesh.material.dispose(); }
+}
+
 class FighterView {
   constructor(f, model) {
     this.f = f; this.m = model;
@@ -4886,6 +5048,7 @@ class FighterView {
     this.phase = 0; this.lastX = f.x;
     this.glow = 0; this.flip = 0;
     this.prevState = '';
+    this.trails = (model.trails || []).map((d) => new SwordTrail(d));
     scene.add(model.root);
     model.root.traverse((o) => { if (o.isMesh) o.castShadow = true; });
   }
@@ -5144,6 +5307,7 @@ class FighterView {
       if (f.state === 'down' && this.prevState === 'juggle') dust(f.x, 18, 1.2);
       this.prevState = f.state;
     }
+    if (this.trails.length) { const on = f.state === 'attack' && !!f.move; for (const tr of this.trails) tr.update(dt, on); }
   }
 }
 
@@ -5766,8 +5930,8 @@ function handleEvents() {
       case 'superDash': case 'superDive': sfx.whoosh(2.5); break;
       case 'superImpact': superImpact(e); break;
       case 'soulBurst': ring(e.x, 0.06, 0, 0x9ff3ff, 4.5, 0.4); addP.burst(30, e.x, 1.0, 0, 6, { life: [0.15, 0.4], size: [0.05, 0.12], color: COL.soul, drag: 3 }); sfx.whoosh(2); break;
-      case 'teleport': glowPuff(e.x, e.y + 1, 0, 0x9ff3ff, 2.2, 0.3); addP.burst(24, e.x, e.y + 1, 0, 4, { life: [0.1, 0.3], size: [0.05, 0.12], color: COL.soul, drag: 3 }); sfx.whoosh(1.2); break;
-      case 'judgment': lightFlash(e.x, 2.5, 0xffe0a0, 60); sfx.whoosh(2.5); break;
+      case 'teleport': ghostOf(views[e.side], [0.35, 1.0, 1.4]); glowPuff(e.x, e.y + 1, 0, 0x9ff3ff, 2.2, 0.3); addP.burst(24, e.x, e.y + 1, 0, 4, { life: [0.1, 0.3], size: [0.05, 0.12], color: COL.soul, drag: 3 }); sfx.whoosh(1.2); break;
+      case 'judgment': lightFlash(e.x, 2.5, 0xffe0a0, 60); maatScales(e.x, 4.3); sfx.whoosh(2.5); break;
       case 'dashJump': dust(e.x, 10, 0.9); sfx.whoosh(1.2); break;
       case 'thorStrike': {
         const yy = e.y || 1.2;
@@ -5776,6 +5940,7 @@ function handleEvents() {
         break;
       }
       case 'storm': tornado(e.x, 4, 60, 0.7); ring(e.x, 0.06, 0, 0xb8ffe0, 5, 0.45); skyBoltStorm(e.x + rand(-0.5, 0.5), false); sfx.whoosh(2.5); break;
+      case 'orochi': orochiHead(e); sfx.whoosh(1.6); if (e.i % 2 === 0) sfx.water(0.6); break;
       case 'serpent': {
         const a = new V3(e.x, e.y + 1.0, 0.1), b = new V3(e.tx, e.ty, 0.1);
         stormBolt(a, b, { r: 0.02, life: 0.12, segs: 8, branches: 0 });
@@ -5915,7 +6080,7 @@ function modelFor(side, key) {
 
 function setupMatch(c) {
   cfg = c;
-  for (const v of views) scene.remove(v.m.root);
+  for (const v of views) { scene.remove(v.m.root); for (const tr of v.trails) tr.dispose(); }
   for (const v of projViews.values()) scene.remove(v.g);
   projViews.clear();
   const ctl = c.mode === 'auto' ? ['ai', 'ai'] : c.mode === 'player' ? ['human', 'ai'] : ['human', c.dummy === 'guard' ? 'guard' : 'dummy'];
