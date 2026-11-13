@@ -628,12 +628,14 @@ const ZEUS_MOVES = {
     anim: [[0, 'stance'], [0.12, 'hammerWind'], [0.22, 'hammer'], [0.38, 'hammer'], [0.62, 'stance']],
     hits: [H({ t0: 0.19, t1: 0.29, dmg: 78, range: [0.2, 1.5], y: [0.2, 3.0], hs: 0.5, kb: 2.2, kd: true, bounce: true, stop: 0.12, fx: 'heavy' })],
   },
-  z_dash: {
-    name: '雷迅拳', type: 'special', dur: 0.66, glow: 'r',
-    motion: [{ t0: 0.14, t1: 0.36, vx: 15 }],
-    anim: [[0, 'dashWind'], [0.13, 'dashWind'], [0.17, 'dashPunch'], [0.44, 'dashPunch'], [0.66, 'stance']],
-    hits: [H({ t0: 0.16, t1: 0.38, dmg: 100, range: [0.1, 1.45], y: [0.2, 2.6], hs: 0.5, kb: 6, launch: 6, kd: true, stop: 0.13, fx: 'bolt', chip: 0.15 })],
-    reach: 3.4,
+  z_counter: {
+    name: '神威返し', type: 'special', dur: 0.62, glow: 'both', counter: [0.04, 0.42],
+    anim: [[0, 'stance'], [0.04, 'block'], [0.42, 'block'], [0.62, 'stance']],
+  },
+  z_counterStrike: {
+    name: '神威返し・雷撃', type: 'special', dur: 0.56, glow: 'both', hidden: true,
+    anim: [[0, 'straightWind'], [0.04, 'dashPunch'], [0.32, 'dashPunch'], [0.56, 'stance']],
+    hits: [H({ t0: 0.03, t1: 0.12, dmg: 92, range: [0.0, 1.9], y: [0.2, 2.6], hs: 0.5, kb: 4, launch: 7.5, kd: true, stop: 0.18, fx: 'bolt' })],
   },
   z_bolt: {
     name: '雷霆投擲', type: 'special', dur: 0.72, glow: 'r',
@@ -680,12 +682,10 @@ const POSEIDON_MOVES = {
     anim: [[0, 'stance'], [0.08, 'sweepWind'], [0.15, 'sweep'], [0.3, 'sweep'], [0.52, 'stance']],
     hits: [H({ t0: 0.13, t1: 0.2, dmg: 48, range: [0.2, 2.0], y: [0.0, 0.8], hs: 0.5, kb: 1.5, kd: true, stop: 0.08, fx: 'water' })],
   },
-  p_dash: {
-    name: '海神突進', type: 'special', dur: 0.62, glow: 'trident',
-    motion: [{ t0: 0.12, t1: 0.33, vx: 16.5 }],
-    anim: [[0, 'dashWind'], [0.11, 'dashWind'], [0.15, 'dashThrust'], [0.42, 'dashThrust'], [0.62, 'stance']],
-    hits: [H({ t0: 0.14, t1: 0.36, dmg: 92, range: [0.3, 2.1], y: [0.3, 2.6], hs: 0.5, kb: 5.5, launch: 5.5, kd: true, stop: 0.12, fx: 'water', chip: 0.15 })],
-    reach: 3.6,
+  p_vortex: {
+    name: '渦潮', type: 'special', dur: 0.72, glow: 'trident',
+    anim: [[0, 'stance'], [0.12, 'waveWind'], [0.24, 'wave'], [0.48, 'wave'], [0.72, 'stance']],
+    proj: { t: 0.24, kind: 'vortex', at: 2.4, delay: 0.25, life: 1.0, vx: 0, y: 0.9, dmg: 26, hits: 2, hs: 0.45, kb: 0.5, w: 0.75, h: 1.1, fx: 'water', kd: true, launch: 8, pull: 5 },
   },
   p_wave: {
     name: '波濤', type: 'special', dur: 0.62, glow: 'trident',
@@ -705,46 +705,52 @@ const POSEIDON_MOVES = {
 
 const ANUBIS_MOVES = {
   a_jab: {
-    name: '短剣突き', type: 'normal', dur: 0.28, cancel: [0.12, 0.28],
-    anim: [[0, 'stance'], [0.05, 'stab'], [0.11, 'stab'], [0.24, 'stance']],
-    hits: [H({ t0: 0.05, t1: 0.09, dmg: 20, range: [0.2, 1.3], y: [0.8, 1.8], hs: 0.3, bs: 0.15, kb: 1.1, stop: 0.04, fx: 'soulCut' })],
+    name: '刃閃', type: 'normal', dur: 0.24, cancel: [0.1, 0.24],
+    motion: [{ t0: 0.0, t1: 0.07, vx: 3.2 }],
+    anim: [[0, 'stance'], [0.04, 'stab'], [0.1, 'stab'], [0.24, 'stance']],
+    hits: [H({ t0: 0.04, t1: 0.08, dmg: 20, range: [0.2, 1.35], y: [0.8, 1.8], hs: 0.3, bs: 0.15, kb: 1.0, stop: 0.04, fx: 'soulCut' })],
   },
   a_slash: {
-    name: '逆手斬り', type: 'normal', dur: 0.32, cancel: [0.12, 0.32],
-    anim: [[0, 'stance'], [0.05, 'slashWind'], [0.11, 'slash'], [0.2, 'slash'], [0.32, 'stance']],
-    hits: [H({ t0: 0.08, t1: 0.13, dmg: 34, range: [0.1, 1.35], y: [0.7, 1.9], hs: 0.36, kb: 1.6, stop: 0.06, fx: 'soulCut' })],
+    name: '逆手斬り', type: 'normal', dur: 0.3, cancel: [0.11, 0.3],
+    motion: [{ t0: 0.02, t1: 0.1, vx: 4 }],
+    anim: [[0, 'stance'], [0.04, 'slashWind'], [0.09, 'slash'], [0.17, 'slash'], [0.3, 'stance']],
+    hits: [H({ t0: 0.07, t1: 0.12, dmg: 32, range: [0.1, 1.4], y: [0.7, 1.9], hs: 0.36, kb: 1.5, stop: 0.06, fx: 'soulCut' })],
   },
   a_twin: {
-    name: '双牙', type: 'normal', dur: 0.42, cancel: [0.26, 0.42],
-    anim: [[0, 'stance'], [0.06, 'twinA'], [0.15, 'twinA'], [0.21, 'twinB'], [0.3, 'twinB'], [0.42, 'stance']],
+    name: '双牙乱舞', type: 'normal', dur: 0.5, cancel: [0.33, 0.5],
+    motion: [{ t0: 0.05, t1: 0.3, vx: 3 }],
+    anim: [[0, 'stance'], [0.05, 'twinA'], [0.12, 'twinB'], [0.18, 'spinA'], [0.25, 'spinB'], [0.33, 'twinB'], [0.5, 'stance']],
     hits: [
-      H({ t0: 0.07, t1: 0.11, dmg: 20, range: [0.1, 1.35], y: [0.7, 1.9], hs: 0.38, kb: 0.6, stop: 0.04, fx: 'soulCut' }),
-      H({ t0: 0.2, t1: 0.25, dmg: 28, range: [0.1, 1.4], y: [0.6, 1.9], hs: 0.38, kb: 1.8, stop: 0.06, fx: 'soulCut' }),
+      H({ t0: 0.06, t1: 0.09, dmg: 16, range: [0.1, 1.4], y: [0.6, 1.9], hs: 0.38, kb: 0.4, stop: 0.035, fx: 'soulCut' }),
+      H({ t0: 0.17, t1: 0.21, dmg: 16, range: [0.0, 1.45], y: [0.6, 1.9], hs: 0.38, kb: 0.4, stop: 0.035, fx: 'soulCut' }),
+      H({ t0: 0.28, t1: 0.33, dmg: 26, range: [0.0, 1.5], y: [0.6, 1.9], hs: 0.4, kb: 1.9, stop: 0.07, fx: 'soul' }),
     ],
   },
   a_low: {
-    name: '冥府払い', type: 'normal', dur: 0.4, cancel: [0.18, 0.4],
-    anim: [[0, 'stance'], [0.06, 'lowWind'], [0.12, 'lowSlash'], [0.25, 'lowSlash'], [0.4, 'stance']],
-    hits: [H({ t0: 0.1, t1: 0.16, dmg: 36, range: [0.1, 1.45], y: [0.0, 0.75], hs: 0.42, kb: 1.3, stop: 0.06, fx: 'soulCut' })],
+    name: '冥府滑り', type: 'normal', dur: 0.44, cancel: [0.22, 0.44],
+    motion: [{ t0: 0.04, t1: 0.2, vx: 7 }],
+    anim: [[0, 'stance'], [0.05, 'lowWind'], [0.1, 'slide'], [0.26, 'slide'], [0.44, 'stance']],
+    hits: [H({ t0: 0.08, t1: 0.2, dmg: 36, range: [0.1, 1.45], y: [0.0, 0.75], hs: 0.42, kb: 1.3, stop: 0.06, fx: 'soulCut' })],
   },
   a_rise: {
     name: '月輪斬', type: 'normal', dur: 0.5, cancel: [0.22, 0.5],
-    anim: [[0, 'stance'], [0.07, 'riseWind'], [0.14, 'rise'], [0.3, 'rise'], [0.5, 'stance']],
-    hits: [H({ t0: 0.11, t1: 0.2, dmg: 48, range: [0.1, 1.4], y: [0.2, 2.8], hs: 0.5, kb: 1.0, launch: 10.2, stop: 0.09, fx: 'soul' })],
+    motion: [{ t0: 0.04, t1: 0.14, vx: 2.5 }],
+    anim: [[0, 'stance'], [0.06, 'riseWind'], [0.13, 'rise'], [0.3, 'rise'], [0.5, 'stance']],
+    hits: [H({ t0: 0.1, t1: 0.2, dmg: 48, range: [0.1, 1.4], y: [0.2, 2.8], hs: 0.5, kb: 1.0, launch: 10.2, stop: 0.09, fx: 'soul' })],
   },
   a_kick: {
-    name: '跳び踵', type: 'normal', weap: 'fist', dur: 0.56, cancel: [0.32, 0.56],
-    motion: [{ t0: 0.04, t1: 0.24, vx: 4 }],
-    anim: [[0, 'stance'], [0.1, 'hopWind'], [0.24, 'hopKick'], [0.36, 'hopKick'], [0.56, 'stance']],
-    hits: [H({ t0: 0.25, t1: 0.33, dmg: 56, range: [0.2, 1.5], y: [0.6, 2.6], hs: 0.48, kb: 2.2, stop: 0.09, fx: 'heavy' })],
+    name: '旋風脚', type: 'normal', dur: 0.54, cancel: [0.32, 0.54], weap: 'fist',
+    motion: [{ t0: 0.04, t1: 0.24, vx: 4.5 }],
+    anim: [[0, 'stance'], [0.08, 'hopWind'], [0.15, 'spinA'], [0.22, 'hopKick'], [0.36, 'hopKick'], [0.54, 'stance']],
+    hits: [H({ t0: 0.2, t1: 0.3, dmg: 56, range: [0.2, 1.5], y: [0.6, 2.6], hs: 0.48, kb: 2.2, stop: 0.09, fx: 'heavy' })],
   },
-  a_dash: {
-    name: '冥府疾走', type: 'special', dur: 0.56, glow: 'blades',
-    motion: [{ t0: 0.08, t1: 0.3, vx: 19 }],
-    anim: [[0, 'dashWind'], [0.07, 'dashWind'], [0.11, 'dashSlash'], [0.22, 'twinB'], [0.36, 'twinB'], [0.56, 'stance']],
+  a_blink: {
+    name: '影走り', type: 'special', dur: 0.62, glow: 'blades', ghost: [0.08, 0.36], flipEnd: true,
+    motion: [{ t0: 0.1, t1: 0.3, vx: 21 }],
+    anim: [[0, 'dashWind'], [0.08, 'dashWind'], [0.12, 'dashSlash'], [0.2, 'blinkPass'], [0.3, 'blinkEnd'], [0.62, 'blinkEnd']],
     hits: [
-      H({ t0: 0.1, t1: 0.2, dmg: 40, range: [0.0, 1.4], y: [0.3, 2.2], hs: 0.45, kb: 0.4, stop: 0.05, fx: 'soul' }),
-      H({ t0: 0.22, t1: 0.32, dmg: 52, range: [0.0, 1.45], y: [0.3, 2.4], hs: 0.5, kb: 5, launch: 5.5, kd: true, stop: 0.12, fx: 'soul', chip: 0.15 }),
+      H({ t0: 0.13, t1: 0.2, dmg: 34, range: [-1.2, 1.5], y: [0.3, 2.2], hs: 0.45, kb: 0.3, stop: 0.05, fx: 'soul' }),
+      H({ t0: 0.24, t1: 0.33, dmg: 46, range: [-1.6, 1.0], y: [0.3, 2.4], hs: 0.5, kb: 4.5, launch: 5.5, kd: true, stop: 0.12, fx: 'soul', chip: 0.15 }),
     ],
     reach: 4.0,
   },
@@ -801,12 +807,11 @@ const THOR_MOVES = {
     anim: [[0, 'stance'], [0.07, 'shoulderWind'], [0.14, 'shoulder'], [0.28, 'shoulder'], [0.5, 'stance']],
     hits: [H({ t0: 0.12, t1: 0.2, dmg: 52, range: [0.0, 1.2], y: [0.5, 2.0], hs: 0.44, kb: 3, stop: 0.09, fx: 'heavy' })],
   },
-  t_dash: {
-    name: '雷神突撃', type: 'special', dur: 0.72, glow: 'hammer',
-    motion: [{ t0: 0.15, t1: 0.38, vx: 14 }],
-    anim: [[0, 'dashWind'], [0.14, 'dashWind'], [0.19, 'dashRush'], [0.46, 'dashRush'], [0.72, 'stance']],
-    hits: [H({ t0: 0.17, t1: 0.4, dmg: 104, range: [0.1, 1.6], y: [0.2, 2.6], hs: 0.5, kb: 6, launch: 6, kd: true, stop: 0.14, fx: 'thunder', chip: 0.15 })],
-    reach: 3.4,
+  t_leap: {
+    name: '雷神の跳撃', type: 'special', dur: 0.82, glow: 'hammer', leap: { t0: 0.14, t1: 0.5, h: 2.6, vx: 8.5 }, fxAt: [[0.5, 'thorLand']],
+    anim: [[0, 'dashWind'], [0.14, 'superRaise'], [0.44, 'superRaise'], [0.5, 'slam'], [0.82, 'stance']],
+    hits: [H({ t0: 0.49, t1: 0.57, dmg: 90, range: [-1.7, 2.1], y: [0.0, 2.2], hs: 0.5, kb: 3, kd: true, stop: 0.14, fx: 'thunder' })],
+    reach: 3.2,
   },
   t_throw: {
     name: 'ミョルニル投擲', type: 'special', dur: 0.72, glow: 'hammer',
@@ -869,10 +874,13 @@ const SUSANOO_MOVES = {
     hits: [H({ t0: 0.14, t1: 0.35, dmg: 96, range: [0.3, 2.1], y: [0.3, 2.6], hs: 0.5, kb: 5.5, launch: 5.5, kd: true, stop: 0.13, fx: 'storm', chip: 0.15 })],
     reach: 3.8,
   },
-  s_gale: {
-    name: '叢雲風刃', type: 'special', dur: 0.58, glow: 'trident',
-    anim: [[0, 'stance'], [0.12, 'kesaWind'], [0.2, 'kesaEnd'], [0.32, 'kesaEnd'], [0.58, 'stance']],
-    proj: { t: 0.2, kind: 'gale', vx: 12.5, y: 1.2, dmg: 54, hits: 1, hs: 0.44, kb: 3, w: 0.5, h: 0.75, fx: 'gale' },
+  s_wind: {
+    name: '風神返し', type: 'special', dur: 0.64, glow: 'trident', reflect: [0.05, 0.44], fxAt: [[0.05, 'windWall']],
+    anim: [[0, 'stance'], [0.06, 'superCall'], [0.42, 'superCall'], [0.5, 'cutEnd'], [0.64, 'stance']],
+    hits: [
+      H({ t0: 0.12, t1: 0.18, dmg: 24, range: [-1.4, 1.5], y: [0.2, 2.4], hs: 0.45, kb: 0.6, stop: 0.05, fx: 'gale' }),
+      H({ t0: 0.32, t1: 0.38, dmg: 32, range: [-1.4, 1.5], y: [0.2, 2.6], hs: 0.5, kb: 3, launch: 6.5, kd: true, stop: 0.1, fx: 'storm' }),
+    ],
   },
   s_air: {
     name: '落鷹斬', type: 'air', dur: 0.5,
@@ -916,12 +924,10 @@ const HERACLES_MOVES = {
     anim: [[0, 'stance'], [0.08, 'shoulderWind'], [0.16, 'shoulder'], [0.3, 'shoulder'], [0.52, 'stance']],
     hits: [H({ t0: 0.13, t1: 0.22, dmg: 58, range: [0.0, 1.25], y: [0.5, 2.1], hs: 0.46, kb: 4, stop: 0.1, fx: 'heavy' })],
   },
-  h_dash: {
-    name: 'ネメアの猛進', type: 'special', dur: 0.74, glow: 'club', armor: [0.0, 0.4],
-    motion: [{ t0: 0.16, t1: 0.4, vx: 13.5 }],
-    anim: [[0, 'rushWind'], [0.15, 'rushWind'], [0.2, 'rush'], [0.46, 'rush'], [0.74, 'stance']],
-    hits: [H({ t0: 0.18, t1: 0.42, dmg: 102, range: [0.1, 1.7], y: [0.2, 2.6], hs: 0.5, kb: 6, launch: 6, kd: true, stop: 0.14, fx: 'might', chip: 0.15 })],
-    reach: 3.4,
+  h_quake: {
+    name: '大地震', type: 'special', dur: 0.8, glow: 'club',
+    anim: [[0, 'stance'], [0.14, 'smashWind'], [0.26, 'smashEnd'], [0.5, 'smashEnd'], [0.8, 'stance']],
+    proj: { t: 0.27, kind: 'quake', vx: 10, y: 0.25, dmg: 72, hits: 1, hs: 0.5, kb: 2, w: 0.6, h: 0.35, fx: 'might', kd: true, lv: 'low' },
   },
   h_grab: {
     name: '大地投げ', type: 'special', dur: 0.98, glow: 'club',
@@ -1008,7 +1014,7 @@ const HADES_MOVES = {
 // Thor swings an oversized Mjolnir: every hammer move is slower to come out, hits much harder
 // and reaches further. [time scale, damage scale, extra reach]
 (function () {
-  const T = { t_jab: [1.25, 1.45, 0.35], t_swing: [1.35, 1.5, 0.45], t_low: [1.3, 1.45, 0.4], t_upper: [1.3, 1.4, 0.3], t_slam: [1.4, 1.55, 0.45], t_shoulder: [1.2, 1.35, 0], t_dash: [1.25, 1.35, 0.35], t_throw: [1.3, 1.45, 0], t_air: [1.15, 1.4, 0.3] };
+  const T = { t_jab: [1.25, 1.45, 0.35], t_swing: [1.35, 1.5, 0.45], t_low: [1.3, 1.45, 0.4], t_upper: [1.3, 1.4, 0.3], t_slam: [1.4, 1.55, 0.45], t_shoulder: [1.2, 1.35, 0], t_leap: [1.05, 1.15, 0.1], t_throw: [1.3, 1.45, 0], t_air: [1.15, 1.4, 0.3] };
   for (const id in T) {
     const [k, dk, rr] = T[id], m = THOR_MOVES[id];
     m.dur = +(m.dur * k).toFixed(3);
@@ -1026,7 +1032,7 @@ const HADES_MOVES = {
 })();
 
 // balance: Anubis' quick blades hit a little harder (low health pool for a rushdown character)
-(function () { for (const m of Object.values(ANUBIS_MOVES)) { if (m.hits) for (const h of m.hits) h.dmg = Math.round(h.dmg * 1.25); if (m.proj) m.proj.dmg = Math.round(m.proj.dmg * 1.25); } })();
+(function () { for (const m of Object.values(ANUBIS_MOVES)) { if (m.hits) for (const h of m.hits) h.dmg = Math.round(h.dmg * 1.12); if (m.proj) m.proj.dmg = Math.round(m.proj.dmg * 1.12); } })();
 
 // attack heights: low (下段) must be crouch-blocked, mid/overhead (中段) must be stand-blocked
 (function () {
@@ -1107,56 +1113,56 @@ const CHARS = {
     guard: 0.58, aggro: 0.85,
     routes: [
       ['z_jab', 'z_jab', 'z_straight'],
-      ['z_jab', 'z_straight', 'z_body', 'z_upper', 'z_dash'],
+      ['z_jab', 'z_straight', 'z_body', 'z_upper'],
       ['z_body', 'z_straight', 'z_hammer'],
-      ['z_jab', 'z_straight', 'z_upper', 'z_hammer', 'z_dash'],
-      ['z_knee', 'z_upper', 'z_hammer', 'z_dash'],
-      ['z_straight', 'z_dash'],
+      ['z_jab', 'z_straight', 'z_upper', 'z_hammer'],
+      ['z_knee', 'z_upper', 'z_hammer'],
+      ['z_straight'],
       ['z_jab', 'z_body', 'z_upper', 'SUPER'],
       ['z_knee', 'z_straight', 'z_upper', 'SUPER'],
     ],
   },
   poseidon: {
-    key: 'poseidon', name: 'ポセイドン', en: 'POSEIDON', title: '大海の支配者', hp: 1060, walk: 3.4, back: 3.0, dash: 10.5,
+    key: 'poseidon', name: 'ポセイドン', en: 'POSEIDON', title: '大海の支配者', hp: 990, walk: 3.4, back: 3.0, dash: 10.5,
     jumpV: 11.2, jumpX: 4.8, width: 0.36, height: 2.05, moves: POSEIDON_MOVES, air: 'p_air', super: 'p_super',
     guard: 0.48, aggro: 0.7,
     routes: [
       ['p_thrust', 'p_thrust', 'p_slash'],
-      ['p_thrust', 'p_slash', 'p_spin', 'p_rise', 'p_dash'],
+      ['p_thrust', 'p_slash', 'p_spin', 'p_rise'],
       ['p_sweep'],
       ['p_thrust', 'p_sweep'],
-      ['p_thrust', 'p_slash', 'p_rise', 'p_dash'],
-      ['p_spin', 'p_rise', 'p_dash'],
+      ['p_thrust', 'p_slash', 'p_rise'],
+      ['p_spin', 'p_rise'],
       ['p_thrust', 'p_slash', 'p_rise', 'SUPER'],
       ['p_slash', 'p_spin', 'SUPER'],
     ],
   },
   anubis: {
-    key: 'anubis', name: 'アヌビス', en: 'ANUBIS', title: '冥府の審判者', hp: 1270, walk: 3.9, back: 3.4, dash: 13,
+    key: 'anubis', name: 'アヌビス', en: 'ANUBIS', title: '冥府の審判者', hp: 1150, walk: 3.9, back: 3.4, dash: 13,
     jumpV: 11.6, jumpX: 5.3, width: 0.34, height: 2.0, moves: ANUBIS_MOVES, air: 'a_air', super: 'a_super',
     guard: 0.62, aggro: 0.82,
     routes: [
       ['a_jab', 'a_jab', 'a_slash'],
-      ['a_jab', 'a_slash', 'a_twin', 'a_rise', 'a_dash'],
-      ['a_low', 'a_twin', 'a_dash'],
+      ['a_jab', 'a_slash', 'a_twin', 'a_rise', 'a_blink'],
+      ['a_low', 'a_twin', 'a_blink'],
       ['a_jab', 'a_low'],
-      ['a_kick', 'a_twin', 'a_rise', 'a_dash'],
-      ['a_slash', 'a_twin', 'a_dash'],
+      ['a_kick', 'a_twin', 'a_rise', 'a_blink'],
+      ['a_slash', 'a_twin', 'a_blink'],
       ['a_jab', 'a_slash', 'a_rise', 'SUPER'],
       ['a_low', 'a_twin', 'SUPER'],
     ],
   },
   thor: {
-    key: 'thor', name: 'トール', en: 'THOR', title: '雷槌の戦神', hp: 880, walk: 2.8, back: 2.1, dash: 8.5,
+    key: 'thor', name: 'トール', en: 'THOR', title: '雷槌の戦神', hp: 1000, walk: 2.8, back: 2.1, dash: 8.5,
     jumpV: 9.9, jumpX: 3.4, width: 0.45, height: 2.2, moves: THOR_MOVES, air: 't_air', super: 't_super',
     guard: 0.6, aggro: 0.85,
     routes: [
       ['t_jab', 't_jab', 't_swing'],
-      ['t_jab', 't_swing', 't_upper', 't_dash'],
+      ['t_jab', 't_swing', 't_upper'],
       ['t_low', 't_swing', 't_slam'],
       ['t_jab', 't_low'],
-      ['t_shoulder', 't_upper', 't_slam', 't_dash'],
-      ['t_swing', 't_dash'],
+      ['t_shoulder', 't_upper', 't_slam'],
+      ['t_swing'],
       ['t_jab', 't_swing', 't_upper', 'SUPER'],
       ['t_low', 't_upper', 'SUPER'],
     ],
@@ -1177,16 +1183,16 @@ const CHARS = {
     ],
   },
   heracles: {
-    key: 'heracles', name: 'ヘラクレス', en: 'HERACLES', title: '不屈の半神英雄', hp: 1150, walk: 2.5, back: 1.9, dash: 8,
+    key: 'heracles', name: 'ヘラクレス', en: 'HERACLES', title: '不屈の半神英雄', hp: 1250, walk: 2.5, back: 1.9, dash: 8,
     jumpV: 9.6, jumpX: 3.2, width: 0.47, height: 2.3, moves: HERACLES_MOVES, air: 'h_air', super: 'h_super',
     guard: 0.6, aggro: 0.85,
     routes: [
       ['h_jab', 'h_jab', 'h_club'],
-      ['h_jab', 'h_club', 'h_upper', 'h_dash'],
+      ['h_jab', 'h_club', 'h_upper'],
       ['h_low', 'h_smash'],
       ['h_jab', 'h_low'],
       ['h_shoulder', 'h_upper', 'h_smash'],
-      ['h_club', 'h_dash'],
+      ['h_club'],
       ['h_jab', 'h_club', 'h_upper', 'SUPER'],
       ['h_low', 'h_upper', 'SUPER'],
     ],
@@ -1248,32 +1254,32 @@ const HUMAN = {
   zeus: {
     J: { n: 'z_jab', f: 'z_straight', b: 'z_body', d: 'z_knee', u: 'z_upper' },
     K: { n: 'z_hammer', f: 'z_upper', b: 'z_hammer', d: 'z_body', u: 'z_upper' },
-    L: { n: 'z_bolt', f: 'z_dash', b: 'z_bolt', d: 'z_bolt', u: 'z_bolt' },
+    L: { n: 'z_bolt', f: 'z_bolt', b: 'z_counter', d: 'z_counter', u: 'z_bolt' },
   },
   poseidon: {
     J: { n: 'p_thrust', f: 'p_slash', b: 'p_thrust', d: 'p_sweep', u: 'p_rise' },
     K: { n: 'p_spin', f: 'p_rise', b: 'p_spin', d: 'p_sweep', u: 'p_rise' },
-    L: { n: 'p_wave', f: 'p_dash', b: 'p_wave', d: 'p_wave', u: 'p_wave' },
+    L: { n: 'p_wave', f: 'p_vortex', b: 'p_vortex', d: 'p_wave', u: 'p_wave' },
   },
   anubis: {
     J: { n: 'a_jab', f: 'a_slash', b: 'a_twin', d: 'a_low', u: 'a_rise' },
     K: { n: 'a_twin', f: 'a_kick', b: 'a_slash', d: 'a_low', u: 'a_rise' },
-    L: { n: 'a_soul', f: 'a_dash', b: 'a_soul', d: 'a_soul', u: 'a_soul' },
+    L: { n: 'a_soul', f: 'a_blink', b: 'a_soul', d: 'a_soul', u: 'a_soul' },
   },
   thor: {
     J: { n: 't_jab', f: 't_swing', b: 't_jab', d: 't_low', u: 't_upper' },
     K: { n: 't_slam', f: 't_shoulder', b: 't_slam', d: 't_low', u: 't_upper' },
-    L: { n: 't_throw', f: 't_dash', b: 't_throw', d: 't_throw', u: 't_throw' },
+    L: { n: 't_throw', f: 't_leap', b: 't_throw', d: 't_throw', u: 't_leap' },
   },
   susanoo: {
     J: { n: 's_cut', f: 's_kesa', b: 's_thrust', d: 's_sweep', u: 's_rise' },
     K: { n: 's_kabuto', f: 's_spin', b: 's_kabuto', d: 's_sweep', u: 's_rise' },
-    L: { n: 's_gale', f: 's_dash', b: 's_gale', d: 's_gale', u: 's_gale' },
+    L: { n: 's_wind', f: 's_dash', b: 's_wind', d: 's_wind', u: 's_wind' },
   },
   heracles: {
     J: { n: 'h_jab', f: 'h_club', b: 'h_jab', d: 'h_low', u: 'h_upper' },
     K: { n: 'h_smash', f: 'h_shoulder', b: 'h_smash', d: 'h_low', u: 'h_upper' },
-    L: { n: 'h_rock', f: 'h_dash', b: 'h_grab', d: 'h_grab', u: 'h_rock' },
+    L: { n: 'h_rock', f: 'h_quake', b: 'h_grab', d: 'h_grab', u: 'h_rock' },
   },
   hades: {
     J: { n: 'hd_jab', f: 'hd_slash', b: 'hd_jab', d: 'hd_sweep', u: 'hd_rise' },
@@ -1302,14 +1308,17 @@ const AI_LEVELS = [
 const AI_LEVEL_DEFAULT = 3;
 
 const AUTO = {
-  zeus: ['z_jab', 'z_straight', 'z_upper', 'z_dash', 'SUPER'],
-  poseidon: ['p_thrust', 'p_slash', 'p_spin', 'p_rise', 'p_dash', 'SUPER'],
-  anubis: ['a_jab', 'a_slash', 'a_twin', 'a_rise', 'a_dash', 'SUPER'],
-  thor: ['t_jab', 't_swing', 't_upper', 't_dash', 'SUPER'],
+  zeus: ['z_jab', 'z_straight', 'z_upper', 'z_hammer', 'SUPER'],
+  poseidon: ['p_thrust', 'p_slash', 'p_spin', 'p_rise', 'SUPER'],
+  anubis: ['a_jab', 'a_slash', 'a_twin', 'a_rise', 'a_blink', 'SUPER'],
+  thor: ['t_jab', 't_swing', 't_upper', 'SUPER'],
   susanoo: ['s_cut', 's_kesa', 's_spin', 's_rise', 's_dash', 'SUPER'],
-  heracles: ['h_jab', 'h_club', 'h_upper', 'h_dash', 'SUPER'],
+  heracles: ['h_jab', 'h_club', 'h_upper', 'SUPER'],
   hades: ['hd_jab', 'hd_slash', 'hd_palm', 'hd_rise', 'SUPER'],
 };
+
+// does the opponent have a projectile in flight toward f?
+function sim0HasProj(sim, f) { return sim.projs.some((q) => q.owner !== f.side && !q.dead && Math.abs(q.x - f.x) < 5); }
 
 class Sim {
   constructor(opts = {}) {
@@ -1456,7 +1465,7 @@ class Sim {
     f.state = 'attack'; f.st = 0;
     f.move = m; f.moveId = id; f.mt = 0;
     f.hitDone = m.hits ? m.hits.map(() => false) : [];
-    f.contact = false; f.projFired = false; f.armorUsed = false; f.tpDone = false;
+    f.contact = false; f.projFired = false; f.armorUsed = false; f.tpDone = false; f.fxDone = {};
     if (m.invuln) f.invuln = Math.max(f.invuln, m.invuln);
     f.serial++;
     if (m.type !== 'air') f.vx = 0;
@@ -1544,6 +1553,12 @@ class Sim {
             f.facing = Math.sign(o.x - f.x) || -f.facing;
             this.emit('shade', { side: f.side, from, to: f.x, y: f.y });
           }
+          if (m.leap) {
+            const L2 = m.leap;
+            if (t >= L2.t0 && t < L2.t1) { const u = (t - L2.t0) / (L2.t1 - L2.t0); f.y = 4 * L2.h * u * (1 - u); f.vy = 0; f.vx = L2.vx * f.facing; physics = 'x'; }
+            else if (t >= L2.t1 && f.y > 0) { f.y = 0; }
+          }
+          if (m.fxAt) m.fxAt.forEach(([tt, name], k) => { if (t >= tt && !f.fxDone[k]) { f.fxDone[k] = true; this.emit(name, { side: f.side, x: f.x + f.facing * 0.9, y: f.y }); } });
           if (m.proj && !f.projFired && t >= m.proj.t) { f.projFired = true; this.spawnProj(f, m.proj); }
           // combo cancel
           if (f.plan.length && f.contact && m.cancel && t >= m.cancel[0] && t <= m.cancel[1]) {
@@ -1554,6 +1569,7 @@ class Sim {
           }
           if (t >= m.dur) {
             f.plan = [];
+            if (m.flipEnd) f.facing = Math.sign(o.x - f.x) || f.facing;
             if (m.type === 'air' && f.y > 0) { f.state = 'jump'; f.move = null; f.st = 0; }
             else this.setState(f, 'idle');
           }
@@ -1639,6 +1655,8 @@ class Sim {
 
   separate(a, b) {
     if (a.state === 'locked' || b.state === 'locked') return;
+    const ghosting = (x) => x.state === 'attack' && x.move && x.move.ghost && x.mt >= x.move.ghost[0] && x.mt <= x.move.ghost[1];
+    if (ghosting(a) || ghosting(b)) return;
     if ((a.move && a.move.type === 'super') || (b.move && b.move.type === 'super')) return;
     const minD = 0.78;
     const dx = b.x - a.x;
@@ -1692,6 +1710,16 @@ class Sim {
   applyHit(f, o, h, hitY, opts = {}) {
     if (o.invuln > 0 || o.state === 'down' || o.state === 'getup' || o.state === 'ko' || o.state === 'locked') return false;
     if (o.inCombo && o.comboCap && !opts.superHit && !opts.lock) return false;
+    // counter stance (Zeus): a melee hit during the window is cancelled and answered at once
+    if (!opts.superHit && !opts.lock && !h.proj && o.state === 'attack' && o.move && o.move.counter && o.mt >= o.move.counter[0] && o.mt <= o.move.counter[1]) {
+      this.emit('counter', { side: o.side, x: o.x, y: hitY });
+      f.contact = false;
+      o.facing = Math.sign(f.x - o.x) || o.facing;
+      this.startMove(o, 'z_counterStrike');
+      o.invuln = Math.max(o.invuln, 0.15);
+      this.hitstop = Math.max(this.hitstop, 0.12);
+      return true;
+    }
     // grabs only catch a grounded foe, but go straight through guard
     if (h.grab && (o.y > 0.01 || o.state === 'juggle' || o.state === 'jump')) return false;
     // super armour: the first hit during an armoured window is absorbed (reduced damage, no flinch)
@@ -1812,12 +1840,13 @@ class Sim {
   spawnProj(f, p) {
     let px = f.x + f.facing * 0.95;
     if (p.atTarget) { const o = this.fighters[1 - f.side]; px = clamp(clamp(o.x, f.x - p.atTarget, f.x + p.atTarget), -STAGE, STAGE); }
+    if (p.at) px = clamp(f.x + f.facing * p.at, -STAGE, STAGE);
     const pr = {
       id: ++this.projId, owner: f.side, kind: p.kind,
-      x: px, y: (p.atTarget ? 0 : f.y) + p.y, vx: p.vx * f.facing,
+      x: px, y: (p.atTarget || p.at ? 0 : f.y) + p.y, vx: p.vx * f.facing,
       dmg: p.dmg, hitsLeft: p.hits, cd: 0, t: 0, w: p.w, h: p.h,
       hs: p.hs, kb: p.kb, fx: p.fx, kd: !!p.kd, dead: false, ret: p.ret || 0, dir0: f.facing, vy: p.vy || 0, grav: p.grav || 0, life: p.life || 0, launch: p.launch || 0,
-      cd0: p.delay || 0,
+      cd0: p.delay || 0, pull: p.pull || 0, lv: p.lv || null,
     };
     pr.cd = pr.cd0;
     this.projs.push(pr);
@@ -1844,6 +1873,20 @@ class Sim {
         if (p.y < 0.35) { p.dead = true; this.emit('projEnd', { proj: p, hit: false }); this.emit('rockLand', { x: p.x }); continue; }
       }
       p.cd -= dt;
+      // whirlpool drags the foe toward its centre
+      if (p.pull && p.t > p.cd0) {
+        const v = this.fighters[1 - p.owner];
+        if (!['locked', 'down', 'getup', 'ko', 'juggle'].includes(v.state) && v.y < 0.4 && !this.canBlock(v) && v.invuln <= 0) v.x = clamp(v.x + clamp(p.x - v.x, -1, 1) * p.pull * dt, -STAGE, STAGE);
+      }
+      // whirlwind (Susanoo) turns enemy projectiles around
+      {
+        const r = this.fighters[1 - p.owner];
+        if (!p.ret && r.state === 'attack' && r.move && r.move.reflect && r.mt >= r.move.reflect[0] && r.mt <= r.move.reflect[1] && Math.abs(p.x - r.x) < 2.0 && Math.abs(p.y - (r.y + 1.1)) < 1.6) {
+          if (!p.vx) { p.dead = true; this.emit('projEnd', { proj: p, hit: false }); this.emit('reflect', { side: r.side, x: p.x, y: p.y }); continue; }
+          p.owner = r.side; p.vx = -p.vx * 1.15; p.dir0 = -p.dir0; p.cd = 0.08; if (p.grav) p.vy = Math.abs(p.vy) + 3;
+          this.emit('reflect', { side: r.side, x: p.x, y: p.y });
+        }
+      }
       if (Math.abs(p.x) > STAGE + 3 || p.t > (p.ret ? 4 : 3) || (p.life && p.t > p.life)) { p.dead = true; this.emit('projEnd', { proj: p, hit: false }); if (p.ret) this.emit('catch', { side: p.owner, x: this.fighters[p.owner].x }); continue; }
       const o = this.fighters[1 - p.owner];
       const f = this.fighters[p.owner];
@@ -1852,7 +1895,7 @@ class Sim {
         if (p.x + p.w >= hb.x0 && p.x - p.w <= hb.x1 && p.y + p.h >= hb.y0 && p.y - p.h <= hb.y1) {
           if (o.invuln > 0 || o.state === 'down' || o.state === 'getup' || o.state === 'ko' || o.state === 'locked') continue;
           const last = p.hitsLeft <= 1;
-          const h = { dmg: p.dmg, hs: p.hs, bs: 0.25, kb: last ? p.kb : 0.6, stop: 0.07, fx: p.fx, chip: 0.15, kd: last && p.kd, launch: last ? p.launch : 0, y: [0, 0] };
+          const h = { dmg: p.dmg, hs: p.hs, bs: 0.25, kb: last ? p.kb : 0.6, stop: 0.07, fx: p.fx, chip: 0.15, kd: last && p.kd, launch: last ? p.launch : 0, lv: p.lv, y: [0, 0] };
           // projectile hits are not chained onto the owner's move contact
           const keepContact = f.contact;
           h.proj = true;
@@ -2289,6 +2332,8 @@ class Sim {
           // jump over projectiles sometimes
           if (ai.threatRoll < c.guard * 0.4 * L.jumpOver && threat.d > 1.8 && threat.d < 3.6) { this.jump(f, toward); return; }
         }
+        if (f.key === 'zeus' && threat.kind !== 'proj' && ai.counterSerial !== threat.serial) { ai.counterSerial = threat.serial; if (R() < 0.3 * L.read && this.actionable(f)) { this.startMove(f, 'z_counter'); return; } }
+        if (f.key === 'susanoo' && threat.kind === 'proj' && this.actionable(f) && threat.d < 3 && R() < 0.5 * L.read) { this.startMove(f, 's_wind'); return; }
         if (f.state !== 'block') this.setState(f, 'block');
         f.guardT = 0.22;
         // read the attack height (not always correctly)
@@ -2306,14 +2351,14 @@ class Sim {
         const r = R();
         if (f.meter >= 100 && r < 0.45) { this.startMove(f, c.super); return; }
         if (r < 0.55) {
-          if (f.key === 'zeus') this.startMove(f, d < 1.4 ? 'z_upper' : 'z_dash');
-          else if (f.key === 'anubis') this.startMove(f, d < 1.4 ? 'a_rise' : 'a_dash');
-          else if (f.key === 'thor') this.startMove(f, d < 1.5 ? 't_upper' : 't_dash');
+          if (f.key === 'zeus') this.startMove(f, d < 1.4 ? 'z_upper' : 'z_straight');
+          else if (f.key === 'anubis') this.startMove(f, d < 1.4 ? 'a_rise' : 'a_blink');
+          else if (f.key === 'thor') this.startMove(f, d < 1.5 ? 't_upper' : 't_leap');
           else if (f.key === 'susanoo') this.startMove(f, d < 1.7 ? 's_rise' : 's_dash');
-          else if (f.key === 'heracles') this.startMove(f, d < 1.4 ? 'h_upper' : 'h_dash');
+          else if (f.key === 'heracles') this.startMove(f, d < 1.4 ? 'h_upper' : 'h_club');
           else if (f.key === 'hades') this.startMove(f, d < 1.6 ? 'hd_rise' : 'hd_shade');
-          else this.startMove(f, d < 1.8 ? 'p_rise' : 'p_dash');
-          if (d < 1.8) f.plan = f.key === 'zeus' ? ['z_hammer', 'z_dash'] : f.key === 'anubis' ? ['a_dash'] : f.key === 'thor' ? ['t_slam', 't_dash'] : f.key === 'susanoo' ? ['s_dash'] : f.key === 'heracles' ? ['h_smash'] : f.key === 'hades' ? [] : ['p_dash'];
+          else this.startMove(f, d < 1.8 ? 'p_rise' : 'p_slash');
+          if (d < 1.8) f.plan = f.key === 'zeus' ? ['z_hammer'] : f.key === 'anubis' ? ['a_blink'] : f.key === 'thor' ? ['t_slam'] : f.key === 'susanoo' ? ['s_dash'] : f.key === 'heracles' ? ['h_smash'] : f.key === 'hades' ? [] : ['p_slash'];
           return;
         }
       }
@@ -2343,7 +2388,7 @@ class Sim {
         else if (r < 0.62) this.dash(f, toward, 0.42);
         else this.walk(f, toward, 0.45);
       } else if (d > 1.6) {
-        if (r < 0.2) this.startMove(f, 'z_dash');
+        if (r < 0.2) this.dash(f, toward, 0.3);
         else if (r < 0.33) this.jump(f, toward);
         else if (r < 0.42 && d > 3) this.startMove(f, 'z_bolt');
         else if (r < 0.5) this.dash(f, toward, 0.22);
@@ -2360,7 +2405,7 @@ class Sim {
         else if (r < 0.62) this.dash(f, toward, 0.42);
         else this.walk(f, toward, 0.45);
       } else if (d > 1.7) {
-        if (r < 0.2) this.startMove(f, 't_dash');
+        if (r < 0.2) this.startMove(f, 't_leap');
         else if (r < 0.3) this.jump(f, toward);
         else if (r < 0.4 && d > 3 && canThrow) this.startMove(f, 't_throw');
         else if (r < 0.5) this.dash(f, toward, 0.22);
@@ -2376,7 +2421,7 @@ class Sim {
         else if (r < 0.72) this.dash(f, toward, 0.34);
         else this.walk(f, toward, 0.35);
       } else if (d > 1.5) {
-        if (r < 0.2) this.startMove(f, 'a_dash');
+        if (r < 0.2) this.startMove(f, 'a_blink');
         else if (r < 0.3 && d > 3) this.startMove(f, 'a_soul');
         else if (r < 0.42) this.jump(f, toward);
         else if (r < 0.7) this.dash(f, toward, 0.22);
@@ -2409,7 +2454,7 @@ class Sim {
         else if (r < 0.55) this.dash(f, toward, 0.36);
         else this.walk(f, toward, 0.45);
       } else if (d > 1.6) {
-        if (r < 0.18) this.startMove(f, 'h_dash');
+        if (r < 0.18 && d > 2.5) this.startMove(f, 'h_quake');
         else if (r < 0.26) this.jump(f, toward);
         else if (r < 0.36 && d > 3) this.startMove(f, 'h_rock');
         else if (r < 0.5) this.dash(f, toward, 0.22);
@@ -2423,13 +2468,13 @@ class Sim {
       }
     } else if (f.key === 'susanoo') {
       if (d > 4.6) {
-        if (r < 0.3) this.startMove(f, 's_gale');
+        if (r < 0.3) this.dash(f, toward, 0.4);
         else if (r < 0.62) this.dash(f, toward, 0.38);
         else this.walk(f, toward, 0.4);
       } else if (d > 1.8) {
         if (r < 0.2) this.startMove(f, 's_dash');
         else if (r < 0.3) this.jump(f, toward);
-        else if (r < 0.4 && d > 3) this.startMove(f, 's_gale');
+        else if (r < 0.4 && sim0HasProj(this, f)) this.startMove(f, 's_wind');
         else if (r < 0.55) this.dash(f, toward, 0.22);
         else this.walk(f, toward, 0.25);
       } else {
@@ -2444,7 +2489,7 @@ class Sim {
         else this.walk(f, toward, 0.4);
       } else if (d > 2.3) {
         if (r < 0.22) this.startMove(f, 'p_wave');
-        else if (r < 0.38) this.startMove(f, 'p_dash');
+        else if (r < 0.38 && d < 3.6) this.startMove(f, 'p_vortex');
         else if (r < 0.5) this.jump(f, toward);
         else this.walk(f, toward, 0.22);
       } else if (d > 0.95) {
@@ -2833,6 +2878,12 @@ Object.assign(TP, {
   win: mk(tStance, {hips: [0, -0.2, 0], spine: [-0.1, 0.1, 0], chest: [-0.12, 0.2, 0], neck: [0, 0, 0], head: [-0.5, 0.1, 0], rSh: [-3, 0, 0.15], rEl: [-0.15, 0, 0], lSh: [-0.2, 0, 1], lEl: [-1.8, 0, 0], lHip: [-0.15, 0, 0.3], lKn: [0.2, 0, 0], lAn: [-0.05, 0, -0.25], rHip: [0.1, 0, 0.3], rKn: [0.15, 0, 0], rAn: [-0.25, 0, -0.25], rWr: [1.7, -0.15, 0]}),
 });
 Object.assign(TP, generic(tStance, false));
+// Anubis' new flourish poses: spins, a skating slide and the pass-through cross-up
+AP.spinA = mk(AP.twinB, { ry: Math.PI });
+AP.spinB = mk(AP.twinA, { ry: Math.PI * 2 });
+AP.slide = mk(AP.lowSlash, { z: 0.18, y: (AP.lowSlash.y || 0) - 0.05 });
+AP.blinkPass = mk(AP.dashSlash, { ry: Math.PI * 0.6 });
+AP.blinkEnd = mk(AP.twinB, { ry: Math.PI });
 // Thor's wide chest: keep the low-hit flinch arms outside the torso
 TP.hurtLow = mk(TP.hurtLow, { lSh: [-0.6, 0, 0.08], lEl: [-1.3, 0, 0], rSh: [-0.5, 0, 0.08], rEl: [-1.2, 0, 0] });
 {
@@ -5820,6 +5871,17 @@ function projSpawn(p) {
     jav.rotation.z = p.vx > 0 ? -Math.PI / 2 : Math.PI / 2;
     jav.position.x = p.vx > 0 ? 0.2 : -0.2;
     g.add(jav);
+  } else if (p.kind === 'vortex') {
+    const m1 = waterMaterial(0x0a5a7a, 0xcfffff, 0.9, 2), m2 = waterMaterial(0x1aa0b0, 0xffffff, 0.75, 2.6);
+    const spin = new THREE.Group();
+    const cone = new THREE.Mesh(new THREE.CylinderGeometry(1.0, 0.25, 2.2, 32, 6, true).translate(0, 1.1, 0), m1); spin.add(cone);
+    const ringW = new THREE.Mesh(new THREE.TorusGeometry(0.9, 0.12, 8, 40), m2); ringW.rotation.x = Math.PI / 2; ringW.position.y = 0.1; spin.add(ringW);
+    g.add(spin); g.userData.spin = spin; g.userData.mats = [m1, m2]; g.position.y = 0;
+  } else if (p.kind === 'quake') {
+    const rockM = new THREE.MeshStandardMaterial({ color: 0x7a5a40, roughness: 0.95, flatShading: true, emissive: new THREE.Color(0.7, 0.35, 0.05), emissiveIntensity: 0.3 });
+    const spikes = new THREE.Group();
+    for (let i = 0; i < 5; i++) { const c = new THREE.Mesh(new THREE.ConeGeometry(0.14 + Math.random() * 0.1, 0.5 + Math.random() * 0.5, 5), rockM); c.position.set((Math.random() - 0.5) * 0.6, 0.25, (Math.random() - 0.5) * 0.5); c.rotation.z = (Math.random() - 0.5) * 0.6; spikes.add(c); }
+    g.add(spikes); g.userData.spikes = spikes; g.userData.mats = []; g.position.y = 0;
   } else if (p.kind === 'cerberus') {
     // spectral three-headed hound
     const m = new THREE.MeshBasicMaterial({ color: new THREE.Color(1.6, 0.25, 0.5), transparent: true, opacity: 0.85, blending: THREE.AdditiveBlending, depthWrite: false });
@@ -5889,6 +5951,8 @@ function projEnd(p, hit) {
   projViews.delete(p.id);
   if (p.kind === 'bolt') { addP.burst(20, p.x, p.y, 0.1, 6, { life: [0.1, 0.3], size: [0.05, 0.12], color: COL.zeus, drag: 4 }); glowPuff(p.x, p.y, 0.1, 0x9fcfff, 2, 0.25); }
   else if (p.kind === 'hammer') { addP.burst(16, p.x, p.y, 0.1, 4, { life: [0.1, 0.3], size: [0.05, 0.12], color: COL.thor, drag: 4 }); glowPuff(p.x, p.y, 0.1, 0xc8a8ff, 1.6, 0.2); }
+  else if (p.kind === 'vortex') { normP.burst(40, p.x, 1, 0.1, 6, { life: [0.4, 0.9], size: [0.08, 0.18], color: [0.8, 0.97, 1], alpha: 0.9, grav: 10, up: 4 }); }
+  else if (p.kind === 'quake') { dust(p.x, 20, 1.6); }
   else if (p.kind === 'cerberus' || p.kind === 'hands') { addP.burst(30, p.x, p.kind === 'hands' ? 1 : p.y, 0.1, 5, { life: [0.2, 0.5], size: [0.06, 0.14], color: COL.hell, drag: 3, up: 2 }); }
   else if (p.kind === 'rock') { normP.burst(30, p.x, Math.max(0.4, p.y), 0.1, 6, { life: [0.4, 0.9], size: [0.06, 0.16], color: [0.5, 0.42, 0.34], alpha: 1, grav: 14, up: 3, drag: 0.5 }); dust(p.x, 14, 1.2); }
   else if (p.kind === 'gale') { addP.burst(26, p.x, p.y, 0.1, 6, { life: [0.12, 0.35], size: [0.05, 0.13], color: COL.storm, drag: 4 }); glowPuff(p.x, p.y, 0.1, 0xb8ffe0, 2, 0.25); }
@@ -5917,6 +5981,18 @@ function updateProjViews(dt) {
       v.g.rotation.y += dt * 9;
       addP.burst(3, p.x, p.y, 0.1, 1, { life: [0.15, 0.3], size: [0.08, 0.16], color: COL.soul, drag: 2 });
       if (Math.random() < 0.4) addP.burst(1, p.x, p.y, 0.1, 0.6, { life: [0.2, 0.4], size: [0.1, 0.18], color: COL.gold, drag: 2 });
+    } else if (p.kind === 'vortex') {
+      v.g.position.y = 0;
+      const grow = clamp((v.t - 0.15) / 0.2, 0, 1), fade = clamp((1.0 - v.t) / 0.15, 0, 1);
+      v.g.scale.setScalar(Math.max(0.01, grow * fade));
+      v.g.userData.spin.rotation.y += dt * 9;
+      for (const m of v.g.userData.mats) m.uniforms.uTime.value = v.t;
+      if (Math.random() < 0.8) { const a = Math.random() * 6.28; normP.spawn(p.x + Math.cos(a) * 1.4, 0.1, Math.sin(a) * 0.9, -Math.sin(a) * 4 - Math.cos(a) * 3, 2.5, Math.cos(a) * 4 - Math.sin(a) * 2, 0.5, 0.1, 0.04, 0.8, 0.97, 1, 0.8, 1, 0); }
+    } else if (p.kind === 'quake') {
+      v.g.position.y = 0;
+      v.g.userData.spikes.children.forEach((c, i) => { c.position.y = 0.25 + Math.abs(Math.sin(v.t * 30 + i)) * 0.15; });
+      if (Math.random() < 0.9) dust(p.x, 2, 0.6);
+      if (Math.random() < 0.5) addP.burst(2, p.x, 0.2, rand(-0.3, 0.3), 2, { life: [0.15, 0.35], size: [0.06, 0.12], color: COL.might, up: 2, drag: 2 });
     } else if (p.kind === 'cerberus') {
       v.g.position.y = p.y + Math.abs(Math.sin(v.t * 16)) * 0.12;
       v.g.userData.dog.rotation.z = Math.sin(v.t * 16) * 0.08;
@@ -6622,6 +6698,10 @@ class FighterView {
     if (this.prevState !== f.state) {
       if (f.state === 'down' && this.prevState === 'juggle') dust(f.x, 18, 1.2);
       this.prevState = f.state;
+    }
+    if (f.key === 'anubis' && f.state === 'attack' && Math.abs(f.vx) > 3.5) {
+      this.ghostT = (this.ghostT || 0) - dt;
+      if (this.ghostT <= 0) { this.ghostT = 0.055; ghostOf(this, f.move && f.move.ghost ? [0.5, 0.9, 1.6] : [0.25, 0.75, 1.1]); }
     }
     if (this.trails.length) {
       const on = f.state === 'attack' && !!f.move;
@@ -7424,6 +7504,15 @@ function handleEvents() {
         break;
       }
       case 'storm': tornado(e.x, 4, 60, 0.7); ring(e.x, 0.06, 0, 0xb8ffe0, 5, 0.45); skyBoltStorm(e.x + rand(-0.5, 0.5), false); sfx.whoosh(2.5); break;
+      case 'counter': {
+        const v = views[e.side]; const p = v ? chestOf(v) : new V3(e.x, e.y, 0);
+        screenFlash(0.5, '#e8f2ff'); ring(p.x, p.y, 0.3, 0xffffff, 3.2, 0.3, true); glowPuff(p.x, p.y, 0.3, 0xbfe0ff, 3, 0.3);
+        for (let i = 0; i < 5; i++) bolts.spawn(p.clone(), p.clone().add(new V3(rand(-1.4, 1.4), rand(-1, 1.4), rand(-0.5, 0.5))), { r: 0.02, life: 0.15, segs: 7, branches: 0 });
+        callout(e.side, '神威返し!', true); sfx.ring([1200, 1800, 2700], 0.5, 0.1); sfx.bolt(false); break;
+      }
+      case 'thorLand': { const x = e.x; dust(x, 36, 2.2); ring(x, 0.05, 0, 0xd8c4ff, 7, 0.5); ring(x, 0.05, 0, 0xffffff, 4, 0.35); for (let i = 0; i < 6; i++) { const a = (i / 6) * 6.28; violetBolt(new V3(x, 0.2, 0), new V3(x + Math.cos(a) * rand(2, 3.5), 0.1, Math.sin(a) * 1.5), { r: 0.03, life: 0.3, segs: 9, branches: 1 }); } shake = Math.max(shake, 0.35); sfx.boom(1); sfx.bolt(false); break; }
+      case 'windWall': { const v = views[e.side]; if (v) { tornado(v.f.x, 3, 90, 0.8); ring(v.f.x, 0.05, 0, 0x9fffd8, 3, 0.45); } sfx.noise(0.6, 600, 3000, 'bandpass', 0.7, 0.25); break; }
+      case 'reflect': { glowPuff(e.x, e.y, 0.2, 0xd8fff0, 2.4, 0.25); ring(e.x, e.y, 0.2, 0xffffff, 2, 0.25, true); callout(e.side, '反射!', false); sfx.ring([1600, 2400], 0.3, 0.08); break; }
       case 'drain': {
         const v = views[e.side]; const to = new V3(); if (v) v.m.j.chest.getWorldPosition(to);
         for (let i = 0; i < 10; i++) addP.spawn(e.x + rand(-0.2, 0.2), e.y + rand(-0.2, 0.2), rand(-0.2, 0.2), (to.x - e.x) * 2.2, (to.y - e.y) * 2.2 + 1, 0, 0.45, 0.12, 0.04, 1.9, 0.4, 0.7, 1, 0.5, 0);
@@ -7657,7 +7746,7 @@ function panelHTML(side) {
   const who = side === 0 ? (m === 'auto' ? 'AI' : 'あなた') : (m === 'auto' ? 'AI' : m === 'practice' ? '木人' : 'CPU');
   const stat = G.stats.map(([n, v]) => `<div class="stat"><span>${n}</span><div class="bar5">${[1, 2, 3, 4, 5].map((k) => `<i class="${k <= v ? 'on' : ''}"></i>`).join('')}</div></div>`).join('');
   const mv = c.moves;
-  const names = (type) => Object.values(mv).filter((x) => x.type === type).map((x) => `<span>${x.name}${x.lv === 'low' ? '〔下段〕' : x.lv === 'mid' ? '〔中段〕' : ''}${x.armor ? '〔アーマー〕' : ''}${x.hits && x.hits.some((q) => q.grab) ? '〔ガード不能〕' : ''}${x.hits && x.hits.some((q) => q.drain) ? '〔吸命〕' : ''}${x.teleport ? '〔背後移動〕' : ''}</span>`).join('');
+  const names = (type) => Object.values(mv).filter((x) => x.type === type && !x.hidden).map((x) => `<span>${x.name}${x.lv === 'low' ? '〔下段〕' : x.lv === 'mid' ? '〔中段〕' : ''}${x.armor ? '〔アーマー〕' : ''}${x.hits && x.hits.some((q) => q.grab) ? '〔ガード不能〕' : ''}${x.hits && x.hits.some((q) => q.drain) ? '〔吸命〕' : ''}${x.teleport ? '〔背後移動〕' : ''}</span>`).join('');
   const picks = MENU_KEYS.map((k) => `<button class="pick ${k} ${k === key ? 'on' : ''}" data-side="${side}" data-key="${k}">${GOD[k].emb}<span>${CHARS[k].name}</span></button>`).join('');
   return `<div class="pside"><i>${side + 1}P</i>${who}</div>
     <div class="pinfo" style="--acc:${G.acc};--acc2:${G.acc2}">
@@ -7772,6 +7861,8 @@ function moveFacts(key, id) {
     tags.push('飛び道具');
     if (m.proj.kind === 'rock') tags.push('放物線');
     if (m.proj.atTarget) tags.push('相手の足元に出現');
+    if (m.proj.pull) tags.push('引き寄せ');
+    if (m.proj.lv === 'low') tags.push('下段（しゃがみガード）');
   } else if (m.hits) {
     const hl = m.hits[m.hits.length - 1], dmg = m.hits.reduce((a, h) => a + h.dmg, 0);
     facts.push(['威力', dmg + (m.hits.length > 1 ? `（${m.hits.length}段）` : '')], ['発生', f(m.hits[0].t0) + 'F']);
@@ -7785,8 +7876,12 @@ function moveFacts(key, id) {
     if (m.hits.some((h) => h.drain)) tags.push('吸命');
     if (m.teleport) tags.push('背後移動');
     if (m.invuln) tags.push('出始め無敵');
-    if (m.motion) tags.push('突進');
-  } else if (m.type === 'super') { facts.push(['消費', '神威ゲージ100%']); tags.push('超必殺技'); }
+    if (m.motion && m.type === 'special') tags.push('突進');
+    if (m.ghost) tags.push('すり抜け');
+    if (m.leap) tags.push('跳躍');
+    if (m.reflect) tags.push('飛び道具反射');
+  } else if (m.counter) { facts.push(['受付', Math.round(m.counter[0] * 60) + '〜' + Math.round(m.counter[1] * 60) + 'F']); tags.push('当て身（打撃を返す）'); }
+  else if (m.type === 'super') { facts.push(['消費', '神威ゲージ100%']); tags.push('超必殺技'); }
   return { facts, tags };
 }
 function renderViewer() {
@@ -7795,7 +7890,7 @@ function renderViewer() {
   $('vName').innerHTML = `<span style="color:${G.acc}">${c.name}</span><small>${c.title}</small>`;
   const groups = [['超必殺技', (m) => m.type === 'super'], ['必殺技', (m) => m.type === 'special'], ['通常技', (m) => m.type === 'normal'], ['空中技', (m) => m.type === 'air']];
   $('vList').innerHTML = groups.map(([label, fn]) => {
-    const ids = Object.keys(c.moves).filter((id) => fn(c.moves[id]));
+    const ids = Object.keys(c.moves).filter((id) => fn(c.moves[id]) && !c.moves[id].hidden);
     if (!ids.length) return '';
     return `<h4>${label}</h4>` + ids.map((id) => `<button data-id="${id}" class="${id === viewer.id ? 'on' : ''}"><span>${c.moves[id].name}</span><small>${moveCommand(key, id)}</small></button>`).join('');
   }).join('');
@@ -7825,8 +7920,11 @@ function openViewer(key) {
 }
 function viewerDistance(m) {
   if (m.type === 'super') return m === CHARS.hades.moves.hd_super ? 4 : 1.6;
-  if (m.proj) return m.proj.atTarget ? 4 : 4.6;
+  if (m.proj) return m.proj.atTarget ? 4 : m.proj.at ? 2.6 : 4.6;
   if (m.teleport) return 2.6;
+  if (m.counter) return 1.4;
+  if (m.leap) return 3.0;
+  if (m.reflect) return 1.3;
   if (m.hits && m.hits.some((h) => h.grab)) return 0.9;
   if (m.reach) return 3.2;
   if (m.type === 'air') return 1.5;
@@ -8695,7 +8793,7 @@ function buildMoveList() {
   for (const k of MENU_KEYS) {
     const c = CHARS[k];
     const mv = c.moves;
-    const list = (type) => Object.entries(mv).filter(([, m]) => m.type === type).map(([, m]) => `<li>${m.name}${m.armor ? '〔アーマー〕' : ''}${m.hits && m.hits.some((q) => q.grab) ? '〔ガード不能〕' : ''}${m.lv === 'low' ? '〔下段〕' : m.lv === 'mid' ? '〔中段〕' : ''}</li>`).join('');
+    const list = (type) => Object.entries(mv).filter(([, m]) => m.type === type && !m.hidden).map(([, m]) => `<li>${m.name}${m.armor ? '〔アーマー〕' : ''}${m.hits && m.hits.some((q) => q.grab) ? '〔ガード不能〕' : ''}${m.lv === 'low' ? '〔下段〕' : m.lv === 'mid' ? '〔中段〕' : ''}</li>`).join('');
     const routes = c.routes.map((r) => `<li>${r.map((id) => id === 'SUPER' ? `<b>${mv[c.super].name}</b>` : mv[id].name).join(' → ')}</li>`).join('');
     html.push(`<section class="${k}"><h3>${c.name}<small>${c.title}</small></h3>
       <h4>超必殺技</h4><ul class="sp"><li>${mv[c.super].name}</li></ul>
