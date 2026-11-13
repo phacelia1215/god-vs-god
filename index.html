@@ -4823,15 +4823,16 @@ function slashStreak(x, y, z, len, w, rot, color, life) {
   timed.add(mesh, life, (o, k) => { const g = k < 0.15 ? k / 0.15 : 1; o.scale.set(w * (1 - k * 0.7), len * g, 1); m.opacity = 1 - Math.pow(k, 1.5); });
 }
 // Yamata no Orochi: a storm serpent erupts from the ground and strikes the victim
+const scaleTexS = canvasTex(128, 128, (g, w, h) => { g.fillStyle = '#0b1f1a'; g.fillRect(0, 0, w, h); g.strokeStyle = '#5fe0b0'; g.lineWidth = 2; for (let y = 0; y < h + 16; y += 16) for (let x = 0; x < w + 16; x += 16) { g.beginPath(); g.arc(x + ((y / 16) % 2) * 8, y, 8, 0, Math.PI); g.stroke(); } }, { repeat: [10, 1] });
 function orochiHead(e) {
   const i = e.i, side = i % 2 ? 1 : -1;
   const x0 = e.tx + side * (1.8 + (i % 4) * 0.55), z0 = -1.4 - (i % 3) * 0.9;
   const curve = new THREE.CatmullRomCurve3([
     new V3(x0, -0.6, z0), new V3(x0 + side * 0.4, e.ty * 0.55, z0 * 0.7),
     new V3(e.tx + side * 1.1, e.ty + 1.4, z0 * 0.35), new V3(e.tx + side * 0.15, e.ty + 0.1, 0.15)]);
-  const body = new THREE.TubeGeometry(curve, 60, 0.17 - (i % 3) * 0.02, 10, false);
+  const body = new THREE.TubeGeometry(curve, 60, 0.24 - (i % 3) * 0.025, 12, false);
   const total = body.index.count;
-  const bm = new THREE.MeshStandardMaterial({ color: 0x0c2a28, emissive: new THREE.Color(0.15, 0.8, 0.6), emissiveIntensity: 1.2, metalness: 0.4, roughness: 0.3, transparent: true });
+  const bm = new THREE.MeshStandardMaterial({ color: 0x0a1814, map: scaleTexS, emissive: new THREE.Color(0.06, 0.42, 0.32), emissiveIntensity: 1, metalness: 0.5, roughness: 0.35, transparent: true });
   bm.userData.own = true;
   const g = new THREE.Group();
   const tube = new THREE.Mesh(body, bm); tube.frustumCulled = false; g.add(tube);
@@ -4840,6 +4841,7 @@ function orochiHead(e) {
   const jaw = new THREE.Mesh(new THREE.ConeGeometry(0.13, 0.4, 6).rotateX(Math.PI / 2), bm); jaw.position.set(0, -0.12, -0.04); jaw.rotation.x = 0.35; head.add(jaw);
   const em = new THREE.MeshBasicMaterial({ color: new THREE.Color(3, 2.4, 0.4) }); em.userData.own = true;
   for (const s2 of [-1, 1]) { const ey = new THREE.Mesh(new THREE.SphereGeometry(0.035, 8, 6), em); ey.position.set(s2 * 0.09, 0.07, -0.05); head.add(ey); }
+  head.scale.setScalar(1.7);
   g.add(head);
   timed.add(g, 0.6, (o, k) => {
     const grow = Math.min(1, k / 0.32);
