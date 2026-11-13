@@ -7916,7 +7916,7 @@ function modelFor(side, key) {
 }
 // anime-style ink outline: back-face hull pushed out along the normals
 const OUTLINE = new THREE.MeshBasicMaterial({ color: 0x0c0810, side: THREE.BackSide });
-OUTLINE.onBeforeCompile = (sh) => { sh.vertexShader = sh.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\n  transformed += normalize(objectNormal) * 0.0055;'); };
+OUTLINE.onBeforeCompile = (sh) => { sh.vertexShader = sh.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\n  transformed += normalize(normal) * 0.0055;'); };
 function addOutline(root) {
   const add = [];
   root.traverse((o) => { if (o.isMesh && o.material && o.material.isMeshStandardMaterial && !o.material.transparent && o.material.side !== THREE.DoubleSide && o.geometry.attributes.normal) add.push(o); });
@@ -9143,7 +9143,7 @@ function buildMoveList() {
   $('movesBody').innerHTML = html.join('');
 }
 
-try { boot(); window.__game = { get sim() { return sim; }, get views() { return views; } }; } catch (err) { showError(err); }
+try { boot(); window.__game = { get sim() { return sim; }, get views() { return views; }, get speed() { return speed; }, set speed(v) { speed = v; } }; } catch (err) { showError(err); }
 
 function showError(err) {
   const el = $('loading');
