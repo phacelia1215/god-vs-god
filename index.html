@@ -85,6 +85,8 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;color:#fff;font
 #announce.champ .a-main{font-family:var(--jp);font-size:clamp(40px,8vw,110px)}
 #announce.champ.anubis .a-main{background:linear-gradient(#fff8e0 20%,#f0c46a 55%,#1d3f8a 95%);-webkit-background-clip:text;background-clip:text;color:transparent}
 #announce.champ.thor .a-main{background:linear-gradient(#ffffff 20%,#c8b0ff 55%,#5a3aa0 95%);-webkit-background-clip:text;background-clip:text;color:transparent}
+#announce.champ.shiva .a-main{background:linear-gradient(#ffffff 20%,#8fa8ff 55%,#1a1050 95%);-webkit-background-clip:text;background-clip:text;color:transparent}
+#announce.champ.aphrodite .a-main{background:linear-gradient(#fff4f8 20%,#ff9cc8 55%,#7a1a4a 95%);-webkit-background-clip:text;background-clip:text;color:transparent}
 #announce.champ.odin .a-main{background:linear-gradient(#ffffff 20%,#a8d4ff 55%,#1a2a5a 95%);-webkit-background-clip:text;background-clip:text;color:transparent}
 #announce.champ.hades .a-main{background:linear-gradient(#ffe8ee 20%,#ff5a78 55%,#3a0010 95%);-webkit-background-clip:text;background-clip:text;color:transparent}
 #announce.champ.heracles .a-main{background:linear-gradient(#fff6e0 20%,#ffb860 55%,#7a3a10 95%);-webkit-background-clip:text;background-clip:text;color:transparent}
@@ -99,6 +101,8 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;color:#fff;font
 .ci-band.zeus{background:linear-gradient(90deg,rgba(10,20,60,.0),rgba(20,40,110,.92) 18%,rgba(40,80,180,.92) 60%,rgba(10,20,60,0));border-top:2px solid #cfe4ff;border-bottom:2px solid #cfe4ff;box-shadow:0 0 40px rgba(130,180,255,.6)}
 .ci-band.anubis{background:linear-gradient(90deg,rgba(10,20,50,0),rgba(29,63,138,.92) 18%,rgba(60,90,170,.92) 60%,rgba(10,20,50,0));border-top:2px solid #f0c46a;border-bottom:2px solid #f0c46a}
 .ci-band.thor{background:linear-gradient(90deg,rgba(30,10,60,0),rgba(60,30,120,.92) 18%,rgba(100,70,180,.92) 60%,rgba(30,10,60,0));border-top:2px solid #e4d8ff;border-bottom:2px solid #e4d8ff;box-shadow:0 0 40px rgba(180,150,255,.55)}
+.ci-band.shiva{background:linear-gradient(90deg,rgba(8,6,30,0),rgba(30,24,90,.94) 18%,rgba(80,50,160,.92) 60%,rgba(8,6,30,0));border-top:2px solid #ffb060;border-bottom:2px solid #ffb060;box-shadow:0 0 40px rgba(120,140,255,.5)}
+.ci-band.aphrodite{background:linear-gradient(90deg,rgba(40,8,24,0),rgba(140,40,90,.92) 18%,rgba(230,110,160,.9) 60%,rgba(40,8,24,0));border-top:2px solid #ffe6a0;border-bottom:2px solid #ffe6a0;box-shadow:0 0 40px rgba(255,140,200,.5)}
 .ci-band.odin{background:linear-gradient(90deg,rgba(4,8,24,0),rgba(14,26,64,.94) 18%,rgba(40,60,120,.92) 60%,rgba(4,8,24,0));border-top:2px solid #ffe6a0;border-bottom:2px solid #ffe6a0;box-shadow:0 0 40px rgba(140,200,255,.5)}
 .ci-band.hades{background:linear-gradient(90deg,rgba(20,0,6,0),rgba(60,4,18,.94) 18%,rgba(120,10,40,.92) 60%,rgba(20,0,6,0));border-top:2px solid #ffb0c0;border-bottom:2px solid #ffb0c0;box-shadow:0 0 40px rgba(255,60,100,.5)}
 .ci-band.heracles{background:linear-gradient(90deg,rgba(40,15,0,0),rgba(110,50,10,.92) 18%,rgba(170,90,20,.92) 60%,rgba(40,15,0,0));border-top:2px solid #ffe0b0;border-bottom:2px solid #ffe0b0;box-shadow:0 0 40px rgba(255,170,80,.5)}
@@ -153,7 +157,7 @@ body:not(.portrait) .portrait-only{display:none}
 #movesBody{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
 #movesBody section{border:1px solid rgba(232,192,106,.4);padding:16px 18px;background:rgba(255,255,255,.03)}
 #movesBody h3{font-size:22px;margin-bottom:6px}
-#movesBody .zeus h3{color:var(--zeus)} #movesBody .poseidon h3{color:var(--pos)} #movesBody .anubis h3{color:#f0c46a} #movesBody .thor h3{color:#c8b0ff} #movesBody .susanoo h3{color:#9fffd8} #movesBody .heracles h3{color:#ffb870} #movesBody .hades h3{color:#ff6a88} #movesBody .odin h3{color:#b8d8ff}
+#movesBody .zeus h3{color:var(--zeus)} #movesBody .poseidon h3{color:var(--pos)} #movesBody .anubis h3{color:#f0c46a} #movesBody .thor h3{color:#c8b0ff} #movesBody .susanoo h3{color:#9fffd8} #movesBody .heracles h3{color:#ffb870} #movesBody .hades h3{color:#ff6a88} #movesBody .odin h3{color:#b8d8ff} #movesBody .shiva h3{color:#8fa8ff} #movesBody .aphrodite h3{color:#ff9cc8}
 #movesBody h3 small{font-size:12px;margin-left:10px;opacity:.7;letter-spacing:.2em}
 #movesBody h4{font-size:12px;letter-spacing:.3em;color:var(--gold);margin:12px 0 4px}
 #movesBody ul{list-style:none;font-size:14px;line-height:1.8}
@@ -262,7 +266,7 @@ body.portrait #ctrl button{font-size:11px;padding:6px 8px}
 .picks{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .pick{position:relative;flex:1;display:flex;align-items:center;gap:10px;padding:10px 12px;color:rgba(255,255,255,.7);font-family:var(--jp);font-weight:800;font-size:14px;letter-spacing:.08em;background:rgba(10,6,18,.78);border:2px solid rgba(255,255,255,.15);cursor:pointer;transition:all .15s;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
 .pick .emb{width:34px;height:34px;flex:none}
-.pick.zeus{color:var(--zeus)}.pick.poseidon{color:var(--pos)}.pick.anubis{color:#f0c46a}.pick.thor{color:#c8b0ff}.pick.susanoo{color:#9fffd8}.pick.heracles{color:#ffb870}.pick.hades{color:#ff6a88}.pick.odin{color:#b8d8ff}
+.pick.zeus{color:var(--zeus)}.pick.poseidon{color:var(--pos)}.pick.anubis{color:#f0c46a}.pick.thor{color:#c8b0ff}.pick.susanoo{color:#9fffd8}.pick.heracles{color:#ffb870}.pick.hades{color:#ff6a88}.pick.odin{color:#b8d8ff}.pick.shiva{color:#8fa8ff}.pick.aphrodite{color:#ff9cc8}
 .pick:not(.on){opacity:.6}
 .pick:hover{opacity:1;border-color:rgba(255,255,255,.5)}
 .pick.on{opacity:1;border-color:var(--gold2);background:rgba(50,36,10,.7);box-shadow:0 0 22px rgba(255,200,90,.5)}
@@ -293,7 +297,7 @@ body.cine #hud,body.cine .meter,body.cine #ctrl,body.cine .keyhelp,body.cine .co
 #cineTitle{position:fixed;left:0;right:0;top:50%;transform:translateY(-50%);text-align:center;z-index:18;pointer-events:none;opacity:0}
 #cineTitle b{display:block;font-size:clamp(54px,11vw,150px);font-weight:800;letter-spacing:.18em;line-height:1;background:linear-gradient(#fff 20%,var(--cc) 70%,#222);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 30px var(--cc)) drop-shadow(0 6px 0 #000)}
 #cineTitle small{display:block;margin-top:10px;font-size:clamp(14px,2.2vw,28px);letter-spacing:.5em;color:#fff;text-shadow:0 0 14px var(--cc),0 2px 4px #000}
-#cineTitle.zeus{--cc:#ffd77a}#cineTitle.poseidon{--cc:#5ff0e6}#cineTitle.anubis{--cc:#f0c46a}#cineTitle.thor{--cc:#c8b0ff}#cineTitle.susanoo{--cc:#9fffd8}#cineTitle.heracles{--cc:#ffb870}#cineTitle.hades{--cc:#ff6a88}#cineTitle.odin{--cc:#b8d8ff}
+#cineTitle.zeus{--cc:#ffd77a}#cineTitle.poseidon{--cc:#5ff0e6}#cineTitle.anubis{--cc:#f0c46a}#cineTitle.thor{--cc:#c8b0ff}#cineTitle.susanoo{--cc:#9fffd8}#cineTitle.heracles{--cc:#ffb870}#cineTitle.hades{--cc:#ff6a88}#cineTitle.odin{--cc:#b8d8ff}#cineTitle.shiva{--cc:#8fa8ff}#cineTitle.aphrodite{--cc:#ff9cc8}
 #cineTitle.show{animation:ctl 1.6s cubic-bezier(.2,.8,.2,1) forwards}
 @keyframes ctl{0%{opacity:0;transform:translateY(-50%) scale(1.8);filter:blur(10px)}12%{opacity:1;transform:translateY(-50%) scale(1);filter:none}80%{opacity:1;transform:translateY(-50%) scale(1.05)}100%{opacity:0;transform:translateY(-50%) scale(1.12)}}
 
@@ -1111,6 +1115,132 @@ const ODIN_MOVES = {
 };
 // Odin is the final boss of the story: every blow carries a little more weight
 (function () { for (const m of Object.values(ODIN_MOVES)) { if (m.hits) for (const h of m.hits) h.dmg = Math.round(h.dmg * 1.04); if (m.proj) m.proj.dmg = Math.round(m.proj.dmg * 1.04); } })();
+const SHIVA_MOVES = {
+  sv_palm: {
+    name: '掌底', type: 'normal', weap: 'fist', dur: 0.3, cancel: [0.12, 0.3],
+    anim: [[0, 'stance'], [0.06, 'palm'], [0.14, 'palm'], [0.3, 'stance']],
+    hits: [H({ t0: 0.06, t1: 0.12, dmg: 34, range: [0.1, 1.4], y: [0.8, 1.9], hs: 0.34, bs: 0.18, kb: 1.4, stop: 0.05, fx: 'cosmic' })],
+  },
+  sv_kick: {
+    name: '舞踏脚', type: 'normal', weap: 'fist', dur: 0.46, cancel: [0.2, 0.46],
+    anim: [[0, 'stance'], [0.08, 'kickWind'], [0.15, 'kick'], [0.28, 'kick'], [0.46, 'stance']],
+    hits: [H({ t0: 0.13, t1: 0.2, dmg: 50, range: [0.2, 1.75], y: [0.6, 2.1], hs: 0.42, kb: 2.2, stop: 0.08, fx: 'cosmic' })],
+  },
+  sv_low: {
+    name: '蓮華払い', type: 'normal', weap: 'fist', dur: 0.5, cancel: [0.22, 0.5],
+    anim: [[0, 'stance'], [0.08, 'lowWind'], [0.15, 'low'], [0.3, 'low'], [0.5, 'stance']],
+    hits: [H({ t0: 0.13, t1: 0.2, dmg: 46, range: [0.1, 1.7], y: [0.0, 0.8], hs: 0.48, kb: 1.4, kd: true, stop: 0.08, fx: 'cosmic' })],
+  },
+  sv_whirl: {
+    name: '旋舞', type: 'normal', weap: 'fist', dur: 0.52, cancel: [0.26, 0.52], spin: [[0.05, 0.3, 1]],
+    anim: [[0, 'stance'], [0.06, 'whirl'], [0.3, 'whirl'], [0.52, 'stance']],
+    hits: [H({ t0: 0.08, t1: 0.14, dmg: 26, range: [-0.5, 1.5], y: [0.5, 2.0], hs: 0.36, kb: 0.4, stop: 0.04, fx: 'cosmic' }), H({ t0: 0.2, t1: 0.27, dmg: 34, range: [-0.5, 1.6], y: [0.5, 2.0], hs: 0.42, kb: 2.2, stop: 0.07, fx: 'cosmic' })],
+  },
+  sv_rise: {
+    name: '昇天掌', type: 'normal', weap: 'fist', dur: 0.56, cancel: [0.25, 0.56],
+    anim: [[0, 'stance'], [0.09, 'riseWind'], [0.16, 'rise'], [0.32, 'rise'], [0.56, 'stance']],
+    hits: [H({ t0: 0.14, t1: 0.22, dmg: 58, range: [0.1, 1.45], y: [0.2, 2.8], hs: 0.5, kb: 1.2, launch: 10, stop: 0.1, fx: 'cosmic' })],
+  },
+  sv_heel: {
+    name: '破壊の踵', type: 'normal', weap: 'fist', dur: 0.68, cancel: [0.3, 0.68],
+    anim: [[0, 'stance'], [0.12, 'heelWind'], [0.22, 'heelDrop'], [0.4, 'heelDrop'], [0.68, 'stance']],
+    hits: [H({ t0: 0.2, t1: 0.28, dmg: 80, range: [0.2, 1.75], y: [0.0, 3.0], hs: 0.5, kb: 2.2, kd: true, bounce: true, stop: 0.12, fx: 'pralaya' })],
+  },
+  sv_eye: {
+    name: '第三の眼', type: 'special', dur: 0.6, glow: 'both',
+    anim: [[0, 'stance'], [0.1, 'eyeWind'], [0.22, 'eyeOpen'], [0.42, 'eyeOpen'], [0.6, 'stance']],
+    proj: { t: 0.24, kind: 'eyebeam', vx: 15, vy: -5, y: 1.92, dmg: 56, hits: 1, hs: 0.46, kb: 3, w: 0.5, h: 0.3, fx: 'pralaya' },
+  },
+  sv_tandava: {
+    name: 'ターンダヴァ', type: 'special', weap: 'fist', dur: 0.8, glow: 'both', spin: [[0.06, 0.48, 2]],
+    motion: [{ t0: 0.08, t1: 0.48, vx: 7.5 }],
+    anim: [[0, 'glide'], [0.07, 'whirl'], [0.46, 'whirl'], [0.5, 'kickWind'], [0.55, 'kick'], [0.66, 'kick'], [0.8, 'stance']],
+    hits: [
+      H({ t0: 0.1, t1: 0.16, dmg: 18, range: [-0.4, 1.35], y: [0.4, 2.1], hs: 0.4, kb: 0.2, stop: 0.035, fx: 'cosmic' }),
+      H({ t0: 0.2, t1: 0.26, dmg: 18, range: [-0.4, 1.35], y: [0.4, 2.1], hs: 0.4, kb: 0.2, stop: 0.035, fx: 'cosmic' }),
+      H({ t0: 0.3, t1: 0.36, dmg: 18, range: [-0.4, 1.35], y: [0.4, 2.1], hs: 0.4, kb: 0.2, stop: 0.035, fx: 'cosmic' }),
+      H({ t0: 0.54, t1: 0.61, dmg: 42, range: [0.0, 1.7], y: [0.4, 2.2], hs: 0.5, kb: 3.5, launch: 6, kd: true, stop: 0.1, fx: 'pralaya' }),
+    ],
+    reach: 3.4,
+  },
+  sv_damaru: {
+    name: 'ダマルの鼓動', type: 'special', weap: 'fist', dur: 0.66, glow: 'both', invuln: 0.12, nullify: [0.16, 0.36], fxAt: [[0.2, 'damaru']],
+    anim: [[0, 'stance'], [0.1, 'drumWind'], [0.2, 'drumBeat'], [0.4, 'drumBeat'], [0.66, 'stance']],
+    hits: [H({ t0: 0.2, t1: 0.28, dmg: 58, range: [-1.9, 1.9], y: [0.0, 2.4], hs: 0.5, kb: 4.2, kd: true, stop: 0.1, fx: 'cosmic' })],
+  },
+  sv_air: {
+    name: '天降脚', type: 'air', weap: 'fist', dur: 0.5,
+    anim: [[0, 'airWind'], [0.08, 'airKick'], [0.5, 'airKick']],
+    hits: [H({ t0: 0.08, t1: 0.42, dmg: 54, range: [0.0, 1.55], y: [-1.0, 0.9], hs: 0.46, kb: 2.0, stop: 0.08, fx: 'cosmic' })],
+  },
+  sv_super: {
+    name: 'ナタラージャ・破壊と創造の舞', type: 'super', dur: 2.4, glow: 'both', spin: [[0.44, 0.56, 1], [0.64, 0.76, 1], [0.94, 1.06, 1]],
+    anim: [[0, 'nataraja'], [0.16, 'nataraja'], [0.2, 'glide'], [0.3, 'palm'], [0.4, 'kick'], [0.46, 'whirl'], [0.56, 'whirl'], [0.6, 'palm'], [0.66, 'whirl'], [0.76, 'whirl'], [0.8, 'rise'], [0.9, 'kick'], [0.96, 'whirl'], [1.06, 'whirl'], [1.1, 'heelDrop'], [1.16, 'glide'], [1.3, 'nataraja'], [1.48, 'nataraja'], [1.52, 'eyeWind'], [1.62, 'eyeOpen'], [1.98, 'eyeOpen'], [2.4, 'stance']],
+  },
+};
+const APHRODITE_MOVES = {
+  ap_flick: {
+    name: 'リボンフリック', type: 'normal', dur: 0.3, cancel: [0.12, 0.3],
+    anim: [[0, 'stance'], [0.06, 'flick'], [0.14, 'flick'], [0.3, 'stance']],
+    hits: [H({ t0: 0.06, t1: 0.12, dmg: 30, range: [0.3, 2.0], y: [0.8, 1.9], hs: 0.34, bs: 0.18, kb: 1.4, stop: 0.05, fx: 'love' })],
+  },
+  ap_lash: {
+    name: '薔薇の鞭', type: 'normal', dur: 0.44, cancel: [0.19, 0.44],
+    anim: [[0, 'stance'], [0.08, 'lashWind'], [0.15, 'lash'], [0.28, 'lash'], [0.44, 'stance']],
+    hits: [H({ t0: 0.12, t1: 0.19, dmg: 46, range: [0.3, 2.2], y: [0.5, 2.1], hs: 0.42, kb: 2.0, stop: 0.07, fx: 'love' })],
+  },
+  ap_spiral: {
+    name: '螺旋のリボン', type: 'normal', dur: 0.5, cancel: [0.25, 0.5], spin: [[0.04, 0.26, 1]],
+    anim: [[0, 'stance'], [0.05, 'twirl'], [0.27, 'twirl'], [0.5, 'stance']],
+    hits: [H({ t0: 0.07, t1: 0.12, dmg: 24, range: [-0.4, 1.9], y: [0.5, 2.0], hs: 0.36, kb: 0.4, stop: 0.04, fx: 'love' }), H({ t0: 0.18, t1: 0.24, dmg: 32, range: [-0.4, 1.95], y: [0.5, 2.0], hs: 0.42, kb: 2.0, stop: 0.07, fx: 'love' })],
+  },
+  ap_low: {
+    name: 'さざ波', type: 'normal', dur: 0.5, cancel: [0.22, 0.5],
+    anim: [[0, 'stance'], [0.08, 'lowWind'], [0.15, 'low'], [0.3, 'low'], [0.5, 'stance']],
+    hits: [H({ t0: 0.13, t1: 0.2, dmg: 44, range: [0.2, 2.0], y: [0.0, 0.8], hs: 0.48, kb: 1.4, kd: true, stop: 0.08, fx: 'love' })],
+  },
+  ap_rise: {
+    name: '天の輪', type: 'normal', dur: 0.56, cancel: [0.25, 0.56],
+    anim: [[0, 'stance'], [0.09, 'riseWind'], [0.16, 'rise'], [0.32, 'rise'], [0.56, 'stance']],
+    hits: [H({ t0: 0.14, t1: 0.22, dmg: 54, range: [0.2, 1.85], y: [0.2, 2.8], hs: 0.5, kb: 1.2, launch: 10, stop: 0.1, fx: 'love' })],
+  },
+  ap_heel: {
+    name: '月下の踵', type: 'normal', weap: 'fist', dur: 0.62, cancel: [0.28, 0.62],
+    anim: [[0, 'stance'], [0.1, 'battement'], [0.2, 'heelDown'], [0.36, 'heelDown'], [0.62, 'stance']],
+    hits: [H({ t0: 0.18, t1: 0.26, dmg: 66, range: [0.2, 1.6], y: [0.0, 2.6], hs: 0.5, kb: 2.6, kd: true, stop: 0.11, fx: 'love' })],
+  },
+  ap_heart: {
+    name: '魅了の口づけ', type: 'special', dur: 0.62, glow: 'both',
+    anim: [[0, 'stance'], [0.1, 'kissWind'], [0.22, 'kiss'], [0.42, 'kiss'], [0.62, 'stance']],
+    proj: { t: 0.24, kind: 'heart', vx: 8.5, y: 1.4, dmg: 26, hits: 1, hs: 1.0, kb: 0, w: 0.42, h: 0.42, fx: 'love', charm: 1.0 },
+  },
+  ap_petal: {
+    name: 'ローズストーム', type: 'special', dur: 0.74, glow: 'both', invuln: 0.1, spin: [[0.05, 0.42, 2]], fxAt: [[0.06, 'roseStorm']],
+    anim: [[0, 'stance'], [0.05, 'twirl'], [0.42, 'twirl'], [0.48, 'bloom'], [0.6, 'bloom'], [0.74, 'stance']],
+    hits: [
+      H({ t0: 0.08, t1: 0.14, dmg: 18, range: [-1.3, 1.7], y: [0.2, 2.3], hs: 0.42, kb: 0.2, stop: 0.035, fx: 'love' }),
+      H({ t0: 0.2, t1: 0.26, dmg: 18, range: [-1.3, 1.7], y: [0.2, 2.3], hs: 0.42, kb: 0.2, stop: 0.035, fx: 'love' }),
+      H({ t0: 0.36, t1: 0.44, dmg: 36, range: [-1.3, 1.8], y: [0.2, 2.4], hs: 0.5, kb: 3.2, launch: 6.5, kd: true, stop: 0.09, fx: 'love' }),
+    ],
+  },
+  ap_foam: {
+    name: '泡沫の舞', type: 'special', dur: 0.62, glow: 'both', invuln: 0.28, fxAt: [[0.04, 'foamLeap']],
+    leap: { t0: 0.04, t1: 0.3, h: 0.9, vx: -8 },
+    anim: [[0, 'stance'], [0.05, 'foamLeap'], [0.26, 'foamLeap'], [0.32, 'kiss'], [0.62, 'stance']],
+    proj: { t: 0.32, kind: 'bubble', vx: 3.4, y: 1.0, dmg: 40, hits: 1, hs: 0.6, kb: 2.4, w: 0.5, h: 0.5, fx: 'love', life: 1.8, kd: true },
+  },
+  ap_air: {
+    name: '花弁落とし', type: 'air', dur: 0.5,
+    anim: [[0, 'airWind'], [0.08, 'airLash'], [0.5, 'airLash']],
+    hits: [H({ t0: 0.08, t1: 0.42, dmg: 52, range: [0.0, 1.9], y: [-1.0, 0.9], hs: 0.46, kb: 2.0, stop: 0.08, fx: 'love' })],
+  },
+  ap_super: {
+    name: 'ヴィーナスの誕生・愛の楽園', type: 'super', dur: 2.4, glow: 'both', spin: [[1.2, 1.42, 2]],
+    anim: [[0, 'bloom'], [0.3, 'bloom'], [0.36, 'kissWind'], [0.44, 'kiss'], [0.6, 'lashWind'], [0.68, 'lash'], [0.76, 'riseWind'], [0.84, 'rise'], [0.92, 'lashWind'], [1.0, 'lash'], [1.08, 'rise'], [1.18, 'twirl'], [1.42, 'twirl'], [1.5, 'kissWind'], [1.6, 'kiss'], [1.98, 'kiss'], [2.4, 'stance']],
+  },
+};
+// balance: Shiva's dance hits a little harder (no weapon reach, modest health)
+(function () { for (const m of Object.values(SHIVA_MOVES)) { if (m.hits) for (const h of m.hits) h.dmg = Math.round(h.dmg * 1.08); if (m.proj) m.proj.dmg = Math.round(m.proj.dmg * 1.08); } })();
 // Thor swings an oversized Mjolnir: every hammer move is slower to come out, hits much harder
 // and reaches further. [time scale, damage scale, extra reach]
 (function () {
@@ -1142,6 +1272,8 @@ const ODIN_MOVES = {
   set(ANUBIS_MOVES.a_low, 'low'); set(ANUBIS_MOVES.a_kick, 'mid'); set(ANUBIS_MOVES.a_air, 'mid');
   set(THOR_MOVES.t_low, 'low'); set(THOR_MOVES.t_slam, 'mid'); set(THOR_MOVES.t_air, 'mid');
   set(HADES_MOVES.hd_sweep, 'low'); set(HADES_MOVES.hd_slam, 'mid'); set(HADES_MOVES.hd_air, 'mid');
+  set(SHIVA_MOVES.sv_low, 'low'); set(SHIVA_MOVES.sv_heel, 'mid'); set(SHIVA_MOVES.sv_air, 'mid');
+  set(APHRODITE_MOVES.ap_low, 'low'); set(APHRODITE_MOVES.ap_heel, 'mid'); set(APHRODITE_MOVES.ap_air, 'mid');
   set(ODIN_MOVES.o_sweep, 'low'); set(ODIN_MOVES.o_slam, 'mid'); set(ODIN_MOVES.o_air, 'mid');
   set(HERACLES_MOVES.h_low, 'low'); set(HERACLES_MOVES.h_smash, 'mid'); set(HERACLES_MOVES.h_air, 'mid');
   set(SUSANOO_MOVES.s_sweep, 'low'); set(SUSANOO_MOVES.s_kabuto, 'mid'); set(SUSANOO_MOVES.s_air, 'mid');
@@ -1174,7 +1306,7 @@ function stretchTail(m, from, newDur) {
 }
 (function frameData() {
   const PROJ_REC = { kind: { rock: 34 / 60, hammer: 34 / 60, soul: 28 / 60 }, def: 30 / 60 };
-  for (const T of [ZEUS_MOVES, POSEIDON_MOVES, ANUBIS_MOVES, THOR_MOVES, SUSANOO_MOVES, HERACLES_MOVES, HADES_MOVES, ODIN_MOVES]) {
+  for (const T of [ZEUS_MOVES, POSEIDON_MOVES, ANUBIS_MOVES, THOR_MOVES, SUSANOO_MOVES, HERACLES_MOVES, HADES_MOVES, ODIN_MOVES, SHIVA_MOVES, APHRODITE_MOVES]) {
     for (const m of Object.values(T)) {
       if (m.type === 'air') m.tier = 'medium';
       if (m.type === 'super' || m.type === 'air') continue;
@@ -1314,6 +1446,36 @@ const CHARS = {
       ['hd_palm', 'hd_rise', 'SUPER'],
     ],
   },
+  shiva: {
+    key: 'shiva', name: 'シヴァ', en: 'SHIVA', title: '破壊と舞踏の神', hp: 1050, walk: 3.0, back: 2.6, dash: 10,
+    jumpV: 10.8, jumpX: 4.4, width: 0.38, height: 2.1, moves: SHIVA_MOVES, air: 'sv_air', super: 'sv_super',
+    guard: 0.56, aggro: 0.9,
+    routes: [
+      ['sv_palm', 'sv_palm', 'sv_kick'],
+      ['sv_palm', 'sv_whirl', 'sv_rise'],
+      ['sv_low', 'sv_heel'],
+      ['sv_palm', 'sv_kick', 'sv_tandava'],
+      ['sv_whirl', 'sv_kick', 'sv_damaru'],
+      ['sv_kick', 'sv_tandava'],
+      ['sv_palm', 'sv_whirl', 'sv_rise', 'SUPER'],
+      ['sv_kick', 'sv_rise', 'SUPER'],
+    ],
+  },
+  aphrodite: {
+    key: 'aphrodite', name: 'アフロディーテ', en: 'APHRODITE', title: '愛と美の女神', hp: 960, walk: 3.2, back: 3.0, dash: 10.5,
+    jumpV: 11.2, jumpX: 4.6, width: 0.34, height: 1.98, moves: APHRODITE_MOVES, air: 'ap_air', super: 'ap_super',
+    guard: 0.6, aggro: 0.82,
+    routes: [
+      ['ap_flick', 'ap_flick', 'ap_lash'],
+      ['ap_flick', 'ap_spiral', 'ap_rise'],
+      ['ap_low', 'ap_heel'],
+      ['ap_lash', 'ap_spiral', 'ap_petal'],
+      ['ap_spiral', 'ap_petal'],
+      ['ap_flick', 'ap_lash', 'ap_heel'],
+      ['ap_flick', 'ap_spiral', 'ap_rise', 'SUPER'],
+      ['ap_lash', 'ap_rise', 'SUPER'],
+    ],
+  },
   odin: {
     key: 'odin', name: 'オーディン', en: 'ODIN', title: '九界の主神', hp: 1080, walk: 2.8, back: 2.4, dash: 9.5,
     jumpV: 10.5, jumpX: 4.2, width: 0.4, height: 2.2, moves: ODIN_MOVES, air: 'o_air', super: 'o_super',
@@ -1356,7 +1518,7 @@ class Fighter {
     this.invuln = 0; this.stunT = 0; this.guardT = 0;
     this.inCombo = false; this.combo = 0; this.comboDmg = 0; this.juggleN = 0;
     this.walkDir = 0; this.walkT = 0; this.dashDir = 0; this.dashT = 0;
-    this.lockedBy = null; this.sup = null; this.lastHitHigh = true;
+    this.lockedBy = null; this.sup = null; this.lastHitHigh = true; this.charmT = 0;
     this.ai = { t: 0.3 + R() * 0.3, airUsed: false, threatSerial: -1, threatReact: false, threatRoll: 0, punishSerial: -1 };
     this.airborneT = 0;
     this.buf = {}; this.chain = []; this.guarding = false; this.comboCap = false;
@@ -1403,6 +1565,16 @@ const HUMAN = {
     K: { n: 'hd_slam', f: 'hd_palm', b: 'hd_palm', d: 'hd_sweep', u: 'hd_rise' },
     L: { n: 'hd_dog', f: 'hd_shade', b: 'hd_hands', d: 'hd_hands', u: 'hd_dog' },
   },
+  shiva: {
+    J: { n: 'sv_palm', f: 'sv_kick', b: 'sv_whirl', d: 'sv_low', u: 'sv_rise' },
+    K: { n: 'sv_heel', f: 'sv_whirl', b: 'sv_kick', d: 'sv_low', u: 'sv_rise' },
+    L: { n: 'sv_eye', f: 'sv_tandava', b: 'sv_damaru', d: 'sv_damaru', u: 'sv_eye' },
+  },
+  aphrodite: {
+    J: { n: 'ap_flick', f: 'ap_lash', b: 'ap_spiral', d: 'ap_low', u: 'ap_rise' },
+    K: { n: 'ap_heel', f: 'ap_spiral', b: 'ap_lash', d: 'ap_low', u: 'ap_rise' },
+    L: { n: 'ap_heart', f: 'ap_petal', b: 'ap_foam', d: 'ap_foam', u: 'ap_heart' },
+  },
   odin: {
     J: { n: 'o_jab', f: 'o_slash', b: 'o_jab', d: 'o_sweep', u: 'o_rise' },
     K: { n: 'o_slam', f: 'o_palm', b: 'o_palm', d: 'o_sweep', u: 'o_rise' },
@@ -1438,6 +1610,8 @@ const AUTO = {
   heracles: ['h_jab', 'h_club', 'h_upper', 'SUPER'],
   hades: ['hd_jab', 'hd_slash', 'hd_palm', 'hd_rise', 'SUPER'],
   odin: ['o_jab', 'o_slash', 'o_palm', 'o_rise', 'SUPER'],
+  shiva: ['sv_palm', 'sv_whirl', 'sv_kick', 'sv_rise', 'sv_tandava', 'SUPER'],
+  aphrodite: ['ap_flick', 'ap_spiral', 'ap_lash', 'ap_rise', 'ap_petal', 'SUPER'],
 };
 
 // does the opponent have a projectile in flight toward f?
@@ -1736,8 +1910,9 @@ class Sim {
         if (f.st >= f.stunT) { f.state = 'block'; f.st = 0; f.guardT = 0.15; }
         break;
       case 'hitstun':
-        f.vx *= Math.exp(-7 * dt);
-        if (f.st >= f.stunT) this.setState(f, 'idle');
+        if (f.charmT > 0) { f.charmT -= dt; f.vx = Math.abs(o.x - f.x) > 1.25 ? Math.sign(o.x - f.x) * 2.2 : 0; }   // entranced: drifts toward the charmer
+        else f.vx *= Math.exp(-7 * dt);
+        if (f.st >= f.stunT) { f.charmT = 0; this.setState(f, 'idle'); }
         break;
       case 'juggle':
         break;
@@ -1930,6 +2105,8 @@ class Sim {
     } else {
       o.state = 'hitstun'; o.st = 0; o.stunT = h.hs * Math.max(0.55, 1 - 0.05 * (f.combo - 1));
       o.vx = dir * h.kb;
+      o.charmT = 0;
+      if (h.charm && f.combo === 1) { o.charmT = o.stunT; this.emit('charm', { side: f.side, x: o.x, y: o.y + 2.2 }); }
     }
     if (Math.abs(o.x) > STAGE - 0.4 && !airborne) f.push = -dir * h.kb * 0.8;
     this.hitstop = Math.max(this.hitstop, hitStop(h, f.combo));
@@ -1990,7 +2167,7 @@ class Sim {
       x: px, y: (p.atTarget || p.at ? 0 : f.y) + p.y, vx: p.vx * f.facing,
       dmg: p.dmg, hitsLeft: p.hits, cd: 0, t: 0, w: p.w, h: p.h,
       hs: p.hs, kb: p.kb, fx: p.fx, kd: !!p.kd, dead: false, ret: p.ret || 0, dir0: f.facing, vy: p.vy || 0, grav: p.grav || 0, life: p.life || 0, launch: p.launch || 0,
-      cd0: p.delay || 0, pull: p.pull || 0, lv: p.lv || null,
+      cd0: p.delay || 0, pull: p.pull || 0, lv: p.lv || null, charm: p.charm || 0,
     };
     pr.cd = pr.cd0;
     this.projs.push(pr);
@@ -2015,12 +2192,23 @@ class Sim {
         // lobbed boulder: falls in an arc and shatters on the floor
         p.vy -= p.grav * dt; p.y += p.vy * dt;
         if (p.y < 0.35) { p.dead = true; this.emit('projEnd', { proj: p, hit: false }); this.emit('rockLand', { x: p.x }); continue; }
+      } else if (p.vy) {
+        p.y += p.vy * dt;
+        if (p.y < 0.2) { p.dead = true; this.emit('projEnd', { proj: p, hit: false }); continue; }
       }
       p.cd -= dt;
       // whirlpool drags the foe toward its centre
       if (p.pull && p.t > p.cd0) {
         const v = this.fighters[1 - p.owner];
         if (!['locked', 'down', 'getup', 'ko', 'juggle'].includes(v.state) && v.y < 0.4 && !this.canBlock(v) && v.invuln <= 0) v.x = clamp(v.x + clamp(p.x - v.x, -1, 1) * p.pull * dt, -STAGE, STAGE);
+      }
+      {
+        const r = this.fighters[1 - p.owner];
+        if (r.state === 'attack' && r.move && r.move.nullify && r.mt >= r.move.nullify[0] && r.mt <= r.move.nullify[1] && Math.abs(p.x - r.x) < 2.6 && !p.spent) {
+          this.emit('nullify', { side: r.side, x: p.x, y: p.y });
+          if (p.ret) { p.spent = true; if (p.vx * p.dir0 > 0) p.vx = -p.dir0 * 6; }
+          else { p.dead = true; this.emit('projEnd', { proj: p, hit: false }); continue; }
+        }
       }
       // whirlwind (Susanoo) turns enemy projectiles around
       {
@@ -2040,7 +2228,7 @@ class Sim {
         if (p.x + pw >= hb.x0 && p.x - pw <= hb.x1 && p.y + p.h >= hb.y0 && p.y - p.h <= hb.y1) {
           if (o.invuln > 0 || o.state === 'down' || o.state === 'getup' || o.state === 'ko' || o.state === 'locked') continue;
           const last = p.hitsLeft <= 1;
-          const h = { dmg: p.dmg, hs: p.hs, bs: 0.25, kb: last ? p.kb : 0.6, stop: 0.07, fx: p.fx, chip: 0.15, kd: last && p.kd, launch: last ? p.launch : 0, lv: p.lv, y: [0, 0] };
+          const h = { charm: p.charm || 0, dmg: p.dmg, hs: p.hs, bs: 0.25, kb: last ? p.kb : 0.6, stop: 0.07, fx: p.fx, chip: 0.15, kd: last && p.kd, launch: last ? p.launch : 0, lv: p.lv, y: [0, 0] };
           // projectile hits are not chained onto the owner's move contact
           const keepContact = f.contact;
           h.proj = true;
@@ -2290,6 +2478,71 @@ class Sim {
       if (t >= 1.86) once('final', () => {
         this.emit('superImpact', { side: f.side, x: s.gx ?? o.x, kind: 'gateShut' });
         if (s.lock && o.state === 'locked') { o.x = clamp(s.gx - s.dir * 0.4, -STAGE, STAGE); o.y = 0.4; this.superHit(f, o, 175, 'hell', { final: true, launch: 8.5, kb: -3, stop: 0.28 }); }
+        else this.hitstop = 0.12;
+      });
+    } else if (f.key === 'shiva') {
+      // SHIVA: a ring of fire flares behind him; he glides in and dances a storm of palms, kicks and pirouettes,
+      // springs back into the Nataraja pose as the cosmos opens around him, and the third eye burns the foe away
+      if (t >= 0.06) once('ring', () => this.emit('fireRing', { side: f.side, x: f.x }));
+      if (t >= 0.18 && t < 0.3) {
+        once('lunge', () => { s.lx0 = f.x; s.lx1 = clamp(o.x - f.facing * 0.9, -STAGE, STAGE); if (Math.abs(o.x - f.x) < 0.9) s.lx1 = f.x; });
+        f.x = lerp(s.lx0, s.lx1, easeOut((t - 0.18) / 0.12)); f.y = 0;
+      }
+      if (t >= 0.3) once('connect', () => {
+        s.tx = o.x;
+        if (this.canLock(o, 3.0)) { this.lock(f, o); s.lock = true; s.oy = o.y; this.superHit(f, o, 22, 'cosmic', { stop: 0.06 }); }
+      });
+      if (locked && t < 1.2) { o.y = lerp(s.oy, 0.35, easeOut(clamp((t - 0.3) / 0.3, 0, 1))) + Math.sin(t * 18) * 0.04; o.x = clamp(o.x, -STAGE, STAGE); }
+      for (let i = 0; i < 7; i++) {
+        if (t >= 0.4 + i * 0.1) once('ds' + i, () => {
+          this.emit('danceStrike', { side: f.side, x: s.lock ? o.x : s.tx, y: (s.lock ? o.y : 0) + 1.2, i });
+          if (s.lock && o.state === 'locked') this.superHit(f, o, 13, i % 2 ? 'cosmic' : 'pralaya', { stop: 0.035 });
+        });
+      }
+      if (t >= 1.14 && t < 1.32) {
+        once('back', () => { s.bx0 = f.x; s.bx1 = clamp((s.lock ? o.x : s.tx) - f.facing * 3.2, -STAGE, STAGE); this.emit('cosmicDance', { side: f.side, x: s.bx1, ox: s.lock ? o.x : s.tx }); });
+        const k = easeOut((t - 1.14) / 0.18); f.x = lerp(s.bx0, s.bx1, k); f.y = Math.sin(k * Math.PI) * 0.9;
+      } else if (t >= 1.32) f.y = 0;
+      if (locked && t >= 1.2 && t < 1.8) o.y = lerp(o.y, 0.9, 0.08);
+      if (t >= 1.5) once('eye', () => this.emit('thirdEye', { side: f.side }));
+      if (t >= 1.62) once('beam', () => this.emit('eyeBeam', { side: f.side, tx: s.lock ? o.x : s.tx, ty: (s.lock ? o.y : 0) + 1.15, dir: f.facing }));
+      for (let i = 0; i < 3; i++) if (t >= 1.64 + i * 0.05) once('bm' + i, () => { if (s.lock && o.state === 'locked') this.superHit(f, o, 12, 'pralaya', { stop: 0.02 }); });
+      if (t >= 1.8) once('final', () => {
+        this.emit('superImpact', { side: f.side, x: s.lock ? o.x : s.tx, kind: 'pralaya' });
+        if (s.lock && o.state === 'locked') this.superHit(f, o, 150, 'pralaya', { final: true, launch: 8, kb: 5, stop: 0.3 });
+        else this.hitstop = 0.12;
+      });
+    } else if (f.key === 'aphrodite') {
+      // APHRODITE: sea foam surges and a great scallop shell rises behind her; a blown kiss enthralls the foe,
+      // her ribbon lashes them from afar, she twirls in on a storm of roses and a giant heart closes and bursts
+      if (t < 1.16) f.y = 0;
+      if (t >= 0.1) once('shell', () => { s.tx = o.x; this.emit('shellRise', { side: f.side, x: f.x - f.facing * 1.1 }); });
+      if (t >= 0.44) once('connect', () => {
+        s.tx = o.x;
+        this.emit('charmKiss', { side: f.side, tx: o.x, ty: o.y + 1.3 });
+        if (this.canLock(o, 6.5)) { this.lock(f, o); s.lock = true; s.oy = o.y; this.superHit(f, o, 18, 'love', { stop: 0.06 }); }
+      });
+      if (locked && t < 1.6) {
+        o.y = lerp(s.oy, 0.85, easeOut(clamp((t - 0.44) / 0.4, 0, 1))) + Math.sin(t * 6) * 0.08;
+        // the enthralled victim drifts to within reach of the ribbon
+        const want = f.x + f.facing * 2.3; if (Math.abs(o.x - f.x) > 2.3 && t < 1.1) o.x += (want - o.x) * Math.min(1, dt * 3);
+        o.x = clamp(o.x, -STAGE, STAGE);
+      }
+      for (let i = 0; i < 5; i++) {
+        if (t >= 0.66 + i * 0.1) once('rl' + i, () => {
+          this.emit('ribbonLash', { side: f.side, tx: s.lock ? o.x : s.tx, ty: (s.lock ? o.y : 0) + 1.2, i });
+          if (s.lock && o.state === 'locked') this.superHit(f, o, 14, 'love', { stop: 0.03 });
+        });
+      }
+      if (t >= 1.18 && t < 1.42) {
+        once('glide', () => { s.gx0 = f.x; s.gx1 = clamp((s.lock ? o.x : s.tx) - f.facing * 1.3, -STAGE, STAGE); this.emit('roseStorm', { side: f.side, x: s.lock ? o.x : s.tx, big: true }); });
+        const k = easeOut((t - 1.18) / 0.24); f.x = lerp(s.gx0, s.gx1, k); f.y = Math.sin(k * Math.PI) * 0.45;
+        if (t >= 1.3) once('tw', () => { if (s.lock && o.state === 'locked') this.superHit(f, o, 16, 'love', { stop: 0.04 }); });
+      } else if (t >= 1.42) f.y = 0;
+      if (t >= 1.58) once('heart', () => this.emit('heartSeal', { side: f.side, x: s.lock ? o.x : s.tx, y: (s.lock ? o.y : 0) + 1.2 }));
+      if (t >= 1.8) once('final', () => {
+        this.emit('superImpact', { side: f.side, x: s.lock ? o.x : s.tx, kind: 'heartBurst' });
+        if (s.lock && o.state === 'locked') this.superHit(f, o, 150, 'love', { final: true, launch: 8, kb: 4, stop: 0.3 });
         else this.hitstop = 0.12;
       });
     } else if (f.key === 'odin') {
@@ -2562,8 +2815,10 @@ class Sim {
           else if (f.key === 'heracles') this.startMove(f, d < 1.4 ? 'h_upper' : 'h_club');
           else if (f.key === 'hades') this.startMove(f, d < 1.6 ? 'hd_rise' : 'hd_shade');
           else if (f.key === 'odin') this.startMove(f, d < 1.6 ? 'o_rise' : 'o_slash');
+          else if (f.key === 'shiva') this.startMove(f, d < 1.4 ? 'sv_rise' : 'sv_tandava');
+          else if (f.key === 'aphrodite') this.startMove(f, d < 1.7 ? 'ap_rise' : 'ap_lash');
           else this.startMove(f, d < 1.8 ? 'p_rise' : 'p_slash');
-          if (d < 1.8) f.plan = f.key === 'zeus' ? ['z_hammer'] : f.key === 'anubis' ? ['a_blink'] : f.key === 'thor' ? ['t_slam'] : f.key === 'susanoo' ? ['s_dash'] : f.key === 'heracles' ? ['h_smash'] : f.key === 'hades' || f.key === 'odin' ? [] : ['p_slash'];
+          if (d < 1.8) f.plan = f.key === 'zeus' ? ['z_hammer'] : f.key === 'anubis' ? ['a_blink'] : f.key === 'thor' ? ['t_slam'] : f.key === 'susanoo' ? ['s_dash'] : f.key === 'heracles' ? ['h_smash'] : f.key === 'hades' || f.key === 'odin' ? [] : f.key === 'shiva' ? ['sv_heel'] : f.key === 'aphrodite' ? ['ap_petal'] : ['p_slash'];
           return;
         }
       }
@@ -2575,7 +2830,7 @@ class Sim {
 
     // opponent on the floor -> reposition
     if (o.state === 'down' || o.state === 'getup' || o.state === 'locked') {
-      const want = f.key === 'zeus' ? 1.5 : f.key === 'thor' ? 1.6 : f.key === 'anubis' ? 1.3 : f.key === 'susanoo' ? 1.8 : f.key === 'heracles' ? 1.4 : f.key === 'hades' || f.key === 'odin' ? 2.0 : 2.2;
+      const want = f.key === 'zeus' ? 1.5 : f.key === 'thor' ? 1.6 : f.key === 'anubis' ? 1.3 : f.key === 'susanoo' ? 1.8 : f.key === 'heracles' ? 1.4 : f.key === 'hades' || f.key === 'odin' ? 2.0 : f.key === 'shiva' ? 1.4 : f.key === 'aphrodite' ? 1.9 : 2.2;
       if (d > want + 0.6) this.walk(f, toward, 0.25);
       else if (d < want - 0.6) this.walk(f, -toward, 0.2);
       else this.idle(f, 0.15);
@@ -2635,6 +2890,42 @@ class Sim {
         if (r < c.aggro * L.aggro) this.startRoute(f, o);
         else if (r < 0.94) this.dash(f, -toward, 0.22);
         else this.idle(f, 0.15);
+      }
+    } else if (f.key === 'shiva') {
+      // the drum answers projectiles; the eye covers mid range and the air; otherwise he dances in
+      if (sim0HasProj(this, f) && d < 3 && r < 0.5 * L.read) this.startMove(f, 'sv_damaru');
+      else if (d > 5.6) {
+        if (r < 0.45) this.dash(f, toward, 0.3);
+        else this.walk(f, toward, 0.35);
+      } else if (d > 1.8) {
+        if ((o.y > 0.6 || r < 0.2) && r < 0.7) this.startMove(f, 'sv_eye');
+        else if (r < 0.27 && d < 3.2) this.startMove(f, 'sv_tandava');
+        else if (r < 0.35) this.jump(f, toward);
+        else if (r < 0.66) this.dash(f, toward, 0.22);
+        else this.walk(f, toward, 0.25);
+      } else {
+        if (r < 0.07) this.startMove(f, 'sv_damaru');
+        else if (r < c.aggro * L.aggro) this.startRoute(f, o);
+        else if (r < 0.94) this.walk(f, -toward, 0.25);
+        else this.idle(f, 0.15);
+      }
+    } else if (f.key === 'aphrodite') {
+      // a charmed foe is a free combo: walk up and take it
+      if (o.charmT > 0.25) { if (d > 2.0) this.dash(f, toward, 0.16); else this.startRoute(f, o); }
+      else if (d > 4.2) {
+        if (r < 0.34) this.startMove(f, 'ap_heart');
+        else if (r < 0.6) this.walk(f, toward, 0.35);
+        else this.dash(f, toward, 0.3);
+      } else if (d > 2.1) {
+        if (r < 0.2) this.startMove(f, 'ap_heart');
+        else if (r < 0.3) this.jump(f, toward);
+        else if (r < 0.52) this.dash(f, toward, 0.2);
+        else this.walk(f, toward, 0.25);
+      } else {
+        if (r < 0.07 && Math.abs(f.x) < STAGE - 2.5) this.startMove(f, 'ap_foam');
+        else if (r < c.aggro * L.aggro) this.startRoute(f, o);
+        else if (r < 0.92) this.walk(f, -toward, 0.3);
+        else this.idle(f, 0.2);
       }
     } else if (f.key === 'odin') {
       if (d > 4.6) {
@@ -2852,6 +3143,8 @@ const SKEL = {
   anubis: { hipH: 1.0, spine: 0.13, chest: 0.25, neck: 0.26, head: 0.1, shX: 0.26, shY: 0.21, upper: 0.3, fore: 0.27, hand: 0.08, hipX: 0.1, hipY: -0.05, thigh: 0.47, shin: 0.47, foot: 0.07, toe: 0.14 },
   thor: { hipH: 1.08, spine: 0.15, chest: 0.28, neck: 0.3, head: 0.115, shX: 0.35, shY: 0.24, upper: 0.33, fore: 0.3, hand: 0.095, hipX: 0.13, hipY: -0.06, thigh: 0.48, shin: 0.47, foot: 0.078, toe: 0.15 },
   poseidon: { hipH: 1.03, spine: 0.14, chest: 0.26, neck: 0.275, head: 0.105, shX: 0.265, shY: 0.225, upper: 0.31, fore: 0.28, hand: 0.085, hipX: 0.105, hipY: -0.05, thigh: 0.46, shin: 0.45, foot: 0.07, toe: 0.14 },
+  shiva: { hipH: 1.06, spine: 0.14, chest: 0.265, neck: 0.28, head: 0.108, shX: 0.305, shY: 0.228, upper: 0.31, fore: 0.28, hand: 0.088, hipX: 0.115, hipY: -0.055, thigh: 0.47, shin: 0.46, foot: 0.074, toe: 0.145 },
+  aphrodite: { hipH: 1.0, spine: 0.125, chest: 0.225, neck: 0.25, head: 0.1, shX: 0.215, shY: 0.195, upper: 0.275, fore: 0.25, hand: 0.074, hipX: 0.1, hipY: -0.05, thigh: 0.455, shin: 0.445, foot: 0.064, toe: 0.12 },
   odin: { hipH: 1.1, spine: 0.15, chest: 0.28, neck: 0.29, head: 0.112, shX: 0.33, shY: 0.24, upper: 0.33, fore: 0.3, hand: 0.092, hipX: 0.125, hipY: -0.058, thigh: 0.49, shin: 0.48, foot: 0.078, toe: 0.15 },
   hades: { hipH: 1.07, spine: 0.14, chest: 0.27, neck: 0.29, head: 0.11, shX: 0.3, shY: 0.23, upper: 0.32, fore: 0.29, hand: 0.09, hipX: 0.115, hipY: -0.055, thigh: 0.48, shin: 0.47, foot: 0.075, toe: 0.145 },
   heracles: { hipH: 1.1, spine: 0.15, chest: 0.29, neck: 0.3, head: 0.115, shX: 0.37, shY: 0.245, upper: 0.34, fore: 0.31, hand: 0.1, hipX: 0.135, hipY: -0.06, thigh: 0.49, shin: 0.48, foot: 0.08, toe: 0.155 },
@@ -3244,7 +3537,113 @@ ODP.throw = mk(HDP.jab, { lSh: [0.6, 0, 0.6], lEl: [-0.6, 0, 0] });
 ODP.runePlant = mk(HDP.sweepEnd, { lSh: [-1.0, 0, 0.2], lEl: [-0.2, 0, 0], lWr: [1.2, 0, 0], spine: [0.5, 0, 0], chest: [0.1, 0, 0], head: [-0.4, 0, 0] });
 // intro / win: spear upright, gaze lowered at the challenger
 ODP.intro = mk(ODP.stance, { head: [0.2, 0.15, 0] });
-const POSES = { zeus: ZP, poseidon: PP, anubis: AP, thor: TP, susanoo: SUP, heracles: HEP, hades: HDP, odin: ODP };
+// ============================================================
+//  SHIVA : every pose is a dance figure. Open hands (mudras), turned-out knees, pirouettes.
+// ============================================================
+// stance: weight on the bent rear leg, front heel raised and toe pointed at the foe; the lead arm reaches
+// forward-down with a drooping wrist (gaja-hasta), the rear hand is raised, palm out (abhaya)
+const svStance = mk(null, {
+  y: -0.13, hips: [0, -0.42, 0], spine: [0.02, -0.06, 0.04], chest: [-0.05, -0.1, 0.03], neck: [0, 0.18, -0.03], head: [0.03, 0.34, -0.05],
+  lHip: [-0.62, 0, 0.28], lKn: [0.78, 0, 0], lAn: [0.5, 0, 0], rHip: [0.14, 0, 0.32], rKn: [0.55, 0, 0], rAn: [-0.64, 0, 0],
+  lSh: [-1.0, 0, 0.18], lEl: [-0.45, 0, 0], lWr: [0.9, 0, 0], rSh: [-0.35, 0, 0.5], rEl: [-2.15, 0, 0], rWr: [0, 0, 0],
+});
+const svLunge = { lHip: [-0.85, 0, 0.2], lKn: [0.9, 0, 0], lAn: [0.0, 0, 0], rHip: [0.45, 0, 0.2], rKn: [0.22, 0, 0], rAn: [-0.55, 0, 0] };
+const svTuck = { lHip: [-1.5, 0, 0.3], lKn: [2.2, 0, 0], lAn: [0.5, 0, 0], rHip: [-1.0, 0, 0.3], rKn: [2.0, 0, 0], rAn: [0.5, 0, 0] };
+const svSquat = { lHip: [-1.25, 0, 0.3], lKn: [1.9, 0, 0], lAn: [-0.55, 0, 0], rHip: [-1.0, 0, 0.34], rKn: [2.0, 0, 0], rAn: [-0.9, 0, 0] };
+const SVP = { stance: svStance };
+Object.assign(SVP, {
+  // lead palm-heel thrust, fingers up
+  palm: mk(svStance, Object.assign({ y: -0.16, z: 0.07, hips: [0, -0.15, 0], spine: [0.12, -0.1, 0], chest: [0.05, -0.5, 0], head: [-0.08, 0.55, 0], lSh: [-1.55, 0, -0.12], lEl: [-0.06, 0, 0], lWr: [-1.35, 0, 0], rSh: [-0.2, 0, 0.45], rEl: [-2.0, 0, 0] }, svLunge)),
+  // chambered knee, then a thrusting front kick with the body laid back and the arms opened for balance
+  kickWind: mk(svStance, { y: -0.02, spine: [-0.12, 0, 0], chest: [-0.05, 0, 0], head: [0.12, 0.2, 0], lHip: [-1.5, 0, 0.1], lKn: [1.9, 0, 0], lAn: [0.4, 0, 0], rHip: [0.05, 0, 0.15], rKn: [0.25, 0, 0], rAn: [-0.3, 0, 0], lSh: [-0.4, 0, 0.9], lEl: [-0.6, 0, 0], lWr: [0, 0, 0], rSh: [-0.9, 0, 0.6], rEl: [-1.6, 0, 0] }),
+  kick: mk(svStance, { y: 0, z: 0.05, hips: [0, -0.2, 0], spine: [-0.3, 0, 0], chest: [-0.1, 0, 0], head: [0.28, 0.15, 0], lHip: [-1.68, 0, 0.05], lKn: [0.06, 0, 0], lAn: [-0.45, 0, 0], rHip: [0.12, 0, 0.15], rKn: [0.2, 0, 0], rAn: [-0.28, 0, 0], lSh: [0.25, 0, 1.0], lEl: [-0.3, 0, 0], lWr: [0, 0, 0], rSh: [-1.2, 0, 0.95], rEl: [-1.1, 0, 0] }),
+  // drop into a deep squat and sweep the lead leg along the floor
+  lowWind: mk(svStance, Object.assign({ y: -0.4, spine: [0.3, 0, 0], head: [-0.25, 0.3, 0], lSh: [-0.6, 0, 0.8], lEl: [-1.0, 0, 0], lWr: [0, 0, 0], rSh: [-0.6, 0, 0.8], rEl: [-1.0, 0, 0] }, svSquat)),
+  low: mk(svStance, { y: -0.55, z: 0.06, hips: [0, -0.3, 0], spine: [0.5, 0, 0], chest: [0.1, 0, 0], head: [-0.5, 0.3, 0], lHip: [-1.0, 0, 0.05], lKn: [0.08, 0, 0], lAn: [0.35, 0, 0], rHip: [-1.1, 0, 0.5], rKn: [2.2, 0, 0], rAn: [-1.0, 0, 0], lSh: [-0.9, 0, 0.4], lEl: [-0.3, 0, 0], lWr: [0, 0, 0], rSh: [0.3, 0, 0.9], rEl: [-0.4, 0, 0] }),
+  // pirouette: tall on the toes of one leg, the other foot drawn up to the knee, arms flung wide
+  whirl: mk(svStance, { y: 0.03, hips: [0, 0, 0], spine: [-0.05, 0, 0], chest: [-0.04, 0, 0], neck: [0, 0, 0], head: [0, 0, 0], lHip: [-0.9, 0, 0.9], lKn: [1.9, 0, 0], lAn: [0.6, 0, 0], rHip: [0, 0, 0.05], rKn: [0.08, 0, 0], rAn: [0.38, 0, 0], lSh: [0, 0, 1.5], lEl: [-0.15, 0, 0], lWr: [0, 0, 0], rSh: [0, 0, 1.5], rEl: [-0.15, 0, 0], rWr: [0, 0, 0] }),
+  // coil low, then burst upward driving a palm to the sky
+  riseWind: mk(svStance, { y: -0.36, spine: [0.35, 0.2, 0], head: [-0.3, 0.1, 0], lHip: [-1.1, 0, 0.25], lKn: [1.7, 0, 0], lAn: [-0.5, 0, 0], rHip: [-0.5, 0, 0.3], rKn: [1.6, 0, 0], rAn: [-1.0, 0, 0], lSh: [0.2, 0, 0.4], lEl: [-0.8, 0, 0], lWr: [0, 0, 0], rSh: [0.3, 0, 0.3], rEl: [-1.6, 0, 0], rWr: [-1.2, 0, 0] }),
+  rise: mk(svStance, { y: 0.06, z: 0.05, hips: [0, 0.1, 0], spine: [-0.2, 0.1, 0], chest: [-0.12, 0.3, 0], head: [-0.3, -0.2, 0], lHip: [-0.35, 0, 0.12], lKn: [0.2, 0, 0], lAn: [0.5, 0, 0], rHip: [0.2, 0, 0.12], rKn: [0.1, 0, 0], rAn: [0.3, 0, 0], lSh: [0.3, 0, 0.6], lEl: [-0.5, 0, 0], lWr: [0, 0, 0], rSh: [-2.9, 0, 0.1], rEl: [-0.05, 0, 0], rWr: [-1.3, 0, 0] }),
+  // axe kick: the leg swings straight up, then the heel comes down
+  heelWind: mk(svStance, { y: 0.02, spine: [-0.25, 0, 0], chest: [-0.08, 0, 0], head: [0.2, 0.2, 0], lHip: [-2.6, 0, 0.1], lKn: [0.1, 0, 0], lAn: [0.4, 0, 0], rHip: [0.05, 0, 0.12], rKn: [0.15, 0, 0], rAn: [-0.1, 0, 0], lSh: [0.4, 0, 0.9], lEl: [-0.3, 0, 0], lWr: [0, 0, 0], rSh: [-0.5, 0, 1.1], rEl: [-0.5, 0, 0] }),
+  heelDrop: mk(svStance, { y: -0.12, z: 0.1, spine: [0.3, 0, 0], chest: [0.12, 0, 0], head: [-0.3, 0.2, 0], lHip: [-1.15, 0, 0.08], lKn: [0.05, 0, 0], lAn: [-0.4, 0, 0], rHip: [0.35, 0, 0.12], rKn: [0.5, 0, 0], rAn: [-0.6, 0, 0], lSh: [0.5, 0, 0.8], lEl: [-0.4, 0, 0], lWr: [0, 0, 0], rSh: [-0.2, 0, 1.0], rEl: [-0.9, 0, 0] }),
+  // third eye: palms pressed together with the head bowed, then the arms fly open and the head snaps up
+  eyeWind: mk(svStance, { y: -0.1, spine: [0.12, 0.2, 0], chest: [0.05, 0.2, 0], neck: [0.1, 0, 0], head: [0.3, 0, 0], lHip: [-0.4, 0, 0.2], lKn: [0.5, 0, 0], lAn: [-0.08, 0, 0], rHip: [0.25, 0, 0.2], rKn: [0.4, 0, 0], rAn: [-0.55, 0, 0], lSh: [-0.8, -1.1, -0.05], lEl: [-2.0, 0, 0], lWr: [0.2, 0, 0], rSh: [-0.8, -1.1, -0.05], rEl: [-2.0, 0, 0], rWr: [0.2, 0, 0] }),
+  eyeOpen: mk(svStance, { y: -0.12, z: 0.05, hips: [0, -0.1, 0], spine: [-0.1, 0.1, 0], chest: [-0.15, 0.1, 0], neck: [0.2, 0, 0], head: [0.08, 0, 0], lHip: [-0.5, 0, 0.3], lKn: [0.6, 0, 0], lAn: [-0.1, 0, 0], rHip: [0.3, 0, 0.3], rKn: [0.4, 0, 0], rAn: [-0.6, 0, 0], lSh: [0.3, 0, 1.2], lEl: [-0.4, 0, 0], lWr: [-0.5, 0, 0], rSh: [0.3, 0, 1.2], rEl: [-0.4, 0, 0], rWr: [-0.5, 0, 0] }),
+  // gliding dancer's dash
+  glide: mk(svStance, Object.assign({ y: -0.2, z: 0.15, hips: [0, -0.1, 0], spine: [0.45, 0, 0], chest: [0.1, 0, 0], head: [-0.45, 0.1, 0], lSh: [0.9, 0, 0.5], lEl: [-0.2, 0, 0], lWr: [0, 0, 0], rSh: [0.9, 0, 0.5], rEl: [-0.2, 0, 0] }, svLunge)),
+  // the drum: arms thrown overhead with a knee raised, then a stamp into a wide turned-out squat
+  drumWind: mk(svStance, { y: 0, spine: [-0.15, 0, 0], head: [-0.2, 0.2, 0], lHip: [-1.2, 0, 0.3], lKn: [1.6, 0, 0], lAn: [0.3, 0, 0], rHip: [0, 0, 0.1], rKn: [0.15, 0, 0], rAn: [-0.1, 0, 0], lSh: [-2.8, 0, 0.3], lEl: [-0.4, 0, 0], lWr: [0, 0, 0], rSh: [-2.8, 0, 0.3], rEl: [-0.4, 0, 0] }),
+  drumBeat: mk(svStance, { y: -0.3, hips: [0, -0.2, 0], spine: [0.15, 0, 0], head: [-0.1, 0.2, 0], lHip: [-0.7, 0, 0.6], lKn: [1.1, 0, 0], lAn: [-0.4, 0, 0], rHip: [-0.5, 0, 0.6], rKn: [1.1, 0, 0], rAn: [-0.6, 0, 0], lSh: [-0.5, 0, 1.0], lEl: [-0.5, 0, 0], lWr: [0.5, 0, 0], rSh: [-0.5, 0, 1.0], rEl: [-0.5, 0, 0], rWr: [0.5, 0, 0] }),
+  airWind: mk(svStance, Object.assign({ air: true, y: 0, spine: [0.1, 0, 0], lSh: [-2.2, 0, 0.5], lEl: [-0.6, 0, 0], lWr: [0, 0, 0], rSh: [-2.2, 0, 0.5], rEl: [-0.6, 0, 0] }, svTuck)),
+  airKick: mk(svStance, { air: true, y: 0, rx: 0.35, spine: [0.1, 0, 0], head: [-0.2, 0.1, 0], lHip: [-0.9, 0, 0.05], lKn: [0.05, 0, 0], lAn: [0.6, 0, 0], rHip: [-1.4, 0, 0.2], rKn: [2.2, 0, 0], rAn: [0.3, 0, 0], lSh: [0.4, 0, 1.0], lEl: [-0.3, 0, 0], lWr: [0, 0, 0], rSh: [0.2, 0, 1.2], rEl: [-0.4, 0, 0] }),
+  // Nataraja: balanced on one bent leg, the other lifted across the body; one arm sweeps across toward the raised foot
+  nataraja: mk(svStance, { y: -0.1, hips: [0, -0.5, 0.06], spine: [0, 0, -0.08], chest: [-0.03, 0, -0.04], head: [0, 0.4, 0.12], lHip: [-1.25, 0, -0.45], lKn: [1.4, 0, 0], lAn: [0.6, 0, 0], rHip: [-0.25, 0, 0.2], rKn: [0.6, 0, 0], rAn: [-0.35, 0, 0], lSh: [-1.2, 0, -0.5], lEl: [-0.35, 0, 0], lWr: [1.0, 0, 0], rSh: [-0.35, 0, 0.55], rEl: [-2.15, 0, 0] }),
+  // guard: lead forearm upright with the palm turned out, rear hand low before the belly
+  block: mk(svStance, { y: -0.16, spine: [0.1, -0.1, 0], chest: [0.05, -0.2, 0], head: [0.05, 0.3, 0], lSh: [-1.1, 0, -0.05], lEl: [-1.9, 0, 0], lWr: [0, 0, 0], rSh: [-0.75, -0.5, 0], rEl: [-1.5, 0, 0] }),
+  run: mk(svStance, { y: -0.08, z: 0.08, hips: [0, -0.1, 0], spine: [0.38, 0, 0], chest: [0.05, 0, 0], head: [-0.4, 0.1, 0], lHip: [-0.2, 0, 0.1], lKn: [0.3, 0, 0], lAn: [0, 0, 0], rHip: [0.1, 0, 0.1], rKn: [0.3, 0, 0], rAn: [-0.2, 0, 0], lSh: [0.8, 0, 0.5], lEl: [-0.25, 0, 0], lWr: [0, 0, 0], rSh: [0.8, 0, 0.5], rEl: [-0.25, 0, 0] }),
+});
+SVP.intro = mk(SVP.nataraja, {});
+SVP.win = mk(SVP.nataraja, { head: [-0.15, 0.4, 0.12], rSh: [-2.7, 0, 0.35], rEl: [-0.35, 0, 0] });
+Object.assign(SVP, generic(SVP.stance, false));
+SVP.backstep = mk(SVP.stance, { spine: [-0.1, -0.1, 0], lHip: [-0.2, 0, 0.12], lKn: [0.6, 0, 0], lAn: [0, 0, 0], rHip: [0.1, 0, 0.12], rKn: [0.7, 0, 0] });
+SVP.jump = mk(SVP.airWind, { air: true });
+SVP.crouch = mk(SVP.stance, Object.assign({ y: -0.44, z: 0.04, spine: [0.3, -0.1, 0], chest: [0.1, -0.15, 0], head: [-0.25, 0.3, 0] }, svSquat));
+SVP.crouchBlock = mk(SVP.block, Object.assign({ y: -0.44, z: 0.02, spine: [0.38, 0, 0], head: [-0.2, 0.15, 0] }, svSquat));
+
+// ============================================================
+//  APHRODITE : a ribbon dancer. The wand (and the ribbon that streams from it) is in her right hand.
+// ============================================================
+// stance: contrapposto - weight on the straight rear leg, the front knee soft with the toe pointed;
+// the wand hand is held out and back so the ribbon cascades behind her, the free hand rests by the collarbone
+const apStance = mk(null, {
+  y: -0.02, hips: [0, -0.4, 0.09], spine: [-0.02, 0, -0.08], chest: [-0.06, -0.06, -0.04], neck: [0, 0.2, 0.04], head: [0.05, 0.36, 0.1],
+  lHip: [-0.42, 0, 0.03], lKn: [0.42, 0, 0], lAn: [0.52, 0, 0], rHip: [0.1, 0, 0.1], rKn: [0.06, 0, 0], rAn: [-0.16, 0, 0],
+  lSh: [-0.55, -0.7, 0.05], lEl: [-2.0, 0, 0], lWr: [0.2, 0, 0], rSh: [0.45, 0, 0.95], rEl: [-0.55, 0, 0], rWr: [0, 0, 0],
+});
+const apLunge = { lHip: [-0.8, 0, 0.1], lKn: [0.8, 0, 0], lAn: [0.0, 0, 0], rHip: [0.45, 0, 0.1], rKn: [0.15, 0, 0], rAn: [-0.5, 0, 0] };
+const apTuck = { lHip: [-1.4, 0, 0.1], lKn: [2.1, 0, 0], lAn: [0.6, 0, 0], rHip: [-0.9, 0, 0.1], rKn: [1.9, 0, 0], rAn: [0.6, 0, 0] };
+const apKneel = { lHip: [-1.35, 0, 0.15], lKn: [1.6, 0, 0], lAn: [-0.25, 0, 0], rHip: [0.15, 0, 0.1], rKn: [1.6, 0, 0], rAn: [0.3, 0, 0] };
+const APP = { stance: apStance };
+Object.assign(APP, {
+  // a quick snap of the wand straight at the foe
+  flick: mk(apStance, { z: 0.06, hips: [0, -0.1, 0], spine: [0.08, 0.25, 0], chest: [0.02, 0.45, 0], head: [-0.05, -0.3, 0.05], lHip: [-0.6, 0, 0.1], lKn: [0.5, 0, 0], lAn: [0.2, 0, 0], rHip: [0.3, 0, 0.1], rKn: [0.2, 0, 0], rAn: [-0.4, 0, 0], lSh: [0.3, 0, 0.7], lEl: [-0.5, 0, 0], lWr: [0, 0, 0], rSh: [-1.5, 0, 0], rEl: [-0.1, 0, 0], rWr: [-0.4, 0, 0] }),
+  // the wand is drawn high across the body, then whipped forward in a long horizontal arc
+  lashWind: mk(apStance, { hips: [0, -0.55, 0], spine: [0, -0.3, 0], chest: [-0.05, -0.5, 0], head: [0.05, 0.9, 0], lSh: [-1.2, 0, 0.3], lEl: [-0.3, 0, 0], lWr: [0, 0, 0], rSh: [-2.3, 0, 0.6], rEl: [-1.2, 0, 0] }),
+  lash: mk(apStance, Object.assign({ y: -0.1, z: 0.1, hips: [0, 0.1, 0], spine: [0.15, 0.2, 0], chest: [0.1, 0.6, 0], head: [-0.1, -0.6, 0], lSh: [0.4, 0, 0.9], lEl: [-0.4, 0, 0], lWr: [0, 0, 0], rSh: [-1.25, 0, -0.3], rEl: [-0.15, 0, 0] }, apLunge)),
+  // pirouette on pointe with the wand held high so the ribbon spirals round her
+  twirl: mk(apStance, { y: 0.05, hips: [0, 0, 0], spine: [-0.06, 0, 0], chest: [-0.05, 0, 0], neck: [0, 0, 0], head: [-0.08, 0, 0], lHip: [-0.8, 0, 0.8], lKn: [1.8, 0, 0], lAn: [0.6, 0, 0], rHip: [0, 0, 0.03], rKn: [0.05, 0, 0], rAn: [0.4, 0, 0], lSh: [-1.1, 0, 0.5], lEl: [-0.9, 0, 0], lWr: [0, 0, 0], rSh: [-2.7, 0, 0.35], rEl: [-0.3, 0, 0] }),
+  // sink to one knee and send a ripple along the floor
+  lowWind: mk(apStance, Object.assign({ y: -0.3, spine: [0.2, -0.3, 0], chest: [0, -0.3, 0], head: [-0.15, 0.6, 0], lSh: [0.2, 0, 0.6], lEl: [-0.5, 0, 0], lWr: [0, 0, 0], rSh: [0.2, 0, 0.9], rEl: [-0.8, 0, 0] }, apKneel)),
+  low: mk(apStance, Object.assign({ y: -0.45, z: 0.06, hips: [0, -0.1, 0], spine: [0.35, 0.3, 0], chest: [0.1, 0.3, 0], head: [-0.35, -0.3, 0], lSh: [0.2, 0, 0.8], lEl: [-0.4, 0, 0], lWr: [0, 0, 0], rSh: [-0.9, 0, -0.1], rEl: [-0.2, 0, 0], rWr: [0.3, 0, 0] }, apKneel)),
+  // crouch, then rise onto the toes drawing a great ring overhead
+  riseWind: mk(apStance, { y: -0.3, spine: [0.3, -0.3, 0], chest: [0.05, -0.2, 0], head: [-0.25, 0.5, 0], lHip: [-1.0, 0, 0.12], lKn: [1.5, 0, 0], lAn: [-0.4, 0, 0], rHip: [-0.4, 0, 0.12], rKn: [1.4, 0, 0], rAn: [-0.9, 0, 0], lSh: [-0.4, 0, 0.5], lEl: [-0.8, 0, 0], lWr: [0, 0, 0], rSh: [0.6, 0, 0.4], rEl: [-0.3, 0, 0] }),
+  rise: mk(apStance, { y: 0.05, z: 0.04, hips: [0, 0.1, 0], spine: [-0.22, 0.2, 0], chest: [-0.1, 0.2, 0], head: [-0.3, -0.3, 0], lHip: [-0.3, 0, 0.08], lKn: [0.15, 0, 0], lAn: [0.5, 0, 0], rHip: [0.25, 0, 0.08], rKn: [0.1, 0, 0], rAn: [0.35, 0, 0], lSh: [0.4, 0, 0.8], lEl: [-0.3, 0, 0], lWr: [0, 0, 0], rSh: [-2.95, 0, 0.1], rEl: [-0.05, 0, 0] }),
+  // grand battement: the leg swings up past the head, and the heel is brought down
+  battement: mk(apStance, { y: 0.04, hips: [0, -0.2, 0], spine: [-0.15, 0, 0], chest: [-0.05, 0, 0], head: [0.12, 0.2, 0], lHip: [-2.4, 0, 0.05], lKn: [0.05, 0, 0], lAn: [0.6, 0, 0], rHip: [0.05, 0, 0.05], rKn: [0.08, 0, 0], rAn: [0.3, 0, 0], lSh: [0, 0, 1.3], lEl: [-0.15, 0, 0], lWr: [0, 0, 0], rSh: [0, 0, 1.3], rEl: [-0.15, 0, 0] }),
+  heelDown: mk(apStance, { y: -0.08, z: 0.08, hips: [0, -0.2, 0], spine: [0.2, 0, 0], chest: [0.08, 0, 0], head: [-0.2, 0.2, 0], lHip: [-1.2, 0, 0.05], lKn: [0.05, 0, 0], lAn: [-0.3, 0, 0], rHip: [0.3, 0, 0.08], rKn: [0.35, 0, 0], rAn: [-0.45, 0, 0], lSh: [0.4, 0, 1.0], lEl: [-0.3, 0, 0], lWr: [0, 0, 0], rSh: [0.3, 0, 1.1], rEl: [-0.3, 0, 0] }),
+  // fingers to the lips, then the kiss is blown with a playful kick of the back foot
+  kissWind: mk(apStance, { head: [0.05, 0.3, 0.05], lSh: [-1.45, -0.85, 0.05], lEl: [-2.35, 0, 0], lWr: [0.2, 0, 0] }),
+  kiss: mk(apStance, { z: 0.05, hips: [0, -0.2, 0], spine: [0.12, -0.2, 0], chest: [0.05, -0.3, 0], head: [-0.1, 0.5, 0.05], lHip: [-0.15, 0, 0.05], lKn: [0.1, 0, 0], lAn: [0.0, 0, 0], rHip: [0.5, 0, 0.05], rKn: [1.3, 0, 0], rAn: [0.6, 0, 0], lSh: [-1.45, 0, 0.1], lEl: [-0.2, 0, 0], lWr: [0.3, 0, 0], rSh: [0.5, 0, 0.8], rEl: [-0.4, 0, 0] }),
+  // arms opened to the sky
+  bloom: mk(apStance, { y: 0.02, spine: [-0.15, 0, 0], chest: [-0.12, 0, 0], head: [-0.25, 0.2, 0], lSh: [-2.4, 0, 0.7], lEl: [-0.25, 0, 0], lWr: [0, 0, 0], rSh: [-2.4, 0, 0.7], rEl: [-0.25, 0, 0] }),
+  // an arched back-flip
+  foamLeap: mk(apStance, { air: true, y: 0, rx: -0.55, hips: [0, 0, 0], spine: [-0.35, 0, 0], chest: [-0.2, 0, 0], head: [-0.3, 0, 0], lHip: [-0.2, 0, 0.1], lKn: [0.2, 0, 0], lAn: [0.6, 0, 0], rHip: [0.5, 0, 0.1], rKn: [0.9, 0, 0], rAn: [0.6, 0, 0], lSh: [-2.6, 0, 0.7], lEl: [-0.2, 0, 0], lWr: [0, 0, 0], rSh: [-2.6, 0, 0.7], rEl: [-0.2, 0, 0] }),
+  airWind: mk(apStance, Object.assign({ air: true, y: 0, spine: [0, 0, 0], lSh: [-0.6, 0, 0.9], lEl: [-0.5, 0, 0], lWr: [0, 0, 0], rSh: [-2.6, 0, 0.3], rEl: [-0.5, 0, 0] }, apTuck)),
+  airLash: mk(apStance, { air: true, y: 0, rx: 0.25, spine: [0.15, 0.2, 0], chest: [0.05, 0.4, 0], head: [-0.2, -0.3, 0], lHip: [-0.4, 0, 0.1], lKn: [0.3, 0, 0], lAn: [0.6, 0, 0], rHip: [0.4, 0, 0.1], rKn: [1.2, 0, 0], rAn: [0.6, 0, 0], lSh: [0.3, 0, 1.0], lEl: [-0.3, 0, 0], lWr: [0, 0, 0], rSh: [-0.8, 0, 0.05], rEl: [-0.1, 0, 0] }),
+  // guard: she turns a shoulder to the blow, forearms raised before her
+  block: mk(apStance, { y: -0.08, hips: [0, -0.5, 0], spine: [0.1, -0.2, 0], chest: [0.05, -0.2, 0], head: [0.1, 0.7, 0], lHip: [-0.45, 0, 0.05], lKn: [0.55, 0, 0], lAn: [0.1, 0, 0], rHip: [0.15, 0, 0.1], rKn: [0.3, 0, 0], rAn: [-0.4, 0, 0], lSh: [-1.0, -0.6, 0], lEl: [-1.9, 0, 0], lWr: [0, 0, 0], rSh: [-1.0, -0.6, 0], rEl: [-1.7, 0, 0] }),
+  run: mk(apStance, { y: -0.04, z: 0.08, hips: [0, -0.1, 0], spine: [0.3, 0, 0], chest: [0.02, 0, 0], head: [-0.28, 0.1, 0.04], lHip: [-0.2, 0, 0.05], lKn: [0.3, 0, 0], lAn: [0.1, 0, 0], rHip: [0.1, 0, 0.05], rKn: [0.3, 0, 0], rAn: [-0.1, 0, 0], lSh: [0.6, 0, 0.5], lEl: [-0.3, 0, 0], lWr: [0, 0, 0], rSh: [0.7, 0, 0.6], rEl: [-0.3, 0, 0] }),
+});
+APP.intro = mk(APP.stance, { head: [0.02, 0.25, 0.12] });
+APP.win = mk(APP.kiss, { head: [-0.15, 0.4, 0.1], rSh: [-2.5, 0, 0.5], rEl: [-0.3, 0, 0] });
+Object.assign(APP, generic(APP.stance, false));
+APP.backstep = mk(APP.stance, { spine: [-0.1, -0.1, 0], lHip: [-0.2, 0, 0.08], lKn: [0.6, 0, 0], lAn: [0, 0, 0], rHip: [0.1, 0, 0.08], rKn: [0.7, 0, 0] });
+APP.jump = mk(APP.airWind, { air: true });
+APP.crouch = mk(APP.stance, Object.assign({ y: -0.42, z: 0.03, spine: [0.25, -0.1, 0], chest: [0.05, -0.1, 0], head: [-0.2, 0.3, 0.05] }, apKneel));
+APP.crouchBlock = mk(APP.block, Object.assign({ y: -0.42, z: 0.02, spine: [0.3, -0.1, 0], head: [-0.1, 0.5, 0] }, apKneel));
+const POSES = { zeus: ZP, poseidon: PP, anubis: AP, thor: TP, susanoo: SUP, heracles: HEP, hades: HDP, odin: ODP, shiva: SVP, aphrodite: APP };
 
 // ------------------------------------------------------------
 //  Blending helpers
@@ -3624,6 +4023,14 @@ function addDetail(P, j, mt, o) {
     P.ell(el, skin, [0, 0.0, -0.045 * k], [0.032 * k, 0.035, 0.03 * k]);                         // elbow
     P.ell(wr, skin, [sg * 0.03, -0.005, -0.012], [0.016, 0.014, 0.016]);                          // wrist bone
     // fingers: four curled digits with knuckles + thumb joints
+    if (o.open) {
+      for (let f = 0; f < 4; f++) {
+        const x = (f - 1.5) * 0.023 * k, L = (f === 0 || f === 3 ? 0.85 : 1);
+        P.add(wr, new THREE.CapsuleGeometry(0.0105 * k, 0.05 * k * L, 4, 10), skin, [x, -0.128 * k, 0.014 * k], [0.12, 0, (f - 1.5) * 0.05]);
+        P.add(wr, new THREE.CapsuleGeometry(0.0092 * k, 0.036 * k * L, 4, 10), skin, [x * 1.08, -0.18 * k * (0.9 + 0.1 * L), 0.004 * k], [0.32, 0, (f - 1.5) * 0.06]);
+      }
+      P.add(wr, new THREE.CapsuleGeometry(0.0125 * k, 0.045 * k, 4, 10), skin, [sg * -0.058 * k, -0.088 * k, 0.01 * k], [0.15, 0, sg * 0.7]);
+    } else {
     for (let f = 0; f < 4; f++) {
       const x = (f - 1.5) * 0.026 * k;
       P.ell(wr, skin, [x, -0.092 * k - 0.012, 0.05 * k], [0.0135 * k, 0.014 * k, 0.017 * k]);    // knuckle
@@ -3631,6 +4038,7 @@ function addDetail(P, j, mt, o) {
       P.add(wr, new THREE.CapsuleGeometry(0.0105 * k, 0.03 * k, 4, 10), skin, [x, -0.1 * k - 0.006, 0.012 * k], [-0.2, 0, 0]);
     }
     P.add(wr, new THREE.CapsuleGeometry(0.014 * k, 0.04 * k, 4, 10), skin, [sg * -0.05 * k, -0.075 * k, 0.045 * k], [0.9, 0, sg * 0.35]);
+    }
     for (const q of [-1, 1]) P.ell(an, skin, [q * 0.04 * k, 0.0, -0.005], [0.018, 0.02, 0.02]);  // ankle bones
     P.ell(an, skin, [0, -0.02, -0.035], [0.036 * k, 0.04, 0.04]);                                 // heel
     for (let t = 0; t < 5; t++) {
@@ -5431,7 +5839,253 @@ function buildOdin(T) {
 }
 
 
-return { canvasTex, enhanceModel, buildZeus, buildPoseidon, updateCape, buildAnubis, buildThor, buildSusanoo, buildHeracles, buildHades, buildOdin, SPH };
+// ============================================================
+//  SHIVA  (the blue dancer of destruction: matted locks piled in a top-knot with the crescent moon, the third eye
+//          and three ash lines, a cobra and rudraksha beads, a tiger-skin wrap, ankle bells - and FOUR arms: the
+//          upper pair holds the damaru drum and a living flame. A wheel of fire burns behind his head.)
+// ============================================================
+function tigerTex() {
+  return canvasTex(256, 128, (g, w, h) => {
+    g.fillStyle = '#e8741a'; g.fillRect(0, 0, w, h);
+    const gr = g.createLinearGradient(0, 0, 0, h); gr.addColorStop(0, 'rgba(255,200,120,0.25)'); gr.addColorStop(1, 'rgba(255,240,220,0.5)'); g.fillStyle = gr; g.fillRect(0, 0, w, h);
+    g.fillStyle = '#170c06';
+    for (let i = 0; i < 11; i++) { const x = (i / 11) * w + (hsh(i, 51) - 0.5) * 10, d = 12 + hsh(i, 52) * 14, e = h * (0.45 + hsh(i, 53) * 0.4); g.beginPath(); g.moveTo(x, -4); g.quadraticCurveTo(x + d, h * 0.3, x + (hsh(i, 54) - 0.5) * 10, e); g.quadraticCurveTo(x + d * 0.3, h * 0.3, x + 12, -4); g.fill(); }
+  });
+}
+function buildShiva(T) {
+  const M = makeSkeleton('shiva');
+  const { j } = M;
+  const P = new PartSet();
+  const skin = new THREE.MeshPhysicalMaterial({ color: 0x5f86d2, roughness: 0.5, sheen: 0.6, sheenColor: new THREE.Color(0xb0d0ff), sheenRoughness: 0.45, clearcoat: 0.1, clearcoatRoughness: 0.5 });
+  const gold = new THREE.MeshStandardMaterial({ color: 0xf2bc52, metalness: 1, roughness: 0.24 });
+  const tiger = new THREE.MeshStandardMaterial({ color: 0xffffff, map: tigerTex(), roughness: 0.85, side: THREE.DoubleSide });
+  const hair = new THREE.MeshPhysicalMaterial({ color: 0x15152a, roughness: 0.55, sheen: 1, sheenColor: new THREE.Color(0x6070ff), sheenRoughness: 0.4 });
+  const bead = new THREE.MeshStandardMaterial({ color: 0x5c2a14, roughness: 0.6 });
+  const snake = new THREE.MeshPhysicalMaterial({ color: 0x1f5a3a, roughness: 0.3, clearcoat: 0.9, sheen: 0.6, sheenColor: new THREE.Color(0x9fffc8) });
+  const moon = new THREE.MeshStandardMaterial({ color: 0xeef4ff, emissive: new THREE.Color(0.9, 1.0, 1.4), emissiveIntensity: 0.9, roughness: 0.3 });
+  const ash = new THREE.MeshStandardMaterial({ color: 0xe8ecf4, roughness: 0.9 });
+  const eye = new THREE.MeshBasicMaterial({ color: new THREE.Color(1.1, 0.5, 0.12) });
+  const third = new THREE.MeshStandardMaterial({ color: 0x280a04, emissive: new THREE.Color(2.4, 0.9, 0.3), emissiveIntensity: 0.5, roughness: 0.3 });
+  const flame = new THREE.MeshBasicMaterial({ color: new THREE.Color(2.4, 1.0, 0.32) });
+  const drumM = new THREE.MeshStandardMaterial({ color: 0x8a5228, roughness: 0.55 });
+
+  // ---- pelvis: tiger-skin wrap knotted at the hip, gold belt with a row of bells ----
+  P.add(j.hips, lathe([[0, -0.17], [0.16, -0.15], [0.235, -0.08], [0.252, 0.02], [0.243, 0.15], [0, 0.17]]), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.68]);
+  {
+    const sk = lathe([[0.262, 0.075], [0.288, -0.05], [0.325, -0.2], [0.35, -0.31]], 56);
+    const pos = sk.attributes.position;
+    for (let i = 0; i < pos.count; i++) { const x = pos.getX(i), y = pos.getY(i), z = pos.getZ(i), a = Math.atan2(x, z), d = Math.min(1, (0.075 - y) / 0.385); const k = 1 + 0.025 * d * Math.sin(a * 7); pos.setXYZ(i, x * k, y - d * 0.07 * Math.max(0, Math.sin(a * 3 + 1)), z * k); }
+    sk.computeVertexNormals();
+    P.add(j.hips, sk, tiger, [0, 0, 0], [0, 0, 0], [1, 1, 0.78]);
+    P.add(j.hips, new THREE.TorusGeometry(0.262, 0.02, 8, 48), gold, [0, 0.075, 0], [Math.PI / 2, 0, 0], [1, 0.7, 1]);
+    for (let i = 0; i < 16; i++) { const a = (i / 16) * Math.PI * 2; P.ell(j.hips, gold, [Math.sin(a) * 0.268, 0.04, Math.cos(a) * 0.188], [0.014, 0.017, 0.014], [0, 0, 0], true); }
+    P.add(j.hips, new THREE.PlaneGeometry(0.16, 0.5, 1, 6).translate(0, -0.25, 0), tiger, [0.2, 0.05, 0.12], [-0.05, 0.9, 0.12]);   // hanging tail of the wrap
+  }
+  // ---- torso: a dancer's lean build ----
+  const abProf = [[0, -0.06], [0.232, -0.05], [0.236, 0.05], [0.246, 0.16], [0.262, 0.26], [0.272, 0.31], [0, 0.32]];
+  P.add(j.spine, sculptLathe(abProf, MUSCLE.abs(0.95)), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.66]);
+  const chProf = [[0, -0.07], [0.268, -0.06], [0.306, 0.04], [0.34, 0.15], [0.335, 0.23], [0.287, 0.3], [0.16, 0.338], [0, 0.348]];
+  P.add(j.chest, sculptLathe(chProf, MUSCLE.chest(0.95)), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.62]);
+  // rudraksha beads: a short strand and a long one
+  for (const [n, drop] of [[24, 0.05], [34, 0.17]]) for (let i = 0; i < n; i++) {
+    const u = i / (n - 1), a = (u - 0.5) * Math.PI * 1.5;
+    P.ell(j.chest, bead, [Math.sin(a) * 0.17, 0.335 - Math.cos(a) * drop - 0.02, 0.03 + Math.cos(a) * (0.13 + drop * 0.35)], [0.013, 0.013, 0.013], [0, 0, 0], true);
+  }
+  // Vasuki: the cobra coiled twice round the neck, hood spread over the right shoulder
+  {
+    const pts = []; for (let k = 0; k <= 22; k++) { const u = k / 22, a = -0.4 + u * Math.PI * 3.6; pts.push(new V3(Math.sin(a) * (0.125 - u * 0.02), 0.318 + u * 0.045, Math.cos(a) * (0.1 - u * 0.015) + 0.005)); }
+    pts.push(new V3(-0.19, 0.42, 0.04), new V3(-0.225, 0.5, 0.06), new V3(-0.23, 0.57, 0.09));
+    P.add(j.chest, new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 90, 0.019, 8), snake);
+    P.ell(j.chest, snake, [-0.23, 0.575, 0.085], [0.05, 0.06, 0.016], [0.25, 0, 0]);                 // hood
+    P.ell(j.chest, snake, [-0.23, 0.575, 0.112], [0.02, 0.016, 0.028]);                            // head
+    for (const sx of [-1, 1]) P.ell(j.chest, eye, [-0.23 + sx * 0.011, 0.582, 0.134], [0.004, 0.004, 0.004]);
+  }
+  // ---- head ----
+  P.add(j.neck, lathe([[0, -0.04], [0.086, -0.03], [0.079, 0.06], [0.075, 0.15], [0, 0.17]]), skin);
+  const H = j.head;
+  animeHead(P, H, { skin, hair, iris: eye, lip: 0x39397c, lash: 0x0a0a1a, browW: 0.0046, browTilt: -0.03, lashW: 1.3,
+    marks: [[-0.3, 0.5, 0.3, 0.5, 0.0026, ash], [-0.32, 0.58, 0.32, 0.58, 0.0026, ash], [-0.3, 0.66, 0.3, 0.66, 0.0026, ash]],
+    face: { jaw: 0.94, chin: 1.0, len: 1.02, hollow: 0.02, nose: 0.95, noseLen: 1.0, eyeW: 1.12, eyeH: 0.82, eyeTilt: 0.13, lid: 0.45, browY: 0.03, mouthW: 0.85, smile: 0.14 },
+    style: { bangs: 3, bangLen: 0.04, bangSweep: 0.9, side: 0.3, back: 15, backLen: 0.62, backLift: 0.06 } });
+  // jata: matted locks piled into a tall knot, bound with a gold cord; the crescent moon rides on it
+  for (let i = 0; i < 6; i++) P.ell(H, hair, [Math.sin(i * 1.1) * 0.022, 0.245 + i * 0.03, -0.035 + Math.cos(i * 1.3) * 0.016], [0.068 - i * 0.008, 0.042, 0.064 - i * 0.007]);
+  P.add(H, new THREE.TorusGeometry(0.062, 0.007, 6, 28), gold, [0, 0.262, -0.035], [Math.PI / 2, 0, 0]);
+  P.add(H, new THREE.TorusGeometry(0.055, 0.012, 8, 24, Math.PI * 1.05), moon, [0.05, 0.345, -0.01], [0, 0, 2.25], [1, 1, 0.5]);
+  // the third eye (a vertical slit that blazes when he calls on it)
+  P.ell(H, third, [0, 0.178, 0.099], [0.0075, 0.02, 0.005], [-0.22, 0, 0]);
+  for (const sx of [-1, 1]) { P.add(H, new THREE.TorusGeometry(0.017, 0.004, 6, 14), gold, [sx * 0.1, 0.055, 0.0], [0, sx * 1.3, 0]); }
+  // ---- the lower (fighting) arms and the legs ----
+  for (const [sd, sg] of [['l', 1], ['r', -1]]) {
+    const sh = j[sd + 'Sh'], el = j[sd + 'El'], wr = j[sd + 'Wr'];
+    P.add(sh, sculpt(muscleLimb(0.31, 0.086, 0.065, 0.016, 0.6), MUSCLE.upperArm(0.95)), skin);
+    P.ell(sh, skin, [sg * 0.014, -0.03, 0], [0.103, 0.113, 0.098]);
+    P.add(sh, new THREE.TorusGeometry(0.077, 0.011, 6, 24), gold, [0, -0.13, 0], [Math.PI / 2, 0, 0], [1, 0.9, 1]);
+    P.add(sh, new THREE.ConeGeometry(0.03, 0.06, 4), gold, [sg * 0.04, -0.1, 0.03], [0, 0, 0], [1, 1, 0.4]);
+    P.add(el, sculpt(muscleLimb(0.28, 0.073, 0.048, 0.016, 0.72), MUSCLE.forearm(0.95)), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.88]);
+    for (const y of [-0.215, -0.24]) P.add(el, new THREE.TorusGeometry(0.054, 0.008, 6, 22), gold, [0, y, 0], [Math.PI / 2, 0, 0], [1, 0.9, 1]);
+    P.ell(wr, skin, [0, -0.05, 0.012], [0.046, 0.058, 0.022]);                                    // open palm
+    const hp = j[sd + 'Hip'], kn = j[sd + 'Kn'];
+    P.add(hp, sculpt(muscleLimb(0.47, 0.118, 0.071, 0.02, 0.62), MUSCLE.thigh(0.95, sg)), skin);
+    P.add(kn, sculpt(muscleLimb(0.46, 0.071, 0.045, 0.0, 0.7), MUSCLE.calf(0.95)), skin);
+    P.add(kn, new THREE.TorusGeometry(0.05, 0.009, 6, 20), gold, [0, -0.395, 0], [Math.PI / 2, 0, 0]);
+    for (let i = 0; i < 8; i++) { const a = (i / 8) * Math.PI * 2; P.ell(kn, gold, [Math.sin(a) * 0.054, -0.418, Math.cos(a) * 0.05], [0.011, 0.012, 0.011], [0, 0, 0], true); }   // ankle bells
+  }
+  addDetail(P, j, { skin, hair, sole: bead, strap: gold, metal: gold }, { anime: true, k: 0.93, eye: [0.04, 0.108, 0.106], lip: 0x39397c, curls: false, open: true });
+  // ---- the upper pair of arms: raised behind the shoulders, the damaru drum in one hand and fire in the other ----
+  const extra = [];
+  for (const [sg, item] of [[1, 'drum'], [-1, 'fire']]) {
+    const sh = new THREE.Group(); sh.position.set(sg * 0.25, 0.25, -0.1); j.chest.add(sh);
+    const el = new THREE.Group(); el.position.set(0, -0.29, 0); sh.add(el);
+    const wr = new THREE.Group(); wr.position.set(0, -0.26, 0); el.add(wr);
+    P.add(sh, muscleLimb(0.29, 0.07, 0.054, 0.012, 0.6), skin);
+    P.ell(sh, skin, [0, -0.01, 0], [0.082, 0.088, 0.08]);
+    P.add(sh, new THREE.TorusGeometry(0.066, 0.01, 6, 22), gold, [0, -0.13, 0], [Math.PI / 2, 0, 0], [1, 0.9, 1]);
+    P.add(el, muscleLimb(0.26, 0.059, 0.041, 0.012, 0.72), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.9]);
+    P.add(el, new THREE.TorusGeometry(0.047, 0.008, 6, 22), gold, [0, -0.215, 0], [Math.PI / 2, 0, 0], [1, 0.9, 1]);
+    P.ell(wr, skin, [0, -0.045, 0.01], [0.042, 0.052, 0.024]);
+    for (let f = 0; f < 4; f++) P.add(wr, new THREE.CapsuleGeometry(0.0095, 0.045, 4, 8), skin, [(f - 1.5) * 0.021, -0.11, -0.008], [0.7, 0, 0]);   // fingers closed on the grip
+    if (item === 'drum') {
+      // hourglass drum with two heads and a beaded cord
+      P.add(wr, new THREE.ConeGeometry(0.058, 0.085, 18, 1, true), drumM, [0, -0.09, -0.11], [Math.PI / 2, 0, 0]);
+      P.add(wr, new THREE.ConeGeometry(0.058, 0.085, 18, 1, true), drumM, [0, -0.09, -0.025], [-Math.PI / 2, 0, 0]);
+      for (const z of [-0.153, 0.018]) P.add(wr, new THREE.CylinderGeometry(0.06, 0.06, 0.008, 18), ash, [0, -0.09, z], [Math.PI / 2, 0, 0]);
+      P.add(wr, new THREE.TorusGeometry(0.02, 0.005, 6, 14), gold, [0, -0.09, -0.068], [0, 0, 0]);
+      for (const z of [-0.12, -0.02]) P.ell(wr, gold, [0.05, -0.13, z], [0.01, 0.01, 0.01]);
+    } else {
+      for (let k = 0; k < 6; k++) P.add(wr, new THREE.ConeGeometry(0.03 - k * 0.003, 0.11 + k * 0.025, 6), flame, [Math.sin(k * 1.3) * 0.022, -0.12 - k * 0.006, -0.07 + Math.cos(k * 1.7) * 0.02], [-Math.PI / 2 + 0.3 * Math.sin(k), 0, Math.sin(k * 2.1) * 0.35], [1, 1, 0.6], false);
+    }
+    sh.rotation.set(-0.35, 0, sg * 2.25); el.rotation.set(-1.15, 0, 0); wr.rotation.set(0.2, 0, 0);
+    extra.push({ sh, el, wr, sg, base: [sh.rotation.x, sh.rotation.z, el.rotation.x] });
+    if (item === 'fire') { const fg = glowSprite(T.glow, 0xff8a30, 0.6); fg.position.set(0, -0.14, -0.08); wr.add(fg); M.fireGlow = fg; }
+  }
+  // ---- wheel of fire behind the head (kept turned toward the camera by the view) ----
+  const halo = new THREE.Group(); halo.position.set(0, 0.13, -0.17); H.add(halo);
+  P.add(halo, new THREE.TorusGeometry(0.27, 0.012, 8, 56), flame, [0, 0, 0], [0, 0, 0], [1, 1, 1], false);
+  P.add(halo, new THREE.TorusGeometry(0.235, 0.005, 6, 56), flame, [0, 0, 0], [0, 0, 0], [1, 1, 1], false);
+  for (let i = 0; i < 22; i++) { const a = (i / 22) * Math.PI * 2, L = i % 2 ? 0.075 : 0.11; P.add(halo, new THREE.ConeGeometry(0.022, L, 5), flame, [Math.sin(a) * (0.275 + L / 2), Math.cos(a) * (0.275 + L / 2), 0], [0, 0, -a], [1, 1, 0.4], false); }
+  P.build();
+  const eyeGlow = glowSprite(T.glow, 0xffa040, 0.3); eyeGlow.position.set(0, 0.178, 0.12); H.add(eyeGlow); eyeGlow.material.opacity = 0;
+  M.extraArms = extra; M.halo = halo; M.thirdEye = eyeGlow;
+  M.mats = { skin, gold, gem: third, eye };
+  M.color = new THREE.Color(0.8, 0.9, 2.2);
+  M.trails = [
+    { obj: j.rWr, a: new V3(0, -0.04, 0.02), b: new V3(0, -0.18, 0.02), color: [0.6, 0.6, 2.4], core: [2.2, 1.8, 3.0], spark: 'cosmic' },
+    { obj: j.lWr, a: new V3(0, -0.04, 0.02), b: new V3(0, -0.18, 0.02), color: [0.6, 0.6, 2.4], core: [2.2, 1.8, 3.0], spark: 'cosmic' },
+    { obj: j.lAn, a: new V3(0, -0.05, 0.0), b: new V3(0, -0.06, 0.17), color: [1.6, 0.7, 0.3], core: [2.6, 1.6, 0.8], spark: 'cosmic' },
+  ];
+  enhanceModel(M.root, 0x8fa8ff, 0.5);
+  return M;
+}
+
+// ============================================================
+//  APHRODITE  (goddess of love: waist-length golden hair crowned with roses, a pearl-white chiton girdled in gold,
+//              pearls, a sheer rose shawl, and the ribbon wand whose silk does her fighting)
+// ============================================================
+function buildAphrodite(T) {
+  const M = makeSkeleton('aphrodite');
+  const { j } = M;
+  const P = new PartSet();
+  const skin = new THREE.MeshPhysicalMaterial({ color: 0xf3cdb8, roughness: 0.55, sheen: 0.6, sheenColor: new THREE.Color(0xffd0d8), sheenRoughness: 0.4 });
+  const gold = new THREE.MeshStandardMaterial({ color: 0xf4ca72, metalness: 1, roughness: 0.22 });
+  const dress = new THREE.MeshStandardMaterial({ color: 0xfff7f9, map: clothTex('#fff5f7', '#e8b04a'), roughness: 0.8, side: THREE.DoubleSide });
+  const sheer = new THREE.MeshStandardMaterial({ color: 0xffc4da, roughness: 0.6, transparent: true, opacity: 0.6, side: THREE.DoubleSide, depthWrite: false, emissive: new THREE.Color(0.3, 0.12, 0.18) });
+  const hair = new THREE.MeshPhysicalMaterial({ color: 0xf2c47c, roughness: 0.45, sheen: 1, sheenColor: new THREE.Color(0xffb8cc), sheenRoughness: 0.35 });
+  const pearl = new THREE.MeshPhysicalMaterial({ color: 0xfff8f0, roughness: 0.15, clearcoat: 1, sheen: 1, sheenColor: new THREE.Color(0xffd0e8) });
+  const rose = new THREE.MeshStandardMaterial({ color: 0xd4204a, roughness: 0.5 });
+  const rose2 = new THREE.MeshStandardMaterial({ color: 0xff86b0, roughness: 0.5 });
+  const leaf = new THREE.MeshStandardMaterial({ color: 0x3a7a3a, roughness: 0.6 });
+  const gem = new THREE.MeshStandardMaterial({ color: 0x500018, emissive: new THREE.Color(2.2, 0.5, 1.0), emissiveIntensity: 0.8, roughness: 0.2 });
+  const eye = new THREE.MeshBasicMaterial({ color: new THREE.Color(0.1, 0.42, 0.62) });
+  const heartShape = (k) => { const hs = new THREE.Shape(); hs.moveTo(0, -0.25 * k); hs.bezierCurveTo(-0.42 * k, 0.02 * k, -0.28 * k, 0.36 * k, 0, 0.16 * k); hs.bezierCurveTo(0.28 * k, 0.36 * k, 0.42 * k, 0.02 * k, 0, -0.25 * k); return hs; };
+
+  // ---- hips: knee-length pleated skirt slit at the front, a long sheer train behind ----
+  P.add(j.hips, lathe([[0, -0.16], [0.14, -0.14], [0.205, -0.07], [0.222, 0.02], [0.2, 0.13], [0, 0.15]]), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.74]);
+  {
+    const sk = lathe([[0.2, 0.12], [0.228, 0.02], [0.262, -0.14], [0.31, -0.32], [0.335, -0.42]], 64);
+    const pos = sk.attributes.position;
+    for (let i = 0; i < pos.count; i++) { const x = pos.getX(i), y = pos.getY(i), z = pos.getZ(i), a = Math.atan2(x, z), d = Math.min(1, (0.12 - y) / 0.54); const k = 1 + 0.08 * d * Math.sin(a * 16); pos.setXYZ(i, x * k, y + d * 0.1 * Math.exp(-(a - 0.5) * (a - 0.5) / 0.05), z * k); }   // the hem lifts at the slit
+    sk.computeVertexNormals();
+    P.add(j.hips, sk, dress, [0, 0, 0], [0, 0, 0], [1, 1, 0.84]);
+    P.add(j.hips, new THREE.PlaneGeometry(0.34, 0.92, 2, 8).translate(0, -0.46, 0), sheer, [0, 0.02, -0.19], [0.1, Math.PI, 0]);
+  }
+  // ---- torso: slim waist, the magic girdle (kestos himas) with its glowing heart ----
+  P.add(j.spine, lathe([[0, -0.06], [0.192, -0.05], [0.176, 0.05], [0.168, 0.14], [0.182, 0.24], [0.198, 0.3], [0, 0.31]]), dress, [0, 0, 0], [0, 0, 0], [1, 1, 0.7]);
+  P.add(j.spine, new THREE.TorusGeometry(0.176, 0.016, 8, 40), gold, [0, 0.1, 0], [Math.PI / 2, 0, 0], [1, 0.72, 1]);
+  P.add(j.spine, new THREE.TorusGeometry(0.18, 0.008, 6, 40), gold, [0, 0.14, 0], [Math.PI / 2, 0, 0], [1, 0.72, 1]);
+  P.add(j.spine, new THREE.ExtrudeGeometry(heartShape(0.11), { depth: 0.01, bevelEnabled: true, bevelThickness: 0.004, bevelSize: 0.004, bevelSegments: 2 }), gem, [0, 0.12, 0.128]);
+  P.add(j.chest, lathe([[0, -0.07], [0.2, -0.06], [0.222, 0.04], [0.235, 0.14], [0.228, 0.21], [0.2, 0.275], [0.12, 0.31], [0, 0.32]]), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.66]);
+  // bodice, one-shouldered drape pinned with a gold clasp
+  for (const sx of [-1, 1]) P.ell(j.chest, dress, [sx * 0.072, 0.115, 0.082], [0.082, 0.072, 0.066]);
+  P.add(j.chest, lathe([[0.204, -0.07], [0.228, 0.04], [0.24, 0.12], [0.226, 0.185]], 40), dress, [0, 0, 0], [0, 0, 0], [1.03, 1, 0.72]);
+  { const pts = [new V3(-0.19, 0.17, 0.11), new V3(-0.07, 0.225, 0.155), new V3(0.07, 0.275, 0.12), new V3(0.155, 0.325, 0.02), new V3(0.16, 0.305, -0.09), new V3(0.04, 0.235, -0.15), new V3(-0.14, 0.17, -0.13)];
+    P.add(j.chest, new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 40, 0.02, 8), dress); }
+  P.add(j.chest, new THREE.ExtrudeGeometry(heartShape(0.07), { depth: 0.008, bevelEnabled: false }), gold, [0.155, 0.318, 0.04], [0, 0.5, 0]);
+  // pearls
+  for (let i = 0; i < 24; i++) { const a = (i / 23 - 0.5) * Math.PI * 1.2; P.ell(j.chest, pearl, [Math.sin(a) * 0.115, 0.3 - Math.cos(a) * 0.055, 0.03 + Math.cos(a) * 0.1], [0.0095, 0.0095, 0.0095], [0, 0, 0], true); }
+  P.ell(j.chest, gem, [0, 0.235, 0.136], [0.014, 0.018, 0.008]);
+  // ---- head ----
+  P.add(j.neck, lathe([[0, -0.04], [0.06, -0.03], [0.054, 0.06], [0.05, 0.15], [0, 0.17]]), skin);
+  const H = j.head;
+  const brow = new THREE.MeshStandardMaterial({ color: 0xb8864a, roughness: 0.8 });
+  animeHead(P, H, { skin, hair, iris: eye, browMat: brow, lip: 0xd85a78, lash: 0x1a0e10, browW: 0.0027, browTilt: 0.1, lashW: 1.7,
+    face: { jaw: 0.8, chin: 0.82, len: 0.96, hollow: 0.0, nose: 0.76, noseLen: 0.88, eyeW: 1.12, eyeH: 1.08, eyeTilt: 0.07, lid: 0.12, browY: 0.035, mouthW: 0.78, smile: 0.42 },
+    style: { bangs: 5, bangLen: 0.085, bangSweep: 0.85, side: 0.34, back: 21, backLen: 0.9, backLift: 0.03 } });
+  // crown of roses
+  for (let i = 0; i < 11; i++) {
+    const a = (i / 10 - 0.5) * Math.PI * 1.55, x = Math.sin(a) * 0.116, z = Math.cos(a) * 0.118 - 0.015, y = 0.2 - Math.abs(a) * 0.02, m = i % 3 === 1 ? rose2 : rose;
+    P.ell(H, m, [x, y, z], [0.021, 0.019, 0.021], [0, 0, 0], true);
+    P.add(H, new THREE.TorusGeometry(0.011, 0.005, 5, 10), m, [x * 1.03, y + 0.011, z * 1.03], [Math.PI / 2, 0, i]);
+    if (i % 2) P.add(H, new THREE.ConeGeometry(0.012, 0.045, 4), leaf, [x * 1.1, y - 0.012, z * 1.1], [0.4, a, 1.2], [1, 1, 0.3]);
+  }
+  for (const sx of [-1, 1]) P.ell(H, pearl, [sx * 0.098, 0.048, 0.0], [0.011, 0.014, 0.011]);
+  // ---- limbs: slender, gold armlets and bangles ----
+  for (const [sd, sg] of [['l', 1], ['r', -1]]) {
+    const sh = j[sd + 'Sh'], el = j[sd + 'El'], wr = j[sd + 'Wr'];
+    P.add(sh, muscleLimb(0.275, 0.054, 0.042, 0.004, 0.55), skin);
+    P.ell(sh, skin, [sg * 0.008, -0.02, 0], [0.062, 0.066, 0.062]);
+    P.add(sh, new THREE.TorusGeometry(0.048, 0.007, 6, 22), gold, [0, -0.11, 0], [Math.PI / 2, 0, 0], [1, 0.9, 1]);
+    P.add(el, muscleLimb(0.25, 0.044, 0.03, 0.004, 0.7), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.9]);
+    for (const y of [-0.195, -0.215]) P.add(el, new THREE.TorusGeometry(0.034, 0.0055, 6, 20), gold, [0, y, 0], [Math.PI / 2, 0, 0], [1, 0.9, 1]);
+    P.ell(wr, skin, [0, -0.04, 0.01], [0.034, 0.045, 0.017]);
+    const hp = j[sd + 'Hip'], kn = j[sd + 'Kn'];
+    P.add(hp, muscleLimb(0.455, 0.086, 0.054, 0.006, 0.5), skin);
+    P.add(kn, muscleLimb(0.445, 0.054, 0.033, 0.004, 0.62), skin);
+    P.add(kn, new THREE.TorusGeometry(0.035, 0.0055, 6, 18), gold, [0, -0.385, 0], [Math.PI / 2, 0, 0]);
+  }
+  addDetail(P, j, { skin, hair, sole: gold, strap: gold, metal: gold }, { anime: true, k: 0.74, eye: [0.04, 0.108, 0.106], lip: 0xd85a78, curls: false, armored: true, open: true });
+  // ---- the ribbon wand: a slim gold rod tipped with a heart; the silk itself is simulated by the view ----
+  const wand = new THREE.Group(); wand.position.set(0, -0.055, 0.0); j.rWr.add(wand);
+  P.add(wand, new THREE.CylinderGeometry(0.007, 0.009, 0.36, 8), gold, [0, 0, 0.15], [Math.PI / 2, 0, 0]);
+  P.add(wand, new THREE.ExtrudeGeometry(heartShape(0.09), { depth: 0.012, bevelEnabled: true, bevelThickness: 0.004, bevelSize: 0.004, bevelSegments: 2 }), gem, [0, 0, 0.345], [Math.PI / 2, 0, 0]);
+  P.ell(wand, pearl, [0, 0, -0.035], [0.013, 0.013, 0.013]);
+  P.build();
+  const hearts = {};
+  { const g = glowSprite(T.glow, 0xff7ab8, 0.42); g.position.set(0, -0.09, 0.02); j.lWr.add(g); hearts.l = g; const g2 = glowSprite(T.glow, 0xff7ab8, 0.36); g2.position.set(0, 0, 0.35); wand.add(g2); hearts.r = g2; }
+  // ---- sheer rose shawl ----
+  const capeGeo = new THREE.PlaneGeometry(0.56, 1.1, 10, 18);
+  capeGeo.translate(0, -0.55, 0);
+  {
+    const pos = capeGeo.attributes.position, cols = [];
+    for (let i = 0; i < pos.count; i++) if (pos.getY(i) > 0) pos.setY(i, 0);
+    for (let i = 0; i < pos.count; i++) { const v = -pos.getY(i) / 1.1; const c = new THREE.Color(0xffd6e4).lerp(new THREE.Color(0xff86b0), v); if (v > 0.93) c.lerp(new THREE.Color(0xf4ca72), 0.8); cols.push(c.r, c.g, c.b); }
+    capeGeo.setAttribute('color', new THREE.Float32BufferAttribute(cols, 3));
+  }
+  const capeBase = capeGeo.attributes.position.array.slice();
+  const cape = new THREE.Mesh(capeGeo, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.6, side: THREE.DoubleSide, transparent: true, opacity: 0.62, depthWrite: false, emissive: new THREE.Color(0.28, 0.1, 0.16) }));
+  cape.position.set(0, 0.25, -0.165);
+  j.chest.add(cape);
+  M.cape = { mesh: cape, geo: capeGeo, base: capeBase, sway: 0 };
+  M.wand = wand; M.hearts = hearts;
+  M.ribbon = { obj: wand, tip: new V3(0, 0, 0.37) };
+  M.mats = { skin, gold, gem, eye };
+  M.color = new THREE.Color(2.0, 0.8, 1.4);
+  M.trails = [{ obj: j.lAn, a: new V3(0, -0.05, 0.0), b: new V3(0, -0.06, 0.15), color: [2.0, 0.6, 1.2], core: [2.8, 1.8, 2.3], spark: 'love' }];
+  enhanceModel(M.root, 0xffa0c8, 0.5);
+  return M;
+}
+
+
+return { canvasTex, enhanceModel, buildZeus, buildPoseidon, updateCape, buildAnubis, buildThor, buildSusanoo, buildHeracles, buildHades, buildOdin, buildShiva, buildAphrodite, SPH };
 })();
 
 // ======== fx.js ========
@@ -5701,7 +6355,7 @@ return { makeFxTextures, Particles, Bolts, waterMaterial, Timed };
 const __game = (() => {
 const { Sim, DT, STAGE, CHARS, HUMAN, AUTO, SUPER_K } = __sim;
 const { SKEL, POSES, JOINTS, sampleAnim, blend, copyPose, cyclePose } = __poses;
-const { canvasTex, buildZeus, buildPoseidon, buildAnubis, buildThor, buildSusanoo, buildHeracles, buildHades, buildOdin, updateCape } = __models;
+const { canvasTex, buildZeus, buildPoseidon, buildAnubis, buildThor, buildSusanoo, buildHeracles, buildHades, buildOdin, buildShiva, buildAphrodite, updateCape } = __models;
 const { makeFxTextures, Particles, Bolts, waterMaterial, Timed } = __fx;
 // ============================================================
 //  GAME : renderer, stage, fighters' visuals, camera, HUD, audio
@@ -6157,6 +6811,9 @@ const COL = {
   hell: [1.9, 0.3, 0.6],
   odin: [0.8, 1.3, 2.1],
   rune: [1.9, 1.5, 0.6],
+  cosmic: [0.8, 0.7, 2.4],
+  flame: [2.4, 1.0, 0.3],
+  love: [2.2, 0.6, 1.3],
 };
 const VIOLET = new THREE.Color(1.0, 0.5, 1.9);
 const violetBolt = (a, b, o = {}) => bolts.spawn(a, b, Object.assign({ color: VIOLET }, o));
@@ -6217,6 +6874,21 @@ function hitFx(e) {
     glowPuff(x, y, z, 0xff4a70, 2.2 * p, 0.26);
     ring(x, y, z, 0xff8aa0, 2.2 * p, 0.24, true);
     lightFlash(x, y, 0xff3060, 60 * p);
+  } else if (e.fx === 'cosmic' || e.fx === 'pralaya') {
+    const big = e.fx === 'pralaya';
+    addP.burst(big ? 36 : 24, x, y, z, big ? 9 : 7, { life: [0.15, 0.45], size: [0.05, 0.14], color: COL.cosmic, drag: 4 });
+    addP.burst(big ? 26 : 8, x, y, z, 5, { life: [0.2, 0.5], size: [0.05, 0.12], color: COL.flame, drag: 3, up: 2 });
+    glowPuff(x, y, z, big ? 0xff9a50 : 0x9f9fff, (big ? 2.6 : 2.0) * p, 0.26);
+    ring(x, y, z, big ? 0xffc080 : 0xb8b0ff, (big ? 2.6 : 2.1) * p, 0.26, true);
+    if (p > 0.55) runeRing(x, y, z, 1.5 * p, 0.3, true, big ? [2.4, 1.1, 0.4] : [1.2, 1.0, 2.8], yantraTex());
+    lightFlash(x, y, big ? 0xff8a40 : 0x8f8fff, (big ? 80 : 55) * p);
+  } else if (e.fx === 'love') {
+    addP.burst(22, x, y, z, 7, { life: [0.15, 0.42], size: [0.05, 0.13], color: COL.love, drag: 4 });
+    for (let i = 0; i < Math.round(2 + 4 * p); i++) loveHeart(x + rand(-0.3, 0.3), y + rand(-0.2, 0.3), z + 0.1, rand(0.16, 0.3), rand(0.4, 0.7), rand(-2, 2), rand(1, 3));
+    for (let i = 0; i < Math.round(3 * p); i++) petal(x, y, z, 0.7, rand(-3, 3), rand(0, 3), rand(-1, 1));
+    glowPuff(x, y, z, 0xff8ac0, 2.0 * p, 0.25);
+    ring(x, y, z, 0xffc0dc, 2.1 * p, 0.25, true);
+    lightFlash(x, y, 0xff7ab0, 55 * p);
   } else if (e.fx === 'rune') {
     addP.burst(30, x, y, z, 8, { life: [0.15, 0.42], size: [0.05, 0.13], color: COL.odin, drag: 4 });
     addP.burst(12, x, y, z, 5, { life: [0.2, 0.5], size: [0.04, 0.1], color: COL.rune, drag: 3 });
@@ -6345,6 +7017,24 @@ function projSpawn(p) {
     disc.rotation.x = -Math.PI / 2; disc.position.y = 0.02;
     g.add(hs, disc); g.userData.hands = hs; g.userData.mats = [];
     g.position.y = 0;
+  } else if (p.kind === 'eyebeam') {
+    // a lance of fire from the third eye, slanting down to the ground
+    const L = 2.6, dirA = Math.atan2(p.vy, p.vx);
+    const core = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, L, 8).rotateZ(Math.PI / 2).translate(-L / 2, 0, 0), new THREE.MeshBasicMaterial({ color: new THREE.Color(3.0, 2.2, 1.2), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false }));
+    const sheath = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.05, L, 10).rotateZ(Math.PI / 2).translate(-L / 2, 0, 0), new THREE.MeshBasicMaterial({ color: new THREE.Color(1.6, 0.5, 2.4), transparent: true, opacity: 0.55, blending: THREE.AdditiveBlending, depthWrite: false }));
+    const beam = new THREE.Group(); beam.add(core, sheath); beam.rotation.z = dirA; beam.scale.x = 0.05;
+    const s2 = new THREE.Sprite(new THREE.SpriteMaterial({ map: FT.glow, color: 0xffa050, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false })); s2.scale.setScalar(1.1);
+    g.add(beam, s2); g.userData.beam = beam; g.userData.mats = [];
+  } else if (p.kind === 'heart') {
+    const hm = new THREE.Mesh(new THREE.ExtrudeGeometry(heartShape2(1), { depth: 0.08, bevelEnabled: true, bevelThickness: 0.05, bevelSize: 0.05, bevelSegments: 3 }).translate(0, 0, -0.04), new THREE.MeshStandardMaterial({ color: 0xff4a8a, emissive: new THREE.Color(1.5, 0.25, 0.7), emissiveIntensity: 0.9, roughness: 0.25, metalness: 0.2 }));
+    const s2 = new THREE.Sprite(new THREE.SpriteMaterial({ map: FT.glow, color: 0xff7ab8, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false })); s2.scale.setScalar(1.7);
+    g.add(hm, s2); g.userData.heart = hm; g.userData.mats = [];
+  } else if (p.kind === 'bubble') {
+    const bm = new THREE.MeshPhysicalMaterial({ color: 0xffe8f4, roughness: 0.05, metalness: 0.1, iridescence: 1, iridescenceIOR: 1.6, transparent: true, opacity: 0.42, emissive: new THREE.Color(0.4, 0.25, 0.4), side: THREE.DoubleSide, depthWrite: false });
+    const b = new THREE.Mesh(new THREE.SphereGeometry(0.44, 24, 18), bm);
+    const hi = new THREE.Sprite(new THREE.SpriteMaterial({ map: FT.glow, color: 0xffffff, transparent: true, opacity: 0.8, blending: THREE.AdditiveBlending, depthWrite: false })); hi.scale.setScalar(0.3); hi.position.set(-0.16, 0.2, 0.3);
+    const s2 = new THREE.Sprite(new THREE.SpriteMaterial({ map: FT.glow, color: 0xffc0e0, transparent: true, opacity: 0.45, blending: THREE.AdditiveBlending, depthWrite: false })); s2.scale.setScalar(1.3);
+    g.add(b, hi, s2); g.userData.bub = b; g.userData.mats = [];
   } else if (p.kind === 'gungnir') {
     // Gungnir in flight: the spear itself, wreathed in rune-light
     const steel = new THREE.MeshStandardMaterial({ color: 0x9aa8c0, metalness: 0.9, roughness: 0.25, emissive: new THREE.Color(0.3, 0.6, 1.2), emissiveIntensity: 0.9 });
@@ -6425,6 +7115,8 @@ function projEnd(p, hit) {
   else if (p.kind === 'vortex') { normP.burst(40, p.x, 1, 0.1, 6, { life: [0.4, 0.9], size: [0.08, 0.18], color: [0.8, 0.97, 1], alpha: 0.9, grav: 10, up: 4 }); }
   else if (p.kind === 'quake') { dust(p.x, 20, 1.6); }
   else if (p.kind === 'cerberus' || p.kind === 'hands') { addP.burst(30, p.x, p.kind === 'hands' ? 1 : p.y, 0.1, 5, { life: [0.2, 0.5], size: [0.06, 0.14], color: COL.hell, drag: 3, up: 2 }); }
+  else if (p.kind === 'eyebeam') { addP.burst(30, p.x, p.y, 0.1, 6, { life: [0.15, 0.45], size: [0.05, 0.14], color: COL.flame, drag: 4, up: 2 }); glowPuff(p.x, p.y, 0.1, 0xffa050, 2.0, 0.25); if (!hit) { ring(p.x, 0.05, 0, 0xffa050, 2.6, 0.35); normP.burst(10, p.x, 0.1, 0, 2, { life: [0.4, 0.8], size: [0.1, 0.22], color: [0.1, 0.06, 0.08], alpha: 0.7, up: 1.5, drag: 2 }); } }
+  else if (p.kind === 'heart' || p.kind === 'bubble') { for (let i = 0; i < 7; i++) loveHeart(p.x, p.y, 0.1, rand(0.14, 0.26), 0.6, rand(-2.5, 2.5), rand(0.5, 3)); if (p.kind === 'bubble') { normP.burst(26, p.x, p.y, 0.1, 3.5, { life: [0.3, 0.7], size: [0.03, 0.08], color: [1, 0.95, 1], alpha: 0.85, drag: 2 }); ring(p.x, p.y, 0.1, 0xffe0f0, 1.6, 0.25, true); } glowPuff(p.x, p.y, 0.1, 0xff9ac8, 1.6, 0.25); }
   else if (p.kind === 'gungnir' || p.kind === 'raven' || p.kind === 'runeTrap') { addP.burst(24, p.x, p.kind === 'runeTrap' ? 1 : p.y, 0.1, 5, { life: [0.15, 0.4], size: [0.05, 0.13], color: COL.odin, drag: 4 }); glowPuff(p.x, p.kind === 'runeTrap' ? 1 : p.y, 0.1, 0x9fd4ff, 1.8, 0.25); if (p.kind === 'raven') normP.burst(20, p.x, p.y, 0.1, 3, { life: [0.5, 1.0], size: [0.05, 0.1], color: [0.05, 0.05, 0.08], alpha: 0.9, grav: 3, drag: 1.5 }); }
   else if (p.kind === 'rock') { normP.burst(30, p.x, Math.max(0.4, p.y), 0.1, 6, { life: [0.4, 0.9], size: [0.06, 0.16], color: [0.5, 0.42, 0.34], alpha: 1, grav: 14, up: 3, drag: 0.5 }); dust(p.x, 14, 1.2); }
   else if (p.kind === 'gale') { addP.burst(26, p.x, p.y, 0.1, 6, { life: [0.12, 0.35], size: [0.05, 0.13], color: COL.storm, drag: 4 }); glowPuff(p.x, p.y, 0.1, 0xb8ffe0, 2, 0.25); }
@@ -6475,6 +7167,18 @@ function updateProjViews(dt) {
       const rise = clamp((v.t - 0.22) / 0.14, 0, 1), sink = clamp((v.t - 0.6) / 0.15, 0, 1);
       v.g.userData.hands.position.y = (rise - sink) * 1.25;
       if (Math.random() < 0.6) addP.burst(2, p.x + rand(-0.6, 0.6), 0.1, rand(-0.3, 0.3), 1.5, { life: [0.3, 0.6], size: [0.06, 0.14], color: COL.hell, up: 2.5, drag: 1 });
+    } else if (p.kind === 'eyebeam') {
+      v.g.position.y = p.y;
+      v.g.userData.beam.scale.x = Math.min(1, v.t / 0.14); v.g.userData.beam.scale.y = v.g.userData.beam.scale.z = 1 + Math.sin(v.t * 70) * 0.15;
+      addP.burst(2, p.x, p.y, 0.1, 1.5, { life: [0.1, 0.25], size: [0.06, 0.12], color: Math.random() < 0.5 ? COL.flame : COL.cosmic, drag: 2 });
+    } else if (p.kind === 'heart') {
+      v.g.position.y = p.y + Math.sin(v.t * 6) * 0.1;
+      const k = 1 + Math.sin(v.t * 14) * 0.12; v.g.userData.heart.scale.set(k, k, k); v.g.userData.heart.rotation.y = Math.sin(v.t * 3) * 0.7;
+      if (Math.random() < 0.4) loveHeart(p.x - Math.sign(p.vx) * 0.3, p.y + rand(-0.2, 0.2), 0.1, 0.13, 0.5, -Math.sign(p.vx) * 1.2, 0.6);
+    } else if (p.kind === 'bubble') {
+      v.g.position.y = p.y + Math.sin(v.t * 3) * 0.14;
+      const k = 1 + Math.sin(v.t * 5) * 0.06, grow = Math.min(1, v.t / 0.15); v.g.userData.bub.scale.set(k * grow, grow / k, k * grow);
+      if (Math.random() < 0.15) normP.burst(1, p.x + rand(-0.3, 0.3), p.y + rand(-0.3, 0.3), 0.1, 0.4, { life: [0.4, 0.8], size: [0.03, 0.07], color: [1, 0.95, 1], alpha: 0.7, up: 0.5, drag: 1 });
     } else if (p.kind === 'gungnir') {
       v.g.position.y = p.y;
       v.g.userData.sp.scale.x = Math.sign(p.vx) || 1;
@@ -6835,8 +7539,8 @@ function runeCircleTex() {
   return runeTexC;
 }
 // a spinning ring of runes (floor or facing the camera)
-function runeRing(x, y, z, size, life, vertical = false, col = [1.4, 1.9, 2.8]) {
-  const m = new THREE.MeshBasicMaterial({ map: runeCircleTex(), color: new THREE.Color(...col), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide });
+function runeRing(x, y, z, size, life, vertical = false, col = [1.4, 1.9, 2.8], tex = null) {
+  const m = new THREE.MeshBasicMaterial({ map: tex || runeCircleTex(), color: new THREE.Color(...col), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide });
   m.userData.own = true;
   const mesh = new THREE.Mesh(QUAD, m);
   if (!vertical) mesh.rotation.x = -Math.PI / 2;
@@ -7044,9 +7748,246 @@ function odinRaven(e) {
   }, life * 1000);
   sfx.whoosh(0.9);
 }
+
+// ============================================================
+//  SHIVA / APHRODITE effects
+// ============================================================
+function heartShape2(k) { const hs = new THREE.Shape(); hs.moveTo(0, -0.25 * k); hs.bezierCurveTo(-0.42 * k, 0.02 * k, -0.28 * k, 0.36 * k, 0, 0.16 * k); hs.bezierCurveTo(0.28 * k, 0.36 * k, 0.42 * k, 0.02 * k, 0, -0.25 * k); return hs; }
+const HEART_GEO = new THREE.ShapeGeometry(heartShape2(1), 10); HEART_GEO.userData.shared = true;
+const HEART_M = [[1.7, 0.36, 0.85], [1.8, 0.7, 1.15], [1.45, 0.25, 0.55]].map((c) => new THREE.MeshBasicMaterial({ color: new THREE.Color(...c), transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide }));
+// a little heart of light that pops in, drifts and shrinks away (shared geometry and materials: very cheap)
+function loveHeart(x, y, z, size, life, vx = 0, vy = 1) {
+  const h = new THREE.Mesh(HEART_GEO, HEART_M[Math.floor(Math.random() * 3)]); h.position.set(x, y, z); h.renderOrder = 8; h.scale.setScalar(0.001);
+  const wob = Math.random() * 6;
+  timed.add(h, life, (o, k, dt) => { o.position.x += vx * dt; o.position.y += vy * dt; vx *= 1 - 2 * dt; o.quaternion.copy(camera.quaternion); o.rotateZ(Math.sin(k * 7 + wob) * 0.3); o.scale.setScalar(size * (k < 0.15 ? k / 0.15 : k > 0.6 ? (1 - k) / 0.4 : 1)); });
+}
+const PETAL_GEO = (() => { const sh = new THREE.Shape(); sh.moveTo(0, -0.5); sh.bezierCurveTo(0.62, -0.3, 0.55, 0.35, 0, 0.5); sh.bezierCurveTo(-0.55, 0.35, -0.62, -0.3, 0, -0.5); const g = new THREE.ShapeGeometry(sh, 6); g.userData.shared = true; return g; })();
+const PETAL_M = [0xff2e62, 0xff8ab4, 0xffd0e0].map((c) => new THREE.MeshBasicMaterial({ color: new THREE.Color(c).multiplyScalar(1.15), side: THREE.DoubleSide }));
+function petal(x, y, z, life, vx, vy, vz) {
+  const pt = new THREE.Mesh(PETAL_GEO, PETAL_M[Math.floor(Math.random() * 3)]); pt.position.set(x, y, z);
+  const sp = new V3(rand(-9, 9), rand(-9, 9), rand(-9, 9)), sc = rand(0.7, 1.2);
+  timed.add(pt, life, (o, k, dt) => { o.position.x += vx * dt; o.position.y += vy * dt; o.position.z += vz * dt; vy -= 2.2 * dt; vx *= 1 - 1.2 * dt; if (o.position.y < 0.03) { o.position.y = 0.03; vy = 0; vx = 0; vz = 0; sp.set(0, 0, 0); } o.rotation.x += sp.x * dt; o.rotation.y += sp.y * dt; o.rotation.z += sp.z * dt; const f = k > 0.75 ? (1 - k) / 0.25 : 1; o.scale.set(0.075 * sc * f, 0.105 * sc * f, 1); });
+}
+let yantraTexC = null;
+function yantraTex() {
+  if (yantraTexC) return yantraTexC;
+  yantraTexC = canvasTex(512, 512, (g, w, h) => {
+    const cx = w / 2, cy = h / 2; g.clearRect(0, 0, w, h); g.strokeStyle = '#ffffff'; g.fillStyle = '#ffffff'; g.lineJoin = 'round';
+    for (const [r, lw] of [[244, 6], [228, 2], [176, 3]]) { g.lineWidth = lw; g.beginPath(); g.arc(cx, cy, r, 0, 7); g.stroke(); }
+    g.lineWidth = 3;
+    for (let i = 0; i < 16; i++) { const a = (i / 16) * Math.PI * 2; g.save(); g.translate(cx, cy); g.rotate(a); g.beginPath(); g.moveTo(-20, -178); g.quadraticCurveTo(-26, -210, 0, -226); g.quadraticCurveTo(26, -210, 20, -178); g.stroke(); g.restore(); }
+    for (let i = 0; i < 8; i++) { const a = (i / 8) * Math.PI * 2 + 0.39; g.save(); g.translate(cx, cy); g.rotate(a); g.beginPath(); g.moveTo(-34, -126); g.quadraticCurveTo(-40, -160, 0, -174); g.quadraticCurveTo(40, -160, 34, -126); g.stroke(); g.restore(); }
+    g.lineWidth = 4;
+    for (const [R, rot] of [[122, 0], [122, Math.PI], [84, 0], [84, Math.PI], [50, 0], [50, Math.PI]]) { g.beginPath(); for (let k = 0; k < 3; k++) { const a = -Math.PI / 2 + rot + k * 2.0944; k ? g.lineTo(cx + Math.cos(a) * R, cy + Math.sin(a) * R) : g.moveTo(cx + Math.cos(a) * R, cy + Math.sin(a) * R); } g.closePath(); g.stroke(); }
+    g.beginPath(); g.arc(cx, cy, 9, 0, 7); g.fill();
+  });
+  yantraTexC.userData = { shared: true };
+  return yantraTexC;
+}
+// --- Shiva ---
+function shivaFireRing(e) {
+  const g = new THREE.Group(); g.position.set(e.x, 1.9, -1.3);
+  const fm = new THREE.MeshBasicMaterial({ color: new THREE.Color(1.9, 0.62, 0.16), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }); fm.userData.own = true;
+  g.add(new THREE.Mesh(new THREE.TorusGeometry(2.3, 0.06, 10, 80), fm)); g.add(new THREE.Mesh(new THREE.TorusGeometry(2.05, 0.025, 8, 80), fm));
+  const tongues = [];
+  for (let i = 0; i < 44; i++) { const a = (i / 44) * Math.PI * 2; const c = new THREE.Mesh(new THREE.ConeGeometry(0.1, 0.5, 6).translate(0, 0.25, 0), fm); c.position.set(Math.sin(a) * 2.3, Math.cos(a) * 2.3, 0); c.rotation.z = -a; g.add(c); tongues.push(c); }
+  const v = views[e.side];
+  timed.add(g, SUPER_LIFE(1.25), (o, k, dt, t) => {
+    if (v) o.position.x = v.f.x;
+    fm.opacity = (k < 0.1 ? k / 0.1 : k > 0.85 ? (1 - k) / 0.15 : 1) * 0.9; o.scale.setScalar(0.5 + easeOutC(Math.min(1, t * 3)) * 0.5); o.rotation.z += dt * 0.5;
+    tongues.forEach((c, i) => { c.scale.y = 0.7 + Math.abs(Math.sin(t * 16 + i * 1.7)) * 0.9; });
+    if (Math.random() < 0.8) { const a = Math.random() * 6.28, r = 2.3 * o.scale.x; addP.burst(2, o.position.x + Math.sin(a) * r, o.position.y + Math.cos(a) * r, o.position.z, 1, { life: [0.3, 0.6], size: [0.08, 0.16], color: COL.flame, up: 2, drag: 1 }); }
+  });
+  stage.dimT = 1; sfx.noise(1.0, 300, 1400, 'bandpass', 0.7, 0.3, 0, 0.1); sfx.tone(110, 220, 0.8, 'triangle', 0.15);
+}
+function shivaDanceStrike(e) {
+  const a = (e.i % 2 ? 1 : -1) * 0.9 + rand(-0.3, 0.3);
+  slashStreak(e.x, e.y, 0.3, 2.2, 0.3, a, e.i % 2 ? [1.0, 0.8, 2.6] : [2.6, 1.2, 0.4], 0.22);
+  ghostOf(views[e.side], e.i % 2 ? [0.5, 0.5, 1.8] : [1.6, 0.7, 0.3]);     // afterimages: the many-armed dancer
+  addP.burst(14, e.x, e.y, 0.2, 5, { life: [0.15, 0.4], size: [0.05, 0.12], color: e.i % 2 ? COL.cosmic : COL.flame, drag: 3 });
+  sfx.sweep(0.12, 900, 3500, 2, 0.15); if (e.i % 2 === 0) sfx.kick(170, 60, 0.12, 0.35);
+}
+// the cosmic dance: night falls, the stars wheel and a yantra turns under his feet
+function shivaCosmicDance(e) {
+  const sm = new THREE.ShaderMaterial({ uniforms: { uTime: { value: 0 }, uOp: { value: 0 } }, transparent: true, depthWrite: false, side: THREE.BackSide, fog: false,
+    vertexShader: `varying vec3 vD; void main(){ vD = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`,
+    fragmentShader: `varying vec3 vD; uniform float uTime, uOp; float h(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7))) * 43758.5453); }
+      void main(){ vec3 d = normalize(vD); float a = atan(d.x, d.z) + uTime * 0.25; vec2 q = vec2(a * 260.0, d.y * 320.0); vec2 sp = floor(q); float st = step(0.9965, h(sp)) * (0.6 + 0.4 * sin(uTime * 5.0 + h(sp) * 30.0));
+        float neb = 0.5 + 0.5 * sin(a * 3.0 + d.y * 4.0) * sin(d.y * 5.0 - uTime * 0.3); vec3 c = mix(vec3(0.02, 0.015, 0.08), vec3(0.22, 0.07, 0.38), neb * 0.7) + vec3(0.9, 0.9, 1.2) * st; gl_FragColor = vec4(c, uOp); }` });
+  sm.userData.own = true;
+  const dome = new THREE.Mesh(new THREE.SphereGeometry(60, 32, 16), sm); dome.position.set(e.ox, 0, 0); dome.renderOrder = -5;
+  const life = SUPER_LIFE(0.95);
+  timed.add(dome, life, (o, k, dt, t) => { sm.uniforms.uTime.value = t; sm.uniforms.uOp.value = (k < 0.15 ? k / 0.15 : k > 0.8 ? (1 - k) / 0.2 : 1) * 0.88; });
+  runeRing(e.x, 0.05, 0, 5.5, life, false, [2.4, 1.1, 0.5], yantraTex());
+  runeRing(e.x, 0.06, 0, 3.0, life, false, [1.2, 1.0, 2.8], yantraTex());
+  for (let i = 0; i < 3; i++) setTimeout(() => ring(e.x, 0.06, 0, 0xffa050, 4 + i * 2, 0.6), i * 120);
+  addP.burst(60, e.x, 0.3, 0, 4, { life: [0.6, 1.4], size: [0.05, 0.12], color: COL.flame, up: 5, drag: 1 });
+  sfx.ring([147, 220, 294, 440], 1.6, 0.06); sfx.sweep(1.0, 200, 1500, 0.8, 0.2);
+}
+function thirdEyePos(side) { const v = views[side]; const p = new V3(); if (v) { p.set(0, 0.178, 0.12); v.m.j.head.localToWorld(p); } return p; }
+function shivaThirdEye(e) {
+  const p = thirdEyePos(e.side);
+  glowPuff(p.x, p.y, p.z, 0xffa040, 3.2, 0.5); ring(p.x, p.y, p.z, 0xffd080, 2.6, 0.4, true);
+  for (let i = 0; i < 10; i++) { const a = (i / 10) * 6.28; slashStreak(p.x + Math.cos(a) * 0.5, p.y + Math.sin(a) * 0.5, p.z, 1.0, 0.06, a - Math.PI / 2, [2.6, 1.3, 0.5], 0.35); }
+  sfx.tone(60, 240, 0.6, 'sawtooth', 0.12); sfx.ring([330, 495], 0.6, 0.05);
+}
+function shivaEyeBeam(e) {
+  const from = thirdEyePos(e.side), to = new V3(e.tx, e.ty, 0.2); const dirV = to.clone().sub(from), len = dirV.length() + 2.5;
+  const g = new THREE.Group(); g.position.copy(from); g.rotation.z = Math.atan2(dirV.y, dirV.x);
+  const cm = new THREE.MeshBasicMaterial({ color: new THREE.Color(3, 2.3, 1.3), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false }); cm.userData.own = true;
+  const om = new THREE.MeshBasicMaterial({ color: new THREE.Color(1.7, 0.5, 2.6), transparent: true, opacity: 0.5, blending: THREE.AdditiveBlending, depthWrite: false }); om.userData.own = true;
+  g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.07, len, 10).rotateZ(Math.PI / 2).translate(len / 2, 0, 0), cm));
+  g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.14, len, 14).rotateZ(Math.PI / 2).translate(len / 2, 0, 0), om));
+  timed.add(g, SUPER_LIFE(0.22), (o, k, dt, t) => { const w = Math.min(1, t * 14) * (k > 0.75 ? (1 - k) / 0.25 : 1); o.scale.set(1, w * (1 + Math.sin(t * 60) * 0.12), w); addP.burst(5, to.x + rand(-0.3, 0.3), to.y + rand(-0.4, 0.4), 0.3, 6, { life: [0.15, 0.4], size: [0.06, 0.14], color: Math.random() < 0.6 ? COL.flame : COL.cosmic, drag: 3 }); });
+  stage.flash = Math.max(stage.flash, 0.6); shake = Math.max(shake, 0.4);
+  sfx.tone(1600, 400, 0.6, 'sawtooth', 0.12); sfx.noise(0.6, 4000, 800, 'bandpass', 0.8, 0.3, 0, 0.01, true);
+}
+// pralaya: the dissolution - a lotus of fire unfolds and the world scatters into stars
+function shivaPralaya(x) {
+  const fm = new THREE.MeshBasicMaterial({ color: new THREE.Color(1.5, 0.5, 0.12), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide }); fm.userData.own = true;
+  const vm = new THREE.MeshBasicMaterial({ color: new THREE.Color(0.5, 0.2, 1.4), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide }); vm.userData.own = true;
+  const g = new THREE.Group(); g.position.set(x, 1.3, 0.2);
+  const pg = new THREE.SphereGeometry(0.5, 12, 8);
+  for (let L = 0; L < 2; L++) for (let i = 0; i < 10; i++) { const a = (i / 10) * Math.PI * 2 + L * 0.314; const pt = new THREE.Mesh(pg, L ? vm : fm); pt.scale.set(0.3, 1.5 - L * 0.5, 0.05); pt.position.set(Math.sin(a) * (1.1 - L * 0.4), Math.cos(a) * (1.1 - L * 0.4), L * 0.02); pt.rotation.z = -a; g.add(pt); }
+  timed.add(g, 1.1, (o, k) => { o.quaternion.copy(camera.quaternion); o.rotateZ(k * 2.5); o.scale.setScalar(0.3 + easeOutC(Math.min(1, k * 2.5)) * 1.7); fm.opacity = vm.opacity = (1 - k) * 0.85; });
+  runeRing(x, 0.06, 0, 12, 1.3, false, [2.4, 1.1, 0.5], yantraTex()); runeRing(x, 1.3, 0.3, 6, 0.9, true, [1.3, 1.0, 2.8], yantraTex());
+  for (let i = 0; i < 4; i++) ring(x, 0.08, 0, i % 2 ? 0xffa050 : 0xa080ff, 6 + i * 4, 0.6 + i * 0.12);
+  for (let i = 0; i < 90; i++) { const a = Math.random() * 6.28, sp = rand(3, 11), c = i % 2 ? COL.cosmic : COL.flame; addP.spawn(x, 1.3, 0.2, Math.cos(a) * sp, Math.sin(a) * sp, rand(-2, 2), rand(0.6, 1.3), rand(0.06, 0.14), 0.02, c[0], c[1], c[2], 1, 1.2, 0); }
+  glowPuff(x, 1.4, 0.2, 0xffb080, 14, 0.6); dust(x, 40, 2.4);
+  stage.flash = Math.max(stage.flash, 0.8); screenFlash(0.9, '#fff0e0'); lightFlash(x, 2, 0xff9a50, 120); shake = 0.65;
+  sfx.boom(1.6); sfx.ring([147, 220, 330, 440, 660], 1.6, 0.08);
+}
+function shivaDamaru(side) {
+  const v = views[side]; if (!v) return; const x = v.f.x;
+  for (let i = 0; i < 3; i++) setTimeout(() => { ring(x, 1.15, 0.2, i % 2 ? 0xffb060 : 0xc0b8ff, 3 + i * 1.6, 0.4, true); ring(x, 0.06, 0, 0xffa050, 3.5 + i * 1.5, 0.4); }, i * 70);
+  runeRing(x, 0.05, 0, 4.2, 0.6, false, [2.4, 1.1, 0.5], yantraTex());
+  dust(x, 22, 1.5); shake = Math.max(shake, 0.28);
+  sfx.kick(170, 55, 0.3, 0.75); sfx.kick(170, 55, 0.3, 0.6, 0.13); sfx.ring([220, 330], 0.5, 0.06);
+}
+// --- Aphrodite ---
+function aphShell(e) {
+  const g = new THREE.Group(); g.position.set(e.x, -3.4, -1.3);
+  const sm = new THREE.MeshPhysicalMaterial({ color: 0xffe4d8, roughness: 0.35, sheen: 1, sheenColor: new THREE.Color(0xffa0c8), iridescence: 0.5, emissive: new THREE.Color(0.3, 0.14, 0.18), side: THREE.DoubleSide }); sm.userData.own = true;
+  // scalloped fan with raised ribs
+  const sh = new THREE.Shape(); const N = 13; sh.moveTo(0, 0);
+  for (let i = 0; i <= N * 6; i++) { const u = i / (N * 6), a = (u - 0.5) * Math.PI * 1.02, r = 3.2 + Math.abs(Math.sin(u * N * Math.PI)) * 0.22; sh.lineTo(Math.sin(a) * r, Math.cos(a) * r); }
+  sh.lineTo(0, 0);
+  g.add(new THREE.Mesh(new THREE.ShapeGeometry(sh, 4), sm));
+  for (let i = 0; i < N; i++) { const a = ((i + 0.5) / N - 0.5) * Math.PI * 1.02; const rib = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.03, 3.25, 8, 1).translate(0, 1.62, 0), sm); rib.rotation.z = -a; rib.scale.z = 0.45; g.add(rib); }
+  const hinge = new THREE.Mesh(new THREE.SphereGeometry(0.4, 14, 10), sm); hinge.scale.set(1.6, 0.6, 0.5); g.add(hinge);
+  const v = views[e.side];
+  timed.add(g, SUPER_LIFE(1.7), (o, k, dt, t) => {
+    o.position.y = -3.4 + easeOutC(Math.min(1, t / 0.45)) * 3.3 - (k > 0.86 ? (k - 0.86) / 0.14 * 3.4 : 0);
+    if (Math.random() < 0.7) normP.burst(3, e.x + rand(-2.6, 2.6), 0.1, rand(-1.6, 0.4), 2, { life: [0.5, 1.0], size: [0.08, 0.2], color: [1, 0.97, 1], alpha: 0.85, up: 2, drag: 1.5 });
+    if (Math.random() < 0.3) petal(e.x + rand(-3, 3), rand(2.5, 4), rand(-1.5, 0.5), 1.6, rand(-0.5, 0.5), rand(-0.5, 0), 0);
+  });
+  normP.burst(120, e.x, 0.3, -0.6, 4, { life: [0.6, 1.2], size: [0.1, 0.25], color: [1, 0.96, 0.98], alpha: 0.9, up: 3, drag: 1.4 });
+  stage.dimT = 1; sfx.water(1.6); sfx.ring([523, 659, 784, 1046], 1.4, 0.05);
+}
+function aphCharmKiss(e) {
+  const v = views[e.side]; const from = new V3(e.tx, e.ty, 0.3); if (v) { from.set(0, 0.03, 0.2); v.m.j.head.localToWorld(from); }
+  const hm = new THREE.Mesh(HEART_GEO, HEART_M[0]); hm.position.copy(from); hm.renderOrder = 9;
+  const to = new V3(e.tx, e.ty, 0.3), T2 = SUPER_LIFE(0.1) + from.distanceTo(to) * 0.012;
+  timed.add(hm, T2, (o, k) => { o.position.lerpVectors(from, to, k); o.position.y += Math.sin(k * Math.PI) * 0.35; o.quaternion.copy(camera.quaternion); o.scale.setScalar(0.5 + k * 0.6); if (Math.random() < 0.6) loveHeart(o.position.x, o.position.y, 0.3, 0.14, 0.4, 0, 0.5); });
+  setTimeout(() => { for (let i = 0; i < 10; i++) loveHeart(e.tx + rand(-0.6, 0.6), e.ty + rand(-0.6, 0.6), 0.4, rand(0.2, 0.4), rand(0.6, 1.0), rand(-1, 1), rand(0.5, 2)); ring(e.tx, e.ty, 0.3, 0xff9ac8, 3, 0.4, true); glowPuff(e.tx, e.ty, 0.3, 0xff8ac0, 3, 0.4); }, T2 * 1000);
+  sfx.tone(1046, 1568, 0.3, 'sine', 0.08); sfx.tone(1318, 2093, 0.35, 'sine', 0.05, 0.1);
+}
+function aphRibbonLash(e) {
+  const v = views[e.side];
+  if (v && v.ribbon) { v.lashT = 0.11; v.lashTip = new V3(e.tx + rand(-0.2, 0.2), e.ty + (e.i % 2 ? 0.5 : -0.4), 0.15); }
+  const a = (e.i % 2 ? 1 : -1) * 1.0 + rand(-0.25, 0.25);
+  slashStreak(e.tx, e.ty, 0.3, 2.0, 0.2, a, [2.4, 0.7, 1.3], 0.22);
+  for (let i = 0; i < 6; i++) petal(e.tx, e.ty, 0.2, 0.8, rand(-3, 3), rand(0, 3.5), rand(-1, 1));
+  sfx.swing('whip', 1);
+}
+function aphRoseStorm(cx, big) {
+  // petals whirl around a centre; a big storm also opens a rose beneath the victim
+  const n = big ? 46 : 26, R = big ? 1.5 : 1.25, life = big ? SUPER_LIFE(0.42) : 0.42;
+  const g = new THREE.Group(); g.position.set(cx, 0, 0);
+  const ps = [];
+  for (let i = 0; i < n; i++) { const pt = new THREE.Mesh(PETAL_GEO, PETAL_M[i % 3]); pt.userData = { a: Math.random() * 6.28, r: R * rand(0.55, 1.1), h: rand(0.2, 2.3), w: rand(9, 13), s: rand(0.8, 1.4) }; g.add(pt); ps.push(pt); }
+  timed.add(g, life, (o, k, dt, t) => { for (const pt of ps) { const u = pt.userData, a = u.a + t * u.w; pt.position.set(Math.cos(a) * u.r, u.h + k * 0.5, Math.sin(a) * u.r * 0.6); pt.rotation.set(a * 2, a, a * 3); const f = k < 0.15 ? k / 0.15 : k > 0.8 ? (1 - k) / 0.2 : 1; pt.scale.set(0.08 * u.s * f, 0.11 * u.s * f, 1); } });
+  addP.burst(big ? 40 : 20, cx, 1.1, 0, 5, { life: [0.2, 0.5], size: [0.05, 0.12], color: COL.love, drag: 3 });
+  if (big) {
+    const rg = new THREE.Group(); rg.position.set(cx, 0.05, 0);
+    const pm = new THREE.MeshStandardMaterial({ color: 0xff3a6a, roughness: 0.45, side: THREE.DoubleSide, emissive: new THREE.Color(0.5, 0.05, 0.15) }); pm.userData.own = true;
+    const layers = [], geo = new THREE.SphereGeometry(0.7, 12, 8, 0, Math.PI);
+    for (let L = 0; L < 3; L++) for (let i = 0; i < 7; i++) { const a = (i / 7) * Math.PI * 2 + L * 0.45; const pt = new THREE.Mesh(geo, pm); pt.scale.set(0.6 * (1 - L * 0.2), 0.3, 1 - L * 0.2); pt.position.set(Math.cos(a) * (1.1 - L * 0.3), 0.05 + L * 0.06, Math.sin(a) * (1.1 - L * 0.3) * 0.6); pt.rotation.y = -a; pt.userData = { L }; rg.add(pt); layers.push(pt); }
+    timed.add(rg, SUPER_LIFE(0.8), (o, k, dt, t) => { for (const pt of layers) pt.rotation.z = (1.25 - easeOutC(Math.min(1, t * 2)) * 0.8) * (1 - pt.userData.L * 0.12); o.rotation.y += dt * 0.6; o.scale.setScalar(k < 0.1 ? k / 0.1 : k > 0.82 ? (1 - k) / 0.18 : 1); });
+    sfx.ring([659, 784, 988, 1318], 1.0, 0.05);
+  }
+  sfx.sweep(0.4, 900, 4000, 1.2, 0.16);
+}
+function aphHeartSeal(e) {
+  const m = new THREE.MeshBasicMaterial({ color: new THREE.Color(2.6, 0.7, 1.5), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide }); m.userData.own = true;
+  // a hollow heart outline that closes on the victim
+  const outer = heartShape2(1), hole = new THREE.Path(heartShape2(0.86).getPoints(40)); outer.holes.push(hole);
+  const h = new THREE.Mesh(new THREE.ShapeGeometry(outer, 16), m); h.position.set(e.x, e.y - 0.1, 0.25);
+  timed.add(h, SUPER_LIFE(0.24), (o, k) => { o.scale.setScalar(7 - easeOutC(k) * 4.6); m.opacity = Math.min(1, k * 3) * 0.9; o.quaternion.copy(camera.quaternion); });
+  sfx.sweep(0.4, 400, 3000, 1, 0.2); sfx.tone(523, 1046, 0.4, 'sine', 0.08);
+}
+function aphHeartBurst(x) {
+  for (let i = 0; i < 44; i++) { const a = Math.random() * 6.28, sp = rand(2, 7.5); loveHeart(x, 1.3, 0.3, rand(0.25, 0.6), rand(0.7, 1.3), Math.cos(a) * sp, Math.sin(a) * sp + 1); }
+  for (let i = 0; i < 60; i++) petal(x + rand(-0.4, 0.4), rand(0.8, 2), rand(-0.4, 0.4), 1.5, rand(-6, 6), rand(1, 7), rand(-2, 2));
+  for (let i = 0; i < 4; i++) ring(x, 0.08, 0, i % 2 ? 0xffffff : 0xff8ac0, 6 + i * 4, 0.6 + i * 0.12);
+  ring(x, 1.4, 0.3, 0xffd0e4, 12, 0.6, true);
+  glowPuff(x, 1.5, 0.2, 0xff9ac8, 14, 0.6);
+  addP.burst(120, x, 1.3, 0.2, 14, { life: [0.4, 1.1], size: [0.05, 0.16], color: COL.love, drag: 2, up: 3 });
+  stage.flash = Math.max(stage.flash, 0.7); screenFlash(0.85, '#fff0f6'); lightFlash(x, 2.2, 0xff8ac0, 110); shake = 0.55;
+  sfx.boom(1.3); sfx.ring([523, 659, 784, 1046, 1318], 1.6, 0.08);
+}
+// the silk ribbon: a verlet rope streaming from the wand tip, drawn as a camera-facing strip
+class Ribbon {
+  constructor(def, n = 26, seg = 0.085) {
+    this.def = def; this.n = n; this.seg = seg; this.ready = false; this.t = 0;
+    this.p = []; this.q = [];
+    for (let i = 0; i < n; i++) { this.p.push(new V3()); this.q.push(new V3()); }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(new Float32Array(n * 6), 3));
+    const col = new Float32Array(n * 6), c = new THREE.Color();
+    for (let i = 0; i < n; i++) { const u = i / (n - 1); c.setRGB(1.0, 0.82 - 0.5 * u, 0.9 - 0.42 * u); if (u > 0.9) c.lerp(new THREE.Color(1.0, 0.82, 0.4), (u - 0.9) / 0.1); for (let k = 0; k < 2; k++) col.set([c.r * (k ? 1 : 0.82), c.g * (k ? 1 : 0.82), c.b * (k ? 1 : 0.82)], (i * 2 + k) * 3); }
+    g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
+    const idx = []; for (let i = 0; i < n - 1; i++) { const k = i * 2; idx.push(k, k + 1, k + 2, k + 1, k + 3, k + 2); }
+    g.setIndex(idx);
+    this.mesh = new THREE.Mesh(g, new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.DoubleSide }));
+    this.mesh.frustumCulled = false;
+    scene.add(this.mesh);
+  }
+  update(dt, lash, lashK) {
+    const n = this.n, p = this.p, q = this.q;
+    const a = this.def.obj.localToWorld(this.def.tip.clone());
+    if (!this.ready || p[0].distanceTo(a) > 2.5) { for (let i = 0; i < n; i++) { p[i].set(a.x, Math.max(0.03, a.y - i * this.seg * 0.6), a.z - i * 0.01); q[i].copy(p[i]); } this.ready = true; }
+    const h = Math.min(dt, 1 / 30);
+    if (h > 0) {
+      this.t += h;
+      p[0].copy(a); q[0].copy(a);
+      for (let i = 1; i < n; i++) {
+        const pi = p[i], vx = (pi.x - q[i].x) * 0.955, vy = (pi.y - q[i].y) * 0.955, vz = (pi.z - q[i].z) * 0.955;
+        q[i].copy(pi);
+        pi.x += vx; pi.y += vy - 5.5 * h * h; pi.z += vz + Math.sin(this.t * 6 + i * 0.7) * 0.0009 * i;
+        if (lash) { const u = i / (n - 1); pi.x += (a.x + (lash.x - a.x) * u - pi.x) * lashK; pi.y += (a.y + (lash.y - a.y) * u + Math.sin(u * 9 + this.t * 30) * 0.05 - pi.y) * lashK; pi.z += (a.z + (lash.z - a.z) * u - pi.z) * lashK; }
+      }
+      for (let it = 0; it < 3; it++) for (let i = 1; i < n; i++) {
+        const dx = p[i].x - p[i - 1].x, dy = p[i].y - p[i - 1].y, dz = p[i].z - p[i - 1].z, L = Math.hypot(dx, dy, dz) || 1e-6, k = this.seg / L;
+        p[i].set(p[i - 1].x + dx * k, Math.max(0.03, p[i - 1].y + dy * k), p[i - 1].z + dz * k);
+      }
+    }
+    const pos = this.mesh.geometry.attributes.position, d = new V3(), toCam = new V3(), sd = new V3();
+    for (let i = 0; i < n; i++) {
+      d.subVectors(p[Math.min(n - 1, i + 1)], p[Math.max(0, i - 1)]); toCam.subVectors(camera.position, p[i]); sd.crossVectors(d, toCam);
+      const sl = sd.length(); if (sl > 1e-6) sd.multiplyScalar(1 / sl); else sd.set(0, 1, 0);
+      const u = i / (n - 1), w = (0.012 + 0.036 * Math.min(1, u * 5)) * (u > 0.85 ? 1 - (u - 0.85) * 3 : 1);
+      pos.setXYZ(i * 2, p[i].x + sd.x * w, p[i].y + sd.y * w, p[i].z + sd.z * w); pos.setXYZ(i * 2 + 1, p[i].x - sd.x * w, p[i].y - sd.y * w, p[i].z - sd.z * w);
+    }
+    pos.needsUpdate = true;
+  }
+  dispose() { scene.remove(this.mesh); this.mesh.geometry.dispose(); this.mesh.material.dispose(); }
+}
 function superImpact(e) {
   const x = e.x;
   if (e.kind === 'gungnir') { odinImpact(x); return; }
+  if (e.kind === 'pralaya') { shivaPralaya(x); return; }
+  if (e.kind === 'heartBurst') { aphHeartBurst(x); return; }
   if (e.kind === 'gateShut') { hadesGateShut(e); return; }
   if (e.kind === 'hellfire') {
     const beam = lightBeam(0xff3060, 1.2, 2.2, 16, 0.9);
@@ -7227,6 +8168,8 @@ function trailSpark(kind, p, speed) {
   else if (kind === 'gold') addP.burst(1, p.x, p.y, p.z, 1.2, { life: [0.15, 0.35], size: [0.04, 0.09], color: COL.gold, drag: 3 });
   else if (kind === 'storm') { addP.burst(1, p.x, p.y, p.z, 1.4, { life: [0.12, 0.3], size: [0.05, 0.1], color: COL.storm, drag: 3 }); if (Math.random() < 0.15 * k) stormBolt(p.clone(), p.clone().add(new V3(rand(-0.4, 0.4), rand(-0.4, 0.4), 0)), { r: 0.01, life: 0.07, segs: 5, branches: 0 }); }
   else if (kind === 'might') addP.burst(1, p.x, p.y, p.z, 1, { life: [0.15, 0.35], size: [0.06, 0.12], color: COL.might, drag: 3 });
+  else if (kind === 'cosmic') { addP.burst(1, p.x, p.y, p.z, 1.2, { life: [0.15, 0.35], size: [0.05, 0.11], color: Math.random() < 0.7 ? COL.cosmic : COL.flame, drag: 3 }); }
+  else if (kind === 'love') { addP.burst(1, p.x, p.y, p.z, 1.0, { life: [0.2, 0.45], size: [0.05, 0.1], color: COL.love, drag: 2 }); }
   else if (kind === 'rune') { addP.burst(1, p.x, p.y, p.z, 1.2, { life: [0.15, 0.35], size: [0.05, 0.1], color: Math.random() < 0.7 ? COL.odin : COL.rune, drag: 3 }); }
   else if (kind === 'hell') { addP.burst(2, p.x, p.y, p.z, 1.2, { life: [0.2, 0.45], size: [0.06, 0.13], color: COL.hell, drag: 2, up: 1.5 }); }
 }
@@ -7273,6 +8216,16 @@ const INTRO = {
   },
 };
 
+INTRO.shiva = {
+  anim: [[0, 'nataraja'], [1.2, 'nataraja'], [1.4, 'drumWind'], [1.56, 'drumBeat'], [1.95, 'drumBeat'], [2.3, 'stance'], [2.6, 'stance']],
+  fx: [[0.05, (f) => { runeRing(f.x, 0.05, 0, 4.5, 1.5, false, [2.4, 1.1, 0.5], yantraTex()); for (let i = 0; i < 30; i++) { const a = (i / 30) * 6.28; addP.spawn(f.x + Math.sin(a) * 1.2, 1.3 + Math.cos(a) * 1.2, -0.4, 0, 0.5, 0, 1.2, 0.12, 0.04, COL.flame[0], COL.flame[1], COL.flame[2], 1, 0.5, 0); } sfx.tone(110, 220, 0.8, 'triangle', 0.12); }],
+    [1.56, (f) => shivaDamaru(f.side)]],
+};
+INTRO.aphrodite = {
+  anim: [[0, 'bloom'], [0.9, 'bloom'], [1.0, 'twirl'], [1.5, 'twirl'], [1.65, 'kissWind'], [1.85, 'kiss'], [2.25, 'stance'], [2.6, 'stance']],
+  fx: [[0.05, (f) => { normP.burst(80, f.x, 0.2, 0, 3, { life: [0.6, 1.2], size: [0.1, 0.25], color: [1, 0.97, 1], alpha: 0.9, up: 2.5, drag: 1.4 }); for (let i = 0; i < 26; i++) petal(f.x + rand(-1.2, 1.2), rand(1.8, 3.4), rand(-0.6, 0.6), 1.8, rand(-0.6, 0.6), rand(-0.6, 0), 0); sfx.water(0.8); }],
+    [1.88, (f) => { for (let i = 0; i < 8; i++) loveHeart(f.x + f.facing * 0.7, 1.6, 0.3, rand(0.2, 0.35), 0.8, f.facing * rand(1, 3), rand(0, 1.5)); sfx.tone(1046, 1568, 0.3, 'sine', 0.08); }]],
+};
 INTRO.odin = {
   anim: [[0, 'summon'], [0.9, 'summon'], [1.15, 'superCall'], [1.75, 'superCall'], [2.15, 'intro'], [2.6, 'stance']],
   fx: [[0.05, (f) => { for (let i = 0; i < 2; i++) odinRaven({ i: i + 1, tx: f.x + (i ? 0.6 : -0.6), ty: 2.6 }); addP.burst(40, f.x, 1.2, 0, 3, { life: [0.6, 1.2], size: [0.06, 0.14], color: COL.odin, up: 2, drag: 1 }); }],
@@ -7292,6 +8245,7 @@ class FighterView {
     this.glow = 0; this.flip = 0;
     this.prevState = '';
     this.trails = (model.trails || []).map((d) => new SwordTrail(d));
+    if (model.ribbon) this.ribbon = new Ribbon(model.ribbon);
     scene.add(model.root);
     model.root.traverse((o) => { if (o.isMesh) o.castShadow = true; });
   }
@@ -7354,6 +8308,12 @@ class FighterView {
           out.lSh = [-0.2, 0, 1.2 * mid + 0.3]; out.lEl = [-0.2, 0, 0];
           this.spinDirect = true;
           rate = 60;
+        }
+        if (m.spin) {
+          const tt = m.type === 'super' ? f.mt / SUPER_K : f.mt;
+          let turn = 0, on = false;
+          for (const [a, b, n] of m.spin) { const u = clamp((tt - a) / (b - a), 0, 1); if (u > 0 && u < 1) on = true; turn += u * u * (3 - 2 * u) * n; }
+          if (on) { out.ry = (out.ry || 0) + turn * Math.PI * 2; this.spinDirect = true; rate = 60; }
         }
         break;
       }
@@ -7453,7 +8413,40 @@ class FighterView {
     if (f.state === 'win') gWant = 0.7;
     if (sim.freeze > 0 && sim.freezeOwner === f) gWant = 1.4;
     this.glow = damp(this.glow, gWant, 10, dt);
-    if (f.key === 'zeus') {
+    if (f.charmT > 0 && Math.random() < 0.35) loveHeart(f.x + rand(-0.35, 0.35), f.y + this.S.hipH * 2 + rand(-0.1, 0.2), 0.3, rand(0.12, 0.2), 0.7, rand(-0.3, 0.3), 0.8);
+    if (f.key === 'shiva') {
+      const flick = 0.85 + Math.random() * 0.3, cs = cineState(), sup = cs && cs.f === f;
+      const eyeOn = (sup && cs.t > 1.46 && cs.t < 2.0) || (f.state === 'attack' && f.moveId === 'sv_eye' && f.mt > 0.16 && f.mt < 0.5);
+      M.thirdEye.material.opacity = eyeOn ? flick : 0;
+      M.mats.gem.emissiveIntensity = (eyeOn ? 3.2 : 0.5) * flick;
+      M.fireGlow.material.opacity = (0.5 + this.glow * 0.5) * flick;
+      // the upper arms keep their own rhythm: the drum hand shakes, the flame hand sways; both flourish in attacks
+      const busy = f.state === 'attack' ? 1 : 0.3, drum = f.state === 'attack' && f.moveId === 'sv_damaru' ? 1 : 0;
+      for (const a of M.extraArms) {
+        const ph = t * (1.8 + busy * 5) + (a.sg > 0 ? 0 : 1.6);
+        a.sh.rotation.x = a.base[0] + Math.sin(ph) * 0.22 * busy; a.sh.rotation.z = a.base[1] - a.sg * (Math.sin(ph * 0.7) * 0.16 * busy + 0.25 * drum);
+        a.el.rotation.x = a.base[2] + Math.sin(ph + 1) * 0.28 * busy; a.wr.rotation.y = a.sg > 0 ? Math.sin(t * (drum ? 60 : 9)) * (drum ? 0.9 : 0.25) : 0;
+      }
+      // the wheel of fire stays behind the head as seen from the camera
+      const hp = new V3(0, 0.13, 0); M.j.head.localToWorld(hp); const away = hp.clone().sub(camera.position).normalize(); hp.addScaledVector(away, 0.2);
+      M.j.head.worldToLocal(hp); M.halo.position.copy(hp); M.halo.lookAt(camera.position); M.halo.rotateZ(t * (0.5 + this.glow * 2.5)); M.halo.scale.setScalar(1 + this.glow * 0.25);
+      if (Math.random() < 0.2 + this.glow * 0.5) { const a = Math.random() * 6.28, p = new V3(Math.sin(a) * 0.3, Math.cos(a) * 0.3, 0); M.halo.localToWorld(p); addP.burst(1, p.x, p.y, p.z, 0.4, { life: [0.25, 0.5], size: [0.04, 0.09], color: COL.flame, up: 1.2, drag: 1 }); }
+    } else if (f.key === 'aphrodite') {
+      const flick = 0.85 + Math.random() * 0.3;
+      M.hearts.l.material.opacity = (0.3 + this.glow * 0.7) * flick; M.hearts.r.material.opacity = (0.35 + this.glow * 0.6) * flick;
+      M.mats.gem.emissiveIntensity = 0.8 + this.glow * 2.5 * flick;
+      if (Math.random() < 0.04 + this.glow * 0.2) { const p = new V3(); M.j.chest.getWorldPosition(p); petal(p.x + rand(-0.6, 0.6), p.y + rand(0.2, 0.9), rand(-0.4, 0.4), 1.6, rand(-0.3, 0.3), rand(-0.2, 0.3), 0); }
+      updateCape(M, t, f.vx * f.facing + (f.state === 'dash' ? 6 : 0), f.state === 'attack' ? 1 : 0.4);
+      // the ribbon snaps out along the active hit of a (non-spinning) attack, or to wherever a super sends it
+      let lash = null, lk = 0;
+      this.lashT = (this.lashT || 0) - dt;
+      if (this.lashT > 0) { lash = this.lashTip; lk = 0.5; }
+      else if (f.state === 'attack' && f.move && f.move.hits && f.move.type !== 'super' && !f.move.spin && f.move.weap !== 'fist') {
+        for (const hh of f.move.hits) if (f.mt > hh.t0 - 0.03 && f.mt < hh.t1 + 0.05) { lash = new V3(f.x + f.facing * hh.range[1], Math.max(0.12, f.y + (hh.y[0] + Math.min(hh.y[1], 2.2)) / 2), 0.12); lk = 0.42; }
+      }
+      this.ribbon.mesh.visible = M.root.visible;
+      this.ribbon.update(dt, lash, lk);
+    } else if (f.key === 'zeus') {
       const flick = 0.75 + Math.random() * 0.5;
       const both = m && (m.glow === 'both' || m.type === 'super') || f.state === 'win' || f.state === 'intro';
       M.glow.r.material.opacity = this.glow * flick;
@@ -7527,7 +8520,7 @@ class FighterView {
       updateCape(M, t, f.vx * f.facing + (f.state === 'dash' ? 6 : 0), f.state === 'attack' ? 1 : 0.3);
     }
     // whirlwind trail
-    if (this.spinDirect && f.mt > 0.08 && f.mt < 0.42) {
+    if (this.spinDirect && f.key === 'poseidon' && f.mt > 0.08 && f.mt < 0.42) {
       for (let i = 0; i < 2; i++) {
         const tp = new V3(rand(-0.1, 0.1), 0, 0.5 + Math.random() * 1.3); M.trident.localToWorld(tp);
         addP.burst(2, tp.x, tp.y, tp.z, 0.4, { life: [0.12, 0.25], size: [0.14, 0.28], color: COL.water, drag: 4 });
@@ -7548,6 +8541,11 @@ class FighterView {
         if (f.grounded && Math.random() < 0.5) dust(f.x, 2, 0.5);
       } else if (f.key === 'hades') {
         addP.burst(3, p.x, p.y + rand(-0.6, 0.4), rand(-0.3, 0.3), 1, { life: [0.2, 0.4], size: [0.08, 0.16], color: COL.hell, drag: 2, up: 1 });
+      } else if (f.key === 'shiva') {
+        addP.burst(3, p.x, p.y + rand(-0.6, 0.4), rand(-0.3, 0.3), 1, { life: [0.2, 0.4], size: [0.07, 0.15], color: Math.random() < 0.6 ? COL.cosmic : COL.flame, drag: 2 });
+      } else if (f.key === 'aphrodite') {
+        addP.burst(2, p.x, p.y + rand(-0.6, 0.4), rand(-0.3, 0.3), 1, { life: [0.2, 0.4], size: [0.06, 0.13], color: COL.love, drag: 2 });
+        if (Math.random() < 0.3) petal(p.x, p.y, rand(-0.3, 0.3), 0.9, -f.facing * 2, 0.5, 0);
       } else if (f.key === 'odin') {
         addP.burst(3, p.x, p.y + rand(-0.6, 0.4), rand(-0.3, 0.3), 1, { life: [0.2, 0.4], size: [0.07, 0.15], color: Math.random() < 0.7 ? COL.odin : COL.rune, drag: 2 });
       } else if (f.key === 'heracles') {
@@ -7645,7 +8643,7 @@ function cineShot(f, o, t, portrait) {
     const k = Math.min(1, (t - 1.8) / 0.55), R = fitD(46 * fw) * 1.1;
     return shot('a3', new V3(ox + sideX(-s * (R * 0.6 + k * 1.2)), lookY + 0.6 + k * 0.8, Math.max(R, 5.5)), new V3(ox, lookY * 0.9, 0), 46 * fw, -0.06, 3);
   }
-  if (f.key === 'thor' || f.key === 'heracles' || f.key === 'hades' || f.key === 'odin') {
+  if (f.key === 'thor' || f.key === 'heracles' || f.key === 'hades' || f.key === 'odin' || f.key === 'shiva' || f.key === 'aphrodite') {
     const top = Math.max(o.y, f.y) + 2.6;
     const lookY = Math.max(1.15, top * 0.42);
     const aspect = camera.aspect || 1.78;
@@ -7736,6 +8734,13 @@ function cineUpdate(dt) {
       screenFlash(0.8, '#fff3d0'); lightFlash(o.x, 2.5, 0xffe0a0, 100); shake = Math.max(shake, 0.55);
       cineTitle(f);
     }
+  } else if (f.key === 'shiva') {
+    if (t > 0.4 && t < 1.12 && Math.random() < 0.6) addP.burst(2, o.x + rand(-1, 1), o.y + rand(0.5, 2), rand(-0.5, 0.5), 2, { life: [0.3, 0.6], size: [0.06, 0.14], color: Math.random() < 0.5 ? COL.flame : COL.cosmic, drag: 2 });
+    if (t > 1.3 && t < 1.62 && Math.random() < 0.7) { const p = thirdEyePos(f.side), a = Math.random() * 6.28; addP.spawn(p.x + Math.cos(a) * 1.2, p.y + Math.sin(a) * 1.2, p.z, -Math.cos(a) * 3.5, -Math.sin(a) * 3.5, 0, 0.32, 0.1, 0.03, COL.flame[0], COL.flame[1], COL.flame[2], 1, 0, 0); }
+    if (t >= 1.8 && !cineFin) { cineFin = true; cineTitle(f); }
+  } else if (f.key === 'aphrodite') {
+    if (t > 0.5 && t < 1.6 && Math.random() < 0.5) loveHeart(o.x + rand(-1.2, 1.2), o.y + rand(0.4, 2.2), rand(-0.4, 0.4), rand(0.15, 0.3), 0.8, 0, 1);
+    if (t >= 1.8 && !cineFin) { cineFin = true; cineTitle(f); }
   } else if (f.key === 'odin') {
     if (t > 0.3 && t < 1.12) { for (let i = 0; i < 3; i++) { const a = t * 6 + i * 2.09, r = 1.4; addP.spawn(o.x + Math.cos(a) * r, 0.3 + ((t * 1.2 + i * 0.3) % 1) * 2.4, Math.sin(a) * r * 0.6, -Math.sin(a) * 3, 1.2, Math.cos(a) * 2, 0.4, 0.12, 0.04, 0.8, 1.3, 2.1, 1, 1, 0); } }
     if (t > 1.42 && t < 1.62) { const c0 = new V3(f.x, f.y + 1.6, 0); for (let i = 0; i < 3; i++) { const a = t * 8 + i * 2.1; normP.spawn(c0.x + Math.cos(a) * 1.3, c0.y + rand(-0.8, 0.8), Math.sin(a) * 1.3, -Math.sin(a) * 3, 0.3, Math.cos(a) * 3, 0.5, 0.06, 0.02, 0.85, 0.95, 1.1, 0.9, 1, 0); } }
@@ -7783,6 +8788,7 @@ function cineSlow() {
   if (c.f.key === 'heracles') return c.t > 1.74 && c.t < 1.98 ? 0.3 : 1;
   if (c.f.key === 'hades') return c.t > 1.82 && c.t < 2.05 ? 0.3 : 1;
   if (c.f.key === 'odin') return c.t > 1.72 && c.t < 1.96 ? 0.3 : 1;
+  if (c.f.key === 'shiva' || c.f.key === 'aphrodite') return c.t > 1.76 && c.t < 2.0 ? 0.3 : 1;
   return c.t > 1.8 && c.t < 2.05 ? 0.3 : 1;
 }
 function cineTitle(f) {
@@ -8107,6 +9113,26 @@ const bgm = {
       if (b16 === 4 || b16 === 12) { this.clack(t, 0.28); this.clack(t + s16 * 0.5, 0.12); }
       if (b16 === 0) this.choir(ch.map((n) => n + 12), t, s16 * 16, 0.028 + I * 0.025);
       if ((b16 === 0 && bar % 2 === 0) || (b16 === 10 && bar % 2)) this.brass(ch, t, s16 * 2.5, 0.055);
+    } else if (st === 'kailash') {
+      // tabla (low bayan + ringing dayan), a tanpura drone and a sitar-like ostinato
+      const bayan = [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0], dayan = [0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1];
+      if (bayan[b16]) this.taiko(t, b16 === 0 ? 0.9 : 0.6, 0.75);
+      if (dayan[b16]) this.taiko(t, 0.22 + I * 0.08, 2.5);
+      if (b16 === 0) { this.string(root + 12, t, s16 * 16, 0.022); this.string(root + 19, t, s16 * 16, 0.016); this.choir([ch[0] + 12, ch[2] + 12], t, s16 * 16, 0.018 + I * 0.012); }
+      const tan = [root + 12, root + 24, root + 24, root + 19];
+      if (b16 % 4 === 0) this.pluck(tan[(b16 / 4) % 4], t, 0.022, 5200);
+      if (b16 % 2 === 1 && I > 0.25) this.pluck(ch[(b16 >> 1) % 3] + 12, t, 0.018, 4600);
+      if (b16 === 0 && bar % 4 === 0) this.bell(root + 36, t, 0.03, 3.5);
+      if (bar === T.bars - 1 && b16 >= 8) this.taiko(t, 0.3 + (b16 - 8) * 0.04, 2.2);
+    } else if (st === 'cythera') {
+      // harp arpeggios, tambourine and warm strings: a graceful dance
+      const arp = [ch[0], ch[2], ch[1] + 12, ch[2], ch[0] + 12, ch[2], ch[1] + 12, ch[2] + 12];
+      if (b16 % 2 === 0) this.harp(arp[(b16 / 2) % 8] + 12, t, 0.034 + I * 0.01);
+      if (b16 === 0) { this.choir(ch.map((n) => n + 12), t, s16 * 16, 0.018 + I * 0.012); this.string(root + 12, t, s16 * 15, 0.022); }
+      if (b16 === 4 || b16 === 12) { this.hat(t, 0.05, true); this.clack(t, 0.07); }
+      if (b16 === 0 || b16 === 10) this.taiko(t, 0.4, 1.1);
+      if (b16 === 8) this.string(root + 19, t, s16 * 7, 0.02);
+      if (b16 === 14 && bar % 2) for (let i = 0; i < 3; i++) this.bell(ch[i % 3] + 36, t + i * s16 * 0.66, 0.012, 1.2);
     } else if (st === 'valhalla') {
       const kick = [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0];
       if (kick[b16]) this.taiko(t, b16 === 0 ? 1.2 : 0.85, 0.6);
@@ -8138,6 +9164,10 @@ const bgm = {
       mel: [[0, 74, 1], [1, 78, 1], [2, 81, 2], [4, 79, 1], [5, 78, 1], [6, 76, 2], [8, 78, 3], [11, 76, 1], [12, 73, 4], [16, 74, 1], [17, 78, 1], [18, 81, 1.5], [19.5, 83, 0.5], [20, 86, 2], [22, 85, 1], [23, 83, 1], [24, 81, 2], [26, 79, 2], [28, 76, 4]] },
     st_tartarus: { bpm: 104, bars: 8, style: 'tartarus', lead: 'organ', chords: [[48, 51, 55], [49, 53, 56], [48, 51, 55], [47, 50, 53], [48, 51, 55], [44, 48, 51], [49, 53, 56], [43, 47, 50]],
       mel: [[0, 72, 2], [2, 73, 2], [4, 72, 1], [5, 70, 1], [6, 67, 2], [8, 68, 4], [12, 67, 4], [16, 72, 2], [18, 75, 2], [20, 73, 2], [22, 72, 2], [24, 71, 4], [28, 67, 4]] },
+    st_kailash: { bpm: 126, bars: 8, style: 'kailash', lead: 'pluck', chords: [[50, 57, 62], [50, 54, 57], [51, 55, 58], [50, 54, 57], [55, 58, 62], [51, 55, 58], [49, 52, 57], [50, 54, 57]],
+      mel: [[0, 74, 1], [1, 75, 0.5], [1.5, 78, 0.5], [2, 79, 1], [3, 78, 0.5], [3.5, 75, 0.5], [4, 74, 2], [6, 81, 1], [7, 82, 1], [8, 81, 1.5], [9.5, 79, 0.5], [10, 78, 1], [11, 75, 1], [12, 74, 3], [15, 73, 1], [16, 74, 0.5], [16.5, 78, 0.5], [17, 81, 1], [18, 82, 1], [19, 85, 1], [20, 86, 2], [22, 85, 0.5], [22.5, 82, 0.5], [23, 81, 1], [24, 79, 1], [25, 78, 1], [26, 75, 1], [27, 78, 1], [28, 74, 4]] },
+    st_cythera: { bpm: 112, bars: 8, style: 'cythera', lead: 'flute', soft: true, chords: [[55, 59, 62], [52, 55, 59], [48, 52, 55], [50, 54, 57], [55, 59, 62], [47, 50, 54], [48, 52, 55], [50, 54, 57]],
+      mel: [[0, 71, 1.5], [1.5, 69, 0.5], [2, 67, 1], [3, 62, 1], [4, 64, 1.5], [5.5, 67, 0.5], [6, 71, 2], [8, 72, 1.5], [9.5, 71, 0.5], [10, 69, 1], [11, 67, 1], [12, 69, 3], [15, 66, 1], [16, 67, 1.5], [17.5, 71, 0.5], [18, 74, 2], [20, 76, 1], [21, 74, 1], [22, 71, 2], [24, 72, 1], [25, 71, 1], [26, 69, 1], [27, 67, 1], [28, 66, 1], [29, 69, 1], [30, 67, 2]] },
     st_valhalla: { bpm: 100, bars: 8, style: 'valhalla', lead: 'horn', chords: [[45, 48, 52], [41, 45, 48], [43, 47, 50], [40, 44, 47], [45, 48, 52], [41, 45, 48], [38, 41, 45], [40, 44, 47]],
       mel: [[0, 69, 2], [2, 72, 1], [3, 71, 1], [4, 69, 2], [6, 76, 2], [8, 74, 3], [11, 72, 1], [12, 71, 4], [16, 69, 1.5], [17.5, 71, 0.5], [18, 72, 2], [20, 76, 2], [22, 77, 2], [24, 76, 2], [26, 74, 1], [27, 72, 1], [28, 68, 4]] },
     title: { bpm: 68, bars: 8, chords: [[50, 53, 57], [46, 50, 53], [53, 57, 60], [45, 49, 52], [50, 53, 57], [46, 50, 53], [48, 52, 55], [45, 49, 52]],
@@ -8179,8 +9209,8 @@ const bgm = {
       const bp = [0, 0, 12, 0, 0, 12, 0, 7];
       if (b16 % 2 === 0) this.bass(root - 12 + bp[b16 / 2], t, s16 * 1.7, 0.14 + I * 0.04);
       const kp = [1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0];
-      if (kp[b16]) this.kick(t, 0.32 + I * 0.1);
-      if (b16 === 4 || b16 === 12) this.snare(t, 0.09 + I * 0.04);
+      if (kp[b16] && !T.soft) this.kick(t, 0.32 + I * 0.1);
+      if ((b16 === 4 || b16 === 12) && !T.soft) this.snare(t, 0.09 + I * 0.04);
       if (b16 % 2 === 1 || I > 0.4) this.hat(t, b16 % 4 === 2 ? 0.045 : 0.025, b16 === 14);
       if (bar === T.bars - 1 && b16 >= 12) this.snare(t, 0.06 + (b16 - 12) * 0.02);
     } else if (this.track === 'select' || this.track === 'victory' || this.track === 'practice') {
@@ -8248,7 +9278,7 @@ const bgm = {
   },
 };
 
-const WEAPON = { zeus: 'fist', poseidon: 'pole', anubis: 'blade', thor: 'hammer', susanoo: 'blade', heracles: 'club', hades: 'pole', odin: 'pole' };
+const WEAPON = { zeus: 'fist', poseidon: 'pole', anubis: 'blade', thor: 'hammer', susanoo: 'blade', heracles: 'club', hades: 'pole', odin: 'pole', shiva: 'fist', aphrodite: 'whip' };
 const weaponOf = (f) => (f && f.move && f.move.weap) || (f ? WEAPON[f.key] || 'fist' : 'fist');
 const WEIGHT = { light: 0.3, medium: 0.55, heavy: 0.85, special: 1 };
 const sfx = {
@@ -8359,6 +9389,7 @@ const sfx = {
   swing(kind, w = 0.5) {
     if (kind === 'fist') this.sweep(0.1 + 0.08 * w, 700, 2600, 1.6, 0.28 + 0.2 * w);
     else if (kind === 'blade') { this.sweep(0.09 + 0.06 * w, 2400, 8000, 2.2, 0.26 + 0.16 * w); this.tone(5200, 3800, 0.08, 'sine', 0.02 + 0.02 * w, 0.03); }
+    else if (kind === 'whip') { this.sweep(0.1 + 0.05 * w, 1800, 7500, 2.5, 0.2 + 0.12 * w); this.click(0.1 + 0.1 * w, 5200, 0.08 + 0.03 * w); }
     else if (kind === 'pole') { this.sweep(0.14 + 0.1 * w, 500, 2200, 1.8, 0.26 + 0.18 * w); this.sweep(0.1 + 0.08 * w, 900, 3200, 3, 0.08, 0.04); }
     else { this.sweep(0.2 + 0.16 * w, 180, 900, 1.3, 0.36 + 0.24 * w); this.tone(80, 50, 0.25, 'sine', 0.12 * w, 0.08); }
   },
@@ -8374,6 +9405,9 @@ const sfx = {
       this.kick(190 + 30 * k, 60, 0.1 + 0.08 * k, 0.55 + 0.15 * k);
       this.noise(0.06 + 0.05 * k, 7000, 2600, 'bandpass', 1.6, 0.26 + 0.12 * k, 0, 0.002, true);
       this.noise(0.18 + 0.1 * k, 9000, 5000, 'highpass', 0.8, 0.06 + 0.04 * k, 0.01, 0.01);   // shing tail
+    } else if (kind === 'whip') {
+      this.kick(250, 95, 0.07 + 0.05 * k, 0.4 + 0.15 * k);
+      this.noise(0.05 + 0.03 * k, 5200, 1800, 'bandpass', 1.4, 0.32 + 0.1 * k, 0, 0.001, true);
     } else if (kind === 'pole') {
       this.kick(200 + 40 * k, 55, 0.12 + 0.1 * k, 0.65 + 0.2 * k);
       this.noise(0.05 + 0.04 * k, 2400, 900, 'bandpass', 2.2, 0.3 + 0.12 * k, 0, 0.002, true);
@@ -8391,6 +9425,8 @@ const sfx = {
     else if (fx === 'hell' || fx === 'soulfire') { this.noise(0.28, 1100, 160, 'lowpass', 0.8, 0.2, 0.01, 0.01, true); this.tone(110, 70, 0.25, 'triangle', 0.08, 0.01); }
     else if (fx === 'might') this.noise(0.2, 600, 90, 'lowpass', 0.7, 0.18, 0.02, 0.01);
     else if (fx === 'rune') { this.ring([880, 1320, 1760], 0.3, 0.03, 0.02); }
+    else if (fx === 'cosmic' || fx === 'pralaya') { this.tone(520, 260, 0.2, 'triangle', 0.05, 0.01); if (fx === 'pralaya') this.noise(0.3, 1400, 200, 'lowpass', 0.8, 0.2, 0.01, 0.01, true); }
+    else if (fx === 'love') { this.tone(1046, 1568, 0.15, 'sine', 0.04, 0.01); this.tone(1318, 1975, 0.18, 'sine', 0.03, 0.05); }
     this.at();
   },
   // guarding: a bright "tink" of steel or a dull wooden knock, never a long ring
@@ -8398,7 +9434,7 @@ const sfx = {
     this.at(x);
     const k = clamp(p / 100, 0.2, 1.4);
     this.click(0.4, 5000);
-    if (kind === 'fist' || kind === 'club') { this.kick(260, 110, 0.1, 0.8); this.noise(0.08, 1800, 600, 'bandpass', 1.4, 0.45, 0, 0.002, true); }
+    if (kind === 'fist' || kind === 'club' || kind === 'whip') { this.kick(260, 110, 0.1, 0.8); this.noise(0.08, 1800, 600, 'bandpass', 1.4, 0.45, 0, 0.002, true); }
     else { this.kick(320, 160, 0.07, 0.6); this.ring([1650 * rand(0.97, 1.03), 2480, 3720], 0.16 + 0.08 * k, 0.2 + 0.08 * k, 0.003); this.noise(0.06, 6000, 3000, 'bandpass', 2, 0.32, 0, 0.002, true); }
     this.at();
   },
@@ -8415,6 +9451,9 @@ const sfx = {
     else if (kind === 'gale') { this.sweep(0.4, 1400, 5000, 1.2, 0.22); this.tone(2200, 3200, 0.2, 'sine', 0.025); }
     else if (kind === 'cerberus') { this.tone(150, 80, 0.35, 'sawtooth', 0.12); this.noise(0.35, 700, 200, 'lowpass', 0.7, 0.25, 0, 0.01, true); }
     else if (kind === 'hands') { this.sweep(0.45, 250, 900, 1.2, 0.22); this.tone(110, 70, 0.4, 'triangle', 0.06); }
+    else if (kind === 'eyebeam') { this.tone(1500, 500, 0.35, 'sawtooth', 0.09); this.sweep(0.3, 2000, 7000, 1.5, 0.18); this.kick(180, 90, 0.2, 0.3); }
+    else if (kind === 'heart') { this.tone(880, 1320, 0.18, 'sine', 0.08); this.tone(1320, 1760, 0.22, 'sine', 0.05, 0.06); this.sweep(0.25, 1500, 4000, 1.5, 0.08); }
+    else if (kind === 'bubble') { for (let i = 0; i < 4; i++) this.tone(rand(500, 900), rand(1100, 1600), 0.08, 'sine', 0.05, i * 0.05); }
     else if (kind === 'gungnir') { this.swing('pole', 1); this.ring([660, 990, 1320], 0.4, 0.045); this.sweep(0.3, 2000, 6000, 1.5, 0.12); }
     else if (kind === 'raven') { for (let i = 0; i < 3; i++) this.tone(900 - i * 120, 520, 0.12, 'sawtooth', 0.05, i * 0.09); this.sweep(0.3, 800, 2400, 1.4, 0.12); }
     else if (kind === 'runeTrap') { this.ring([440, 660, 880], 0.6, 0.06); this.tone(110, 220, 0.5, 'sine', 0.2, 0.3); }
@@ -8554,8 +9593,8 @@ function handleEvents() {
         break;
       case 'super':
         cutin(f, e.name);
-        sfx.superFlash(f.key === 'zeus' || f.key === 'thor' || f.key === 'susanoo' || f.key === 'odin');
-        screenFlash(0.6, f.key === 'zeus' ? '#cfe4ff' : f.key === 'thor' ? '#e4d8ff' : f.key === 'anubis' ? '#fff0c8' : f.key === 'susanoo' ? '#dcfff0' : f.key === 'heracles' ? '#fff0d8' : f.key === 'hades' ? '#ffe0e8' : f.key === 'odin' ? '#e6f0ff' : '#c8fff6');
+        sfx.superFlash(f.key === 'zeus' || f.key === 'thor' || f.key === 'susanoo' || f.key === 'odin' || f.key === 'aphrodite');
+        screenFlash(0.6, f.key === 'zeus' ? '#cfe4ff' : f.key === 'thor' ? '#e4d8ff' : f.key === 'anubis' ? '#fff0c8' : f.key === 'susanoo' ? '#dcfff0' : f.key === 'heracles' ? '#fff0d8' : f.key === 'hades' ? '#ffe0e8' : f.key === 'odin' ? '#e6f0ff' : f.key === 'shiva' ? '#ffe8d0' : f.key === 'aphrodite' ? '#fff0f6' : '#c8fff6');
         stage.dimT = 1;
         callout(e.side, '超必殺技!', true);
         break;
@@ -8572,6 +9611,20 @@ function handleEvents() {
       case 'judgment': lightFlash(e.x, 2.5, 0xffe0a0, 60); maatScales(e.x, 4.3); sfx.whoosh(2.5); break;
       case 'mist': hadesMist(e); break;
       case 'runeBind': odinRuneBind(e); break;
+      case 'fireRing': shivaFireRing(e); break;
+      case 'danceStrike': shivaDanceStrike(e); break;
+      case 'cosmicDance': shivaCosmicDance(e); break;
+      case 'thirdEye': shivaThirdEye(e); break;
+      case 'eyeBeam': shivaEyeBeam(e); break;
+      case 'damaru': shivaDamaru(e.side); break;
+      case 'nullify': ring(e.x, e.y, 0.2, 0xffb060, 1.8, 0.25, true); glowPuff(e.x, e.y, 0.2, 0xc0b8ff, 1.6, 0.2); callout(e.side, '相殺!', false); sfx.ring([700, 1050], 0.25, 0.06); break;
+      case 'charm': callout(e.side, '魅了!', true); for (let i = 0; i < 8; i++) loveHeart(e.x + rand(-0.5, 0.5), e.y - rand(0, 1), 0.3, rand(0.18, 0.32), rand(0.6, 1.0), rand(-1, 1), rand(0.5, 2)); sfx.tone(1318, 2093, 0.4, 'sine', 0.07); sfx.tone(1568, 2637, 0.4, 'sine', 0.04, 0.08); break;
+      case 'shellRise': aphShell(e); break;
+      case 'charmKiss': aphCharmKiss(e); break;
+      case 'ribbonLash': aphRibbonLash(e); break;
+      case 'roseStorm': aphRoseStorm(e.big ? e.x : (views[e.side] ? views[e.side].f.x : e.x), !!e.big); break;
+      case 'foamLeap': { const v = views[e.side], x = v ? v.f.x : e.x; normP.burst(50, x, 0.2, 0, 3.5, { life: [0.5, 1.0], size: [0.08, 0.2], color: [1, 0.97, 1], alpha: 0.9, up: 2.5, drag: 1.5 }); ring(x, 0.05, 0, 0xffd0e4, 3, 0.4); sfx.water(0.6); break; }
+      case 'heartSeal': aphHeartSeal(e); break;
       case 'ravenStrike': if (e.i === 0) odinRavenStorm(e.tx, e.ty); odinRaven(e); break;
       case 'odinAscend': odinAscend(e); break;
       case 'gungnirCharge': odinCharge(e); break;
@@ -8782,7 +9835,7 @@ const lastTap = { left: -9, right: -9 };
 const modelCache = {};
 function modelFor(side, key) {
   const id = side + key;
-  if (!modelCache[id]) modelCache[id] = key === 'zeus' ? buildZeus(FT) : key === 'anubis' ? buildAnubis(FT) : key === 'thor' ? buildThor(FT) : key === 'susanoo' ? buildSusanoo(FT) : key === 'heracles' ? buildHeracles(FT) : key === 'hades' ? buildHades(FT) : key === 'odin' ? buildOdin(FT) : buildPoseidon(FT);
+  if (!modelCache[id]) modelCache[id] = key === 'zeus' ? buildZeus(FT) : key === 'anubis' ? buildAnubis(FT) : key === 'thor' ? buildThor(FT) : key === 'susanoo' ? buildSusanoo(FT) : key === 'heracles' ? buildHeracles(FT) : key === 'hades' ? buildHades(FT) : key === 'odin' ? buildOdin(FT) : key === 'shiva' ? buildShiva(FT) : key === 'aphrodite' ? buildAphrodite(FT) : buildPoseidon(FT);
   if (!modelCache[id].outlined) { modelCache[id].outlined = true; if (!isMobile) addOutline(modelCache[id].root); }
   return modelCache[id];
 }
@@ -8798,7 +9851,7 @@ function addOutline(root) {
 function setupMatch(c) {
   cfg = c;
   curStage = c.stage || 'olympus';
-  for (const v of views) { scene.remove(v.m.root); for (const tr of v.trails) tr.dispose(); }
+  for (const v of views) { scene.remove(v.m.root); for (const tr of v.trails) tr.dispose(); if (v.ribbon) v.ribbon.dispose(); }
   for (const v of projViews.values()) scene.remove(v.g);
   projViews.clear();
   const ctl = c.mode === 'auto' ? ['ai', 'ai'] : c.mode === 'player' ? ['human', 'ai'] : ['human', c.dummy === 'guard' ? 'guard' : 'dummy'];
@@ -8839,6 +9892,8 @@ const GOD = {
   susanoo: { acc: '#9fffd8', acc2: '#1b5a4a', emb: `<svg viewBox="0 0 64 64" class="emb"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/><path d="M20 50 46 12" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/><path d="M17 44l9 6" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M14 30c6-8 14-6 14 0s-8 6-8 0M36 46c6 2 14-2 12-8s-8-2-6 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity=".85"/></svg>`, tag: '嵐の荒神', desc: '草薙の剣を振るう出雲の荒ぶる神。風の刃と雷をまとう踏み込みで、攻めと間合いの両方をこなす万能型。', stats: [['攻撃', 4], ['速度', 4], ['射程', 4], ['防御', 3]] },
   heracles: { acc: '#ffb870', acc2: '#8a3a10', emb: `<svg viewBox="0 0 64 64" class="emb"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/><path d="M22 48 40 16c2-3 7-2 8 1 1 4-1 6-3 8L27 51c-2 2-6 0-5-3z" fill="currentColor"/><circle cx="42" cy="20" r="2" fill="#000" opacity=".4"/><circle cx="37" cy="27" r="1.6" fill="#000" opacity=".4"/></svg>`, tag: '不屈の半神英雄', desc: 'ネメアの獅子を纏い、樫の棍棒を振るう半神の英雄。重い技は一撃を受け止めるアーマー付き、ガード不能の投げで守りを崩す。', stats: [['攻撃', 5], ['速度', 1], ['射程', 3], ['防御', 5]] },
   hades: { acc: '#ff6a88', acc2: '#5a0a1c', emb: `<svg viewBox="0 0 64 64" class="emb"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/><path d="M32 54V24" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M22 10c0 10 2 14 10 14s10-4 10-14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M22 8l-2 6h4zM42 8l-2 6h4z" fill="currentColor"/><circle cx="32" cy="40" r="3" fill="currentColor"/></svg>`, tag: '冥府の王', desc: '二又の槍と魂の炎を操る冥府の王。敵の魂を吸って体力を奪い、隠れ兜で背後を取り、離れた相手も亡者の手で捕らえる。', stats: [['攻撃', 3], ['速度', 3], ['射程', 4], ['防御', 3]] },
+  shiva: { acc: '#8fa8ff', acc2: '#2a1a6a', emb: `<svg viewBox="0 0 64 64" class="emb"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/><path d="M12 30c8-9 14-13 20-13s12 4 20 13c-8 9-14 13-20 13s-12-4-20-13z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><ellipse cx="32" cy="30" rx="4" ry="9" fill="currentColor"/><path d="M32 8v6M22 50h20M26 55h12" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>`, tag: '破壊と舞踏の神', desc: '四本の腕で宇宙の舞を踊る青き破壊神。舞うような連撃で攻め、斜めに降る第三の眼の光線で空と中距離を制し、ダマルの鼓動で飛び道具をかき消す。', stats: [['攻撃', 4], ['速度', 4], ['射程', 3], ['防御', 2]] },
+  aphrodite: { acc: '#ff9cc8', acc2: '#7a1a4a', emb: `<svg viewBox="0 0 64 64" class="emb"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/><path d="M32 47C19 37.500 15 30 19 23.500c3.500-5.500 10-4.500 13 1 3-5.500 9.500-6.500 13-1 4 6.500 0 14-13 23.500z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M20 54c4-3 8 3 12 0s8 3 12 0" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>`, tag: '愛と美の女神', desc: '海の泡から生まれた愛の女神。長いリボンで中間距離を舞い、魅了の口づけを受けた相手は無防備に歩み寄ってしまう。泡沫の舞でひらりと身をかわす。', stats: [['攻撃', 3], ['速度', 5], ['射程', 4], ['防御', 2]] },
   odin: { acc: '#b8d8ff', acc2: '#1a2a5a', emb: `<svg viewBox="0 0 64 64" class="emb"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/><path d="M32 13L44 34H20Z M24 22L36 43H12Z M40 22L52 43H28Z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><path d="M32 46v8" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>`, tag: '九界の主神', desc: '隻眼の全知神。決して外れぬ神槍グングニルを投げ、二羽の鴉とルーン魔術で間合いを支配する、神座の主にして最後の壁。', stats: [['攻撃', 4], ['速度', 3], ['射程', 5], ['防御', 4]] },
 };
 function panelHTML(side) {
@@ -9022,7 +10077,7 @@ function openViewer(key) {
   viewer.wait = 0; viewerPlay();
 }
 function viewerDistance(m) {
-  if (m.type === 'super') return m === CHARS.hades.moves.hd_super || m === CHARS.odin.moves.o_super ? 4 : 1.6;
+  if (m.type === 'super') return m === CHARS.hades.moves.hd_super || m === CHARS.odin.moves.o_super || m === CHARS.aphrodite.moves.ap_super ? 4 : 1.6;
   if (m.proj) return m.proj.atTarget ? 4 : m.proj.at ? 2.6 : 4.6;
   if (m.teleport) return 2.6;
   if (m.counter) return 1.4;
@@ -9077,10 +10132,10 @@ const STORY = {
     '勝ち残った者だけが、すべての神話を統べる王となる。',
   ],
   gods: {
-    zeus: { motive: '神座は初めからオリュンポスの王たる我のもの。異国の神々にも、それを思い知らせるまでよ。', path: ['anubis', 'susanoo', 'poseidon', 'hades'],
+    zeus: { motive: '神座は初めからオリュンポスの王たる我のもの。異国の神々にも、それを思い知らせるまでよ。', path: ['aphrodite', 'susanoo', 'poseidon', 'hades'],
       challenge: '我こそ天空の王。神座は初めから我がもの――退け。', reply: '神座を狙うか。ならば雷霆の裁きを受けよ！', lose: '……見事だ。天もまた、汝を認めるやもしれぬ。',
       ending: ['雷鳴とともに、ゼウスは神座へと昇った。', '「天は一つ、王もまた一つ。」', '異国の神々もまた、その雷霆に膝を折る。', 'オリュンポスの栄光は、いまや全ての神話を照らしている――。'] },
-    poseidon: { motive: '弟に天を、己には海を――あの籤の日から、ずっと待っていた。海はすべてを呑む。神座も例外ではない。', path: ['heracles', 'susanoo', 'hades', 'zeus'],
+    poseidon: { motive: '弟に天を、己には海を――あの籤の日から、ずっと待っていた。海はすべてを呑む。神座も例外ではない。', path: ['aphrodite', 'susanoo', 'hades', 'zeus'],
       challenge: '海は全てを呑む。神々の頂とて例外ではない。', reply: '大海を前に立つ覚悟はあるか。', lose: '潮は引いた……だが、海は必ず満ちる。',
       ending: ['大海の覇者は、ついに天の座をも手にした。', '「籤など要らぬ。力で決まったのだ。」', '世界の果てまで潮が満ち、神々はその水面に姿を映す。', '新たな王の時代は、波音とともに始まった――。'] },
     anubis: { motive: '神々の魂もまた量られねばならぬ。神座に相応しき心臓を持つ者は誰か――この秤で確かめる。', path: ['heracles', 'thor', 'susanoo', 'hades'],
@@ -9089,15 +10144,21 @@ const STORY = {
     thor: { motive: 'ハハッ！世界中の強ぇ神が集まってるって？神座なんぞおまけだ、全員ぶっ飛ばしてやる！', path: ['susanoo', 'heracles', 'poseidon', 'zeus'],
       challenge: 'ハハッ、強い奴と戦えるなら神座なんぞおまけだ！', reply: 'いいぜ、ミョルニルの重さを教えてやる！', lose: 'ちくしょう……最高に楽しかったぜ！',
       ending: ['最後の雷鳴が鳴り止んだとき、立っていたのはトールだった。', '「神座？ 座ってたら体がなまっちまう！」', '彼は玉座に腰掛けることなく、次の戦いを求めて虹の橋を駆けていく。', '神々の宴は、今宵もアースガルズで続く――。'] },
-    susanoo: { motive: '高天原を追われた荒ぶる神が、神々の頂を獲る。これ以上の痛快があるか。', path: ['thor', 'anubis', 'hades', 'poseidon'],
+    susanoo: { motive: '高天原を追われた荒ぶる神が、神々の頂を獲る。これ以上の痛快があるか。', path: ['thor', 'shiva', 'hades', 'poseidon'],
       challenge: '荒ぶる嵐を止められる神がいるなら、見せてみろ。', reply: 'いい度胸だ。八雲の彼方まで吹き飛ばしてやる。', lose: 'くっ……嵐が、やんだか。',
       ending: ['八雲立つ空の下、スサノオは天叢雲の剣を掲げた。', '「追放された神が頂に立つ。神話ってのは、こうでなくちゃな。」', '嵐は世界を巡り、古き秩序を洗い流していく。', '荒ぶる神の治世は、きっと騒がしく、自由だ――。'] },
     heracles: { motive: '人の子として生まれ、十二の試練を越えた。最後の試練は――神々そのものだ。', path: ['thor', 'anubis', 'hades', 'zeus'],
       challenge: '十二の試練を越えたこの腕、神々に通じるか試させてもらう！', reply: '半神だと侮るなよ。この棍棒は神をも砕く！', lose: 'まだだ……まだ、試練は終わっちゃいない……！',
       ending: ['半神の英雄は、ついに神々の頂に手をかけた。', '「父上。これが、人の子の力です。」', 'ゼウスは静かに笑い、息子に雷の冠を授けた。', '人と神の境は、この日をもって消えた――。'] },
-    hades: { motive: '兄たちは天と海を選んだ。だがいずれ、全ての神も我が冥府へ還る。ならば頂にも、冥府の王が座すべきだ。', path: ['anubis', 'susanoo', 'poseidon', 'zeus'],
+    hades: { motive: '兄たちは天と海を選んだ。だがいずれ、全ての神も我が冥府へ還る。ならば頂にも、冥府の王が座すべきだ。', path: ['anubis', 'shiva', 'poseidon', 'zeus'],
       challenge: '生ある者も神もいずれ冥府に還る。早いか遅いかの違いだ。', reply: '跪け。冥府の王の前では、神もただの魂にすぎぬ。', lose: '……ふん。冥府の門は、いつでも開いている。',
       ending: ['神座は、静かに闇へと沈んだ。', '「天も海も、いずれ皆ここへ来る。私はただ、待てばよい。」', '冥府の王は、初めて地上を見下ろした。', '永遠の静寂が、すべての神話を包み込んでいく――。'] },
+    shiva: { motive: '世界は踊りの中で生まれ、踊りの中で滅ぶ。神座もまた舞台にすぎぬ――ならば、最も美しく踊れる者が立つべきだ。', path: ['anubis', 'susanoo', 'hades', 'zeus'],
+      challenge: '踊ろう。創造と破壊は、同じ一つの舞だ。', reply: '我が舞の輪に入るか。ならば、灰になる覚悟をせよ。', lose: '……見事な舞だ。滅びもまた、次の創造の始まり。',
+      ending: ['最後の一歩が踏まれたとき、古い世界は静かに燃え尽きた。', '「恐れることはない。終わりは、始まりの別の名だ。」', 'シヴァは神座の上で踊り続ける。その足元から、新しい星々が生まれていく。', 'ダマルの鼓動とともに、次の宇宙が目を覚ました――。'] },
+    aphrodite: { motive: '力で奪った玉座など、すぐに冷えてしまうもの。神々の頂に座るべきは、すべての心を虜にできる者――つまり、わたくしよ。', path: ['heracles', 'poseidon', 'hades', 'zeus'],
+      challenge: 'あら、怖い顔。愛の前では、どんな神も膝を折るのよ？', reply: 'ふふ、わたくしに見惚れていると、痛い目を見るわよ。', lose: 'まあ……わたくしの方が、心を奪われてしまったみたい。',
+      ending: ['神座に腰掛けた女神は、退屈そうに頬杖をついた。', '「あら、もうおしまい？ 皆、わたくしに夢中になるのが早すぎるわ。」', '争いは止み、神々は競って彼女に花を贈るようになった。', '世界で最も甘く、最も逆らえない治世が、こうして始まった――。'] },
   },
   // the final boss waiting on the throne of the gods
   boss: {
@@ -9110,6 +10171,20 @@ const STORY = {
   },
   // rivalries: player>opponent  -> [[speaker 'p'|'o', line], ...]
   vs: {
+    'zeus>aphrodite': [['o', 'お父様ったら、また雷を落としに来たの？'], ['p', 'アフロディーテよ、神座は遊び場ではない。下がっておれ。'], ['o', 'いやよ。わたくしを泣かせた神々のこと、忘れていないもの。']],
+    'aphrodite>zeus': [['p', 'お父様。そろそろ、その玉座を譲ってくださらない？'], ['o', '愛の女神が王座を望むか。雷霆は、色香では防げぬぞ。'], ['p', 'あら、試してみなければ分からないわ。']],
+    'poseidon>aphrodite': [['o', '海の王さま。わたくしは、あなたの海の泡から生まれたのよ。'], ['p', 'ならば海へ還るがよい。潮は、己の泡に遠慮などせぬ。']],
+    'aphrodite>poseidon': [['p', 'ごきげんよう。わたくしを産んだ海に、ご挨拶に来たの。'], ['o', '泡の娘か。海の恩を、刃で返すつもりか。'], ['p', 'リボンよ。刃だなんて、野暮なことを言わないで。']],
+    'aphrodite>hades': [['o', '愛の女神か。冥府に、愛など届かぬ。'], ['p', 'あら、ペルセポネを攫った方が、それを言うの？']],
+    'aphrodite>heracles': [['o', 'うっ……女神様相手は、どうもやりにくいな。'], ['p', 'ふふ、十二の試練より、わたくしの方が手強くてよ。']],
+    'hades>shiva': [['o', '冥府の王。汝は死者を囲い、我は世界そのものを終わらせる。'], ['p', '終わらせたものは、すべて私の国へ来る。客が増えるのは歓迎だ。']],
+    'shiva>hades': [['o', '破壊の神か。滅びを司るのは、冥府だけで足りている。'], ['p', '汝は終わりを閉じ込める。我は終わりを踊る。それだけの違いだ。']],
+    'susanoo>shiva': [['o', '嵐の神よ。汝の荒ぶりは、舞の拍子によく合う。'], ['p', 'へっ、踊りながら戦うってのか。面白ぇ、付き合ってやる！']],
+    'shiva>susanoo': [['o', '腕が四本だと？ 剣が四本あっても足りねぇぞ！'], ['p', '案ずるな、嵐の神。汝の剣筋もまた、良い舞になる。']],
+    'shiva>anubis': [['o', '破壊の神よ。汝の魂は、秤に載るのか。'], ['p', '量るがいい。秤ごと、踊りの輪に入るだろうが。']],
+    'shiva>zeus': [['o', '東方の破壊神か。我が天を焼くつもりならば、容赦はせぬ。'], ['p', '天の王よ。雷もまた、舞の拍子の一つにすぎぬ。']],
+    'shiva>odin': [['o', '破壊の舞い手か。ラグナロクを、汝も見たか。'], ['p', '終末なら、幾度も踊った。隻眼の王よ、汝の終わりも美しく舞わせてやろう。']],
+    'aphrodite>odin': [['o', '愛の女神が、戦士の館に何の用だ。'], ['p', '片目で見ても、わたくしは美しいでしょう？ その玉座、いただくわ。'], ['o', '……知恵は、色香には曇らぬ。来るがよい。']],
     'thor>odin': [['o', '……来たか、トール。我が息子よ。'], ['p', '親父！？ まさか神座の主ってのは――！'], ['o', '左様。この座を継ぐに足るか、父が自ら量ってやろう。'], ['p', 'ハハッ、上等だ！ ミョルニルの重さ、親父にも教えてやる！']],
     'zeus>odin': [['p', '北の主神か。天の王は二人も要らぬ。'], ['o', 'オリュンポスの雷神よ。汝の天は、我が見る九つの世界の一つにすぎぬ。']],
     'hades>odin': [['o', '冥府の王が日の下まで来たか。'], ['p', '万物の父も、いずれは死者の一人。冥府で待つのも退屈でな。']],
@@ -9304,8 +10379,8 @@ window.addEventListener('blur', () => { for (const k in held) held[k] = false; c
 // ============================================================
 //  Menu backdrops: dedicated title / mode and character-select scenes (the arena is hidden outside matches)
 // ============================================================
-const MENU_KEYS = ['zeus', 'poseidon', 'anubis', 'thor', 'susanoo', 'heracles', 'hades', 'odin'];
-const MENU_COL = { zeus: 0xffd77a, poseidon: 0x5ff0e6, anubis: 0xf0c46a, thor: 0xc8b0ff, susanoo: 0x9fffd8, heracles: 0xffb870, hades: 0xff5a78, odin: 0xa8d0ff };
+const MENU_KEYS = ['zeus', 'poseidon', 'anubis', 'thor', 'susanoo', 'heracles', 'hades', 'shiva', 'aphrodite', 'odin'];
+const MENU_COL = { zeus: 0xffd77a, poseidon: 0x5ff0e6, anubis: 0xf0c46a, thor: 0xc8b0ff, susanoo: 0x9fffd8, heracles: 0xffb870, hades: 0xff5a78, shiva: 0x8fa8ff, aphrodite: 0xff9cc8, odin: 0xa8d0ff };
 const menuBG = { title: null, select: null, arena: null, t: 0, flash: 0, boltT: 2 };
 
 // collect everything a builder adds to the scene into one group so whole backdrops can be toggled
@@ -9520,7 +10595,7 @@ function buildTitleBackdrop() {
     // five colossi of the pantheon standing on cliffs, glowing eyes and a beam of their colour
     const bronze = new THREE.MeshStandardMaterial({ color: 0x2a2530, metalness: 0.55, roughness: 0.42 });
     const cliffM = new THREE.MeshStandardMaterial({ color: 0x2a2232, roughness: 0.95, flatShading: true });
-    const builders = { zeus: buildZeus, poseidon: buildPoseidon, anubis: buildAnubis, thor: buildThor, susanoo: buildSusanoo, heracles: buildHeracles, hades: buildHades, odin: buildOdin };
+    const builders = { zeus: buildZeus, poseidon: buildPoseidon, anubis: buildAnubis, thor: buildThor, susanoo: buildSusanoo, heracles: buildHeracles, hades: buildHades, shiva: buildShiva, aphrodite: buildAphrodite, odin: buildOdin };
     MENU_KEYS.forEach((k, i) => {
       const u = (i - (MENU_KEYS.length - 1) / 2) / ((MENU_KEYS.length - 1) / 2);   // -1..1
       const x = u * 30, z = -44 + Math.abs(u) * 10, y = 1.5 - Math.abs(u) * 2.5;
@@ -9618,7 +10693,7 @@ function buildSelectBackdrop() {
         g.strokeStyle = c; g.lineWidth = 6; g.strokeRect(14, 14, w - 28, h - 70);
         g.fillStyle = c; g.beginPath(); g.moveTo(14, h - 56); g.lineTo(w / 2, h - 6); g.lineTo(w - 14, h - 56); g.closePath(); g.fill();
         g.font = '900 120px serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
-        const glyph = { zeus: 'Ζ', poseidon: 'Ψ', anubis: '𓁢', thor: 'ᚦ', susanoo: '嵐', heracles: 'Η', hades: 'Ϙ', odin: 'ᚨ' }[k];
+        const glyph = { zeus: 'Ζ', poseidon: 'Ψ', anubis: '𓁢', thor: 'ᚦ', susanoo: '嵐', heracles: 'Η', hades: 'Ϙ', shiva: 'ॐ', aphrodite: '♡', odin: 'ᚨ' }[k];
         g.shadowColor = c; g.shadowBlur = 30; g.fillText(glyph, w / 2, h * 0.38);
         g.shadowBlur = 0; g.font = '700 30px serif'; g.fillText(CHARS[k].en, w / 2, h * 0.62);
       });
@@ -9770,6 +10845,8 @@ function floorTex(base, line, motif) {
     if (motif === 'eye') { g.lineWidth = 8; g.beginPath(); g.ellipse(cx, cy, 160, 80, 0, 0, 7); g.stroke(); g.beginPath(); g.arc(cx, cy, 50, 0, 7); g.stroke(); g.beginPath(); g.moveTo(cx - 40, cy + 70); g.lineTo(cx - 60, cy + 170); g.stroke(); }
     if (motif === 'trident') { g.lineWidth = 10; g.beginPath(); g.moveTo(cx, cy + 180); g.lineTo(cx, cy - 160); g.moveTo(cx - 90, cy - 150); g.lineTo(cx - 90, cy - 60); g.quadraticCurveTo(cx, cy, cx + 90, cy - 60); g.lineTo(cx + 90, cy - 150); g.stroke(); }
     if (motif === 'lion') { g.lineWidth = 8; for (let i = 0; i < 20; i++) { const a = (i / 20) * 6.28; g.beginPath(); g.moveTo(cx + Math.cos(a) * 110, cy + Math.sin(a) * 110); g.lineTo(cx + Math.cos(a) * 170, cy + Math.sin(a) * 170); g.stroke(); } g.beginPath(); g.arc(cx, cy, 100, 0, 7); g.stroke(); }
+    if (motif === 'lotus') { g.lineWidth = 7; g.lineJoin = 'round'; for (let L = 0; L < 2; L++) for (let i = 0; i < 8; i++) { g.save(); g.translate(cx, cy); g.rotate((i / 8) * Math.PI * 2 + L * 0.39); const r0 = L ? 70 : 120, r1 = L ? 150 : 215, wd = L ? 34 : 46; g.beginPath(); g.moveTo(-wd * 0.6, -r0); g.quadraticCurveTo(-wd, -(r0 + r1) / 2, 0, -r1); g.quadraticCurveTo(wd, -(r0 + r1) / 2, wd * 0.6, -r0); g.stroke(); g.restore(); } g.beginPath(); g.arc(cx, cy, 52, 0, 7); g.stroke(); g.beginPath(); g.arc(cx, cy, 10, 0, 7); g.fill(); }
+    if (motif === 'rose') { g.lineWidth = 8; g.lineJoin = 'round'; const k = 150; g.beginPath(); g.moveTo(cx, cy + 0.9 * k); g.bezierCurveTo(cx - 1.5 * k, cy - 0.1 * k, cx - 1.0 * k, cy - 1.3 * k, cx, cy - 0.55 * k); g.bezierCurveTo(cx + 1.0 * k, cy - 1.3 * k, cx + 1.5 * k, cy - 0.1 * k, cx, cy + 0.9 * k); g.stroke(); g.lineWidth = 4; for (let i = 0; i < 5; i++) { g.beginPath(); g.arc(cx, cy - 20, 20 + i * 14, i * 1.3, i * 1.3 + 4.2); g.stroke(); } }
     if (motif === 'valknut') { g.lineWidth = 9; g.lineJoin = 'round'; for (let i = 0; i < 3; i++) { const ox = cx + Math.cos(-Math.PI / 2 + i * 2.094) * 55, oy = cy + Math.sin(-Math.PI / 2 + i * 2.094) * 55; g.beginPath(); for (let k = 0; k < 3; k++) { const a = -Math.PI / 2 + k * 2.094; const px = ox + Math.cos(a) * 120, py = oy + Math.sin(a) * 120; k ? g.lineTo(px, py) : g.moveTo(px, py); } g.closePath(); g.stroke(); } }
     if (motif === 'skull') { g.lineWidth = 8; g.beginPath(); g.arc(cx, cy - 20, 110, Math.PI * 0.9, Math.PI * 2.1); g.lineTo(cx + 70, cy + 110); g.lineTo(cx - 70, cy + 110); g.closePath(); g.stroke(); g.beginPath(); g.arc(cx - 45, cy, 26, 0, 7); g.arc(cx + 45, cy, 26, 0, 7); g.stroke(); }
   });
@@ -9929,6 +11006,78 @@ const STAGES = {
       for (const x of [-12, -8, 8, 12]) { const brz = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.3, 1.4, 10), obs); brz.position.set(x, 0.7, -4); scene.add(brz); const fl = new THREE.Sprite(new THREE.SpriteMaterial({ map: FT.glow, color: 0xff3a60, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false })); fl.scale.setScalar(2.4); fl.position.set(x, 1.9, -4); scene.add(fl); const l = new THREE.PointLight(0xff3a60, 10, 10, 1.6); l.position.set(x, 2, -4); scene.add(l); S.flames.push({ fl, l, x }); }
       const gate = new THREE.Mesh(new THREE.TorusGeometry(12, 1.2, 10, 40, Math.PI), obs); gate.position.set(0, 0, -45); scene.add(gate);
       S.tick = () => { if (Math.random() < 0.8) addP.spawn(rand(-22, 22), -1, rand(-16, 4), rand(-0.3, 0.3), rand(1, 2.5), 0, rand(2, 4), 0.07, 0.02, 1.9, 0.5, 0.2, 1, 0.2, -0.2); for (const f of S.flames) { const k = 0.85 + Math.random() * 0.3; f.fl.scale.setScalar(2.4 * k); f.l.intensity = 10 * k; if (Math.random() < 0.3) addP.spawn(f.x + rand(-0.3, 0.3), 1.9, -4, 0, rand(1.5, 2.5), 0, 0.8, 0.12, 0.03, 1.9, 0.3, 0.6, 1, 0.5, -0.5); } };
+    },
+  },
+  kailash: {
+    name: '聖山カイラス', en: 'MOUNT KAILASH', owner: 'shiva', bgm: 'st_kailash', fog: [0x1c2648, 40, 280],
+    light: { hemi: [0xa8c0ff, 0x1a1830], key: 0xdfe8ff, rim: 0xffa050, fill: 0x6080ff },
+    build(S) {
+      const sky = new THREE.Mesh(new THREE.SphereGeometry(500, 48, 24), stageSky({ top: 0x030618, mid: 0x101c48, hor: 0x44548e, cloud: 0x26305a, clouds: 0.4, stars: 1.0, moon: [-0.35, 0.5, -1], moonR: 0.04, moonCol: 0xf0f4ff }));
+      sky.renderOrder = -10; scene.add(sky); S.sky = sky.material;
+      const snow = STD(0xdde6f8, 0.9), rock = STD(0x3a3c52, 0.9), ice = STD(0xbcd0f4, 0.35, 0.1);
+      const ground = new THREE.Mesh(new THREE.PlaneGeometry(600, 600), snow); ground.rotation.x = -Math.PI / 2; ground.position.y = -0.05; ground.receiveShadow = true; scene.add(ground);
+      scene.add(stageFloor(floorTex('#2a2c46', '#ffb060', 'lotus'), { side: 0x3a3c52, rough: 0.4, metal: 0.3, emissive: 0xffa050, ei: 0.3 }));
+      // Kailash: the four-faced snow pyramid, banded with dark rock, above lesser peaks
+      const peak = new THREE.Mesh(new THREE.ConeGeometry(75, 120, 4, 6), snow); peak.position.set(10, 46, -230); peak.rotation.y = 0.5; scene.add(peak);
+      for (let i = 0; i < 4; i++) { const band = new THREE.Mesh(new THREE.ConeGeometry(75 * (1 - (0.2 + i * 0.17)) + 1.2, 3.5, 4, 1, true), rock); band.position.set(10, 46 - 60 + (0.2 + i * 0.17) * 120, -230); band.rotation.y = 0.5; scene.add(band); }
+      for (let i = 0; i < 14; i++) { const sx = i % 2 ? 1 : -1, m = rockSpire(26 + Math.random() * 34, 14 + Math.random() * 10, i % 3 ? snow : ice); m.position.set(sx * (40 + Math.random() * 90), -2, -90 - Math.random() * 110); scene.add(m); }
+      // trishula standards with saffron pennants, in a half ring behind the floor
+      const brass = STD(0xd8a040, 0.3, 1), saffron = new THREE.MeshStandardMaterial({ color: 0xff7a1a, roughness: 0.8, side: THREE.DoubleSide, emissive: new THREE.Color(0.25, 0.08, 0) });
+      S.flags = [];
+      for (let i = 0; i < 6; i++) {
+        const a = Math.PI + ((i + 0.5) / 6) * Math.PI, g = new THREE.Group(); g.position.set(Math.cos(a) * 15.5, 0, Math.sin(a) * 9 - 3);
+        g.add(place(new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.09, 7, 8), brass), [0, 3.5, 0]));
+        g.add(place(new THREE.Mesh(new THREE.ConeGeometry(0.13, 1.0, 6), brass), [0, 7.5, 0]));
+        for (const sx of [-1, 1]) { g.add(place(new THREE.Mesh(new THREE.TorusGeometry(0.42, 0.06, 6, 14, Math.PI / 2), brass), [sx * 0.42, 6.75, 0], [0, sx > 0 ? Math.PI : 0, Math.PI])); g.add(place(new THREE.Mesh(new THREE.ConeGeometry(0.1, 0.6, 6), brass), [sx * 0.84, 7.05, 0])); }
+        const fl = new THREE.Mesh(new THREE.PlaneGeometry(1.6, 0.8, 6, 1).translate(0.8, 0, 0), saffron); fl.position.set(0.06, 5.6, 0); g.add(fl); S.flags.push(fl);
+        scene.add(g);
+      }
+      // Nandi, the bull, keeping watch
+      { const st = STD(0x8a8c9c, 0.7), n = new THREE.Group();
+        n.add(place(new THREE.Mesh(new THREE.BoxGeometry(5.5, 0.9, 3.2), rock), [0, 0.45, 0]));
+        const body = new THREE.Mesh(new THREE.SphereGeometry(1.3, 16, 12), st); body.scale.set(1.7, 0.95, 1); body.position.set(0, 1.9, 0); n.add(body);
+        n.add(place(new THREE.Mesh(new THREE.SphereGeometry(0.75, 14, 10), st), [1.2, 3.0, 0]));        // hump
+        const head = new THREE.Mesh(new THREE.SphereGeometry(0.7, 14, 10), st); head.scale.set(1.25, 0.95, 0.9); head.position.set(2.5, 2.7, 0); n.add(head);
+        for (const sz of [-1, 1]) { n.add(place(new THREE.Mesh(new THREE.ConeGeometry(0.14, 0.9, 8), brass), [2.4, 3.55, sz * 0.5], [sz * 0.5, 0, -0.3])); n.add(place(new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.5, 0.5), st), [1.6, 1.15, sz * 0.8])); n.add(place(new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.5, 0.5), st), [-1.4, 1.15, sz * 0.8])); }
+        n.add(place(new THREE.Mesh(new THREE.TorusGeometry(0.75, 0.06, 6, 20), brass), [1.9, 2.3, 0], [0, Math.PI / 2, 0.3]));
+        n.position.set(-11, 0, -19); n.rotation.y = 0.5; scene.add(n); }
+      // brass lamps
+      S.flames = [];
+      for (const x of [-11, -6.5, 6.5, 11]) { const lamp = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.18, 1.5, 10), brass); lamp.position.set(x, 0.75, -4.5); scene.add(lamp);
+        const fl = new THREE.Sprite(new THREE.SpriteMaterial({ map: FT.glow, color: 0xffa040, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false })); fl.scale.setScalar(2.2); fl.position.set(x, 1.9, -4.5); scene.add(fl);
+        const l = new THREE.PointLight(0xff9a40, 9, 12, 1.6); l.position.set(x, 2.2, -4.5); scene.add(l); S.flames.push({ fl, l }); }
+      S.tick = (dt, t) => {
+        for (let i = 0; i < 3; i++) normP.spawn(rand(-22, 22), rand(8, 12), rand(-16, 6), rand(-0.6, -0.1), -1.3, rand(-0.2, 0.2), 8, 0.06, 0.06, 0.95, 0.97, 1, 0.9, 0.3, 0);
+        for (const f of S.flames) { const k = 0.85 + Math.random() * 0.3; f.fl.scale.setScalar(2.2 * k); f.l.intensity = 9 * k; }
+        S.flags.forEach((fl, i) => { const pa = fl.geometry.attributes.position; for (let k = 0; k < pa.count; k++) { const x = pa.getX(k); pa.setZ(k, Math.sin(x * 3 - t * 5 + i) * 0.12 * x); } pa.needsUpdate = true; });
+      };
+    },
+  },
+  cythera: {
+    name: 'キュテラの浜辺', en: 'SHORES OF CYTHERA', owner: 'aphrodite', bgm: 'st_cythera', fog: [0xf0b8b0, 60, 340],
+    light: { hemi: [0xffe0e6, 0x7a5a60], key: 0xffd8b8, rim: 0xff9ac8, fill: 0xffb080 },
+    build(S) {
+      const sky = new THREE.Mesh(new THREE.SphereGeometry(500, 48, 24), stageSky({ top: 0x5a6ab0, mid: 0xff9ea0, hor: 0xffdca8, cloud: 0xffc8d0, clouds: 0.5 }));
+      sky.renderOrder = -10; scene.add(sky); S.sky = sky.material;
+      const sea = new THREE.Mesh(new THREE.PlaneGeometry(600, 600, 80, 80), liquidMat(0x2f7aa8, 0xffd8c8, 0.5)); sea.rotation.x = -Math.PI / 2; sea.position.y = -1.0; scene.add(sea); S.liquid = sea.material;
+      const sand = new THREE.Mesh(new THREE.CylinderGeometry(34, 44, 1.4, 56), STD(0xf2dab4, 0.95)); sand.position.set(0, -0.72, -8); sand.receiveShadow = true; scene.add(sand);
+      scene.add(stageFloor(floorTex('#f6ece8', '#e07a94', 'rose'), { side: 0xe8d8d0, rough: 0.35 }));
+      const marble = STD(0xfff4f0, 0.45), goldM = STD(0xf0c468, 0.3, 1), roseM = STD(0xd4204a, 0.6), pinkM = STD(0xff8ab0, 0.6), leafM = STD(0x3f7a3f, 0.8);
+      // rotunda of love: a ring of columns under a rose-marble dome
+      const rot = new THREE.Group(); rot.position.set(0, 0, -21);
+      for (let i = 0; i < 10; i++) { const a = (i / 10) * Math.PI * 2, c = column(8, 0.5, marble, goldM); c.position.set(Math.cos(a) * 7.5, 0.4, Math.sin(a) * 7.5); rot.add(c); }
+      rot.add(place(new THREE.Mesh(new THREE.CylinderGeometry(8.6, 8.6, 0.4, 40), marble), [0, 0.2, 0]));
+      rot.add(place(new THREE.Mesh(new THREE.TorusGeometry(7.6, 0.55, 8, 40), marble), [0, 8.9, 0], [Math.PI / 2, 0, 0]));
+      rot.add(place(new THREE.Mesh(new THREE.SphereGeometry(7.6, 32, 12, 0, Math.PI * 2, 0, Math.PI / 2), STD(0xffc4d0, 0.5)), [0, 9.2, 0]));
+      rot.add(place(new THREE.Mesh(new THREE.SphereGeometry(0.5, 12, 10), goldM), [0, 17.1, 0]));
+      // the scallop shell she came ashore on, at the heart of the rotunda
+      { const shellM = STD(0xffe6dc, 0.4, 0.2); for (let i = 0; i < 11; i++) { const a = ((i + 0.5) / 11 - 0.5) * Math.PI; const rib = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.1, 5, 8).translate(0, 2.5, 0), shellM); rib.rotation.z = -a; rib.scale.z = 0.4; rib.position.set(0, 0.6, 0); rot.add(rib); } }
+      scene.add(rot);
+      // rose hedges and cypresses
+      for (let i = 0; i < 16; i++) { const a = Math.PI + ((i + 0.5) / 16) * Math.PI, x = Math.cos(a) * (15.5 + (i % 2)), z = Math.sin(a) * 9.5 - 3; const b = new THREE.Mesh(new THREE.SphereGeometry(1.3, 10, 8), leafM); b.scale.y = 0.75; b.position.set(x, 0.8, z); scene.add(b);
+        for (let k = 0; k < 7; k++) { const r = new THREE.Mesh(new THREE.SphereGeometry(0.2, 8, 6), k % 2 ? roseM : pinkM); r.position.set(x + rand(-1, 1), 0.9 + rand(0, 0.9), z + rand(0.2, 1.1)); scene.add(r); } }
+      for (const [x, z] of [[-19, -14], [19, -15], [-25, -24], [25, -25], [-14, -30], [14, -30]]) { const t2 = new THREE.Mesh(new THREE.ConeGeometry(1.3, 11, 8), STD(0x2f5a3a, 0.9)); t2.position.set(x, 5.2, z); scene.add(t2); }
+      S.tick = () => { if (Math.random() < 0.5) normP.spawn(rand(-22, 22), rand(5, 9), rand(-14, 4), rand(0.3, 0.9), rand(-0.7, -0.3), rand(-0.1, 0.2), rand(5, 8), 0.07, 0.07, 1.0, 0.6, 0.75, 0.9, 0.2, 0); if (Math.random() < 0.3) addP.spawn(rand(-40, 40), -0.9, rand(-60, -20), 0, 0.05, 0, rand(0.4, 0.9), 0.12, 0.02, 1.6, 1.3, 1.0, 1, 0, 0); };
     },
   },
   valhalla: {
