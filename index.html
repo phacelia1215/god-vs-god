@@ -3715,11 +3715,20 @@ const { SKEL, JOINTS } = __poses;
 const V2 = THREE.Vector2, V3 = THREE.Vector3;
 
 // ---------------- canvas textures ----------------
+// big canvases are painted at full size, then copied down to TEX_CAP (phones) so GPU and canvas memory stay small
+const TEX_CAP = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && window.innerWidth < 1100) ? 512 : 1024;
 function canvasTex(w, h, draw, opts = {}) {
-  const c = document.createElement('canvas');
+  let c = document.createElement('canvas');
   c.width = w; c.height = h;
   const g = c.getContext('2d');
   draw(g, w, h);
+  const cap = opts.max || TEX_CAP;
+  if (w > cap || h > cap) {
+    const k = cap / Math.max(w, h), d = document.createElement('canvas');
+    d.width = Math.max(1, Math.round(w * k)); d.height = Math.max(1, Math.round(h * k));
+    const dg = d.getContext('2d'); dg.imageSmoothingQuality = 'high'; dg.drawImage(c, 0, 0, d.width, d.height);
+    c.width = c.height = 1; c = d;
+  }
   const t = new THREE.CanvasTexture(c);
   t.colorSpace = opts.linear ? THREE.NoColorSpace : THREE.SRGBColorSpace;
   t.anisotropy = 4;
@@ -4093,7 +4102,16 @@ function hairTex() {
   }));
 }
 // paint the face (eyes with layered irises and highlights, lashes, brows, nose, mouth, shading, markings)
+// both sides (and rematches) of a god share one painted face instead of each holding their own copy
+const FACE_CACHE = new Map();
 function paintFace(o, F, skinCol) {
+  const hx = (c) => c && c.isColor ? c.getHexString() : c;
+  const fkey = JSON.stringify([F, hx(skinCol), hx(o.iris.color), hx((o.browMat || o.hair).color), o.lip, o.lash, o.glowEyes, o.shadow, o.lashW, o.browTilt, o.browW, o.beard,
+    (o.marks || []).map((m) => m.slice(0, 5).concat(hx(m[5].color)))]);
+  if (!FACE_CACHE.has(fkey)) FACE_CACHE.set(fkey, paintFace0(o, F, skinCol));
+  return FACE_CACHE.get(fkey);
+}
+function paintFace0(o, F, skinCol) {
   const W = 1024, Z = 0.93, K = W / 2;
   const P2 = (x, y) => { const l = Math.hypot(x, y, Z); return [K + (x / l) * K, K - (y / l) * K]; };
   const hex = (c) => '#' + c.getHexString();
@@ -4172,7 +4190,7 @@ function paintFace(o, F, skinCol) {
     }
     for (const [x0, y0, x1, y1, w2, mat] of o.marks || []) { g.strokeStyle = hex(mat.color.clone().multiplyScalar(1 / Math.max(1, mat.color.r, mat.color.g, mat.color.b))); g.lineWidth = w2 * K * 2.4; g.lineCap = 'round'; path(g, [[x0, y0], [x1, y1]]); g.stroke(); }
   });
-  const glow = canvasTex(W, W, (g) => { g.fillStyle = '#000'; g.fillRect(0, 0, W, W); drawEyes(g, true); });
+  const glow = canvasTex(W, W, (g) => { g.fillStyle = '#000'; g.fillRect(0, 0, W, W); drawEyes(g, true); }, { max: 256 });
   return { map, glow };
 }
 function animeHead(P, H, o) {
@@ -6550,7 +6568,7 @@ function makeFloorTex(S) {
     // outer bronze rim
     g.strokeStyle = 'rgba(120,80,40,0.9)'; g.lineWidth = R(0.012);
     g.beginPath(); g.arc(c, c, R(0.494), 0, Math.PI * 2); g.stroke();
-  });
+  }, { max: S });
 }
 
 // ============================================================
@@ -11239,8 +11257,10 @@ async function boot() {
   buildMoveList();
   $('roster').innerHTML = MENU_KEYS.map((k, i) => `<span style="color:${GOD[k].acc};animation-delay:${0.3 + i * 0.08}s">${GOD[k].emb}<b>${CHARS[k].name}</b></span>`).join('');
   $('loading').classList.add('hidden');
+  booted = true;
   requestAnimationFrame(frame);
 }
+let booted = false;
 
 function buildMoveList() {
   const html = [];
@@ -11267,7 +11287,11 @@ function showError(err) {
   el.innerHTML = `<div class="err">読み込みエラー: ${String(err && err.message || err)}</div>`;
   console.error(err);
 }
-window.addEventListener('error', (e) => { if (!started) showError(e.error || e.message); });
+window.addEventListener('error', (e) => {
+  // only a failure while loading blocks the screen; opaque errors from the host page ("Script error.") are ignored
+  if (booted || !e.error || /^Script error/i.test(e.message || '')) { console.error(e.error || e.message); return; }
+  showError(e.error);
+});
 
 return {  };
 })();
