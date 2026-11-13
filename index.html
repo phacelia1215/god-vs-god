@@ -370,6 +370,51 @@ body.compact.landscape .vsmark{bottom:auto!important;top:42%}
   #btnStart{padding:10px 40px 10px 46px}
 }
 body.portrait #start .t-top{letter-spacing:.3em;font-size:8px}
+
+/* ================= move viewer ================= */
+#viewer{background:none;pointer-events:none;align-items:stretch;justify-content:flex-start;padding:0}
+#viewer>*{pointer-events:auto}
+.vhead{position:absolute;top:max(12px,env(safe-area-inset-top));left:16px;display:flex;align-items:center;gap:14px}
+.vt{display:flex;flex-direction:column}
+.vt small{font-family:var(--en);letter-spacing:.45em;font-size:10px;color:var(--gold)}
+.vt b{font-size:22px;letter-spacing:.3em;color:var(--gold2);text-shadow:0 2px 6px #000}
+.vpanel{position:absolute;left:16px;top:74px;bottom:16px;width:min(340px,38vw);display:flex;flex-direction:column;gap:8px;background:rgba(8,5,16,.84);border:1px solid rgba(232,192,106,.4);padding:10px;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.vchars{display:flex;gap:4px}
+.vchars .pick{flex:1;min-width:0;justify-content:center;padding:6px 0}
+.vchars .pick span{display:none}
+.vchars .pick .emb{width:26px;height:26px}
+.vname{font-size:18px;font-weight:800;letter-spacing:.12em;padding:2px 2px 0}
+.vname small{font-size:11px;letter-spacing:.2em;opacity:.7;margin-left:8px}
+.vlist{overflow:auto;flex:1;display:flex;flex-direction:column;gap:4px;scrollbar-width:thin}
+.vlist h4{font-size:11px;letter-spacing:.3em;color:var(--gold);margin:8px 0 2px}
+.vlist button{text-align:left;font-family:var(--jp);font-weight:700;font-size:13px;color:#fff;background:rgba(255,255,255,.04);border:1px solid rgba(232,192,106,.22);padding:7px 10px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.vlist button small{color:var(--gold2);opacity:.85;font-size:11px;white-space:nowrap;font-weight:400}
+.vlist button:hover{border-color:rgba(232,192,106,.6)}
+.vlist button.on{border-color:var(--gold2);background:rgba(232,192,106,.2);box-shadow:0 0 14px rgba(255,200,90,.25)}
+.vinfo{position:absolute;right:16px;bottom:68px;width:min(380px,44vw);background:rgba(8,5,16,.86);border:1px solid rgba(232,192,106,.45);padding:12px 16px;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.vinfo .vk{font-size:11px;letter-spacing:.3em;color:var(--gold)}
+.vinfo h3{font-size:22px;letter-spacing:.08em;margin:2px 0 8px}
+.vinfo .cmd{display:inline-block;font-size:14px;font-weight:800;padding:4px 10px;border:1px solid var(--gold);color:var(--gold2);margin-bottom:10px;letter-spacing:.06em}
+.vinfo dl{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:13px}
+.vinfo dt{color:var(--gold2);opacity:.8;letter-spacing:.15em}
+.vinfo dd{font-weight:700}
+.vinfo .tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
+.vinfo .tags span{font-size:11px;padding:3px 8px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.06)}
+.vctrl{position:absolute;right:16px;bottom:16px;display:flex;gap:8px}
+body.compact .vhead{left:8px;top:max(8px,env(safe-area-inset-top))}
+body.compact .vt b{font-size:17px}
+body.compact .vpanel{top:auto;left:8px;right:8px;width:auto;bottom:calc(max(8px,env(safe-area-inset-bottom)) + 48px);height:36vh;padding:8px}
+body.compact .vinfo{top:calc(max(8px,env(safe-area-inset-top)) + 46px);bottom:auto;right:8px;width:min(62vw,300px);padding:8px 10px}
+body.compact .vinfo h3{font-size:16px;margin-bottom:4px}
+body.compact .vinfo .cmd{font-size:12px;margin-bottom:6px}
+body.compact .vinfo dl{font-size:11px}
+body.compact .vctrl{left:8px;right:8px;bottom:max(8px,env(safe-area-inset-bottom));justify-content:center}
+body.compact .vctrl .sub{padding:8px 10px;font-size:12px}
+body.compact.landscape .vpanel{top:56px;bottom:56px;height:auto;right:auto;width:min(300px,40vw)}
+body.compact.landscape .vinfo{top:auto;bottom:52px}
+body:not(.compact) .cards{flex-wrap:nowrap;max-width:1240px;gap:clamp(10px,1.4vw,20px)}
+body:not(.compact) .card{width:clamp(190px,21vw,260px);min-height:clamp(260px,42vh,340px);padding:24px 16px 18px}
+body:not(.compact) .card span{font-size:12.5px;line-height:1.75}
 </style>
 <script type="importmap">
 { "imports": {
@@ -451,6 +496,10 @@ body.portrait #start .t-top{letter-spacing:.3em;font-size:8px}
       <svg viewBox="0 0 64 64" class="ico"><g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="32" cy="32" r="26"/><circle cx="32" cy="32" r="17"/><circle cx="32" cy="32" r="8"/><path d="M32 2v10M32 52v10M2 32h10M52 32h10"/></g><circle cx="32" cy="32" r="2.6" fill="currentColor"/></svg>
       <b>プラクティス</b><small>TRAINING</small>
       <span>木人を相手に技やコンボを練習します。神威ゲージは常に満タン。</span><u>制限時間なし・無限ラウンド</u></button>
+    <button class="card c4" data-mode="viewer"><em>Ⅳ</em>
+      <svg viewBox="0 0 64 64" class="ico"><g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14h20c3 0 5 2 5 5v32c0-3-2-5-5-5H10z"/><path d="M54 14H38c-2 0-3 2-3 5v32c0-3 2-5 5-5h14z"/><path d="M16 24h12M16 31h12M16 38h8M42 24h6M42 31h6"/></g></svg>
+      <b>技確認</b><small>MOVE LIST</small>
+      <span>神々の技をひとつずつ選び、実際の動き・エフェクト・超必殺技の演出を確かめられます。</span><u>コマンド・発生・性能を表示</u></button>
   </div>
   <div class="foot"><button class="sub" id="modeBack">◀ タイトルへ</button><span class="kh">← → 選択　Enter 決定　Esc 戻る</span></div>
 </div>
@@ -477,6 +526,13 @@ body.portrait #start .t-top{letter-spacing:.3em;font-size:8px}
   <button id="btnToTitle">タイトルへ</button>
 </div>
 <div class="keyhelp hidden" id="keyhelp">A/D 移動 ・ W ジャンプ ・ S しゃがみ ・ 後ろ入力でガード ・ J 弱(連打で簡易コンボ) ・ K 強 ・ L 必殺 ・ O 超必殺 ・ ダブルタップでダッシュ</div>
+
+<div class="overlay hidden" id="viewer">
+  <div class="vhead"><button class="sub" id="vBack">◀ 戻る</button><div class="vt"><small>MOVE LIST</small><b>技確認</b></div></div>
+  <div class="vpanel"><div class="vchars" id="vChars"></div><div class="vname" id="vName"></div><div class="vlist" id="vList"></div></div>
+  <div class="vinfo" id="vInfo"></div>
+  <div class="vctrl"><button class="sub" id="vReplay">▶ もう一度</button><button class="sub" id="vRepeat">リピート:ON</button><button class="sub" id="vGuard">木人:立ち</button></div>
+</div>
 
 <div class="overlay hidden" id="moves">
   <div class="wrap">
@@ -2394,6 +2450,7 @@ class Sim {
     if (f.ctl === 'ai') this.think(f, o, dt);
     else if (f.ctl === 'human') this.human(f, o, dt);
     else if (f.ctl === 'guard') this.dummyGuard(f);
+    // 'dummy' / 'none': no input at all
   }
 
   dummyGuard(f) {
@@ -5050,7 +5107,7 @@ return { makeFxTextures, Particles, Bolts, waterMaterial, Timed };
 
 // ======== game.js ========
 const __game = (() => {
-const { Sim, DT, STAGE, CHARS } = __sim;
+const { Sim, DT, STAGE, CHARS, HUMAN, AUTO } = __sim;
 const { SKEL, POSES, JOINTS, sampleAnim, blend, copyPose, cyclePose } = __poses;
 const { canvasTex, buildZeus, buildPoseidon, buildAnubis, buildThor, buildSusanoo, buildHeracles, buildHades, updateCape } = __models;
 const { makeFxTextures, Particles, Bolts, waterMaterial, Timed } = __fx;
@@ -7223,11 +7280,12 @@ function frame(now) {
   if (sim.phase === 'ko') { if (cineState()) koBySuper = true; } else koBySuper = false;
   const ts = koBySuper ? cineSlow() : sim.timeScale() * cineSlow();
   const vdt = paused ? 0 : rdt * speed * ts;
-  if (screen !== 'match') menuUpdate(rdt, clock);
+  if (screen !== 'match' && screen !== 'viewer') menuUpdate(rdt, clock);
   else if (started && !paused) {
     acc += vdt;
     let steps = 0;
-    while (acc >= DT && steps < 8) { sim.step(DT); acc -= DT; steps++; if (screen === 'match') handleEvents(); else sim.events.length = 0; }
+    while (acc >= DT && steps < 8) { sim.step(DT); acc -= DT; steps++; if (screen === 'match' || screen === 'viewer') handleEvents(); else sim.events.length = 0; }
+    if (screen === 'viewer') viewerUpdate(vdt);
   }
   // dim during supers
   const superOn = sim.freeze > 0 || sim.fighters.some((f) => f.state === 'attack' && f.move && f.move.type === 'super');
@@ -7296,7 +7354,8 @@ function setupMatch(c) {
 
 function showScreen(name) {
   screen = name;
-  bgm.play(name === 'match' ? (cfg.mode === 'practice' ? 'practice' : 'battle') : name);
+  bgm.play(name === 'match' ? (cfg.mode === 'practice' ? 'practice' : 'battle') : name === 'viewer' ? 'practice' : name);
+  $('viewer').classList.toggle('hidden', name !== 'viewer');
   $('start').classList.toggle('hidden', name !== 'title');
   $('mode').classList.toggle('hidden', name !== 'mode');
   $('select').classList.toggle('hidden', name !== 'select');
@@ -7388,7 +7447,7 @@ function menuUpdate(dt, t) {
 function menuCam(t, portrait) {
   // debug/screenshot hook: a fixed camera can be injected from the console
   if (window.__camOv) { const c = window.__camOv; return { pos: new V3(...c.pos), look: new V3(...c.look), fov: c.fov, rate: 100 }; }
-  if (screen === 'match' || !sim) return null;
+  if (screen === 'match' || screen === 'viewer' || !sim) return null;
   const w = portrait ? 1.4 : 1;
   if (screen === 'title') {
     const a = Math.sin(t * 0.07);
@@ -7403,12 +7462,129 @@ function menuCam(t, portrait) {
   return { pos: new V3(s, 1.35, 6.4), look: new V3(0, 1.2, 0), fov: 36 * w, rate: 3 };
 }
 
+// ============================================================
+//  Move viewer: pick a god and a move; the god performs it on a training dummy in the arena
+// ============================================================
+const viewer = { key: 'zeus', id: null, repeat: true, guard: false, wait: 0, airT: 0, started: false };
+const DIRS = { n: '', f: '→ + ', b: '← + ', d: '↓ + ', u: '↑ + ' };
+const BTN = { J: '弱(J)', K: '強(K)', L: '必殺(L)' };
+function moveCommand(key, id) {
+  const c = CHARS[key], m = c.moves[id];
+  if (m.type === 'super') return '超必殺(O)　※神威ゲージMAX';
+  if (m.type === 'air') return 'ジャンプ中に 弱(J) / 強(K)';
+  const map = HUMAN[key], found = [];
+  for (const b of ['J', 'K', 'L']) for (const d of ['n', 'f', 'b', 'd', 'u']) if (map[b][d] === id) found.push(DIRS[d] + BTN[b]);
+  if (!found.length) { const i = AUTO[key].indexOf(id); return i > 0 ? `弱(J)連打の${i + 1}段目` : 'コンボ中のみ'; }
+  return [...new Set(found)].slice(0, 2).join(' / ');
+}
+function moveFacts(key, id) {
+  const m = CHARS[key].moves[id], f = (x) => Math.round(x * 60);
+  const facts = [], tags = [];
+  if (m.proj) {
+    facts.push(['威力', m.proj.dmg * m.proj.hits + (m.proj.hits > 1 ? `（${m.proj.dmg}×${m.proj.hits}）` : '')], ['発生', f(m.proj.t) + 'F'], ['硬直', f(m.dur - m.proj.t) + 'F']);
+    tags.push('飛び道具');
+    if (m.proj.kind === 'rock') tags.push('放物線');
+    if (m.proj.atTarget) tags.push('相手の足元に出現');
+  } else if (m.hits) {
+    const hl = m.hits[m.hits.length - 1], dmg = m.hits.reduce((a, h) => a + h.dmg, 0);
+    facts.push(['威力', dmg + (m.hits.length > 1 ? `（${m.hits.length}段）` : '')], ['発生', f(m.hits[0].t0) + 'F']);
+    if (m.type !== 'air') { const adv = f((hl.bs ?? 0.2) - (m.dur - hl.t1)); facts.push(['ガード時', (adv >= 0 ? '+' : '') + adv + 'F' + (adv <= -10 ? '（確定反撃あり）' : '')]); }
+    if (hl.launch) tags.push('打ち上げ');
+    if (hl.kd && !hl.launch) tags.push('ダウン');
+    if (hl.bounce) tags.push('バウンド');
+    if (m.lv === 'low') tags.push('下段'); if (m.lv === 'mid') tags.push('中段');
+    if (m.armor) tags.push('アーマー');
+    if (m.hits.some((h) => h.grab)) tags.push('ガード不能');
+    if (m.hits.some((h) => h.drain)) tags.push('吸命');
+    if (m.teleport) tags.push('背後移動');
+    if (m.invuln) tags.push('出始め無敵');
+    if (m.motion) tags.push('突進');
+  } else if (m.type === 'super') { facts.push(['消費', '神威ゲージ100%']); tags.push('超必殺技'); }
+  return { facts, tags };
+}
+function renderViewer() {
+  const key = viewer.key, c = CHARS[key], G = GOD[key];
+  $('vChars').innerHTML = MENU_KEYS.map((k) => `<button class="pick ${k} ${k === key ? 'on' : ''}" data-key="${k}" title="${CHARS[k].name}">${GOD[k].emb}<span>${CHARS[k].name}</span></button>`).join('');
+  $('vName').innerHTML = `<span style="color:${G.acc}">${c.name}</span><small>${c.title}</small>`;
+  const groups = [['超必殺技', (m) => m.type === 'super'], ['必殺技', (m) => m.type === 'special'], ['通常技', (m) => m.type === 'normal'], ['空中技', (m) => m.type === 'air']];
+  $('vList').innerHTML = groups.map(([label, fn]) => {
+    const ids = Object.keys(c.moves).filter((id) => fn(c.moves[id]));
+    if (!ids.length) return '';
+    return `<h4>${label}</h4>` + ids.map((id) => `<button data-id="${id}" class="${id === viewer.id ? 'on' : ''}"><span>${c.moves[id].name}</span><small>${moveCommand(key, id)}</small></button>`).join('');
+  }).join('');
+  $('vChars').querySelectorAll('.pick').forEach((b) => b.addEventListener('click', () => openViewer(b.dataset.key)));
+  $('vList').querySelectorAll('button').forEach((b) => b.addEventListener('click', () => { viewer.id = b.dataset.id; renderViewer(); viewerPlay(); }));
+  renderViewerInfo();
+}
+function renderViewerInfo() {
+  const key = viewer.key, id = viewer.id;
+  if (!id) { $('vInfo').innerHTML = '<div class="vk">MOVE</div><h3>技を選んでください</h3>'; return; }
+  const m = CHARS[key].moves[id], { facts, tags } = moveFacts(key, id);
+  const kind = { super: '超必殺技', special: '必殺技', normal: '通常技', air: '空中技' }[m.type];
+  $('vInfo').innerHTML = `<div class="vk">${kind}</div><h3 style="color:${GOD[key].acc}">${m.name}</h3><div class="cmd">${moveCommand(key, id)}</div>
+    <dl>${facts.map(([a, b]) => `<dt>${a}</dt><dd>${b}</dd>`).join('')}</dl>${tags.length ? `<div class="tags">${tags.map((t) => `<span>${t}</span>`).join('')}</div>` : ''}`;
+}
+function openViewer(key) {
+  viewer.key = key;
+  const c = CHARS[key];
+  if (!viewer.id || !c.moves[viewer.id]) viewer.id = c.super;
+  setupMatch({ mode: 'practice', keys: [key, key === 'zeus' ? 'poseidon' : 'zeus'], dummy: 'stand', attract: true });
+  sim.phase = 'fight'; sim.phaseT = 0;
+  for (const f of sim.fighters) sim.setState(f, 'idle');
+  sim.fighters[0].ctl = 'none';
+  renderViewer();
+  showScreen('viewer');
+  viewer.wait = 0; viewerPlay();
+}
+function viewerDistance(m) {
+  if (m.type === 'super') return m === CHARS.hades.moves.hd_super ? 4 : 1.6;
+  if (m.proj) return m.proj.atTarget ? 4 : 4.6;
+  if (m.teleport) return 2.6;
+  if (m.hits && m.hits.some((h) => h.grab)) return 0.9;
+  if (m.reach) return 3.2;
+  if (m.type === 'air') return 1.5;
+  const h = m.hits[0];
+  return clamp((h.range[0] + h.range[1]) / 2 + 0.25, 1.0, 2.2);
+}
+function viewerPlay() {
+  if (screen !== 'viewer' && !viewer.started) { /* first open */ }
+  const m = CHARS[viewer.key].moves[viewer.id];
+  const [f, o] = sim.fighters;
+  sim.projs = []; sim.freeze = 0; sim.hitstop = 0; sim.phase = 'fight'; sim.events.length = 0;
+  for (const x of sim.fighters) {
+    sim.setState(x, 'idle'); x.y = 0; x.vx = 0; x.vy = 0; x.push = 0; x.hp = x.c.hp; x.invuln = 0;
+    x.inCombo = false; x.comboCap = false; x.lockedBy = null; x.sup = null; x.plan = []; x.chain = []; x.juggleN = 0;
+  }
+  const d = viewerDistance(m);
+  f.x = -d / 2 - 0.3; o.x = d / 2 - 0.3; f.facing = 1; o.facing = -1;
+  f.meter = 100; f.ctl = 'none';
+  o.ctl = viewer.guard ? 'guard' : 'dummy';
+  for (const v of views) v.cur = copyPose(v.lib.stance, v.cur);
+  // clear any super cinematic left over from the previous move
+  hud.cutin.className = 'hide'; document.body.classList.remove('cine'); $('cineTitle').classList.remove('show');
+  viewer.wait = 0; viewer.airT = 0;
+  if (m.type === 'air') { sim.jump(f, 0); viewer.airT = 0.3; }
+  else sim.startMove(f, viewer.id);
+}
+function viewerUpdate(dt) {
+  if (!sim || screen !== 'viewer') return;
+  const [f, o] = sim.fighters;
+  if (sim.phase !== 'fight') { sim.phase = 'fight'; sim.phaseT = 0; }
+  for (const x of sim.fighters) if (x.hp < x.c.hp * 0.4) x.hp = x.c.hp;
+  if (viewer.airT > 0) { viewer.airT -= dt; if (viewer.airT <= 0 && f.state === 'jump') sim.startMove(f, viewer.id); return; }
+  const busy = f.state === 'attack' || f.state === 'jump' || sim.freeze > 0 || sim.projs.length || ['hitstun', 'juggle', 'locked', 'down', 'getup', 'blockstun'].includes(o.state);
+  if (busy) { viewer.wait = 0; return; }
+  viewer.wait += dt;
+  if (viewer.repeat && viewer.wait > 0.9) viewerPlay();
+}
+
 function chooseMode(m) {
+  if (m === 'viewer') { openViewer(selState.keys[0]); return; }
   selState.mode = m; renderSelect(); refreshPreview(true); showScreen('select');
 }
 let modeFocus = 1;
 function focusCard(i) {
-  modeFocus = (i + 3) % 3;
+  modeFocus = (i + 4) % 4;
   document.querySelectorAll('.card').forEach((c, k) => c.classList.toggle('focus', k === modeFocus));
 }
 // keyboard -> human fighter (P1)
@@ -7423,11 +7599,16 @@ window.addEventListener('keydown', (e) => {
   if (screen === 'mode') {
     if (e.code === 'ArrowLeft' || e.code === 'KeyA') focusCard(modeFocus - 1);
     else if (e.code === 'ArrowRight' || e.code === 'KeyD') focusCard(modeFocus + 1);
-    else if (['Digit1', 'Digit2', 'Digit3'].includes(e.code)) chooseMode(['player', 'auto', 'practice'][+e.code.slice(5) - 1]);
-    else if (e.code === 'Enter') chooseMode(['player', 'auto', 'practice'][modeFocus]);
+    else if (['Digit1', 'Digit2', 'Digit3', 'Digit4'].includes(e.code)) chooseMode(['player', 'auto', 'practice', 'viewer'][+e.code.slice(5) - 1]);
+    else if (e.code === 'Enter') chooseMode(['player', 'auto', 'practice', 'viewer'][modeFocus]);
     else if (e.code === 'Escape') showScreen('title');
     else return;
     e.preventDefault(); return;
+  }
+  if (screen === 'viewer') {
+    if (e.code === 'Escape') $('vBack').click();
+    else if (e.code === 'Enter' || e.code === 'Space') { e.preventDefault(); $('vReplay').click(); }
+    return;
   }
   if (screen === 'select') {
     if (e.code === 'Enter') { e.preventDefault(); $('btnFight').click(); }
@@ -7924,6 +8105,10 @@ function boot() {
   const toSelect = () => { previewKey = ''; renderSelect(); refreshPreview(true); showScreen('select'); };
   $('btnToSel').addEventListener('click', toSelect);
   $('btnSel').addEventListener('click', toSelect);
+  $('vBack').addEventListener('click', () => { showScreen('mode'); focusCard(3); });
+  $('vReplay').addEventListener('click', () => viewerPlay());
+  $('vRepeat').addEventListener('click', () => { viewer.repeat = !viewer.repeat; $('vRepeat').textContent = 'リピート:' + (viewer.repeat ? 'ON' : 'OFF'); });
+  $('vGuard').addEventListener('click', () => { viewer.guard = !viewer.guard; $('vGuard').textContent = '木人:' + (viewer.guard ? 'ガード' : '立ち'); viewerPlay(); });
   const rematch = () => { setupMatch(cfg); showScreen('match'); };
   $('btnRestart').addEventListener('click', rematch);
   $('btnRematch').addEventListener('click', rematch);
