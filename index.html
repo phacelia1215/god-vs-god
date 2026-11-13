@@ -85,6 +85,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;color:#fff;font
 #announce.champ .a-main{font-family:var(--jp);font-size:clamp(40px,8vw,110px)}
 #announce.champ.anubis .a-main{background:linear-gradient(#fff8e0 20%,#f0c46a 55%,#1d3f8a 95%);-webkit-background-clip:text;background-clip:text;color:transparent}
 #announce.champ.thor .a-main{background:linear-gradient(#ffffff 20%,#c8b0ff 55%,#5a3aa0 95%);-webkit-background-clip:text;background-clip:text;color:transparent}
+#announce.champ.hades .a-main{background:linear-gradient(#ffe8ee 20%,#ff5a78 55%,#3a0010 95%);-webkit-background-clip:text;background-clip:text;color:transparent}
 #announce.champ.heracles .a-main{background:linear-gradient(#fff6e0 20%,#ffb860 55%,#7a3a10 95%);-webkit-background-clip:text;background-clip:text;color:transparent}
 #announce.champ.susanoo .a-main{background:linear-gradient(#ffffff 20%,#9fffd8 55%,#1b5a4a 95%);-webkit-background-clip:text;background-clip:text;color:transparent}
 #announce.champ.poseidon .a-main{background:linear-gradient(#f2fffe 20%,#5ff0e6 55%,#0a5a7a 90%);-webkit-background-clip:text;background-clip:text;filter:drop-shadow(0 4px 0 #032a38) drop-shadow(0 0 24px rgba(80,240,230,.6))}
@@ -97,6 +98,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;color:#fff;font
 .ci-band.zeus{background:linear-gradient(90deg,rgba(10,20,60,.0),rgba(20,40,110,.92) 18%,rgba(40,80,180,.92) 60%,rgba(10,20,60,0));border-top:2px solid #cfe4ff;border-bottom:2px solid #cfe4ff;box-shadow:0 0 40px rgba(130,180,255,.6)}
 .ci-band.anubis{background:linear-gradient(90deg,rgba(10,20,50,0),rgba(29,63,138,.92) 18%,rgba(60,90,170,.92) 60%,rgba(10,20,50,0));border-top:2px solid #f0c46a;border-bottom:2px solid #f0c46a}
 .ci-band.thor{background:linear-gradient(90deg,rgba(30,10,60,0),rgba(60,30,120,.92) 18%,rgba(100,70,180,.92) 60%,rgba(30,10,60,0));border-top:2px solid #e4d8ff;border-bottom:2px solid #e4d8ff;box-shadow:0 0 40px rgba(180,150,255,.55)}
+.ci-band.hades{background:linear-gradient(90deg,rgba(20,0,6,0),rgba(60,4,18,.94) 18%,rgba(120,10,40,.92) 60%,rgba(20,0,6,0));border-top:2px solid #ffb0c0;border-bottom:2px solid #ffb0c0;box-shadow:0 0 40px rgba(255,60,100,.5)}
 .ci-band.heracles{background:linear-gradient(90deg,rgba(40,15,0,0),rgba(110,50,10,.92) 18%,rgba(170,90,20,.92) 60%,rgba(40,15,0,0));border-top:2px solid #ffe0b0;border-bottom:2px solid #ffe0b0;box-shadow:0 0 40px rgba(255,170,80,.5)}
 .ci-band.susanoo{background:linear-gradient(90deg,rgba(5,30,30,0),rgba(15,60,70,.92) 18%,rgba(30,110,100,.92) 60%,rgba(5,30,30,0));border-top:2px solid #d8fff0;border-bottom:2px solid #d8fff0;box-shadow:0 0 40px rgba(140,255,210,.5)}
 .ci-band.poseidon{background:linear-gradient(90deg,rgba(0,40,50,0),rgba(0,80,100,.92) 18%,rgba(0,130,140,.92) 60%,rgba(0,40,50,0));border-top:2px solid #b8fff6;border-bottom:2px solid #b8fff6;box-shadow:0 0 40px rgba(80,240,230,.5)}
@@ -142,7 +144,7 @@ body:not(.portrait) .portrait-only{display:none}
 #movesBody{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
 #movesBody section{border:1px solid rgba(232,192,106,.4);padding:16px 18px;background:rgba(255,255,255,.03)}
 #movesBody h3{font-size:22px;margin-bottom:6px}
-#movesBody .zeus h3{color:var(--zeus)} #movesBody .poseidon h3{color:var(--pos)} #movesBody .anubis h3{color:#f0c46a} #movesBody .thor h3{color:#c8b0ff} #movesBody .susanoo h3{color:#9fffd8} #movesBody .heracles h3{color:#ffb870}
+#movesBody .zeus h3{color:var(--zeus)} #movesBody .poseidon h3{color:var(--pos)} #movesBody .anubis h3{color:#f0c46a} #movesBody .thor h3{color:#c8b0ff} #movesBody .susanoo h3{color:#9fffd8} #movesBody .heracles h3{color:#ffb870} #movesBody .hades h3{color:#ff6a88}
 #movesBody h3 small{font-size:12px;margin-left:10px;opacity:.7;letter-spacing:.2em}
 #movesBody h4{font-size:12px;letter-spacing:.3em;color:var(--gold);margin:12px 0 4px}
 #movesBody ul{list-style:none;font-size:14px;line-height:1.8}
@@ -251,7 +253,7 @@ body.portrait #ctrl button{font-size:11px;padding:6px 8px}
 .picks{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .pick{position:relative;flex:1;display:flex;align-items:center;gap:10px;padding:10px 12px;color:rgba(255,255,255,.7);font-family:var(--jp);font-weight:800;font-size:14px;letter-spacing:.08em;background:rgba(10,6,18,.78);border:2px solid rgba(255,255,255,.15);cursor:pointer;transition:all .15s;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
 .pick .emb{width:34px;height:34px;flex:none}
-.pick.zeus{color:var(--zeus)}.pick.poseidon{color:var(--pos)}.pick.anubis{color:#f0c46a}.pick.thor{color:#c8b0ff}.pick.susanoo{color:#9fffd8}.pick.heracles{color:#ffb870}
+.pick.zeus{color:var(--zeus)}.pick.poseidon{color:var(--pos)}.pick.anubis{color:#f0c46a}.pick.thor{color:#c8b0ff}.pick.susanoo{color:#9fffd8}.pick.heracles{color:#ffb870}.pick.hades{color:#ff6a88}
 .pick:not(.on){opacity:.6}
 .pick:hover{opacity:1;border-color:rgba(255,255,255,.5)}
 .pick.on{opacity:1;border-color:var(--gold2);background:rgba(50,36,10,.7);box-shadow:0 0 22px rgba(255,200,90,.5)}
@@ -282,7 +284,7 @@ body.cine #hud,body.cine .meter,body.cine #ctrl,body.cine .keyhelp,body.cine .co
 #cineTitle{position:fixed;left:0;right:0;top:50%;transform:translateY(-50%);text-align:center;z-index:18;pointer-events:none;opacity:0}
 #cineTitle b{display:block;font-size:clamp(54px,11vw,150px);font-weight:800;letter-spacing:.18em;line-height:1;background:linear-gradient(#fff 20%,var(--cc) 70%,#222);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 30px var(--cc)) drop-shadow(0 6px 0 #000)}
 #cineTitle small{display:block;margin-top:10px;font-size:clamp(14px,2.2vw,28px);letter-spacing:.5em;color:#fff;text-shadow:0 0 14px var(--cc),0 2px 4px #000}
-#cineTitle.zeus{--cc:#ffd77a}#cineTitle.poseidon{--cc:#5ff0e6}#cineTitle.anubis{--cc:#f0c46a}#cineTitle.thor{--cc:#c8b0ff}#cineTitle.susanoo{--cc:#9fffd8}#cineTitle.heracles{--cc:#ffb870}
+#cineTitle.zeus{--cc:#ffd77a}#cineTitle.poseidon{--cc:#5ff0e6}#cineTitle.anubis{--cc:#f0c46a}#cineTitle.thor{--cc:#c8b0ff}#cineTitle.susanoo{--cc:#9fffd8}#cineTitle.heracles{--cc:#ffb870}#cineTitle.hades{--cc:#ff6a88}
 #cineTitle.show{animation:ctl 1.6s cubic-bezier(.2,.8,.2,1) forwards}
 @keyframes ctl{0%{opacity:0;transform:translateY(-50%) scale(1.8);filter:blur(10px)}12%{opacity:1;transform:translateY(-50%) scale(1);filter:none}80%{opacity:1;transform:translateY(-50%) scale(1.05)}100%{opacity:0;transform:translateY(-50%) scale(1.12)}}
 
@@ -414,6 +416,7 @@ body.portrait #start .t-top{letter-spacing:.3em;font-size:8px}
   <button id="btnQ">画質:高</button>
   <button id="btnSnd">音:ON</button>
   <button id="btnMoves">技表</button>
+  <button id="btnSel">キャラ選択</button>
   <button id="btnTitle">タイトルへ</button>
   <button id="btnRestart">↻ 再試合</button>
 </div>
@@ -660,7 +663,7 @@ const ANUBIS_MOVES = {
     hits: [H({ t0: 0.11, t1: 0.2, dmg: 48, range: [0.1, 1.4], y: [0.2, 2.8], hs: 0.5, kb: 1.0, launch: 10.2, stop: 0.09, fx: 'soul' })],
   },
   a_kick: {
-    name: '跳び踵', type: 'normal', dur: 0.56, cancel: [0.32, 0.56],
+    name: '跳び踵', type: 'normal', weap: 'fist', dur: 0.56, cancel: [0.32, 0.56],
     motion: [{ t0: 0.04, t1: 0.24, vx: 4 }],
     anim: [[0, 'stance'], [0.1, 'hopWind'], [0.24, 'hopKick'], [0.36, 'hopKick'], [0.56, 'stance']],
     hits: [H({ t0: 0.25, t1: 0.33, dmg: 56, range: [0.2, 1.5], y: [0.6, 2.6], hs: 0.48, kb: 2.2, stop: 0.09, fx: 'heavy' })],
@@ -723,7 +726,7 @@ const THOR_MOVES = {
     hits: [H({ t0: 0.22, t1: 0.31, dmg: 86, range: [0.2, 1.75], y: [0.0, 3.0], hs: 0.52, kb: 2.2, kd: true, bounce: true, stop: 0.13, fx: 'thunder' })],
   },
   t_shoulder: {
-    name: '肩当て', type: 'normal', dur: 0.5, cancel: [0.24, 0.5],
+    name: '肩当て', type: 'normal', weap: 'fist', dur: 0.5, cancel: [0.24, 0.5],
     motion: [{ t0: 0.06, t1: 0.2, vx: 5 }],
     anim: [[0, 'stance'], [0.07, 'shoulderWind'], [0.14, 'shoulder'], [0.28, 'shoulder'], [0.5, 'stance']],
     hits: [H({ t0: 0.12, t1: 0.2, dmg: 52, range: [0.0, 1.2], y: [0.5, 2.0], hs: 0.44, kb: 3, stop: 0.09, fx: 'heavy' })],
@@ -813,7 +816,7 @@ const SUSANOO_MOVES = {
 };
 const HERACLES_MOVES = {
   h_jab: {
-    name: '鉄拳', type: 'normal', dur: 0.34, cancel: [0.14, 0.34],
+    name: '鉄拳', type: 'normal', weap: 'fist', dur: 0.34, cancel: [0.14, 0.34],
     anim: [[0, 'stance'], [0.07, 'jab'], [0.16, 'jab'], [0.34, 'stance']],
     hits: [H({ t0: 0.07, t1: 0.13, dmg: 40, range: [0.2, 1.45], hs: 0.36, bs: 0.18, kb: 1.6, stop: 0.06, fx: 'mid' })],
   },
@@ -828,7 +831,7 @@ const HERACLES_MOVES = {
     hits: [H({ t0: 0.15, t1: 0.22, dmg: 54, range: [0.2, 1.85], y: [0.0, 0.8], hs: 0.5, kb: 1.5, kd: true, stop: 0.09, fx: 'might' })],
   },
   h_upper: {
-    name: '天昇拳', type: 'normal', dur: 0.6, cancel: [0.27, 0.6],
+    name: '天昇拳', type: 'normal', weap: 'fist', dur: 0.6, cancel: [0.27, 0.6],
     anim: [[0, 'stance'], [0.09, 'upperWind'], [0.17, 'upper'], [0.34, 'upper'], [0.6, 'stance']],
     hits: [H({ t0: 0.15, t1: 0.24, dmg: 68, range: [0.1, 1.4], y: [0.3, 2.6], hs: 0.5, kb: 1.2, launch: 9.8, stop: 0.11, fx: 'might' })],
   },
@@ -838,7 +841,7 @@ const HERACLES_MOVES = {
     hits: [H({ t0: 0.23, t1: 0.32, dmg: 92, range: [0.2, 1.95], y: [0.0, 3.0], hs: 0.52, kb: 2.2, kd: true, bounce: true, stop: 0.14, fx: 'might' })],
   },
   h_shoulder: {
-    name: '獅子の突撃', type: 'normal', dur: 0.52, cancel: [0.26, 0.52], armor: [0.02, 0.2],
+    name: '獅子の突撃', type: 'normal', weap: 'fist', dur: 0.52, cancel: [0.26, 0.52], armor: [0.02, 0.2],
     motion: [{ t0: 0.06, t1: 0.22, vx: 6 }],
     anim: [[0, 'stance'], [0.08, 'shoulderWind'], [0.16, 'shoulder'], [0.3, 'shoulder'], [0.52, 'stance']],
     hits: [H({ t0: 0.13, t1: 0.22, dmg: 58, range: [0.0, 1.25], y: [0.5, 2.1], hs: 0.46, kb: 4, stop: 0.1, fx: 'heavy' })],
@@ -876,6 +879,62 @@ const HERACLES_MOVES = {
   for (let i = 0; i < 3; i++) { const b = 0.3 + i * 0.35; a.push([b + 0.03, 'grabLift'], [b + 0.2, 'grabLift'], [b + 0.27, 'grabSlam'], [b + 0.33, 'grabSlam']); }
   a.push([1.38, 'grabLift'], [1.5, 'grabLift'], [1.56, 'superCharge'], [1.72, 'superCharge'], [1.78, 'superSwing'], [2.1, 'superSwing'], [2.35, 'stance']);
 })();
+const HADES_MOVES = {
+  hd_jab: {
+    name: '冥槍突き', type: 'normal', dur: 0.32, cancel: [0.13, 0.32],
+    anim: [[0, 'stance'], [0.07, 'jab'], [0.15, 'jab'], [0.32, 'stance']],
+    hits: [H({ t0: 0.07, t1: 0.13, dmg: 34, range: [0.3, 2.0], y: [0.7, 1.9], hs: 0.35, bs: 0.18, kb: 1.6, stop: 0.05, fx: 'hell' })],
+  },
+  hd_slash: {
+    name: '冥王薙ぎ', type: 'normal', dur: 0.46, cancel: [0.19, 0.46],
+    anim: [[0, 'stance'], [0.1, 'slashWind'], [0.16, 'slashEnd'], [0.28, 'slashEnd'], [0.46, 'stance']],
+    hits: [H({ t0: 0.12, t1: 0.19, dmg: 50, range: [0.2, 2.0], y: [0.5, 2.1], hs: 0.42, kb: 2.1, stop: 0.08, fx: 'hell' })],
+  },
+  hd_sweep: {
+    name: '亡者刈り', type: 'normal', dur: 0.52, cancel: [0.22, 0.52],
+    anim: [[0, 'stance'], [0.08, 'sweepWind'], [0.15, 'sweepEnd'], [0.3, 'sweepEnd'], [0.52, 'stance']],
+    hits: [H({ t0: 0.13, t1: 0.2, dmg: 48, range: [0.2, 2.0], y: [0.0, 0.8], hs: 0.5, kb: 1.5, kd: true, stop: 0.08, fx: 'hell' })],
+  },
+  hd_rise: {
+    name: '黄泉昇り', type: 'normal', dur: 0.56, cancel: [0.25, 0.56],
+    anim: [[0, 'stance'], [0.09, 'riseWind'], [0.16, 'riseEnd'], [0.32, 'riseEnd'], [0.56, 'stance']],
+    hits: [H({ t0: 0.14, t1: 0.23, dmg: 58, range: [0.2, 1.9], y: [0.2, 2.9], hs: 0.5, kb: 1.2, launch: 10, stop: 0.1, fx: 'hell' })],
+  },
+  hd_palm: {
+    name: '魂抜き', type: 'normal', dur: 0.56, cancel: [0.26, 0.56], weap: 'fist',
+    anim: [[0, 'stance'], [0.1, 'palmWind'], [0.17, 'palm'], [0.32, 'palm'], [0.56, 'stance']],
+    hits: [H({ t0: 0.16, t1: 0.24, dmg: 56, range: [0.1, 1.35], y: [0.6, 2.0], hs: 0.5, kb: 3, stop: 0.12, fx: 'soulfire', drain: 0.6 })],
+  },
+  hd_slam: {
+    name: '冥鎚', type: 'normal', dur: 0.7, cancel: [0.32, 0.7],
+    anim: [[0, 'stance'], [0.13, 'slamWind'], [0.22, 'slamEnd'], [0.4, 'slamEnd'], [0.7, 'stance']],
+    hits: [H({ t0: 0.2, t1: 0.29, dmg: 80, range: [0.2, 2.0], y: [0.0, 3.0], hs: 0.5, kb: 2.2, kd: true, bounce: true, stop: 0.12, fx: 'hell' })],
+  },
+  hd_dog: {
+    name: 'ケルベロス', type: 'special', dur: 0.66, glow: 'bident',
+    anim: [[0, 'stance'], [0.12, 'summonWind'], [0.24, 'summon'], [0.42, 'summon'], [0.66, 'stance']],
+    proj: { t: 0.26, kind: 'cerberus', vx: 9, y: 0.7, dmg: 30, hits: 3, hs: 0.4, kb: 2.6, w: 0.7, h: 0.6, fx: 'hell', kd: true },
+  },
+  hd_hands: {
+    name: '亡者の手', type: 'special', dur: 0.7, glow: 'bident',
+    anim: [[0, 'stance'], [0.12, 'summonWind'], [0.26, 'summon'], [0.46, 'summon'], [0.7, 'stance']],
+    proj: { t: 0.28, kind: 'hands', atTarget: 6.5, delay: 0.3, life: 0.75, vx: 0, y: 0.8, dmg: 34, hits: 2, hs: 0.45, kb: 1.2, w: 0.55, h: 1.0, fx: 'hell', kd: true, launch: 7 },
+  },
+  hd_shade: {
+    name: '隠れ兜', type: 'special', dur: 0.66, glow: 'bident', invuln: 0.32, teleport: { t: 0.17, d: 1.05 },
+    anim: [[0, 'shadeWind'], [0.17, 'shadeWind'], [0.24, 'jab'], [0.3, 'shadeStrike'], [0.46, 'shadeStrike'], [0.66, 'stance']],
+    hits: [H({ t0: 0.3, t1: 0.38, dmg: 72, range: [0.1, 1.7], y: [0.4, 2.2], hs: 0.5, kb: 4, kd: true, stop: 0.12, fx: 'hell', chip: 0.15 })],
+  },
+  hd_air: {
+    name: '冥落', type: 'air', dur: 0.5,
+    anim: [[0, 'airWind'], [0.08, 'airStab'], [0.5, 'airStab']],
+    hits: [H({ t0: 0.08, t1: 0.42, dmg: 56, range: [0.0, 1.9], y: [-1.1, 0.9], hs: 0.46, kb: 2.0, stop: 0.08, fx: 'hell' })],
+  },
+  hd_super: {
+    name: '冥府の門・タルタロス', type: 'super', dur: 2.3, glow: 'bident',
+    anim: [[0, 'summonWind'], [0.18, 'summon'], [0.32, 'superCall'], [0.42, 'superDrain'], [1.28, 'superDrain'], [1.36, 'superCall'], [1.6, 'superCall'], [1.68, 'summon'], [2.0, 'summon'], [2.3, 'stance']],
+  },
+};
 // Thor swings an oversized Mjolnir: every hammer move is slower to come out, hits much harder
 // and reaches further. [time scale, damage scale, extra reach]
 (function () {
@@ -906,6 +965,7 @@ const HERACLES_MOVES = {
   set(POSEIDON_MOVES.p_sweep, 'low'); set(POSEIDON_MOVES.p_air, 'mid');
   set(ANUBIS_MOVES.a_low, 'low'); set(ANUBIS_MOVES.a_kick, 'mid'); set(ANUBIS_MOVES.a_air, 'mid');
   set(THOR_MOVES.t_low, 'low'); set(THOR_MOVES.t_slam, 'mid'); set(THOR_MOVES.t_air, 'mid');
+  set(HADES_MOVES.hd_sweep, 'low'); set(HADES_MOVES.hd_slam, 'mid'); set(HADES_MOVES.hd_air, 'mid');
   set(HERACLES_MOVES.h_low, 'low'); set(HERACLES_MOVES.h_smash, 'mid'); set(HERACLES_MOVES.h_air, 'mid');
   set(SUSANOO_MOVES.s_sweep, 'low'); set(SUSANOO_MOVES.s_kabuto, 'mid'); set(SUSANOO_MOVES.s_air, 'mid');
 })();
@@ -937,8 +997,9 @@ function stretchTail(m, from, newDur) {
 }
 (function frameData() {
   const PROJ_REC = { kind: { rock: 34 / 60, hammer: 34 / 60, soul: 28 / 60 }, def: 30 / 60 };
-  for (const T of [ZEUS_MOVES, POSEIDON_MOVES, ANUBIS_MOVES, THOR_MOVES, SUSANOO_MOVES, HERACLES_MOVES]) {
+  for (const T of [ZEUS_MOVES, POSEIDON_MOVES, ANUBIS_MOVES, THOR_MOVES, SUSANOO_MOVES, HERACLES_MOVES, HADES_MOVES]) {
     for (const m of Object.values(T)) {
+      if (m.type === 'air') m.tier = 'medium';
       if (m.type === 'super' || m.type === 'air') continue;
       if (m.proj) {
         const want = m.proj.t + (PROJ_REC.kind[m.proj.kind] || PROJ_REC.def);
@@ -1046,7 +1107,7 @@ const CHARS = {
     ],
   },
   heracles: {
-    key: 'heracles', name: 'ヘラクレス', en: 'HERACLES', title: '不屈の半神英雄', hp: 1100, walk: 2.5, back: 1.9, dash: 8,
+    key: 'heracles', name: 'ヘラクレス', en: 'HERACLES', title: '不屈の半神英雄', hp: 1150, walk: 2.5, back: 1.9, dash: 8,
     jumpV: 9.6, jumpX: 3.2, width: 0.47, height: 2.3, moves: HERACLES_MOVES, air: 'h_air', super: 'h_super',
     guard: 0.6, aggro: 0.85,
     routes: [
@@ -1058,6 +1119,21 @@ const CHARS = {
       ['h_club', 'h_dash'],
       ['h_jab', 'h_club', 'h_upper', 'SUPER'],
       ['h_low', 'h_upper', 'SUPER'],
+    ],
+  },
+  hades: {
+    key: 'hades', name: 'ハデス', en: 'HADES', title: '冥府の王', hp: 1040, walk: 2.9, back: 2.5, dash: 9.5,
+    jumpV: 10.5, jumpX: 4.2, width: 0.38, height: 2.15, moves: HADES_MOVES, air: 'hd_air', super: 'hd_super',
+    guard: 0.58, aggro: 0.8,
+    routes: [
+      ['hd_jab', 'hd_jab', 'hd_slash'],
+      ['hd_jab', 'hd_slash', 'hd_palm', 'hd_rise'],
+      ['hd_sweep', 'hd_slam'],
+      ['hd_jab', 'hd_sweep'],
+      ['hd_slash', 'hd_palm', 'hd_shade'],
+      ['hd_slash', 'hd_dog'],
+      ['hd_jab', 'hd_slash', 'hd_rise', 'SUPER'],
+      ['hd_palm', 'hd_rise', 'SUPER'],
     ],
   },
 };
@@ -1129,6 +1205,11 @@ const HUMAN = {
     K: { n: 'h_smash', f: 'h_shoulder', b: 'h_smash', d: 'h_low', u: 'h_upper' },
     L: { n: 'h_rock', f: 'h_dash', b: 'h_grab', d: 'h_grab', u: 'h_rock' },
   },
+  hades: {
+    J: { n: 'hd_jab', f: 'hd_slash', b: 'hd_jab', d: 'hd_sweep', u: 'hd_rise' },
+    K: { n: 'hd_slam', f: 'hd_palm', b: 'hd_palm', d: 'hd_sweep', u: 'hd_rise' },
+    L: { n: 'hd_dog', f: 'hd_shade', b: 'hd_hands', d: 'hd_hands', u: 'hd_dog' },
+  },
 };
 
 // CPU strength, 1 (weakest) .. 5 (strongest). Scales how often the AI guards, reads
@@ -1157,6 +1238,7 @@ const AUTO = {
   thor: ['t_jab', 't_swing', 't_upper', 't_dash', 'SUPER'],
   susanoo: ['s_cut', 's_kesa', 's_spin', 's_rise', 's_dash', 'SUPER'],
   heracles: ['h_jab', 'h_club', 'h_upper', 'h_dash', 'SUPER'],
+  hades: ['hd_jab', 'hd_slash', 'hd_palm', 'hd_rise', 'SUPER'],
 };
 
 class Sim {
@@ -1304,7 +1386,8 @@ class Sim {
     f.state = 'attack'; f.st = 0;
     f.move = m; f.moveId = id; f.mt = 0;
     f.hitDone = m.hits ? m.hits.map(() => false) : [];
-    f.contact = false; f.projFired = false; f.armorUsed = false;
+    f.contact = false; f.projFired = false; f.armorUsed = false; f.tpDone = false;
+    if (m.invuln) f.invuln = Math.max(f.invuln, m.invuln);
     f.serial++;
     if (m.type !== 'air') f.vx = 0;
     this.emit('move', { side: f.side, id, name: m.name, mtype: m.type });
@@ -1381,6 +1464,15 @@ class Sim {
           if (m.type !== 'air') {
             f.vx = 0;
             if (m.motion) for (const s of m.motion) if (t >= s.t0 && t < s.t1) f.vx = s.vx * f.facing;
+          }
+          // Helm of Darkness: vanish and reappear behind the foe
+          if (m.teleport && !f.tpDone && t >= m.teleport.t) {
+            f.tpDone = true;
+            const from = f.x, side = Math.sign(o.x - f.x) || f.facing;
+            f.x = clamp(o.x + side * m.teleport.d, -STAGE, STAGE);
+            if (Math.abs(f.x - o.x) < 0.5) f.x = clamp(o.x - side * m.teleport.d, -STAGE, STAGE);
+            f.facing = Math.sign(o.x - f.x) || -f.facing;
+            this.emit('shade', { side: f.side, from, to: f.x, y: f.y });
           }
           if (m.proj && !f.projFired && t >= m.proj.t) { f.projFired = true; this.spawnProj(f, m.proj); }
           // combo cancel
@@ -1559,7 +1651,7 @@ class Sim {
       if (Math.abs(o.x) > STAGE - 0.4) f.push = -dir * (h.bkb ?? h.kb * 0.9);
       this.hitstop = hitStop(h, 1) * 0.6;
       this.stats.blocks++;
-      this.emit('block', { side: f.side, x: o.x - dir * 0.3, y: hitY, fx: h.fx, power: h.dmg, chip });
+      this.emit('block', { side: f.side, x: o.x - dir * 0.3, y: hitY, fx: h.fx, power: h.dmg, chip, proj: !!h.proj });
       return true;
     }
     if (!o.inCombo) { o.inCombo = true; f.combo = 0; f.comboDmg = 0; o.juggleN = 0; }
@@ -1571,6 +1663,7 @@ class Sim {
     o.hp -= dmg;
     if (opts.minHp && o.hp < opts.minHp) o.hp = opts.minHp;
     f.comboDmg += dmg;
+    if (h.drain) { const amt = Math.round(dmg * h.drain); f.hp = Math.min(f.c.hp, f.hp + amt); this.emit('drain', { side: f.side, x: o.x, y: hitY, amt }); }
     if (!opts.superHit) {
       f.meter = Math.min(100, f.meter + h.dmg * 0.12);
       o.meter = Math.min(100, o.meter + h.dmg * 0.07);
@@ -1599,7 +1692,7 @@ class Sim {
     if (Math.abs(o.x) > STAGE - 0.4 && !airborne) f.push = -dir * h.kb * 0.8;
     this.hitstop = Math.max(this.hitstop, hitStop(h, f.combo));
     this.stats.hits++;
-    this.emit('hit', { side: f.side, x: o.x - dir * 0.25, y: hitY, fx: h.fx, dmg, power: h.dmg, combo: f.combo, dir });
+    this.emit('hit', { side: f.side, x: o.x - dir * 0.25, y: hitY, fx: h.fx, dmg, power: h.dmg, combo: f.combo, dir, proj: !!h.proj });
     if (o.hp <= 0) {
       o.hp = 0;
       this.ko(f, o, dir);
@@ -1647,12 +1740,16 @@ class Sim {
 
   // --------------------------------------------------------
   spawnProj(f, p) {
+    let px = f.x + f.facing * 0.95;
+    if (p.atTarget) { const o = this.fighters[1 - f.side]; px = clamp(clamp(o.x, f.x - p.atTarget, f.x + p.atTarget), -STAGE, STAGE); }
     const pr = {
       id: ++this.projId, owner: f.side, kind: p.kind,
-      x: f.x + f.facing * 0.95, y: f.y + p.y, vx: p.vx * f.facing,
+      x: px, y: (p.atTarget ? 0 : f.y) + p.y, vx: p.vx * f.facing,
       dmg: p.dmg, hitsLeft: p.hits, cd: 0, t: 0, w: p.w, h: p.h,
-      hs: p.hs, kb: p.kb, fx: p.fx, kd: !!p.kd, dead: false, ret: p.ret || 0, dir0: f.facing, vy: p.vy || 0, grav: p.grav || 0,
+      hs: p.hs, kb: p.kb, fx: p.fx, kd: !!p.kd, dead: false, ret: p.ret || 0, dir0: f.facing, vy: p.vy || 0, grav: p.grav || 0, life: p.life || 0, launch: p.launch || 0,
+      cd0: p.delay || 0,
     };
+    pr.cd = pr.cd0;
     this.projs.push(pr);
     this.stats.projs++;
     this.emit('projSpawn', { proj: pr });
@@ -1677,7 +1774,7 @@ class Sim {
         if (p.y < 0.35) { p.dead = true; this.emit('projEnd', { proj: p, hit: false }); this.emit('rockLand', { x: p.x }); continue; }
       }
       p.cd -= dt;
-      if (Math.abs(p.x) > STAGE + 3 || p.t > (p.ret ? 4 : 3)) { p.dead = true; this.emit('projEnd', { proj: p, hit: false }); if (p.ret) this.emit('catch', { side: p.owner, x: this.fighters[p.owner].x }); continue; }
+      if (Math.abs(p.x) > STAGE + 3 || p.t > (p.ret ? 4 : 3) || (p.life && p.t > p.life)) { p.dead = true; this.emit('projEnd', { proj: p, hit: false }); if (p.ret) this.emit('catch', { side: p.owner, x: this.fighters[p.owner].x }); continue; }
       const o = this.fighters[1 - p.owner];
       const f = this.fighters[p.owner];
       if (p.cd <= 0 && !p.spent) {
@@ -1685,9 +1782,10 @@ class Sim {
         if (p.x + p.w >= hb.x0 && p.x - p.w <= hb.x1 && p.y + p.h >= hb.y0 && p.y - p.h <= hb.y1) {
           if (o.invuln > 0 || o.state === 'down' || o.state === 'getup' || o.state === 'ko' || o.state === 'locked') continue;
           const last = p.hitsLeft <= 1;
-          const h = { dmg: p.dmg, hs: p.hs, bs: 0.25, kb: last ? p.kb : 0.6, stop: 0.07, fx: p.fx, chip: 0.15, kd: last && p.kd, y: [0, 0] };
+          const h = { dmg: p.dmg, hs: p.hs, bs: 0.25, kb: last ? p.kb : 0.6, stop: 0.07, fx: p.fx, chip: 0.15, kd: last && p.kd, launch: last ? p.launch : 0, y: [0, 0] };
           // projectile hits are not chained onto the owner's move contact
           const keepContact = f.contact;
+          h.proj = true;
           this.applyHit(f, o, h, clamp(p.y, o.y + 0.4, o.y + 1.7));
           f.contact = keepContact;
           p.hitsLeft--; p.cd = 0.16;
@@ -1702,6 +1800,7 @@ class Sim {
     for (let i = 0; i < this.projs.length; i++) for (let j = i + 1; j < this.projs.length; j++) {
       const a = this.projs[i], b = this.projs[j];
       if (a.dead || b.dead || a.owner === b.owner) continue;
+      if (a.life || b.life) continue;
       if (a.spent || b.spent) continue;
       if (Math.abs(a.x - b.x) < a.w + b.w && Math.abs(a.y - b.y) < a.h + b.h) {
         // a returning weapon knocks the other projectile away and heads home
@@ -1718,9 +1817,9 @@ class Sim {
   // --------------------------------------------------------
   //  Supers (scripted)
   // --------------------------------------------------------
-  canLock(o) {
+  canLock(o, range = 2.8) {
     const f = o === this.fighters[0] ? this.fighters[1] : this.fighters[0];
-    return !(o.invuln > 0) && !['down', 'getup', 'ko'].includes(o.state) && !this.canBlock(o) && (Math.abs(o.x - f.x) < 2.8 || (['juggle', 'hitstun'].includes(o.state) && Math.abs(o.x - f.x) < 4));
+    return !(o.invuln > 0) && !['down', 'getup', 'ko'].includes(o.state) && !this.canBlock(o) && (Math.abs(o.x - f.x) < range || (['juggle', 'hitstun'].includes(o.state) && Math.abs(o.x - f.x) < 4));
   }
   lock(f, o) {
     o.state = 'locked'; o.st = 0; o.lockedBy = f.side;
@@ -1889,6 +1988,32 @@ class Sim {
           else this.hitstop = 0.12;
         });
       }
+    } else if (f.key === 'hades') {
+      // HADES: chains rise under the foe wherever they stand, souls are drained, the gate of Tartarus swallows them, hellfire spits them out
+      f.y = 0;
+      if (t >= 0.3) once('connect', () => {
+        s.tx = o.x;
+        this.emit('chains', { side: f.side, x: o.x });
+        if (this.canLock(o, 7.5)) { this.lock(f, o); s.lock = true; s.oy = o.y; this.superHit(f, o, 24, 'hell', { stop: 0.07 }); }
+      });
+      if (locked) {
+        if (t < 1.3) o.y = lerp(s.oy, 1.2, easeOut(clamp((t - 0.3) / 0.35, 0, 1))) + Math.sin(t * 22) * 0.03;
+        else if (t < 1.58) o.y = lerp(1.2, -0.9, easeIn((t - 1.3) / 0.28));
+        else if (t < 1.74) o.y = -0.9;
+        else o.y = 0.05;
+      }
+      for (let i = 0; i < 6; i++) {
+        if (t >= 0.46 + i * 0.13) once('dr' + i, () => {
+          this.emit('soulDrain', { side: f.side, x: s.lock ? o.x : s.tx, y: (s.lock ? o.y : 0) + 1.3, fx: f.x });
+          if (s.lock && o.state === 'locked') { this.superHit(f, o, 15, 'soulfire', { stop: 0.025 }); f.hp = Math.min(f.c.hp, f.hp + 12); }
+        });
+      }
+      if (t >= 1.3) once('gate', () => this.emit('tartarus', { side: f.side, x: s.lock ? o.x : s.tx }));
+      if (t >= 1.74) once('final', () => {
+        this.emit('superImpact', { side: f.side, x: s.lock ? o.x : s.tx, kind: 'hellfire' });
+        if (s.lock && o.state === 'locked') this.superHit(f, o, 140, 'hell', { final: true, launch: 9, kb: 3, stop: 0.26 });
+        else this.hitstop = 0.12;
+      });
     } else if (f.key === 'heracles') {
       // HERACLES: shoulder rush into a grab, lift overhead and slam three times, hurl skywards, home-run club blow
       if (t < 0.3) {
@@ -2116,8 +2241,9 @@ class Sim {
           else if (f.key === 'thor') this.startMove(f, d < 1.5 ? 't_upper' : 't_dash');
           else if (f.key === 'susanoo') this.startMove(f, d < 1.7 ? 's_rise' : 's_dash');
           else if (f.key === 'heracles') this.startMove(f, d < 1.4 ? 'h_upper' : 'h_dash');
+          else if (f.key === 'hades') this.startMove(f, d < 1.6 ? 'hd_rise' : 'hd_shade');
           else this.startMove(f, d < 1.8 ? 'p_rise' : 'p_dash');
-          if (d < 1.8) f.plan = f.key === 'zeus' ? ['z_hammer', 'z_dash'] : f.key === 'anubis' ? ['a_dash'] : f.key === 'thor' ? ['t_slam', 't_dash'] : f.key === 'susanoo' ? ['s_dash'] : f.key === 'heracles' ? ['h_smash'] : ['p_dash'];
+          if (d < 1.8) f.plan = f.key === 'zeus' ? ['z_hammer', 'z_dash'] : f.key === 'anubis' ? ['a_dash'] : f.key === 'thor' ? ['t_slam', 't_dash'] : f.key === 'susanoo' ? ['s_dash'] : f.key === 'heracles' ? ['h_smash'] : f.key === 'hades' ? [] : ['p_dash'];
           return;
         }
       }
@@ -2129,7 +2255,7 @@ class Sim {
 
     // opponent on the floor -> reposition
     if (o.state === 'down' || o.state === 'getup' || o.state === 'locked') {
-      const want = f.key === 'zeus' ? 1.5 : f.key === 'thor' ? 1.6 : f.key === 'anubis' ? 1.3 : f.key === 'susanoo' ? 1.8 : f.key === 'heracles' ? 1.4 : 2.2;
+      const want = f.key === 'zeus' ? 1.5 : f.key === 'thor' ? 1.6 : f.key === 'anubis' ? 1.3 : f.key === 'susanoo' ? 1.8 : f.key === 'heracles' ? 1.4 : f.key === 'hades' ? 2.0 : 2.2;
       if (d > want + 0.6) this.walk(f, toward, 0.25);
       else if (d < want - 0.6) this.walk(f, -toward, 0.2);
       else this.idle(f, 0.15);
@@ -2189,6 +2315,23 @@ class Sim {
         if (r < c.aggro * L.aggro) this.startRoute(f, o);
         else if (r < 0.94) this.dash(f, -toward, 0.22);
         else this.idle(f, 0.15);
+      }
+    } else if (f.key === 'hades') {
+      if (d > 4.6) {
+        if (r < 0.24) this.startMove(f, 'hd_dog');
+        else if (r < 0.42 && d < 6.5) this.startMove(f, 'hd_hands');
+        else if (r < 0.66) this.walk(f, toward, 0.4);
+        else this.dash(f, toward, 0.34);
+      } else if (d > 1.8) {
+        if (r < 0.14) this.startMove(f, 'hd_shade');
+        else if (r < 0.26) this.startMove(f, 'hd_hands');
+        else if (r < 0.34) this.jump(f, toward);
+        else if (r < 0.5) this.dash(f, toward, 0.22);
+        else this.walk(f, toward, 0.25);
+      } else {
+        if (r < c.aggro * L.aggro) this.startRoute(f, o);
+        else if (r < 0.92) this.walk(f, -toward, 0.3);
+        else this.idle(f, 0.2);
       }
     } else if (f.key === 'heracles') {
       if (d > 4.6) {
@@ -2371,6 +2514,7 @@ const SKEL = {
   anubis: { hipH: 1.0, spine: 0.13, chest: 0.25, neck: 0.26, head: 0.1, shX: 0.26, shY: 0.21, upper: 0.3, fore: 0.27, hand: 0.08, hipX: 0.1, hipY: -0.05, thigh: 0.47, shin: 0.47, foot: 0.07, toe: 0.14 },
   thor: { hipH: 1.08, spine: 0.15, chest: 0.28, neck: 0.3, head: 0.115, shX: 0.35, shY: 0.24, upper: 0.33, fore: 0.3, hand: 0.095, hipX: 0.13, hipY: -0.06, thigh: 0.48, shin: 0.47, foot: 0.078, toe: 0.15 },
   poseidon: { hipH: 1.03, spine: 0.14, chest: 0.26, neck: 0.275, head: 0.105, shX: 0.265, shY: 0.225, upper: 0.31, fore: 0.28, hand: 0.085, hipX: 0.105, hipY: -0.05, thigh: 0.46, shin: 0.45, foot: 0.07, toe: 0.14 },
+  hades: { hipH: 1.07, spine: 0.14, chest: 0.27, neck: 0.29, head: 0.11, shX: 0.3, shY: 0.23, upper: 0.32, fore: 0.29, hand: 0.09, hipX: 0.115, hipY: -0.055, thigh: 0.48, shin: 0.47, foot: 0.075, toe: 0.145 },
   heracles: { hipH: 1.1, spine: 0.15, chest: 0.29, neck: 0.3, head: 0.115, shX: 0.37, shY: 0.245, upper: 0.34, fore: 0.31, hand: 0.1, hipX: 0.135, hipY: -0.06, thigh: 0.49, shin: 0.48, foot: 0.08, toe: 0.155 },
 };
 
@@ -2700,7 +2844,42 @@ HEP.backstep = mk(HEP.stance, { spine: [-0.1, -0.1, 0], lHip: [-0.2, 0, 0.14], l
 HEP.jump = mk(HEP.airWind, { air: true });
 HEP.crouch = mk(HEP.stance, { y: -0.44, z: 0.04, spine: [0.35, -0.1, 0], chest: [0.12, -0.15, 0], head: [-0.3, 0.2, 0], lHip: [-1.2, 0, 0.22], lKn: [2.0, 0, 0], lAn: [-0.6, 0, 0], rHip: [-1.05, 0, 0.22], rKn: [2.0, 0, 0], rAn: [-0.7, 0, 0] });
 HEP.crouchBlock = mk(HEP.block, { y: -0.44, z: 0.02, spine: [0.42, 0, 0], head: [-0.2, 0.1, 0], lHip: [-1.2, 0, 0.22], lKn: [2.0, 0, 0], lAn: [-0.6, 0, 0], rHip: [-1.05, 0, 0.22], rKn: [2.0, 0, 0], rAn: [-0.7, 0, 0] });
-const POSES = { zeus: ZP, poseidon: PP, anubis: AP, thor: TP, susanoo: SUP, heracles: HEP };
+// ============================================================
+//  HADES  (bident held upright in the right hand, left palm free for soul magic; regal half-turned stance;
+//          arm angles solved numerically with a torso-clearance term — see solve_sword.js)
+// ============================================================
+const HDP = {
+  stance: mk(null, {"lHip": [-0.35, 0, 0.12], "lKn": [0.3, 0, 0], "lAn": [-0.05, 0, 0], "rHip": [0.25, 0, 0.12], "rKn": [0.25, 0, 0], "rAn": [-0.3, 0, 0], "y": -0.05, "lSh": [-1, 0, 0.47], "lEl": [-0.6, 0, 0], "lWr": [0.5, 0, 0], "hips": [0, -0.4, 0], "spine": [0.02, -0.1, 0], "chest": [-0.03, -0.1, 0], "neck": [0, 0.2, 0], "head": [-0.05, 0.4, 0], "rSh": [0.5, -0.39, 0.59], "rEl": [-1.5, 0, 0], "rWr": [-0.48, 0.34, -0.1]}),
+  jab: mk(null, {"lHip": [-1.0, 0, 0.15], "lKn": [1.0, 0, 0], "lAn": [0, 0, 0], "rHip": [0.7, 0, 0.13], "rKn": [0.15, 0, 0], "rAn": [-0.6, 0, 0], "y": -0.18, "z": 0.12, "lSh": [0.35, 0.11, 0.51], "lEl": [-0.4, 0, 0], "lWr": [0, 0, 0], "hips": [0, -0.1, 0], "spine": [0.1, 0.1, 0], "chest": [0.05, 0.3, 0], "neck": [0, 0.2, 0], "head": [-0.1, -0.2, 0], "rSh": [-0.5, -0.54, 0.61], "rEl": [-1.67, 0, 0], "rWr": [2.3, 0.41, -1.6]}),
+  slashWind: mk(null, {"lHip": [-0.7, 0, 0.2], "lKn": [0.85, 0, 0], "lAn": [-0.12, 0, 0], "rHip": [0.45, 0, 0.18], "rKn": [0.5, 0, 0], "rAn": [-0.55, 0, 0], "y": -0.15, "lSh": [0.51, 0.06, 0.47], "lEl": [-0.4, 0, 0], "lWr": [0, 0, 0], "hips": [0, -0.4, 0], "spine": [0.05, -0.2, 0], "chest": [0, -0.6, 0], "neck": [0, 0.2, 0], "head": [-0.05, 0.6, 0], "rSh": [-0.02, -0.14, 0.59], "rEl": [-1.88, 0, 0], "rWr": [2.3, 1, -1.6]}),
+  slashEnd: mk(null, {"lHip": [-1.0, 0, 0.15], "lKn": [1.0, 0, 0], "lAn": [0, 0, 0], "rHip": [0.7, 0, 0.13], "rKn": [0.15, 0, 0], "rAn": [-0.6, 0, 0], "y": -0.24, "z": 0.12, "lSh": [0.49, 0, 0.48], "lEl": [-0.4, 0, 0], "lWr": [0, 0, 0], "hips": [0, 0, 0], "spine": [0.15, 0.3, 0], "chest": [0.05, 0.6, 0], "neck": [0, 0.2, 0], "head": [-0.1, -0.6, 0], "rSh": [-0.42, -1.15, 0.95], "rEl": [-1.48, 0, 0], "rWr": [2.3, 0.22, -1.6]}),
+  sweepWind: mk(null, {"lHip": [-1.2, 0, 0.2], "lKn": [1.8, 0, 0], "lAn": [-0.55, 0, 0], "rHip": [-0.5, 0, 0.2], "rKn": [1.9, 0, 0], "rAn": [-0.9, 0, 0], "y": -0.44, "lSh": [0.3, 0, 0.53], "lEl": [-0.4, 0, 0], "lWr": [0, 0, 0], "hips": [0, -0.4, 0], "spine": [0.45, -0.3, 0], "chest": [0.05, -0.5, 0], "neck": [0, 0.2, 0], "head": [-0.4, 0.5, 0], "rSh": [0.36, -1.01, 1.21], "rEl": [-1.45, 0, 0], "rWr": [2.2, 0.63, -1.6]}),
+  sweepEnd: mk(null, {"lHip": [-1.2, 0, 0.2], "lKn": [1.8, 0, 0], "lAn": [-0.55, 0, 0], "rHip": [-0.5, 0, 0.2], "rKn": [1.9, 0, 0], "rAn": [-0.9, 0, 0], "y": -0.44, "lSh": [0.48, 0.09, 0.47], "lEl": [-0.4, 0, 0], "lWr": [0, 0, 0], "hips": [0, -0.4, 0], "spine": [0.6, 0.3, 0], "chest": [0.1, 0.45, 0], "neck": [0, 0.2, 0], "head": [-0.6, -0.4, 0], "rSh": [-0.19, -1.4, 0.88], "rEl": [-0.85, 0, 0], "rWr": [1.85, 0.33, -1.6]}),
+  riseWind: mk(null, {"lHip": [-1.2, 0, 0.2], "lKn": [1.8, 0, 0], "lAn": [-0.55, 0, 0], "rHip": [-0.5, 0, 0.2], "rKn": [1.9, 0, 0], "rAn": [-0.9, 0, 0], "y": -0.44, "lSh": [0.3, 0, 0.53], "lEl": [-0.4, 0, 0], "lWr": [0, 0, 0], "hips": [0, -0.4, 0], "spine": [0.45, -0.3, 0], "chest": [0.1, -0.3, 0], "neck": [0, 0.2, 0], "head": [-0.4, 0.3, 0], "rSh": [0.76, -1.11, 1.8], "rEl": [-1.64, 0, 0], "rWr": [-1.6, -0.99, -1.6]}),
+  riseEnd: mk(null, {"lHip": [-0.35, 0, 0.12], "lKn": [0.3, 0, 0], "lAn": [-0.05, 0, 0], "rHip": [0.25, 0, 0.12], "rKn": [0.25, 0, 0], "rAn": [-0.3, 0, 0], "y": -0.05, "z": 0.1, "lSh": [-0.2, 0, 0.6], "lEl": [-0.8, 0, 0], "hips": [0, 0, 0], "spine": [-0.2, 0.1, 0], "chest": [-0.1, 0.2, 0], "neck": [0, 0.2, 0], "head": [-0.35, 0, 0], "lWr": [0, 0, 0], "rSh": [-1.6, -0.57, 0.36], "rEl": [-1.44, 0, 0], "rWr": [2.3, 0.3, -1.44]}),
+  slamWind: mk(null, {"lHip": [-0.7, 0, 0.2], "lKn": [0.85, 0, 0], "lAn": [-0.12, 0, 0], "rHip": [0.45, 0, 0.18], "rKn": [0.5, 0, 0], "rAn": [-0.55, 0, 0], "y": -0.15, "lSh": [0.3, 0, 0.53], "lEl": [-0.4, 0, 0], "lWr": [0, 0, 0], "hips": [0, -0.1, 0], "spine": [-0.15, 0, 0], "chest": [-0.15, 0, 0], "neck": [0, 0.2, 0], "head": [-0.1, 0, 0], "rSh": [-2.29, -0.36, 0.02], "rEl": [-1.17, 0, 0], "rWr": [0.9, 0.45, 0]}),
+  slamEnd: mk(null, {"lHip": [-1.0, 0, 0.15], "lKn": [1.0, 0, 0], "lAn": [0, 0, 0], "rHip": [0.7, 0, 0.13], "rKn": [0.15, 0, 0], "rAn": [-0.6, 0, 0], "y": -0.32, "z": 0.12, "lSh": [0.54, 0.01, 0.46], "lEl": [-0.4, 0, 0], "lWr": [0, 0, 0], "hips": [0, 0, 0], "spine": [0.5, 0, 0], "chest": [0.15, 0, 0], "neck": [0, 0.2, 0], "head": [-0.5, 0, 0], "rSh": [-0.31, -1.05, 0.92], "rEl": [-1.42, 0, 0], "rWr": [2.3, 0.15, -1.6]}),
+  palmWind: mk(null, {"lHip": [-0.7, 0, 0.2], "lKn": [0.85, 0, 0], "lAn": [-0.12, 0, 0], "rHip": [0.45, 0, 0.18], "rKn": [0.5, 0, 0], "rAn": [-0.55, 0, 0], "y": -0.15, "lSh": [0.4, 0, 0.51], "lEl": [-1.8, 0, 0], "lWr": [0.3, 0, 0], "hips": [0, -0.2, 0], "spine": [0.05, 0.15, 0], "chest": [0, 0.4, 0], "neck": [0, 0.2, 0], "head": [-0.05, -0.2, 0], "rSh": [1.3, -0.02, 0.33], "rEl": [-1.65, 0, 0], "rWr": [-1.23, 0.06, 0]}),
+  palm: mk(null, {"lHip": [-1.0, 0, 0.15], "lKn": [1.0, 0, 0], "lAn": [0, 0, 0], "rHip": [0.7, 0, 0.13], "rKn": [0.15, 0, 0], "rAn": [-0.6, 0, 0], "y": -0.24, "z": 0.12, "lSh": [-1.66, 0, 0.17], "lEl": [-0.05, 0, 0], "lWr": [0.9, 0, 0], "hips": [0, -0.2, 0], "spine": [0.15, -0.2, 0], "chest": [0.05, -0.5, 0], "neck": [0, 0.2, 0], "head": [-0.1, 0.4, 0], "rSh": [0.49, 0.15, 0.56], "rEl": [-1.57, 0, 0], "rWr": [-0.75, 0.61, -0.27]}),
+  summonWind: mk(null, {"lHip": [-0.7, 0, 0.2], "lKn": [0.85, 0, 0], "lAn": [-0.12, 0, 0], "rHip": [0.45, 0, 0.18], "rKn": [0.5, 0, 0], "rAn": [-0.55, 0, 0], "y": -0.15, "lSh": [-1, 0, 0.6], "lEl": [-1.4, 0, 0], "lWr": [0, 0, 0], "hips": [0, -0.4, 0], "spine": [0.02, -0.1, 0], "chest": [-0.05, -0.2, 0], "neck": [0, 0.2, 0], "head": [-0.05, 0.4, 0], "rSh": [0.33, -0.42, 0.63], "rEl": [-1.77, 0, 0], "rWr": [-0.04, 0.48, -0.44]}),
+  summon: mk(null, {"lHip": [-0.7, 0, 0.2], "lKn": [0.85, 0, 0], "lAn": [-0.12, 0, 0], "rHip": [0.45, 0, 0.18], "rKn": [0.5, 0, 0], "rAn": [-0.55, 0, 0], "y": -0.15, "lSh": [-2.6, 0, 0.4], "lEl": [-0.3, 0, 0], "lWr": [0, 0, 0], "hips": [0, -0.1, 0], "spine": [0.1, 0, 0], "chest": [-0.1, 0, 0], "neck": [0, 0.2, 0], "head": [-0.05, 0.4, 0], "rSh": [0.63, -0.98, 1.28], "rEl": [-1.03, 0, 0], "rWr": [1.91, -0.08, -1.6]}),
+  shadeWind: mk(null, {"lHip": [-0.35, 0, 0.12], "lKn": [0.3, 0, 0], "lAn": [-0.05, 0, 0], "rHip": [0.25, 0, 0.12], "rKn": [0.25, 0, 0], "rAn": [-0.3, 0, 0], "y": -0.2, "lSh": [-1.71, 0, 0.14], "lEl": [-1.9, 0, 0], "lWr": [0, 0, 0], "hips": [0, -0.4, 0], "spine": [0.3, 0, 0], "chest": [0.1, 0, 0], "neck": [0, 0.2, 0], "head": [-0.3, 0, 0], "rSh": [0.68, -0.37, 0.7], "rEl": [-1.79, 0, 0], "rWr": [-0.7, 0.07, 0]}),
+  shadeStrike: mk(null, {"lHip": [-1.0, 0, 0.15], "lKn": [1.0, 0, 0], "lAn": [0, 0, 0], "rHip": [0.7, 0, 0.13], "rKn": [0.15, 0, 0], "rAn": [-0.6, 0, 0], "y": -0.24, "z": 0.12, "lSh": [0.3, 0.01, 0.53], "lEl": [-0.4, 0, 0], "lWr": [0, 0, 0], "hips": [0, 0, 0], "spine": [0.2, 0.1, 0], "chest": [0.05, 0.25, 0], "neck": [0, 0.2, 0], "head": [-0.2, -0.2, 0], "rSh": [-0.71, -0.64, 0.57], "rEl": [-1.4, 0, 0], "rWr": [2.3, 0.37, -1.6]}),
+  airWind: mk(null, {"lHip": [-1.5, 0, 0.15], "lKn": [2.2, 0, 0], "lAn": [0.3, 0, 0], "rHip": [-1.0, 0, 0.15], "rKn": [2.0, 0, 0], "rAn": [0.3, 0, 0], "air": true, "lSh": [0.71, 0.08, 0.4], "lEl": [-0.4, 0, 0], "lWr": [0, 0, 0], "hips": [0, -0.4, 0], "spine": [0.1, 0, 0], "chest": [-0.03, -0.1, 0], "neck": [0, 0.2, 0], "head": [-0.05, 0.4, 0], "rSh": [-2.55, -0.84, -0.16], "rEl": [-2.22, 0, 0], "rWr": [1.89, 1.21, -0.01]}),
+  airStab: mk(null, {"lHip": [-1.5, 0, 0.15], "lKn": [2.2, 0, 0], "lAn": [0.3, 0, 0], "rHip": [-1.0, 0, 0.15], "rKn": [2.0, 0, 0], "rAn": [0.3, 0, 0], "air": true, "lSh": [0.35, 0, 0.52], "lEl": [-0.4, 0, 0], "lWr": [0, 0, 0], "hips": [0, -0.4, 0], "spine": [0.3, 0, 0], "chest": [0.1, 0, 0], "neck": [0, 0.2, 0], "head": [-0.4, 0, 0], "rx": 0.35, "rSh": [-1.87, -1.6, -0.95], "rEl": [-1.06, 0, 0], "rWr": [2.24, 0.43, -1.6]}),
+  block: mk(null, {"lHip": [-0.7, 0, 0.2], "lKn": [0.85, 0, 0], "lAn": [-0.12, 0, 0], "rHip": [0.45, 0, 0.18], "rKn": [0.5, 0, 0], "rAn": [-0.55, 0, 0], "y": -0.2, "lSh": [-1.57, -0.14, 0.2], "lEl": [-1.8, 0, 0], "lWr": [0, 0, 0], "hips": [0, -0.1, 0], "spine": [0.02, -0.1, 0], "chest": [0.05, -0.1, 0], "neck": [0, 0.2, 0], "head": [0.05, 0.1, 0], "rSh": [0.09, -1.42, 1.78], "rEl": [-1.65, 0, 0], "rWr": [1.31, 0.31, -0.35]}),
+  run: mk(null, {"lSh": [0.35, 0.05, 0.51], "lEl": [-1.2, 0, 0], "hips": [0, 0, 0], "spine": [0.4, 0, 0], "chest": [0.05, 0, 0], "neck": [0, 0.2, 0], "head": [-0.4, 0, 0], "lWr": [0, 0, 0], "rSh": [1.09, -0.88, 1.33], "rEl": [-1.22, 0, 0], "rWr": [-1.6, -1.3, -1.12]}),
+  intro: mk(null, {"lHip": [-0.1, 0, 0.14], "lKn": [0.1, 0, 0], "rHip": [0.08, 0, 0.14], "rKn": [0.1, 0, 0], "rAn": [-0.05, 0, 0], "lSh": [0.1, 0, 0.56], "lEl": [-1.6, 0, 0], "lWr": [0, 0, 0], "hips": [0, -0.2, 0], "spine": [0.02, -0.1, 0], "chest": [-0.03, -0.1, 0], "neck": [0, 0.2, 0], "head": [-0.15, 0.2, 0], "rSh": [0.43, -0.46, 0.65], "rEl": [-1.42, 0, 0], "rWr": [-0.51, 0.44, -0.14]}),
+  win: mk(null, {"lHip": [-0.7, 0, 0.2], "lKn": [0.85, 0, 0], "lAn": [-0.12, 0, 0], "rHip": [0.45, 0, 0.18], "rKn": [0.5, 0, 0], "rAn": [-0.55, 0, 0], "y": -0.15, "lSh": [-0.4, 0, 1.2], "lEl": [-0.2, 0, 0], "lWr": [0, 0, 0], "hips": [0, 0, 0], "spine": [-0.12, 0, 0], "chest": [-0.1, 0.1, 0], "neck": [0, 0.2, 0], "head": [-0.35, 0.1, 0], "rSh": [-2.87, 0.12, 0.11], "rEl": [0, 0, 0], "rWr": [1.41, 0, 0]}),
+  superCall: mk(null, {"lHip": [-0.7, 0, 0.2], "lKn": [0.85, 0, 0], "lAn": [-0.12, 0, 0], "rHip": [0.45, 0, 0.18], "rKn": [0.5, 0, 0], "rAn": [-0.55, 0, 0], "y": -0.15, "lSh": [-2.8, 0, 0.5], "lEl": [-0.2, 0, 0], "lWr": [0, 0, 0], "hips": [0, 0, 0], "spine": [-0.15, 0, 0], "chest": [-0.1, 0, 0], "neck": [0, 0.2, 0], "head": [-0.45, 0, 0], "rSh": [-2.82, 0.01, 0], "rEl": [-0.01, 0, 0], "rWr": [1.58, 0, 0]}),
+  superDrain: mk(null, {"lHip": [-0.7, 0, 0.2], "lKn": [0.85, 0, 0], "lAn": [-0.12, 0, 0], "rHip": [0.45, 0, 0.18], "rKn": [0.5, 0, 0], "rAn": [-0.55, 0, 0], "y": -0.15, "lSh": [-1.61, 0, 0.19], "lEl": [-0.05, 0, 0], "lWr": [0.9, 0, 0], "hips": [0, -0.2, 0], "spine": [0.1, -0.15, 0], "chest": [0.05, -0.4, 0], "neck": [0, 0.2, 0], "head": [-0.1, 0.35, 0], "rSh": [0.47, -0.15, 0.52], "rEl": [-1.66, 0, 0], "rWr": [-0.53, 0.4, 0]}),
+};
+Object.assign(HDP, generic(HDP.stance, false));
+HDP.backstep = mk(HDP.stance, { spine: [-0.1, -0.1, 0], lHip: [-0.2, 0, 0.12], lKn: [0.6, 0, 0], rHip: [0.1, 0, 0.12], rKn: [0.7, 0, 0] });
+HDP.jump = mk(HDP.airWind, { air: true });
+HDP.crouch = mk(HDP.stance, { y: -0.44, z: 0.04, spine: [0.32, -0.1, 0], chest: [0.1, -0.1, 0], head: [-0.25, 0.3, 0], lHip: [-1.2, 0, 0.18], lKn: [2.0, 0, 0], lAn: [-0.6, 0, 0], rHip: [-1.05, 0, 0.18], rKn: [2.0, 0, 0], rAn: [-0.7, 0, 0] });
+HDP.crouchBlock = mk(HDP.block, { y: -0.44, z: 0.02, spine: [0.4, 0, 0], head: [-0.2, 0.1, 0], lHip: [-1.2, 0, 0.18], lKn: [2.0, 0, 0], lAn: [-0.6, 0, 0], rHip: [-1.05, 0, 0.18], rKn: [2.0, 0, 0], rAn: [-0.7, 0, 0] });
+const POSES = { zeus: ZP, poseidon: PP, anubis: AP, thor: TP, susanoo: SUP, heracles: HEP, hades: HDP };
 
 // ------------------------------------------------------------
 //  Blending helpers
@@ -2937,6 +3116,61 @@ class PartSet {
 }
 
 
+
+// ---------------- sculpted musculature ----------------
+// Muscles are pushed out of (or grooved into) the skin mesh itself instead of being separate spheres,
+// so abs, pecs, biceps... blend smoothly into the body. Bumps are gaussians in (angle around the
+// limb/torso axis, height): a = 0 is the front (+Z), positive a toward the model's left (+X).
+function sculpt(geo, bumps) {
+  const pos = geo.attributes.position;
+  const TAU = Math.PI * 2;
+  for (let i = 0; i < pos.count; i++) {
+    const x = pos.getX(i), y = pos.getY(i), z = pos.getZ(i);
+    const r = Math.hypot(x, z);
+    if (r < 1e-4) continue;
+    const a = Math.atan2(x, z);
+    let d = 0;
+    for (const b of bumps) {
+      let da = a - b.a; da = ((da + Math.PI) % TAU + TAU) % TAU - Math.PI;
+      d += b.h * Math.exp(-(da * da) / (b.sa * b.sa) - ((y - b.y) * (y - b.y)) / (b.sy * b.sy));
+    }
+    const k = Math.max(0.2, (r + d) / r);
+    pos.setX(i, x * k); pos.setZ(i, z * k);
+  }
+  geo.computeVertexNormals();
+  return geo;
+}
+// lathe with a finely resampled profile so sculpted bumps have enough vertices
+function sculptLathe(prof, bumps, rows = 56, seg = 80) {
+  const y0 = prof[0][1], y1 = prof[prof.length - 1][1];
+  const pts = [];
+  for (let i = 0; i <= rows; i++) { const y = y0 + (y1 - y0) * (i / rows); pts.push([i === 0 || i === rows ? 0 : profileR(prof, y), y]); }
+  return sculpt(lathe(pts, seg), bumps);
+}
+const MUSCLE = {
+  // six-pack, linea alba, navel, obliques   (k: torso radius scale)
+  abs: (k = 1, rows = [0.035, 0.11, 0.185], h = 0.024) => [
+    ...rows.flatMap((y) => [-1, 1].map((sd) => ({ a: sd * 0.21 / k, y, sa: 0.15 / k, sy: 0.028, h }))),
+    { a: 0, y: 0.12, sa: 0.04 / k, sy: 0.17, h: -0.012 },
+    { a: 0, y: -0.015, sa: 0.035, sy: 0.014, h: -0.01 },
+    { a: 0.95, y: 0.07, sa: 0.32, sy: 0.1, h: 0.022 }, { a: -0.95, y: 0.07, sa: 0.32, sy: 0.1, h: 0.022 },
+  ],
+  // pecs, sternum groove, lats, serratus, upper back and spine groove
+  chest: (h = 1) => [
+    { a: 0.4, y: 0.13, sa: 0.36, sy: 0.075, h: 0.052 * h }, { a: -0.4, y: 0.13, sa: 0.36, sy: 0.075, h: 0.052 * h },
+    { a: 0, y: 0.14, sa: 0.05, sy: 0.12, h: -0.016 * h },
+    { a: 1.45, y: 0.05, sa: 0.35, sy: 0.14, h: 0.035 * h }, { a: -1.45, y: 0.05, sa: 0.35, sy: 0.14, h: 0.035 * h },
+    ...[0, 1, 2].flatMap((i) => [-1, 1].map((sd) => ({ a: sd * 1.0, y: -0.025 + i * 0.045, sa: 0.09, sy: 0.016, h: 0.011 * h }))),
+    { a: 2.75, y: 0.17, sa: 0.35, sy: 0.12, h: 0.03 * h }, { a: -2.75, y: 0.17, sa: 0.35, sy: 0.12, h: 0.03 * h },
+    { a: Math.PI, y: 0.12, sa: 0.06, sy: 0.25, h: -0.012 * h },
+    { a: 1.95, y: 0.29, sa: 0.55, sy: 0.07, h: 0.045 * h }, { a: -1.95, y: 0.29, sa: 0.55, sy: 0.07, h: 0.045 * h },   // traps
+  ],
+  upperArm: (h = 1) => [{ a: 0, y: -0.16, sa: 0.8, sy: 0.07, h: 0.03 * h }, { a: Math.PI, y: -0.14, sa: 0.9, sy: 0.08, h: 0.03 * h }],
+  forearm: (h = 1) => [{ a: 0.3, y: -0.07, sa: 1.0, sy: 0.07, h: 0.02 * h }],
+  thigh: (h = 1, side = 1) => [{ a: 0, y: -0.2, sa: 0.8, sy: 0.11, h: 0.03 * h }, { a: side * 1.2, y: -0.29, sa: 0.5, sy: 0.08, h: 0.02 * h }, { a: -side * 0.8, y: -0.36, sa: 0.45, sy: 0.05, h: 0.018 * h }],
+  calf: (h = 1) => [{ a: Math.PI, y: -0.13, sa: 0.9, sy: 0.08, h: 0.03 * h }, { a: 0, y: 0.0, sa: 0.6, sy: 0.03, h: 0.012 * h }],
+};
+
 // ---------------- surface quality pass ----------------
 // fine pore / scratch noise used as bump + roughness variation
 let NOISE_TEX = null;
@@ -3033,9 +3267,6 @@ function addDetail(P, j, mt, o) {
       P.add(wr, new THREE.CapsuleGeometry(0.0105 * k, 0.03 * k, 4, 10), skin, [x, -0.1 * k - 0.006, 0.012 * k], [-0.2, 0, 0]);
     }
     P.add(wr, new THREE.CapsuleGeometry(0.014 * k, 0.04 * k, 4, 10), skin, [sg * -0.05 * k, -0.075 * k, 0.045 * k], [0.9, 0, sg * 0.35]);
-    P.ell(hp, skin, [sg * -0.03, -0.37, 0.055 * k], [0.045 * k, 0.085, 0.042 * k]);              // vastus medialis
-    P.ell(hp, skin, [sg * 0.045, -0.24, 0.035 * k], [0.05 * k, 0.15, 0.055 * k]);                // vastus lateralis
-    P.ell(kn, skin, [0, -0.33, -0.03], [0.018, 0.09, 0.02]);                                      // achilles
     for (const q of [-1, 1]) P.ell(an, skin, [q * 0.04 * k, 0.0, -0.005], [0.018, 0.02, 0.02]);  // ankle bones
     P.ell(an, skin, [0, -0.02, -0.035], [0.036 * k, 0.04, 0.04]);                                 // heel
     for (let t = 0; t < 5; t++) {
@@ -3147,20 +3378,11 @@ function buildZeus(T) {
   }
   // ---- abdomen ----
   const abProf = [[0, -0.06], [0.245, -0.05], [0.25, 0.05], [0.262, 0.16], [0.28, 0.26], [0.29, 0.31], [0, 0.32]];
-  P.add(j.spine, lathe(abProf), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.66]);
-  for (let r = 0; r < 3; r++) for (const s of [-1, 1]) {
-    P.ell(j.spine, skin, [s * 0.055, 0.035 + r * 0.075, 0.148 + r * 0.004], [0.052, 0.04, 0.03], [0, 0, s * 0.05]);
-  }
-  for (const s of [-1, 1]) P.ell(j.spine, skin, [s * 0.2, 0.09, 0.07], [0.06, 0.12, 0.06], [0, 0, s * 0.2]);
+  P.add(j.spine, sculptLathe(abProf, MUSCLE.abs(1.05)), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.66]);
   // ---- chest ----
   const chProf = [[0, -0.07], [0.285, -0.06], [0.33, 0.04], [0.37, 0.15], [0.365, 0.23], [0.31, 0.3], [0.17, 0.345], [0, 0.355]];
-  P.add(j.chest, lathe(chProf), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.62]);
+  P.add(j.chest, sculptLathe(chProf, MUSCLE.chest(1.1)), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.62]);
   for (const s of [-1, 1]) {
-    P.ell(j.chest, skin, [s * 0.125, 0.125, 0.175], [0.145, 0.1, 0.065], [0.15, 0, s * 0.18]);       // pecs
-    P.ell(j.chest, skin, [s * 0.14, 0.305, -0.02], [0.14, 0.07, 0.1], [0, 0, -s * 0.48]);           // traps
-    P.ell(j.chest, skin, [s * 0.27, 0.07, -0.04], [0.09, 0.18, 0.09], [0, 0, s * 0.12]);            // lats
-    P.ell(j.chest, skin, [s * 0.1, 0.17, -0.18], [0.12, 0.14, 0.055]);                               // back
-    P.ell(j.chest, skin, [s * 0.235, 0.0, 0.12], [0.05, 0.08, 0.05], [0, 0, s * 0.3]);              // serratus
   }
   // himation sash over left shoulder
   {
@@ -3214,12 +3436,9 @@ function buildZeus(T) {
   // ---- arms ----
   for (const [s, sg] of [['l', 1], ['r', -1]]) {
     const sh = j[s + 'Sh'], el = j[s + 'El'], wr = j[s + 'Wr'];
-    P.add(sh, muscleLimb(0.33, 0.1, 0.075, 0.018, 0.6), skin);
-    P.ell(sh, skin, [sg * 0.02, -0.02, 0], [0.13, 0.135, 0.125]);                      // deltoid
-    P.ell(sh, skin, [0, -0.16, 0.045], [0.062, 0.105, 0.068]);                         // biceps
-    P.ell(sh, skin, [0, -0.14, -0.045], [0.065, 0.115, 0.062]);                        // triceps
-    P.add(el, muscleLimb(0.29, 0.085, 0.056, 0.02, 0.72), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.88]);
-    P.ell(el, skin, [0, -0.06, 0.02], [0.07, 0.09, 0.06]);
+    P.add(sh, sculpt(muscleLimb(0.33, 0.1, 0.075, 0.018, 0.6), MUSCLE.upperArm(1.1)), skin);
+    P.ell(sh, skin, [sg * 0.015, -0.03, 0], [0.118, 0.13, 0.112]);                     // deltoid
+    P.add(el, sculpt(muscleLimb(0.29, 0.085, 0.056, 0.02, 0.72), MUSCLE.forearm(1.1)), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.88]);
     // bracer
     P.add(el, lathe([[0.071, -0.27], [0.073, -0.24], [0.078, -0.13], [0.074, -0.11]], 28), gold, [0, 0, 0], [0, 0, 0], [1, 1, 0.92]);
     P.add(el, new THREE.TorusGeometry(0.078, 0.006, 6, 30), glowMat, [0, -0.19, 0], [Math.PI / 2, 0, 0], [1, 0.92, 1]);
@@ -3230,12 +3449,8 @@ function buildZeus(T) {
     P.ell(wr, skin, [sg * -0.045, -0.06, 0.05], [0.022, 0.035, 0.022], [0.4, 0, 0]);
     // legs
     const hp = j[s + 'Hip'], kn = j[s + 'Kn'], an = j[s + 'An'];
-    P.add(hp, muscleLimb(0.47, 0.135, 0.078, 0.022, 0.62), skin);
-    P.ell(hp, skin, [0, -0.2, 0.05], [0.085, 0.17, 0.075]);
-    P.ell(hp, skin, [sg * 0.04, -0.3, 0.03], [0.06, 0.12, 0.06]);
-    P.add(kn, muscleLimb(0.46, 0.078, 0.05, 0.0, 0.7), skin);
-    P.ell(kn, skin, [0, -0.13, -0.04], [0.065, 0.12, 0.06]);                           // calf
-    P.ell(kn, skin, [0, 0.0, 0.045], [0.05, 0.05, 0.035]);                             // knee
+    P.add(hp, sculpt(muscleLimb(0.47, 0.135, 0.078, 0.022, 0.62), MUSCLE.thigh(1.1, sg)), skin);
+    P.add(kn, sculpt(muscleLimb(0.46, 0.078, 0.05, 0.0, 0.7), MUSCLE.calf(1.1)), skin);
     for (const y of [-0.28, -0.35, -0.42]) P.add(kn, new THREE.TorusGeometry(0.06 - (y + 0.28) * 0.08, 0.008, 6, 24), leather, [0, y, 0], [Math.PI / 2 + 0.12, 0, 0]);
     P.add(kn, new THREE.TorusGeometry(0.068, 0.012, 6, 24), gold, [0, -0.22, 0], [Math.PI / 2, 0, 0]);
     P.ell(an, skin, [0, -0.035, 0.05], [0.055, 0.04, 0.12]);
@@ -3259,6 +3474,10 @@ function buildZeus(T) {
   M.glow = glow;
   M.mats = { skin, gold, glowMat, eye };
   M.color = new THREE.Color(0.7, 0.85, 1.6);
+  M.trails = [
+    { obj: j.rWr, a: new V3(0, -0.04, 0.02), b: new V3(0, -0.15, 0.05), color: [0.5, 0.9, 2.2], core: [2.0, 2.5, 3.4], spark: 'bolt' },
+    { obj: j.lWr, a: new V3(0, -0.04, 0.02), b: new V3(0, -0.15, 0.05), color: [0.5, 0.9, 2.2], core: [2.0, 2.5, 3.4], spark: 'bolt' },
+  ];
   enhanceModel(M.root, 0x9fc8ff, 0.5);
   return M;
 }
@@ -3301,9 +3520,7 @@ function buildPoseidon(T) {
   }
   // ---- abdomen (bare, lean) ----
   const abProf = [[0, -0.06], [0.225, -0.05], [0.228, 0.06], [0.235, 0.16], [0.25, 0.26], [0.26, 0.31], [0, 0.32]];
-  P.add(j.spine, lathe(abProf), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.66]);
-  for (let r = 0; r < 3; r++) for (const s of [-1, 1]) P.ell(j.spine, skin, [s * 0.048, 0.04 + r * 0.07, 0.137], [0.045, 0.034, 0.024]);
-  for (const s of [-1, 1]) P.ell(j.spine, skin, [s * 0.18, 0.09, 0.07], [0.05, 0.11, 0.05], [0, 0, s * 0.2]);
+  P.add(j.spine, sculptLathe(abProf, MUSCLE.abs(0.95, [0.04, 0.11, 0.18], 0.02)), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.66]);
   // ---- chest + scale breastplate ----
   const chProf = [[0, -0.07], [0.25, -0.06], [0.285, 0.04], [0.315, 0.15], [0.31, 0.23], [0.265, 0.3], [0.15, 0.335], [0, 0.345]];
   P.add(j.chest, lathe(chProf.map(([r, y]) => [r * 1.06, y]), 40), armor, [0, 0, 0], [0, 0, 0], [1, 1, 0.66]);
@@ -3347,9 +3564,8 @@ function buildPoseidon(T) {
   // ---- arms ----
   for (const [s, sg] of [['l', 1], ['r', -1]]) {
     const sh = j[s + 'Sh'], el = j[s + 'El'], wr = j[s + 'Wr'];
-    P.add(sh, muscleLimb(0.32, 0.082, 0.062, 0.012, 0.6), skin);
+    P.add(sh, sculpt(muscleLimb(0.32, 0.082, 0.062, 0.012, 0.6), MUSCLE.upperArm(0.8)), skin);
     P.ell(sh, skin, [sg * 0.015, -0.02, 0], [0.098, 0.105, 0.098]);
-    P.ell(sh, skin, [0, -0.15, 0.035], [0.048, 0.085, 0.05]);
     // shell pauldron
     {
       const prof = [];
@@ -3366,7 +3582,7 @@ function buildPoseidon(T) {
       const sc = s === 'r' ? 1.1 : 0.9;
       P.add(sh, shell, s === 'r' ? gold : armorPlain, [sg * 0.03, 0.0, 0], [0, 0, sg * -0.5], [sc, sc, sc]);
     }
-    P.add(el, muscleLimb(0.28, 0.07, 0.048, 0.014, 0.72), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.88]);
+    P.add(el, sculpt(muscleLimb(0.28, 0.07, 0.048, 0.014, 0.72), MUSCLE.forearm(0.8)), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.88]);
     P.add(el, lathe([[0.062, -0.26], [0.064, -0.24], [0.072, -0.1], [0.068, -0.085]], 28), armorPlain, [0, 0, 0], [0, 0, 0], [1, 1, 0.92]);
     P.add(el, new THREE.TorusGeometry(0.072, 0.007, 6, 28), gold, [0, -0.1, 0], [Math.PI / 2, 0, 0], [1, 0.92, 1]);
     P.add(el, new THREE.TorusGeometry(0.065, 0.007, 6, 28), gold, [0, -0.255, 0], [Math.PI / 2, 0, 0], [1, 0.92, 1]);
@@ -3376,10 +3592,8 @@ function buildPoseidon(T) {
     P.ell(wr, skin, [sg * -0.035, -0.055, 0.04], [0.018, 0.032, 0.018], [0.4, 0, 0]);
     // legs
     const hp = j[s + 'Hip'], kn = j[s + 'Kn'], an = j[s + 'An'];
-    P.add(hp, muscleLimb(0.46, 0.115, 0.068, 0.016, 0.62), skin);
-    P.ell(hp, skin, [0, -0.2, 0.04], [0.07, 0.15, 0.062]);
-    P.add(kn, muscleLimb(0.45, 0.068, 0.045, 0.0, 0.7), skin);
-    P.ell(kn, skin, [0, -0.12, -0.035], [0.055, 0.105, 0.05]);
+    P.add(hp, sculpt(muscleLimb(0.46, 0.115, 0.068, 0.016, 0.62), MUSCLE.thigh(0.85, sg)), skin);
+    P.add(kn, sculpt(muscleLimb(0.45, 0.068, 0.045, 0.0, 0.7), MUSCLE.calf(0.85)), skin);
     // greave
     P.add(kn, lathe([[0.058, -0.4], [0.07, -0.33], [0.082, -0.18], [0.078, -0.05], [0.07, -0.02]], 30), armorPlain, [0, 0, 0.008], [0, 0, 0], [1, 1, 0.95]);
     P.add(kn, new THREE.TorusGeometry(0.072, 0.008, 6, 26), gold, [0, -0.04, 0.008], [Math.PI / 2, 0, 0]);
@@ -3444,6 +3658,7 @@ function buildPoseidon(T) {
   M.cape = { mesh: cape, geo: capeGeo, base: capeBase, sway: 0 };
   M.mats = { skin, gold, gem, eye };
   M.color = new THREE.Color(0.3, 1.4, 1.4);
+  M.trails = [{ obj: tri, a: new V3(0, 0, 0.95), b: new V3(0, 0, 1.78), color: [0.2, 1.1, 1.3], core: [1.2, 2.6, 2.8], spark: 'water' }];
   enhanceModel(M.root, 0x5ff0e6, 0.55);
   return M;
 }
@@ -3611,13 +3826,8 @@ function buildAnubis(T) {
   P.add(j.hips, new THREE.TorusGeometry(0.034, 0.007, 6, 24), gold, [0, 0.055, 0.162]);
 
   // ---- abdomen + lean, defined chest ----
-  P.add(j.spine, lathe([[0, -0.06], [0.19, -0.05], [0.2, 0.06], [0.2, 0.18], [0.19, 0.27], [0, 0.29]]), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.62]);
-  for (const s of [-1, 1]) {
-    P.ell(j.spine, skin, [s * 0.15, 0.1, 0.02], [0.05, 0.12, 0.05], [0, 0, s * 0.18]);
-    for (let r = 0; r < 3; r++) P.ell(j.spine, skin, [s * 0.045, 0.02 + r * 0.075, 0.105], [0.04, 0.032, 0.022]);  // abs
-  }
-  P.add(j.chest, lathe([[0, -0.07], [0.2, -0.06], [0.235, 0.05], [0.26, 0.15], [0.245, 0.23], [0.19, 0.27], [0, 0.28]], 40), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.64]);
-  for (const s of [-1, 1]) P.ell(j.chest, skin, [s * 0.1, 0.12, 0.12], [0.1, 0.075, 0.05], [0.1, 0, s * 0.1]);   // pecs
+  P.add(j.spine, sculptLathe([[0, -0.06], [0.19, -0.05], [0.2, 0.06], [0.2, 0.18], [0.19, 0.27], [0, 0.29]], MUSCLE.abs(0.8, [0.02, 0.095, 0.17], 0.018)), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.62]);
+  P.add(j.chest, sculptLathe([[0, -0.07], [0.2, -0.06], [0.235, 0.05], [0.26, 0.15], [0.245, 0.23], [0.19, 0.27], [0, 0.28]], MUSCLE.chest(0.7)), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.64]);
   // usekh broad collar
   P.add(j.chest, lathe([[0.13, 0.3], [0.19, 0.27], [0.25, 0.21], [0.29, 0.13], [0.3, 0.1]], 56), collar, [0, 0, 0], [0, 0, 0], [1, 1, 0.72]);
   P.add(j.chest, new THREE.TorusGeometry(0.3, 0.008, 6, 56), gold, [0, 0.1, 0], [Math.PI / 2, 0, 0], [1, 0.72, 1]);
@@ -3692,10 +3902,8 @@ function buildAnubis(T) {
 
     // legs: lean, gold greaves and knee guards, jeweled sandals
     const hp = j[s + 'Hip'], kn = j[s + 'Kn'], an = j[s + 'An'];
-    P.add(hp, muscleLimb(0.46, 0.1, 0.062, 0.016, 0.6), skin);
-    P.ell(hp, skin, [0, -0.2, 0.035], [0.062, 0.14, 0.056]);
-    P.add(kn, muscleLimb(0.45, 0.062, 0.042, 0.0, 0.7), skin);
-    P.ell(kn, skin, [0, -0.12, -0.03], [0.05, 0.1, 0.045]);
+    P.add(hp, sculpt(muscleLimb(0.46, 0.1, 0.062, 0.016, 0.6), MUSCLE.thigh(0.75, sg)), skin);
+    P.add(kn, sculpt(muscleLimb(0.45, 0.062, 0.042, 0.0, 0.7), MUSCLE.calf(0.75)), skin);
     P.add(kn, lathe([[0.048, -0.41], [0.056, -0.33], [0.064, -0.16], [0.07, -0.06], [0.074, -0.02]], 26), gold, [0, 0, 0.006], [0, 0, 0], [1, 1, 0.9]);
     for (const y of [-0.12, -0.26]) P.add(kn, new THREE.TorusGeometry(0.066 - (y + 0.12) * 0.06, 0.006, 6, 24), lapis, [0, y, 0.006], [Math.PI / 2, 0, 0], [1, 0.9, 1]);
     P.add(kn, new THREE.SphereGeometry(0.068, 20, 10, 0, Math.PI * 2, 0, Math.PI * 0.5), gold, [0, 0.0, 0.02], [Math.PI / 2 - 0.3, 0, 0], [1, 1, 0.75]);
@@ -3744,8 +3952,8 @@ function buildAnubis(T) {
 
   M.trident = bladeAnchor; M.triGlow = bladeGlow;
   M.trails = [
-    { obj: j.rWr, a: new V3(0.0, -0.23, 0.02), b: new V3(0.02, -0.73, 0.02), color: [0.35, 1.3, 1.9], core: [1.4, 2.4, 2.8] },
-    { obj: j.lWr, a: new V3(0.0, -0.23, 0.02), b: new V3(0.02, -0.73, 0.02), color: [1.7, 1.1, 0.35], core: [2.6, 2.0, 1.0] },
+    { obj: j.rWr, a: new V3(0.0, -0.23, 0.02), b: new V3(0.02, -0.73, 0.02), color: [0.35, 1.3, 1.9], core: [1.4, 2.4, 2.8], spark: 'soul' },
+    { obj: j.lWr, a: new V3(0.0, -0.23, 0.02), b: new V3(0.02, -0.73, 0.02), color: [1.7, 1.1, 0.35], core: [2.6, 2.0, 1.0], spark: 'gold' },
   ];
   M.cape = { mesh: cape, geo: capeGeo, base: capeBase, sway: 0 };
   M.mats = { skin, gold, gem: soul, eye };
@@ -3936,6 +4144,7 @@ function buildThor(T) {
   M.cape = { mesh: cape, geo: capeGeo, base: capeBase, sway: 0 };
   M.mats = { skin, gold, gem: rune, eye };
   M.color = new THREE.Color(1.0, 0.75, 1.8);
+  M.trails = [{ obj: ham, a: new V3(0, 0, 0.3), b: new V3(0, 0, 0.86), color: [0.9, 0.5, 2.0], core: [2.2, 1.8, 3.2], spark: 'violet' }];
   enhanceModel(M.root, 0xc8b0ff, 0.5);
   return M;
 }
@@ -4187,7 +4396,7 @@ function buildSusanoo(T) {
   j.chest.add(cape);
 
   M.trident = sw; M.triGlow = glow; M.sword = sw;
-  M.trails = [{ obj: sw, a: new V3(0, 0.0, 0.44), b: new V3(0, 0.07, 1.42), color: [0.6, 1.9, 1.3], core: [1.6, 2.2, 2.0] }];
+  M.trails = [{ obj: sw, a: new V3(0, 0.0, 0.44), b: new V3(0, 0.07, 1.42), color: [0.6, 1.9, 1.3], core: [1.6, 2.2, 2.0], spark: 'storm' }];
   M.cape = { mesh: cape, geo: capeGeo, base: capeBase, sway: 0 };
   M.mats = { skin, gold, gem: storm, eye };
   M.color = new THREE.Color(0.6, 1.6, 1.2);
@@ -4258,14 +4467,9 @@ function buildHeracles(T) {
   P.ell(j.hips, might, [0, 0.08, 0.24], [0.035, 0.035, 0.012]);
 
   // ---- massive torso (bare), Heraclean musculature ----
-  P.add(j.spine, lathe([[0, -0.06], [0.27, -0.05], [0.275, 0.06], [0.285, 0.17], [0.31, 0.27], [0.32, 0.31], [0, 0.32]]), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.7]);
-  for (let r = 0; r < 4; r++) for (const s of [-1, 1]) P.ell(j.spine, skin, [s * 0.055, 0.0 + r * 0.075, 0.175], [0.05, 0.036, 0.028]);
-  for (const s of [-1, 1]) P.ell(j.spine, skin, [s * 0.21, 0.1, 0.08], [0.06, 0.13, 0.06], [0, 0, s * 0.22]);
-  P.add(j.chest, lathe([[0, -0.07], [0.31, -0.06], [0.36, 0.04], [0.4, 0.15], [0.395, 0.23], [0.34, 0.3], [0.18, 0.35], [0, 0.36]], 44), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.66]);
+  P.add(j.spine, sculptLathe([[0, -0.06], [0.27, -0.05], [0.275, 0.06], [0.285, 0.17], [0.31, 0.27], [0.32, 0.31], [0, 0.32]], MUSCLE.abs(1.15, [0.0, 0.075, 0.15, 0.225], 0.028)), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.7]);
+  P.add(j.chest, sculptLathe([[0, -0.07], [0.31, -0.06], [0.36, 0.04], [0.4, 0.15], [0.395, 0.23], [0.34, 0.3], [0.18, 0.35], [0, 0.36]], MUSCLE.chest(1.3)), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.66]);
   for (const s of [-1, 1]) {
-    P.ell(j.chest, skin, [s * 0.13, 0.13, 0.2], [0.15, 0.1, 0.075], [0.15, 0, s * 0.18]);             // pecs
-    P.ell(j.chest, skin, [s * 0.16, 0.32, -0.02], [0.16, 0.08, 0.11], [0, 0, -s * 0.5]);            // traps
-    P.ell(j.chest, skin, [s * 0.27, 0.06, 0.04], [0.06, 0.13, 0.08], [0, 0, s * 0.2]);              // lats
   }
   // leather baldric across the chest with bronze rings
   P.add(j.chest, new THREE.BoxGeometry(0.07, 0.72, 0.022), leather, [0.02, 0.12, 0.245], [0.12, 0, 0.72]);
@@ -4314,12 +4518,10 @@ function buildHeracles(T) {
   // ---- arms: huge, bronze-studded leather bracers ----
   for (const [s, sg] of [['l', 1], ['r', -1]]) {
     const sh = j[s + 'Sh'], el = j[s + 'El'], wr = j[s + 'Wr'];
-    P.add(sh, muscleLimb(0.35, 0.115, 0.085, 0.024, 0.6), skin);
+    P.add(sh, sculpt(muscleLimb(0.35, 0.115, 0.085, 0.024, 0.6), MUSCLE.upperArm(1.35)), skin);
     P.ell(sh, skin, [sg * 0.025, -0.02, 0], [0.15, 0.15, 0.14]);
-    P.ell(sh, skin, [0, -0.18, 0.055], [0.072, 0.12, 0.075]);
-    P.ell(sh, skin, [0, -0.16, -0.055], [0.075, 0.13, 0.07]);
     P.add(sh, new THREE.TorusGeometry(0.09, 0.012, 8, 28), bronze, [0, -0.24, 0], [Math.PI / 2, 0, 0]);
-    P.add(el, muscleLimb(0.31, 0.098, 0.065, 0.024, 0.72), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.9]);
+    P.add(el, sculpt(muscleLimb(0.31, 0.098, 0.065, 0.024, 0.72), MUSCLE.forearm(1.3)), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.9]);
     P.add(el, lathe([[0.075, -0.3], [0.08, -0.26], [0.092, -0.12], [0.096, -0.1]], 28), leather, [0, 0, 0], [0, 0, 0], [1, 1, 0.92]);
     for (const y of [-0.12, -0.21, -0.29]) P.add(el, new THREE.TorusGeometry(0.09 - (y + 0.12) * 0.08, 0.007, 6, 26), bronze, [0, y, 0], [Math.PI / 2, 0, 0], [1, 0.92, 1]);
     for (let i = 0; i < 6; i++) { const a = (i / 6) * Math.PI * 2; P.ell(el, gold, [Math.sin(a) * 0.09, -0.17, Math.cos(a) * 0.083], [0.009, 0.009, 0.009]); }
@@ -4329,10 +4531,8 @@ function buildHeracles(T) {
     P.ell(wr, skin, [sg * -0.045, -0.06, 0.048], [0.022, 0.038, 0.022], [0.4, 0, 0]);
     // legs: trunk-like, leather greaves
     const hp = j[s + 'Hip'], kn = j[s + 'Kn'];
-    P.add(hp, muscleLimb(0.49, 0.145, 0.088, 0.026, 0.62), skin);
-    P.ell(hp, skin, [0, -0.2, 0.05], [0.095, 0.17, 0.085]);
-    P.add(kn, muscleLimb(0.48, 0.088, 0.058, 0.0, 0.7), skin);
-    P.ell(kn, skin, [0, -0.13, -0.045], [0.07, 0.12, 0.065]);
+    P.add(hp, sculpt(muscleLimb(0.49, 0.145, 0.088, 0.026, 0.62), MUSCLE.thigh(1.3, sg)), skin);
+    P.add(kn, sculpt(muscleLimb(0.48, 0.088, 0.058, 0.0, 0.7), MUSCLE.calf(1.3)), skin);
     P.add(kn, lathe([[0.066, -0.44], [0.078, -0.36], [0.088, -0.2], [0.084, -0.08]], 28), leather, [0, 0, 0.008], [0, 0, 0], [1, 1, 0.95]);
     P.add(kn, new THREE.TorusGeometry(0.086, 0.008, 6, 26), bronze, [0, -0.09, 0.008], [Math.PI / 2, 0, 0]);
   }
@@ -4381,7 +4581,7 @@ function buildHeracles(T) {
   j.chest.add(cape);
 
   M.trident = club; M.triGlow = clubGlow; M.club = club;
-  M.trails = [{ obj: club, a: new V3(0, 0, 0.3), b: new V3(0, 0, 0.98), color: [1.6, 0.9, 0.3], core: [2.6, 1.9, 1.0] }];
+  M.trails = [{ obj: club, a: new V3(0, 0, 0.3), b: new V3(0, 0, 0.98), color: [1.6, 0.9, 0.3], core: [2.6, 1.9, 1.0], spark: 'might' }];
   M.cape = { mesh: cape, geo: capeGeo, base: capeBase, sway: 0 };
   M.mats = { skin, gold, gem: might, eye };
   M.color = new THREE.Color(1.6, 1.0, 0.4);
@@ -4390,7 +4590,184 @@ function buildHeracles(T) {
 }
 
 
-return { canvasTex, enhanceModel, buildZeus, buildPoseidon, updateCape, buildAnubis, buildThor, buildSusanoo, buildHeracles, SPH };
+// ============================================================
+//  HADES  (lord of the underworld: obsidian armour veined with hellfire, Helm of Darkness crown of flame,
+//          long black robes, smouldering cloak, bident, soulfire in the left palm)
+// ============================================================
+function lavaTex() {
+  return canvasTex(256, 256, (g, w, h) => {
+    g.fillStyle = '#000'; g.fillRect(0, 0, w, h);
+    g.strokeStyle = '#ff3a50'; g.lineCap = 'round';
+    for (let i = 0; i < 26; i++) {
+      let x = Math.random() * w, y = Math.random() * h;
+      g.lineWidth = 1 + Math.random() * 2.5; g.globalAlpha = 0.5 + Math.random() * 0.5;
+      g.beginPath(); g.moveTo(x, y);
+      for (let k = 0; k < 6; k++) { x += (Math.random() - 0.5) * 50; y += (Math.random() - 0.5) * 50; g.lineTo(x, y); }
+      g.stroke();
+    }
+  }, { repeat: [2, 2] });
+}
+function robeTex() {
+  return canvasTex(256, 512, (g, w, h) => {
+    g.fillStyle = '#121016'; g.fillRect(0, 0, w, h);
+    for (let x = 0; x < w; x += 10) { const gr = g.createLinearGradient(x, 0, x + 10, 0); gr.addColorStop(0, 'rgba(255,255,255,0.05)'); gr.addColorStop(1, 'rgba(0,0,0,0.35)'); g.fillStyle = gr; g.fillRect(x, 0, 10, h); }
+    // crimson underworld border with key pattern
+    g.fillStyle = '#7a1022'; g.fillRect(0, h - 46, w, 46);
+    g.strokeStyle = '#e0a050'; g.lineWidth = 3;
+    for (let x = 0; x < w; x += 32) { g.beginPath(); g.moveTo(x, h - 8); g.lineTo(x, h - 38); g.lineTo(x + 24, h - 38); g.lineTo(x + 24, h - 18); g.lineTo(x + 10, h - 18); g.lineTo(x + 10, h - 28); g.stroke(); }
+  });
+}
+
+function buildHades(T) {
+  const M = makeSkeleton('hades');
+  const { j } = M;
+  const P = new PartSet();
+
+  const skin = new THREE.MeshPhysicalMaterial({ color: 0x8a90a0, roughness: 0.45, sheen: 0.6, sheenColor: new THREE.Color(0xc0a0ff), sheenRoughness: 0.45, clearcoat: 0.2, clearcoatRoughness: 0.4 });
+  const obsidian = new THREE.MeshPhysicalMaterial({ color: 0x0c0a10, metalness: 0.6, roughness: 0.18, clearcoat: 1, clearcoatRoughness: 0.1, emissive: new THREE.Color(1, 1, 1), emissiveMap: lavaTex(), emissiveIntensity: 0.9 });
+  const ironB = new THREE.MeshStandardMaterial({ color: 0x24202a, metalness: 0.85, roughness: 0.32 });
+  const gold = new THREE.MeshStandardMaterial({ color: 0xc08a3a, metalness: 1, roughness: 0.3 });
+  const robe = new THREE.MeshStandardMaterial({ color: 0xffffff, map: robeTex(), roughness: 0.85, side: THREE.DoubleSide });
+  const hair = new THREE.MeshPhysicalMaterial({ color: 0x0a0a0e, roughness: 0.5, sheen: 1, sheenColor: new THREE.Color(0x8a50ff), sheenRoughness: 0.35 });
+  const hell = new THREE.MeshStandardMaterial({ color: 0x200006, emissive: new THREE.Color(2.0, 0.3, 0.55), emissiveIntensity: 0.8, roughness: 0.3 });
+  const flame = new THREE.MeshBasicMaterial({ color: new THREE.Color(2.4, 0.5, 0.9) });
+  const eye = new THREE.MeshBasicMaterial({ color: new THREE.Color(3.2, 0.4, 0.6) });
+
+  // ---- hips: obsidian war-belt, long split robe panels front and back ----
+  P.add(j.hips, lathe([[0, -0.17], [0.16, -0.15], [0.23, -0.08], [0.245, 0.02], [0.235, 0.15], [0, 0.17]]), robe, [0, 0, 0], [0, 0, 0], [1, 1, 0.7]);
+  P.add(j.hips, lathe([[0.24, 0.0], [0.255, 0.03], [0.255, 0.13], [0.24, 0.16]], 48), obsidian, [0, 0, 0], [0, 0, 0], [1, 1, 0.72]);
+  P.add(j.hips, new THREE.CylinderGeometry(0.06, 0.06, 0.03, 6), gold, [0, 0.08, 0.19], [Math.PI / 2, 0, 0]);
+  P.ell(j.hips, hell, [0, 0.08, 0.205], [0.03, 0.03, 0.012]);
+  for (const [z, ry] of [[0.17, 0], [-0.17, Math.PI]]) {
+    P.add(j.hips, new THREE.PlaneGeometry(0.26, 1.0, 1, 8).translate(0, -0.5, 0), robe, [0, 0.02, z], [ry ? 0.08 : -0.08, ry, 0]);
+  }
+  for (const s of [-1, 1]) P.add(j.hips, new THREE.PlaneGeometry(0.16, 0.6, 1, 4).translate(0, -0.3, 0), robe, [s * 0.22, 0.02, 0], [0, s * Math.PI / 2, s * 0.12]);
+
+  // ---- torso: robe under an obsidian cuirass veined with hellfire ----
+  P.add(j.spine, lathe([[0, -0.06], [0.22, -0.05], [0.225, 0.06], [0.23, 0.16], [0.245, 0.26], [0.25, 0.31], [0, 0.32]]), robe, [0, 0, 0], [0, 0, 0], [1, 1, 0.68]);
+  P.add(j.spine, lathe([[0.226, 0.02], [0.232, 0.12], [0.248, 0.24], [0.256, 0.32]], 48), obsidian, [0, 0, 0], [0, 0, 0], [1.03, 1, 0.71]);
+  const chProf = [[0, -0.07], [0.25, -0.06], [0.285, 0.04], [0.31, 0.15], [0.305, 0.23], [0.26, 0.3], [0.14, 0.335], [0, 0.345]];
+  P.add(j.chest, sculptLathe(chProf, MUSCLE.chest(0.9)), obsidian, [0, 0, 0], [0, 0, 0], [1, 1, 0.66]);
+  P.add(j.chest, new THREE.TorusGeometry(0.28, 0.012, 8, 48), gold, [0, -0.05, 0], [Math.PI / 2, 0, 0], [1, 0.66, 1]);
+  // skull clasp on the chest
+  P.ell(j.chest, gold, [0, 0.2, 0.2], [0.05, 0.055, 0.03]);
+  for (const s of [-1, 1]) P.ell(j.chest, hell, [s * 0.018, 0.21, 0.224], [0.012, 0.01, 0.006]);
+  // high collar of black spikes
+  for (let i = 0; i < 9; i++) {
+    const a = (i / 8 - 0.5) * Math.PI * 1.1;
+    P.add(j.chest, new THREE.ConeGeometry(0.03, 0.2 + (1 - Math.abs(i - 4) / 4) * 0.08, 5), ironB, [Math.sin(a) * 0.17, 0.4, -0.03 - Math.cos(a) * 0.1], [-0.35 * Math.cos(a), 0, -Math.sin(a) * 0.5]);
+  }
+
+  // ---- head: gaunt pale face, black beard, Helm of Darkness crown wreathed in flame ----
+  P.add(j.neck, lathe([[0, -0.04], [0.08, -0.03], [0.074, 0.07], [0.07, 0.14], [0, 0.16]]), skin);
+  const H = j.head;
+  P.ell(H, skin, [0, 0.1, 0], [0.1, 0.125, 0.115]);
+  P.ell(H, skin, [0, 0.03, 0.03], [0.08, 0.072, 0.095]);
+  P.ell(H, skin, [0, 0.09, 0.115], [0.02, 0.04, 0.028], [-0.25, 0, 0]);
+  P.ell(H, hair, [0, 0.135, 0.098], [0.088, 0.016, 0.026], [0.2, 0, 0]);
+  for (const s of [-1, 1]) {
+    P.ell(H, skin, [s * 0.072, 0.06, 0.08], [0.028, 0.03, 0.028]);
+    P.ell(H, eye, [s * 0.04, 0.108, 0.106], [0.018, 0.009, 0.011], [0, 0, s * -0.2]);
+  }
+  // pointed black beard
+  P.ell(H, hair, [0, 0.0, 0.07], [0.078, 0.07, 0.062]);
+  P.add(H, new THREE.ConeGeometry(0.05, 0.22, 10), hair, [0, -0.12, 0.07], [Math.PI + 0.25, 0, 0], [1, 1, 0.8]);
+  // helm: dark crown band with tall blade-like spikes and a flame crest
+  P.add(H, lathe([[0.118, 0.1], [0.124, 0.13], [0.122, 0.17], [0.112, 0.19]], 36), ironB, [0, 0.0, -0.01], [-0.1, 0, 0]);
+  P.ell(H, hair, [0, 0.16, -0.05], [0.112, 0.1, 0.12]);
+  for (let i = 0; i < 9; i++) {
+    const a = ((i - 4) / 4) * 1.4, h = 0.1 + (1 - Math.abs(i - 4) / 4) * 0.16;
+    P.add(H, new THREE.ConeGeometry(0.016, h, 4), ironB, [Math.sin(a) * 0.12, 0.2 + h / 2, Math.cos(a) * 0.11 - 0.02], [-0.15 + Math.cos(a) * 0.1, 0, -Math.sin(a) * 0.35]);
+  }
+  P.ell(H, hell, [0, 0.19, 0.115], [0.02, 0.024, 0.01]);
+  for (let i = 0; i < 7; i++) {
+    const a = ((i - 3) / 3) * 1.1;
+    P.add(H, new THREE.ConeGeometry(0.03, 0.14 + (1 - Math.abs(i - 3) / 3) * 0.12, 6), flame, [Math.sin(a) * 0.08, 0.26, -0.04 - Math.cos(a) * 0.04], [-0.25, 0, -Math.sin(a) * 0.3], [1, 1, 0.5], false);
+  }
+
+  // ---- arms: spiked pauldrons, obsidian vambraces ----
+  for (const [s, sg] of [['l', 1], ['r', -1]]) {
+    const sh = j[s + 'Sh'], el = j[s + 'El'], wr = j[s + 'Wr'];
+    P.add(sh, sculpt(muscleLimb(0.32, 0.078, 0.058, 0.012, 0.6), MUSCLE.upperArm(0.7)), skin);
+    P.ell(sh, skin, [sg * 0.012, -0.03, 0], [0.09, 0.1, 0.09]);
+    for (let k = 0; k < 3; k++) P.add(sh, new THREE.SphereGeometry(0.13 - k * 0.014, 24, 10, 0, Math.PI * 2, 0, Math.PI * 0.42), k === 1 ? ironB : obsidian, [sg * (0.015 + k * 0.012), 0.025 - k * 0.045, 0], [0, 0, sg * -(0.35 + k * 0.12)], [1, 0.7, 0.95]);
+    for (let k = 0; k < 3; k++) P.add(sh, new THREE.ConeGeometry(0.022, 0.16, 5), ironB, [sg * (0.06 + k * 0.035), 0.1 - k * 0.025, (k - 1) * 0.05], [0, 0, sg * -(0.5 + k * 0.2)]);
+    P.add(el, sculpt(muscleLimb(0.28, 0.066, 0.046, 0.012, 0.72), MUSCLE.forearm(0.7)), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.88]);
+    P.add(el, lathe([[0.058, -0.27], [0.062, -0.24], [0.074, -0.1], [0.072, -0.06]], 28), obsidian, [0, 0, 0], [0, 0, 0], [1, 1, 0.92]);
+    for (let k = 0; k < 2; k++) P.add(el, new THREE.ConeGeometry(0.014, 0.08, 4), ironB, [0, -0.12 - k * 0.07, -0.07], [-1.3, 0, 0]);
+    P.ell(wr, skin, [0, -0.05, 0.008], [0.046, 0.058, 0.052]);
+    P.ell(wr, skin, [0, -0.095, 0.022], [0.043, 0.03, 0.038]);
+    P.ell(wr, skin, [sg * -0.034, -0.055, 0.04], [0.017, 0.031, 0.017], [0.4, 0, 0]);
+    // legs under the robe: dark greaves
+    const hp = j[s + 'Hip'], kn = j[s + 'Kn'];
+    P.add(hp, lathe([[0.1, 0.03], [0.115, -0.12], [0.115, -0.3], [0.1, -0.46]], 26), robe);
+    P.add(kn, muscleLimb(0.46, 0.066, 0.044, 0.0, 0.7), skin);
+    P.add(kn, lathe([[0.052, -0.44], [0.062, -0.36], [0.07, -0.2], [0.074, -0.04], [0.07, 0.0]], 26), obsidian, [0, 0, 0.006], [0, 0, 0], [1, 1, 0.95]);
+    P.add(kn, new THREE.ConeGeometry(0.02, 0.1, 5), ironB, [0, 0.0, 0.07], [Math.PI / 2 - 0.5, 0, 0]);
+  }
+  addDetail(P, j, { skin, hair, sole: ironB, strap: ironB, metal: gold }, { k: 0.86, eye: [0.04, 0.108, 0.106], lip: 0x4a3a50, curls: false, armored: true });
+  P.build();
+
+  // ---- bident: long dark shaft, two curved prongs, crimson core ----
+  const bid = new THREE.Group();
+  const BP = new PartSet();
+  BP.add(bid, new THREE.CylinderGeometry(0.018, 0.022, 2.1, 10), ironB, [0, 0, 0.3], [Math.PI / 2, 0, 0]);
+  for (const z of [-0.6, -0.1, 0.12, 0.9]) BP.add(bid, new THREE.TorusGeometry(0.026, 0.008, 6, 16), gold, [0, 0, z]);
+  BP.add(bid, new THREE.ConeGeometry(0.03, 0.16, 6), ironB, [0, 0, -0.84], [-Math.PI / 2, 0, 0]);
+  BP.add(bid, new THREE.CylinderGeometry(0.05, 0.03, 0.1, 8), ironB, [0, 0, 1.36], [Math.PI / 2, 0, 0]);
+  BP.add(bid, new THREE.IcosahedronGeometry(0.05, 1), hell, [0, 0, 1.36]);
+  for (const s of [-1, 1]) {
+    const curve = new THREE.CatmullRomCurve3([new V3(0, 0, 1.38), new V3(s * 0.1, 0, 1.45), new V3(s * 0.13, 0, 1.6), new V3(s * 0.1, 0, 1.78)]);
+    BP.add(bid, new THREE.TubeGeometry(curve, 16, 0.018, 6), ironB);
+    BP.add(bid, new THREE.ConeGeometry(0.026, 0.14, 4), ironB, [s * 0.1, 0, 1.84], [Math.PI / 2, 0, s * 0.2], [1, 1, 0.5]);
+    BP.add(bid, new THREE.ConeGeometry(0.018, 0.08, 4), ironB, [s * 0.14, 0, 1.52], [-Math.PI / 2 + 0.5 * s, 0, s * 1.2], [1, 1, 0.5]);
+  }
+  BP.build();
+  bid.position.set(0, -SKEL.hades.hand * 0.6, 0);
+  j.rWr.add(bid);
+  const bidGlow = glowSprite(T.glow, 0xff4a70, 1.0);
+  bidGlow.position.set(0, 0, 1.55);
+  bid.add(bidGlow);
+  // soulfire hovering over the left palm
+  const soulFire = glowSprite(T.glow, 0xff5080, 0.55);
+  soulFire.position.set(0, -0.13, 0.08);
+  j.lWr.add(soulFire);
+
+  // ---- smouldering cloak ----
+  const capeGeo = new THREE.PlaneGeometry(0.66, 1.34, 10, 18);
+  capeGeo.translate(0, -0.67, 0);
+  {
+    const pos = capeGeo.attributes.position, cols = [];
+    for (let i = 0; i < pos.count; i++) if (pos.getY(i) > 0) pos.setY(i, 0);
+    for (let i = 0; i < pos.count; i++) {
+      const v = -pos.getY(i) / 1.34, u = Math.abs(pos.getX(i)) / 0.33;
+      const c = new THREE.Color(0x0a080e).lerp(new THREE.Color(0x24060e), Math.pow(v, 1.5));
+      if (v > 0.88) c.lerp(new THREE.Color(0xff3050), (v - 0.88) / 0.12 * 0.9);
+      if (u > 0.9) c.lerp(new THREE.Color(0x5a1020), 0.6);
+      cols.push(c.r, c.g, c.b);
+    }
+    capeGeo.setAttribute('color', new THREE.Float32BufferAttribute(cols, 3));
+  }
+  const capeBase = capeGeo.attributes.position.array.slice();
+  const cape = new THREE.Mesh(capeGeo, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.6, metalness: 0.2, side: THREE.DoubleSide, emissive: new THREE.Color(0.25, 0.02, 0.06) }));
+  cape.castShadow = true;
+  cape.position.set(0, 0.32, -0.21);
+  j.chest.add(cape);
+
+  M.trident = bid; M.triGlow = bidGlow; M.bident = bid; M.soulFire = soulFire;
+  M.trails = [
+    { obj: bid, a: new V3(0, 0, 0.9), b: new V3(0, 0, 1.84), color: [1.6, 0.25, 0.5], core: [2.6, 1.2, 1.6], spark: 'hell' },
+    { obj: j.lWr, a: new V3(0, -0.06, 0.04), b: new V3(0, -0.16, 0.08), color: [1.6, 0.3, 0.7], core: [2.4, 1.0, 1.6], spark: 'hell' },
+  ];
+  M.cape = { mesh: cape, geo: capeGeo, base: capeBase, sway: 0 };
+  M.mats = { skin, gold, gem: hell, eye };
+  M.color = new THREE.Color(1.6, 0.3, 0.6);
+  enhanceModel(M.root, 0xff6080, 0.5);
+  return M;
+}
+
+
+return { canvasTex, enhanceModel, buildZeus, buildPoseidon, updateCape, buildAnubis, buildThor, buildSusanoo, buildHeracles, buildHades, SPH };
 })();
 
 // ======== fx.js ========
@@ -4660,7 +5037,7 @@ return { makeFxTextures, Particles, Bolts, waterMaterial, Timed };
 const __game = (() => {
 const { Sim, DT, STAGE, CHARS } = __sim;
 const { SKEL, POSES, JOINTS, sampleAnim, blend, copyPose, cyclePose } = __poses;
-const { canvasTex, buildZeus, buildPoseidon, buildAnubis, buildThor, buildSusanoo, buildHeracles, updateCape } = __models;
+const { canvasTex, buildZeus, buildPoseidon, buildAnubis, buildThor, buildSusanoo, buildHeracles, buildHades, updateCape } = __models;
 const { makeFxTextures, Particles, Bolts, waterMaterial, Timed } = __fx;
 // ============================================================
 //  GAME : renderer, stage, fighters' visuals, camera, HUD, audio
@@ -5108,6 +5485,7 @@ const COL = {
   thor: [1.1, 0.75, 2.0],
   storm: [0.7, 1.9, 1.35],
   might: [1.9, 1.15, 0.35],
+  hell: [1.9, 0.3, 0.6],
 };
 const VIOLET = new THREE.Color(1.0, 0.5, 1.9);
 const violetBolt = (a, b, o = {}) => bolts.spawn(a, b, Object.assign({ color: VIOLET }, o));
@@ -5160,6 +5538,13 @@ function hitFx(e) {
     glowPuff(x, y, z, big ? 0x9ff3ff : 0xffd98a, 1.8 * p, 0.25);
     ring(x, y, z, big ? 0xcff8ff : 0xffe6a0, 2.2 * p, 0.22, true);
     if (big) bolts.spawn(new V3(x, y, z), new V3(x + rand(-1, 1), y + rand(-0.8, 0.8), z + rand(-0.4, 0.4)), { r: 0.012, life: 0.14, segs: 6, branches: 0 });
+  } else if (e.fx === 'hell' || e.fx === 'soulfire') {
+    const big = e.fx === 'soulfire';
+    addP.burst(big ? 36 : 26, x, y, z, 7, { life: [0.2, 0.5], size: [0.06, 0.15], color: COL.hell, drag: 3, up: 2 });
+    normP.burst(12, x, y, z, 3, { life: [0.4, 0.8], size: [0.1, 0.22], color: [0.12, 0.05, 0.08], alpha: 0.7, drag: 2, up: 2 });
+    glowPuff(x, y, z, 0xff4a70, 2.2 * p, 0.26);
+    ring(x, y, z, 0xff8aa0, 2.2 * p, 0.24, true);
+    lightFlash(x, y, 0xff3060, 60 * p);
   } else if (e.fx === 'might') {
     addP.burst(34, x, y, z, 8, { life: [0.15, 0.4], size: [0.06, 0.16], color: COL.might, drag: 4 });
     glowPuff(x, y, z, 0xffc070, 2.4 * p, 0.26);
@@ -5241,6 +5626,35 @@ function projSpawn(p) {
     jav.rotation.z = p.vx > 0 ? -Math.PI / 2 : Math.PI / 2;
     jav.position.x = p.vx > 0 ? 0.2 : -0.2;
     g.add(jav);
+  } else if (p.kind === 'cerberus') {
+    // spectral three-headed hound
+    const m = new THREE.MeshBasicMaterial({ color: new THREE.Color(1.6, 0.25, 0.5), transparent: true, opacity: 0.85, blending: THREE.AdditiveBlending, depthWrite: false });
+    const dog = new THREE.Group();
+    const body = new THREE.Mesh(new THREE.SphereGeometry(0.32, 14, 10), m); body.scale.set(1.5, 0.75, 0.75); dog.add(body);
+    for (const zz of [-0.22, 0, 0.22]) {
+      const head = new THREE.Mesh(new THREE.ConeGeometry(0.13, 0.36, 8).rotateZ(-Math.PI / 2), m);
+      head.position.set(0.5, 0.18 + (zz === 0 ? 0.08 : 0), zz); dog.add(head);
+      const eyeM = new THREE.Mesh(new THREE.SphereGeometry(0.03, 6, 4), new THREE.MeshBasicMaterial({ color: new THREE.Color(3, 2.6, 0.6) })); eyeM.position.set(0.55, 0.26 + (zz === 0 ? 0.08 : 0), zz + 0.05); dog.add(eyeM);
+    }
+    for (const lx of [-0.3, 0.3]) for (const lz of [-0.15, 0.15]) { const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.03, 0.45, 6), m); leg.position.set(lx, -0.32, lz); dog.add(leg); }
+    dog.scale.x = Math.sign(p.vx) || 1;
+    const s2 = new THREE.Sprite(new THREE.SpriteMaterial({ map: FT.glow, color: 0xff3060, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false })); s2.scale.setScalar(2.2);
+    g.add(dog, s2); g.userData.dog = dog; g.userData.mats = [];
+  } else if (p.kind === 'hands') {
+    // hands of the dead clawing up from the floor under the foe
+    const m = new THREE.MeshBasicMaterial({ color: new THREE.Color(1.3, 0.2, 0.45), transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending, depthWrite: false });
+    const hs = new THREE.Group();
+    for (let i = 0; i < 5; i++) {
+      const arm = new THREE.Group();
+      arm.add(new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.07, 1.1, 6).translate(0, 0.55, 0), m));
+      for (let f2 = 0; f2 < 4; f2++) { const fg = new THREE.Mesh(new THREE.ConeGeometry(0.018, 0.2, 4).translate(0, 0.1, 0), m); fg.position.set((f2 - 1.5) * 0.035, 1.12, 0); fg.rotation.x = 0.4; arm.add(fg); }
+      arm.position.set((i - 2) * 0.22, -1.2, (i % 2 ? 0.15 : -0.15)); arm.rotation.z = (i - 2) * 0.15;
+      hs.add(arm);
+    }
+    const disc = new THREE.Mesh(new THREE.CircleGeometry(1.0, 32), new THREE.MeshBasicMaterial({ color: new THREE.Color(0.6, 0.05, 0.15), transparent: true, opacity: 0.8, depthWrite: false }));
+    disc.rotation.x = -Math.PI / 2; disc.position.y = 0.02;
+    g.add(hs, disc); g.userData.hands = hs; g.userData.mats = [];
+    g.position.y = 0;
   } else if (p.kind === 'rock') {
     const rockG = new THREE.DodecahedronGeometry(0.42, 1);
     { const q = rockG.attributes.position; for (let i = 0; i < q.count; i++) { const k = 0.8 + Math.random() * 0.35; q.setXYZ(i, q.getX(i) * k, q.getY(i) * k, q.getZ(i) * k); } rockG.computeVertexNormals(); }
@@ -5281,6 +5695,7 @@ function projEnd(p, hit) {
   projViews.delete(p.id);
   if (p.kind === 'bolt') { addP.burst(20, p.x, p.y, 0.1, 6, { life: [0.1, 0.3], size: [0.05, 0.12], color: COL.zeus, drag: 4 }); glowPuff(p.x, p.y, 0.1, 0x9fcfff, 2, 0.25); }
   else if (p.kind === 'hammer') { addP.burst(16, p.x, p.y, 0.1, 4, { life: [0.1, 0.3], size: [0.05, 0.12], color: COL.thor, drag: 4 }); glowPuff(p.x, p.y, 0.1, 0xc8a8ff, 1.6, 0.2); }
+  else if (p.kind === 'cerberus' || p.kind === 'hands') { addP.burst(30, p.x, p.kind === 'hands' ? 1 : p.y, 0.1, 5, { life: [0.2, 0.5], size: [0.06, 0.14], color: COL.hell, drag: 3, up: 2 }); }
   else if (p.kind === 'rock') { normP.burst(30, p.x, Math.max(0.4, p.y), 0.1, 6, { life: [0.4, 0.9], size: [0.06, 0.16], color: [0.5, 0.42, 0.34], alpha: 1, grav: 14, up: 3, drag: 0.5 }); dust(p.x, 14, 1.2); }
   else if (p.kind === 'gale') { addP.burst(26, p.x, p.y, 0.1, 6, { life: [0.12, 0.35], size: [0.05, 0.13], color: COL.storm, drag: 4 }); glowPuff(p.x, p.y, 0.1, 0xb8ffe0, 2, 0.25); }
   else { normP.burst(30, p.x, 0.6, 0.1, 5, { life: [0.4, 0.9], size: [0.08, 0.18], color: [0.8, 0.97, 1], alpha: 0.85, grav: 12, up: 3, drag: 1 }); }
@@ -5308,6 +5723,16 @@ function updateProjViews(dt) {
       v.g.rotation.y += dt * 9;
       addP.burst(3, p.x, p.y, 0.1, 1, { life: [0.15, 0.3], size: [0.08, 0.16], color: COL.soul, drag: 2 });
       if (Math.random() < 0.4) addP.burst(1, p.x, p.y, 0.1, 0.6, { life: [0.2, 0.4], size: [0.1, 0.18], color: COL.gold, drag: 2 });
+    } else if (p.kind === 'cerberus') {
+      v.g.position.y = p.y + Math.abs(Math.sin(v.t * 16)) * 0.12;
+      v.g.userData.dog.rotation.z = Math.sin(v.t * 16) * 0.08;
+      addP.burst(3, p.x - Math.sign(p.vx) * 0.5, p.y, 0.1, 1.2, { life: [0.2, 0.45], size: [0.08, 0.18], color: COL.hell, drag: 2, up: 1.5 });
+      if (Math.random() < 0.4) dust(p.x, 2, 0.4);
+    } else if (p.kind === 'hands') {
+      v.g.position.y = 0;
+      const rise = clamp((v.t - 0.22) / 0.14, 0, 1), sink = clamp((v.t - 0.6) / 0.15, 0, 1);
+      v.g.userData.hands.position.y = (rise - sink) * 1.25;
+      if (Math.random() < 0.6) addP.burst(2, p.x + rand(-0.6, 0.6), 0.1, rand(-0.3, 0.3), 1.5, { life: [0.3, 0.6], size: [0.06, 0.14], color: COL.hell, up: 2.5, drag: 1 });
     } else if (p.kind === 'rock') {
       v.g.position.y = p.y;
       v.g.userData.spin.rotation.z -= dt * 9 * Math.sign(p.vx || 1); v.g.userData.spin.rotation.x += dt * 4;
@@ -5482,6 +5907,21 @@ function ankhMesh() {
 
 function superImpact(e) {
   const x = e.x;
+  if (e.kind === 'hellfire') {
+    const beam = lightBeam(0xff3060, 1.2, 2.2, 16, 0.9);
+    beam.position.set(x, 0, 0); beam.material.userData.own = true;
+    const op = beam.material.uniforms.uOp;
+    timed.add(beam, 1.2, (o, k) => { o.scale.set(1 + k * 0.5, Math.min(1, k * 5), 1 + k * 0.5); op.value = 0.95 * (1 - k); });
+    for (let i = 0; i < 6; i++) setTimeout(() => addP.burst(40, x + rand(-0.6, 0.6), 0.3, rand(-0.4, 0.4), 9, { life: [0.4, 1.0], size: [0.08, 0.2], color: COL.hell, up: 12, drag: 1.2 }), i * 50);
+    normP.burst(80, x, 0.4, 0, 8, { life: [0.6, 1.4], size: [0.12, 0.3], color: [0.1, 0.03, 0.05], alpha: 0.8, up: 6, drag: 1 });
+    ring(x, 0.06, 0, 0xff6080, 12, 0.9); ring(x, 1.5, 0.3, 0xffffff, 9, 0.5, true);
+    glowPuff(x, 2, 0.3, 0xff5070, 12, 0.6);
+    stage.flash = Math.max(stage.flash, 0.8);
+    screenFlash(0.8, '#ffe0e6');
+    shake = 0.6;
+    sfx.boom(1.6);
+    return;
+  }
   if (e.kind === 'lion') {
     slashStreak(x, 2.4, 0.4, 7, 1.0, -0.5, [2.6, 1.6, 0.5], 0.6);
     for (let i = 0; i < 12; i++) {
@@ -5617,6 +6057,7 @@ class SwordTrail {
       this.hist.unshift({ a, b, age: 0 });
     }
     this.hist = this.hist.filter((h) => h.age < this.life).slice(0, this.n);
+    this.speed = this.hist.length > 1 && this.hist[0].age === 0 ? this.hist[0].b.distanceTo(this.hist[1].b) / Math.max(dt, 1e-3) : 0;
     const pos = this.mesh.geometry.attributes.position, col = this.mesh.geometry.attributes.color;
     const c = this.def.color, cc = this.def.core;
     for (let i = 0; i < this.n; i++) {
@@ -5631,6 +6072,19 @@ class SwordTrail {
     this.mesh.visible = this.hist.length > 1;
   }
   dispose() { scene.remove(this.mesh); this.mesh.geometry.dispose(); this.mesh.material.dispose(); }
+}
+
+// per-god sparks thrown off a fast-moving weapon or fist
+function trailSpark(kind, p, speed) {
+  const k = Math.min(1, speed / 12);
+  if (kind === 'bolt') { if (Math.random() < 0.55 * k) bolts.spawn(p.clone(), p.clone().add(new V3(rand(-0.35, 0.35), rand(-0.35, 0.35), rand(-0.2, 0.2))), { r: 0.01, life: 0.07, segs: 5, branches: 0 }); addP.burst(1, p.x, p.y, p.z, 1.5, { life: [0.1, 0.25], size: [0.04, 0.09], color: COL.zeus, drag: 3 }); }
+  else if (kind === 'water') { normP.burst(2, p.x, p.y, p.z, 2.5 * k, { life: [0.3, 0.55], size: [0.04, 0.09], color: [0.8, 0.97, 1], alpha: 0.85, grav: 9, drag: 1 }); if (Math.random() < 0.5) addP.burst(1, p.x, p.y, p.z, 1, { life: [0.12, 0.25], size: [0.08, 0.14], color: COL.water, drag: 2 }); }
+  else if (kind === 'violet') { if (Math.random() < 0.45 * k) violetBolt(p.clone(), p.clone().add(new V3(rand(-0.4, 0.4), rand(-0.4, 0.4), rand(-0.2, 0.2))), { r: 0.012, life: 0.07, segs: 5, branches: 0 }); addP.burst(1, p.x, p.y, p.z, 1.5, { life: [0.1, 0.25], size: [0.05, 0.1], color: COL.thor, drag: 3 }); }
+  else if (kind === 'soul') addP.burst(1, p.x, p.y, p.z, 1.2, { life: [0.15, 0.35], size: [0.05, 0.1], color: COL.soul, drag: 3 });
+  else if (kind === 'gold') addP.burst(1, p.x, p.y, p.z, 1.2, { life: [0.15, 0.35], size: [0.04, 0.09], color: COL.gold, drag: 3 });
+  else if (kind === 'storm') { addP.burst(1, p.x, p.y, p.z, 1.4, { life: [0.12, 0.3], size: [0.05, 0.1], color: COL.storm, drag: 3 }); if (Math.random() < 0.15 * k) stormBolt(p.clone(), p.clone().add(new V3(rand(-0.4, 0.4), rand(-0.4, 0.4), 0)), { r: 0.01, life: 0.07, segs: 5, branches: 0 }); }
+  else if (kind === 'might') addP.burst(1, p.x, p.y, p.z, 1, { life: [0.15, 0.35], size: [0.06, 0.12], color: COL.might, drag: 3 });
+  else if (kind === 'hell') { addP.burst(2, p.x, p.y, p.z, 1.2, { life: [0.2, 0.45], size: [0.06, 0.13], color: COL.hell, drag: 2, up: 1.5 }); }
 }
 
 class FighterView {
@@ -5827,6 +6281,15 @@ class FighterView {
         addP.burst(2, p.x, p.y, p.z, 2, { life: [0.1, 0.25], size: [0.05, 0.1], color: COL.thor, drag: 3 });
       }
       updateCape(M, t, f.vx * f.facing + (f.state === 'dash' ? 6 : 0), f.state === 'attack' ? 1 : 0.3);
+    } else if (f.key === 'hades') {
+      const flick = 0.8 + Math.random() * 0.4;
+      M.triGlow.material.opacity = (0.2 + this.glow * 0.9) * flick;
+      M.soulFire.material.opacity = (0.55 + this.glow * 0.45) * flick;
+      M.mats.gem.emissiveIntensity = 0.8 + this.glow * 3 * flick;
+      if (Math.random() < 0.35) { const p = new V3(0, -0.13, 0.08); M.j.lWr.localToWorld(p); addP.burst(1, p.x, p.y, p.z, 0.4, { life: [0.3, 0.6], size: [0.05, 0.11], color: COL.hell, up: 1.2, drag: 1 }); }
+      const hidden = f.state === 'attack' && f.move && f.move.teleport && f.mt > f.move.teleport.t - 0.08 && f.mt < f.move.teleport.t + 0.08;
+      M.root.visible = !hidden;
+      updateCape(M, t, f.vx * f.facing + (f.state === 'dash' ? 6 : 0), f.state === 'attack' ? 0.9 : 0.35);
     } else if (f.key === 'heracles') {
       const flick = 0.85 + Math.random() * 0.3;
       M.triGlow.material.opacity = (0.1 + this.glow * 0.9) * flick;
@@ -5876,6 +6339,8 @@ class FighterView {
         addP.burst(4, p.x, p.y + rand(-0.6, 0.4), rand(-0.3, 0.3), 1, { life: [0.15, 0.35], size: [0.1, 0.22], color: COL.thor, drag: 2 });
         if (Math.random() < 0.6) violetBolt(p.clone(), p.clone().add(new V3(-f.facing * rand(0.8, 1.8), rand(-0.8, 0.8), rand(-0.3, 0.3))), { r: 0.017, life: 0.1, segs: 7, branches: 0 });
         if (f.grounded && Math.random() < 0.5) dust(f.x, 2, 0.5);
+      } else if (f.key === 'hades') {
+        addP.burst(3, p.x, p.y + rand(-0.6, 0.4), rand(-0.3, 0.3), 1, { life: [0.2, 0.4], size: [0.08, 0.16], color: COL.hell, drag: 2, up: 1 });
       } else if (f.key === 'heracles') {
         addP.burst(3, p.x, p.y + rand(-0.6, 0.4), rand(-0.3, 0.3), 1, { life: [0.15, 0.35], size: [0.1, 0.2], color: COL.might, drag: 2 });
         if (f.grounded && Math.random() < 0.7) dust(f.x, 3, 0.7);
@@ -5917,7 +6382,13 @@ class FighterView {
       if (f.state === 'down' && this.prevState === 'juggle') dust(f.x, 18, 1.2);
       this.prevState = f.state;
     }
-    if (this.trails.length) { const on = f.state === 'attack' && !!f.move; for (const tr of this.trails) tr.update(dt, on); }
+    if (this.trails.length) {
+      const on = f.state === 'attack' && !!f.move;
+      for (const tr of this.trails) {
+        tr.update(dt, on);
+        if (on && tr.speed > 3.5 && tr.hist.length) trailSpark(tr.def.spark, tr.hist[0].b, tr.speed);
+      }
+    }
   }
 }
 
@@ -5961,7 +6432,7 @@ function cineShot(f, o, t, portrait) {
     const k = Math.min(1, (t - 1.8) / 0.55), R = fitD(46 * fw) * 1.1;
     return shot('a3', new V3(ox + sideX(-s * (R * 0.6 + k * 1.2)), lookY + 0.6 + k * 0.8, Math.max(R, 5.5)), new V3(ox, lookY * 0.9, 0), 46 * fw, -0.06, 3);
   }
-  if (f.key === 'thor' || f.key === 'heracles') {
+  if (f.key === 'thor' || f.key === 'heracles' || f.key === 'hades') {
     const top = Math.max(o.y, f.y) + 2.6;
     const lookY = Math.max(1.15, top * 0.42);
     const aspect = camera.aspect || 1.78;
@@ -6052,6 +6523,9 @@ function cineUpdate(dt) {
       screenFlash(0.8, '#fff3d0'); lightFlash(o.x, 2.5, 0xffe0a0, 100); shake = Math.max(shake, 0.55);
       cineTitle(f);
     }
+  } else if (f.key === 'hades') {
+    if (t > 0.3 && t < 1.3 && Math.random() < 0.7) addP.burst(2, o.x + rand(-0.8, 0.8), 0.1, rand(-0.5, 0.5), 2, { life: [0.4, 0.8], size: [0.08, 0.16], color: COL.hell, up: 3, drag: 1 });
+    if (t >= 1.74 && !cineFin) { cineFin = true; cineTitle(f); }
   } else if (f.key === 'heracles') {
     if (t > 1.5 && t < 1.78) { const p = new V3(0, 0, 0.75); M_club(f, p); addP.burst(4, p.x, p.y, p.z, 2.5, { life: [0.15, 0.35], size: [0.08, 0.18], color: COL.might, drag: 3 }); }
     if (t >= 1.78 && !cineFin) { cineFin = true; cineTitle(f); }
@@ -6089,6 +6563,7 @@ function cineSlow() {
   if (c.f.key === 'thor') return c.t > 1.72 && c.t < 1.96 ? 0.3 : 1;
   if (c.f.key === 'susanoo') return c.t > 1.62 && c.t < 1.86 ? 0.3 : 1;
   if (c.f.key === 'heracles') return c.t > 1.74 && c.t < 1.98 ? 0.3 : 1;
+  if (c.f.key === 'hades') return c.t > 1.7 && c.t < 1.94 ? 0.3 : 1;
   return c.t > 1.8 && c.t < 2.05 ? 0.3 : 1;
 }
 function cineTitle(f) {
@@ -6360,6 +6835,9 @@ const bgm = {
   },
 };
 
+const WEAPON = { zeus: 'fist', poseidon: 'pole', anubis: 'blade', thor: 'hammer', susanoo: 'blade', heracles: 'club', hades: 'pole' };
+const weaponOf = (f) => (f && f.move && f.move.weap) || (f ? WEAPON[f.key] || 'fist' : 'fist');
+const WEIGHT = { light: 0.3, medium: 0.55, heavy: 0.85, special: 1 };
 const sfx = {
   ctx: null, muted: false, noiseBuf: null,
   init() {
@@ -6398,6 +6876,62 @@ const sfx = {
     const g = c.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(gain, t + 0.01); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
     o.connect(g); g.connect(this.master);
     o.start(t); o.stop(t + dur + 0.05);
+  },
+  // metallic partials (clang / ring)
+  ring(freqs, dur, gain, delay = 0) { for (let i = 0; i < freqs.length; i++) this.tone(freqs[i] * rand(0.98, 1.02), freqs[i] * 0.995, dur * (1 - i * 0.15), i ? 'sine' : 'triangle', gain / (1 + i * 0.6), delay); },
+  // swing of a weapon or limb; weight 0..1
+  swing(kind, w = 0.5) {
+    if (kind === 'fist') { this.noise(0.08 + 0.08 * w, 900, 2400, 'bandpass', 1.4, 0.09 + 0.12 * w); }
+    else if (kind === 'blade') { this.noise(0.07 + 0.06 * w, 2600, 7500, 'highpass', 0.9, 0.12 + 0.08 * w); this.tone(3400, 2700, 0.06, 'sine', 0.025 + 0.02 * w, 0.02); }
+    else if (kind === 'pole') { this.noise(0.12 + 0.1 * w, 450, 1700, 'bandpass', 1.1, 0.11 + 0.1 * w); }
+    else { this.noise(0.2 + 0.16 * w, 200, 750, 'bandpass', 0.9, 0.18 + 0.16 * w); this.tone(95, 55, 0.22, 'sine', 0.08 * w); }
+  },
+  // contact sound: weapon body + elemental layer
+  impact(kind, p, fx) {
+    const k = clamp(p / 100, 0.2, 1.6);
+    if (kind === 'fist') {
+      this.tone(170 - 40 * k, 48, 0.1 + 0.1 * k, 'sine', 0.55 + 0.2 * k);
+      this.noise(0.05 + 0.06 * k, 2600, 380, 'lowpass', 0.8, 0.38 + 0.2 * k);
+      this.noise(0.025, 5200, 3000, 'highpass', 0.7, 0.18 + 0.1 * k);
+    } else if (kind === 'blade') {
+      this.noise(0.08 + 0.05 * k, 6500, 1400, 'bandpass', 1.8, 0.38 + 0.15 * k);
+      this.tone(130, 60, 0.1 + 0.05 * k, 'sine', 0.32 + 0.15 * k);
+      this.ring([2900, 4150], 0.16 + 0.08 * k, 0.04);
+    } else if (kind === 'pole') {
+      this.noise(0.06 + 0.04 * k, 3200, 800, 'bandpass', 1.5, 0.34 + 0.15 * k);
+      this.tone(150, 55, 0.13 + 0.08 * k, 'sine', 0.45 + 0.2 * k);
+    } else {
+      this.tone(115, 34, 0.24 + 0.2 * k, 'sine', 0.75 + 0.15 * k);
+      this.noise(0.18 + 0.14 * k, 1300, 90, 'lowpass', 0.6, 0.5 + 0.15 * k);
+      this.noise(0.06, 1900, 600, 'bandpass', 1.2, 0.28 + 0.1 * k);
+      if (kind === 'hammer') this.ring([310, 470], 0.25, 0.05);
+    }
+    if (fx === 'bolt' || fx === 'thunder') { for (let i = 0; i < 3; i++) this.noise(0.04, 7500, 3000, 'highpass', 0.8, 0.2, i * 0.025); }
+    else if (fx === 'water') this.noise(0.22, 1600, 300, 'bandpass', 0.9, 0.25);
+    else if (fx === 'soul' || fx === 'soulCut') this.tone(900, 1500, 0.12, 'sine', 0.05);
+    else if (fx === 'gale' || fx === 'storm') this.noise(0.18, 1200, 4000, 'bandpass', 0.8, 0.14);
+    else if (fx === 'hell' || fx === 'soulfire') { this.noise(0.25, 900, 200, 'lowpass', 0.7, 0.25); this.tone(220, 110, 0.2, 'sawtooth', 0.04); }
+  },
+  // guarding: metal on metal rings, flesh/wood on guard thuds
+  guard(kind, p) {
+    const k = clamp(p / 100, 0.2, 1.4);
+    if (kind === 'fist' || kind === 'club') { this.tone(230, 120, 0.08, 'sine', 0.32); this.noise(0.06, 1600, 600, 'lowpass', 0.8, 0.28); this.ring([620], 0.08, 0.03); }
+    else { this.noise(0.05, 3800, 2400, 'bandpass', 3, 0.3); this.ring([820, 1240, 1870], 0.22 + 0.14 * k, 0.08 + 0.05 * k); }
+  },
+  armor() { this.ring([170, 255, 385], 0.6, 0.13); this.tone(90, 50, 0.25, 'sine', 0.4); },
+  grab() { this.noise(0.1, 900, 300, 'lowpass', 0.8, 0.35); this.tone(210, 90, 0.14, 'sine', 0.35); },
+  land(heavy) { this.noise(heavy ? 0.14 : 0.07, 900, 150, 'lowpass', 0.7, heavy ? 0.4 : 0.16); if (heavy) this.tone(80, 40, 0.18, 'sine', 0.35); },
+  dash() { this.noise(0.12, 700, 1800, 'bandpass', 1, 0.09); this.noise(0.05, 600, 200, 'lowpass', 0.8, 0.1); },
+  launch(kind) {
+    if (kind === 'bolt') this.bolt(false);
+    else if (kind === 'wave') this.water(0.9);
+    else if (kind === 'soul') { this.tone(500, 1200, 0.25, 'sine', 0.07); this.noise(0.25, 1500, 3500, 'bandpass', 1, 0.12); }
+    else if (kind === 'hammer') { this.swing('hammer', 1); this.ring([300, 450], 0.3, 0.05); }
+    else if (kind === 'rock') { this.swing('club', 1); this.noise(0.1, 600, 200, 'lowpass', 0.8, 0.3); }
+    else if (kind === 'gale') { this.noise(0.35, 1500, 5000, 'bandpass', 0.9, 0.2); this.tone(2200, 3200, 0.2, 'sine', 0.03); }
+    else if (kind === 'cerberus') { this.tone(140, 70, 0.35, 'sawtooth', 0.09); this.noise(0.35, 700, 200, 'lowpass', 0.7, 0.3); }
+    else if (kind === 'hands') { this.noise(0.4, 300, 900, 'bandpass', 0.8, 0.25); this.tone(110, 70, 0.4, 'sawtooth', 0.05); }
+    else this.whoosh(1.5);
   },
   hit(p) { const k = clamp(p / 100, 0.2, 1.5); this.tone(150 - 40 * k, 40, 0.15 + 0.15 * k, 'sine', 0.5 + 0.25 * k); this.noise(0.07 + 0.1 * k, 3000, 300, 'lowpass', 0.7, 0.35 + 0.25 * k); },
   block() { this.noise(0.07, 3500, 2000, 'bandpass', 4, 0.35); this.tone(1100, 700, 0.09, 'triangle', 0.15); },
@@ -6500,28 +7034,26 @@ function handleEvents() {
         break;
       case 'fight': announce('FIGHT!', '', 'fight', 0.9); sfx.boom(0.6); break;
       case 'move':
-        if (e.mtype === 'special') { callout(e.side, e.name, false); sfx.whoosh(1.5); if (f.key === 'zeus' || f.key === 'thor' || f.key === 'susanoo') sfx.bolt(false); else if (f.key === 'heracles') sfx.hit(60); else sfx.water(0.7); }
+        if (e.mtype === 'special') { callout(e.side, e.name, false); sfx.swing(weaponOf(f), 1); }
         else if (e.mtype === 'super') { }
-        else sfx.whoosh(e.mtype === 'air' ? 1.2 : 0.8);
+        else { const mv = f.c.moves[e.id]; sfx.swing(weaponOf(f), WEIGHT[mv && mv.tier] || 0.5); }
         break;
       case 'hit':
         hitFx(e);
-        sfx.hit(e.power);
-        if (e.fx === 'water') sfx.water(0.5);
-        if ((e.fx === 'bolt' || e.fx === 'thunder') && !e.superHit) sfx.bolt(false);
+        sfx.impact(e.proj ? 'pole' : weaponOf(f), e.power, e.fx);
         if (e.combo >= 2) showCombo(e.side, e.combo, 0, false);
         break;
       case 'block':
         addP.burst(12, e.x, e.y, 0.3, 5, { life: [0.1, 0.25], size: [0.05, 0.1], color: COL.block, drag: 5 });
         ring(e.x, e.y, 0.3, 0x9fc0ff, 1.6, 0.2, true, 0.8);
         glowPuff(e.x, e.y, 0.3, 0x9fc0ff, 1.2, 0.15);
-        sfx.block();
+        sfx.guard(e.proj ? 'pole' : weaponOf(f), e.power);
         shake = Math.max(shake, 0.03);
         break;
       case 'comboEnd':
         showCombo(e.side, e.hits, e.dmg, true);
         break;
-      case 'projSpawn': projSpawn(e.proj); if (e.proj.kind === 'wave') sfx.water(1); else if (e.proj.kind === 'gale' || e.proj.kind === 'rock') sfx.whoosh(2); break;
+      case 'projSpawn': projSpawn(e.proj); sfx.launch(e.proj.kind); break;
       case 'projEnd': projEnd(e.proj, e.hit); break;
       case 'clash':
         glowPuff(e.x, e.y, 0.2, 0xffffff, 4, 0.4); ring(e.x, e.y, 0.2, 0xffffff, 4, 0.4, true);
@@ -6532,7 +7064,7 @@ function handleEvents() {
       case 'super':
         cutin(f, e.name);
         sfx.superFlash(f.key === 'zeus' || f.key === 'thor' || f.key === 'susanoo');
-        screenFlash(0.6, f.key === 'zeus' ? '#cfe4ff' : f.key === 'thor' ? '#e4d8ff' : f.key === 'anubis' ? '#fff0c8' : f.key === 'susanoo' ? '#dcfff0' : f.key === 'heracles' ? '#fff0d8' : '#c8fff6');
+        screenFlash(0.6, f.key === 'zeus' ? '#cfe4ff' : f.key === 'thor' ? '#e4d8ff' : f.key === 'anubis' ? '#fff0c8' : f.key === 'susanoo' ? '#dcfff0' : f.key === 'heracles' ? '#fff0d8' : f.key === 'hades' ? '#ffe0e8' : '#c8fff6');
         stage.dimT = 1;
         callout(e.side, '超必殺技!', true);
         break;
@@ -6555,10 +7087,38 @@ function handleEvents() {
         break;
       }
       case 'storm': tornado(e.x, 4, 60, 0.7); ring(e.x, 0.06, 0, 0xb8ffe0, 5, 0.45); skyBoltStorm(e.x + rand(-0.5, 0.5), false); sfx.whoosh(2.5); break;
+      case 'drain': {
+        const v = views[e.side]; const to = new V3(); if (v) v.m.j.chest.getWorldPosition(to);
+        for (let i = 0; i < 10; i++) addP.spawn(e.x + rand(-0.2, 0.2), e.y + rand(-0.2, 0.2), rand(-0.2, 0.2), (to.x - e.x) * 2.2, (to.y - e.y) * 2.2 + 1, 0, 0.45, 0.12, 0.04, 1.9, 0.4, 0.7, 1, 0.5, 0);
+        callout(e.side, `吸命 +${e.amt}`, false); sfx.tone(300, 600, 0.3, 'sine', 0.06); break;
+      }
+      case 'shade': {
+        for (const xx of [e.from, e.to]) { normP.burst(30, xx, 1.1, 0, 3, { life: [0.4, 0.8], size: [0.15, 0.32], color: [0.08, 0.02, 0.05], alpha: 0.85, drag: 2, up: 1 }); addP.burst(16, xx, 1.1, 0, 3, { life: [0.2, 0.4], size: [0.06, 0.12], color: COL.hell, drag: 3 }); }
+        sfx.noise(0.3, 400, 1600, 'bandpass', 0.8, 0.25); break;
+      }
+      case 'chains': {
+        for (let i = 0; i < 4; i++) { const a = (i / 4) * Math.PI * 2; violetBolt(new V3(e.x + Math.cos(a) * 1.4, 0.02, Math.sin(a) * 0.8), new V3(e.x, 1.3, 0.1), { r: 0.025, life: 0.6, segs: 10, branches: 0, color: new THREE.Color(1.6, 0.25, 0.5) }); }
+        ring(e.x, 0.05, 0, 0xff5070, 4, 0.5); sfx.ring([180, 260], 0.5, 0.08); sfx.noise(0.3, 1200, 400, 'bandpass', 1, 0.25); break;
+      }
+      case 'soulDrain': {
+        const v = views[e.side]; const to = new V3(); if (v) v.m.j.lWr.getWorldPosition(to); else to.set(e.fx, 1.3, 0);
+        for (let i = 0; i < 14; i++) addP.spawn(e.x + rand(-0.3, 0.3), e.y + rand(-0.3, 0.3), rand(-0.3, 0.3), (to.x - e.x) * 2.4, (to.y - e.y) * 2.4 + rand(-0.5, 0.5), rand(-0.4, 0.4), 0.42, 0.13, 0.04, 2.0, 0.45, 0.8, 1, 0.3, 0);
+        sfx.tone(260, 520, 0.25, 'sine', 0.05); break;
+      }
+      case 'tartarus': {
+        const gm = new THREE.MeshBasicMaterial({ color: new THREE.Color(0.02, 0.0, 0.01), transparent: true, opacity: 0.95, depthWrite: false }); gm.userData.own = true;
+        const rimM = new THREE.MeshBasicMaterial({ color: new THREE.Color(2.2, 0.35, 0.6), transparent: true }); rimM.userData.own = true;
+        const gate = new THREE.Group();
+        const hole = new THREE.Mesh(new THREE.CircleGeometry(1.3, 48), gm); hole.rotation.x = -Math.PI / 2; gate.add(hole);
+        const rim = new THREE.Mesh(new THREE.TorusGeometry(1.3, 0.06, 8, 48), rimM); rim.rotation.x = Math.PI / 2; gate.add(rim);
+        gate.position.set(e.x, 0.03, 0);
+        timed.add(gate, 0.75, (o, k) => { const g2 = Math.min(1, k * 4) * (k > 0.8 ? 1 - (k - 0.8) / 0.2 : 1); o.scale.setScalar(Math.max(0.01, g2)); rim.rotation.z += 0.08; if (Math.random() < 0.8) addP.burst(3, e.x + rand(-1.2, 1.2), 0.05, rand(-0.6, 0.6), 1.5, { life: [0.3, 0.6], size: [0.08, 0.16], color: COL.hell, up: 3, drag: 1 }); });
+        sfx.boom(0.9); sfx.tone(60, 30, 1.0, 'sawtooth', 0.12); shake = Math.max(shake, 0.3); break;
+      }
       case 'armor': { const v = views[e.side]; const p = new V3(); if (v) v.m.j.chest.getWorldPosition(p); else p.set(e.x, e.y, 0);
         glowPuff(p.x, p.y, 0.3, 0xffc070, 2.4, 0.25); ring(p.x, p.y, 0.3, 0xffe0a0, 2.2, 0.25, true);
-        addP.burst(20, p.x, p.y, 0.3, 5, { life: [0.12, 0.3], size: [0.05, 0.12], color: COL.might, drag: 4 }); callout(e.side, 'アーマー!', false); sfx.block(); break; }
-      case 'grabBreak': callout(e.side, 'ガード不能!', false); break;
+        addP.burst(20, p.x, p.y, 0.3, 5, { life: [0.12, 0.3], size: [0.05, 0.12], color: COL.might, drag: 4 }); callout(e.side, 'アーマー!', false); sfx.armor(); break; }
+      case 'grabBreak': callout(e.side, 'ガード不能!', false); sfx.grab(); break;
       case 'hgrab': glowPuff(e.x, e.y, 0.3, 0xffc070, 2.6, 0.3); sfx.hit(70); shake = Math.max(shake, 0.2); break;
       case 'hslam': dust(e.x, 26, 1.8); ring(e.x, 0.06, 0, 0xffc070, 5 + e.i, 0.45); addP.burst(30, e.x, 0.3, 0, 8, { life: [0.2, 0.5], size: [0.06, 0.14], color: COL.might, drag: 3, up: 3 }); stage.flash = Math.max(stage.flash, 0.4); shake = Math.max(shake, 0.35); sfx.boom(0.9); break;
       case 'hthrow': sfx.whoosh(2.8); dust(e.x, 16, 1.4); break;
@@ -6597,8 +7157,8 @@ function handleEvents() {
         break;
       }
       case 'newMatch': renderPips(); break;
-      case 'land': if (e.heavy) { dust(e.x, 20, 1.3); sfx.hit(40); shake = Math.max(shake, 0.1); } else dust(e.x, 6, 0.6); break;
-      case 'dash': dust(f.x, 6, 0.6); break;
+      case 'land': if (e.heavy) { dust(e.x, 20, 1.3); sfx.land(true); shake = Math.max(shake, 0.1); } else { dust(e.x, 6, 0.6); sfx.land(false); } break;
+      case 'dash': dust(f.x, 6, 0.6); sfx.dash(); break;
       case 'jump': dust(f.x, 8, 0.7); break;
     }
   }
@@ -6697,7 +7257,7 @@ const lastTap = { left: -9, right: -9 };
 const modelCache = {};
 function modelFor(side, key) {
   const id = side + key;
-  if (!modelCache[id]) modelCache[id] = key === 'zeus' ? buildZeus(FT) : key === 'anubis' ? buildAnubis(FT) : key === 'thor' ? buildThor(FT) : key === 'susanoo' ? buildSusanoo(FT) : key === 'heracles' ? buildHeracles(FT) : buildPoseidon(FT);
+  if (!modelCache[id]) modelCache[id] = key === 'zeus' ? buildZeus(FT) : key === 'anubis' ? buildAnubis(FT) : key === 'thor' ? buildThor(FT) : key === 'susanoo' ? buildSusanoo(FT) : key === 'heracles' ? buildHeracles(FT) : key === 'hades' ? buildHades(FT) : buildPoseidon(FT);
   return modelCache[id];
 }
 
@@ -6740,6 +7300,7 @@ const GOD = {
   thor: { acc: '#c8b0ff', acc2: '#5a3aa0', emb: `<svg viewBox="0 0 64 64" class="emb"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/><path d="M18 14h28v14H18z" fill="currentColor"/><path d="M29 28h6v20h-6z" fill="currentColor"/><circle cx="32" cy="51" r="3.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M36 30 30 38h5l-3 6" fill="none" stroke="currentColor" stroke-width="2" opacity=".8"/></svg>`, tag: '雷槌の戦神', desc: '鉄の籠手と神鎚ミョルニルを振るう北欧の戦神。一撃一撃が重く、投げた鎚は雷をまとって手元へ戻る。', stats: [['攻撃', 5], ['速度', 2], ['射程', 3], ['防御', 5]] },
   susanoo: { acc: '#9fffd8', acc2: '#1b5a4a', emb: `<svg viewBox="0 0 64 64" class="emb"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/><path d="M20 50 46 12" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/><path d="M17 44l9 6" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M14 30c6-8 14-6 14 0s-8 6-8 0M36 46c6 2 14-2 12-8s-8-2-6 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity=".85"/></svg>`, tag: '嵐の荒神', desc: '草薙の剣を振るう出雲の荒ぶる神。風の刃と雷をまとう踏み込みで、攻めと間合いの両方をこなす万能型。', stats: [['攻撃', 4], ['速度', 4], ['射程', 4], ['防御', 3]] },
   heracles: { acc: '#ffb870', acc2: '#8a3a10', emb: `<svg viewBox="0 0 64 64" class="emb"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/><path d="M22 48 40 16c2-3 7-2 8 1 1 4-1 6-3 8L27 51c-2 2-6 0-5-3z" fill="currentColor"/><circle cx="42" cy="20" r="2" fill="#000" opacity=".4"/><circle cx="37" cy="27" r="1.6" fill="#000" opacity=".4"/></svg>`, tag: '不屈の半神英雄', desc: 'ネメアの獅子を纏い、樫の棍棒を振るう半神の英雄。重い技は一撃を受け止めるアーマー付き、ガード不能の投げで守りを崩す。', stats: [['攻撃', 5], ['速度', 1], ['射程', 3], ['防御', 5]] },
+  hades: { acc: '#ff6a88', acc2: '#5a0a1c', emb: `<svg viewBox="0 0 64 64" class="emb"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/><path d="M32 54V24" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M22 10c0 10 2 14 10 14s10-4 10-14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M22 8l-2 6h4zM42 8l-2 6h4z" fill="currentColor"/><circle cx="32" cy="40" r="3" fill="currentColor"/></svg>`, tag: '冥府の王', desc: '二又の槍と魂の炎を操る冥府の王。敵の魂を吸って体力を奪い、隠れ兜で背後を取り、離れた相手も亡者の手で捕らえる。', stats: [['攻撃', 3], ['速度', 3], ['射程', 4], ['防御', 3]] },
 };
 function panelHTML(side) {
   const key = selState.keys[side], G = GOD[key], c = CHARS[key];
@@ -6747,7 +7308,7 @@ function panelHTML(side) {
   const who = side === 0 ? (m === 'auto' ? 'AI' : 'あなた') : (m === 'auto' ? 'AI' : m === 'practice' ? '木人' : 'CPU');
   const stat = G.stats.map(([n, v]) => `<div class="stat"><span>${n}</span><div class="bar5">${[1, 2, 3, 4, 5].map((k) => `<i class="${k <= v ? 'on' : ''}"></i>`).join('')}</div></div>`).join('');
   const mv = c.moves;
-  const names = (type) => Object.values(mv).filter((x) => x.type === type).map((x) => `<span>${x.name}${x.lv === 'low' ? '〔下段〕' : x.lv === 'mid' ? '〔中段〕' : ''}${x.armor ? '〔アーマー〕' : ''}${x.hits && x.hits.some((q) => q.grab) ? '〔ガード不能〕' : ''}</span>`).join('');
+  const names = (type) => Object.values(mv).filter((x) => x.type === type).map((x) => `<span>${x.name}${x.lv === 'low' ? '〔下段〕' : x.lv === 'mid' ? '〔中段〕' : ''}${x.armor ? '〔アーマー〕' : ''}${x.hits && x.hits.some((q) => q.grab) ? '〔ガード不能〕' : ''}${x.hits && x.hits.some((q) => q.drain) ? '〔吸命〕' : ''}${x.teleport ? '〔背後移動〕' : ''}</span>`).join('');
   const picks = MENU_KEYS.map((k) => `<button class="pick ${k} ${k === key ? 'on' : ''}" data-side="${side}" data-key="${k}">${GOD[k].emb}<span>${CHARS[k].name}</span></button>`).join('');
   return `<div class="pside"><i>${side + 1}P</i>${who}</div>
     <div class="pinfo" style="--acc:${G.acc};--acc2:${G.acc2}">
@@ -6917,8 +7478,8 @@ window.addEventListener('blur', () => { for (const k in held) held[k] = false; c
 // ============================================================
 //  Menu backdrops: dedicated title / mode and character-select scenes (the arena is hidden outside matches)
 // ============================================================
-const MENU_KEYS = ['zeus', 'poseidon', 'anubis', 'thor', 'susanoo', 'heracles'];
-const MENU_COL = { zeus: 0xffd77a, poseidon: 0x5ff0e6, anubis: 0xf0c46a, thor: 0xc8b0ff, susanoo: 0x9fffd8, heracles: 0xffb870 };
+const MENU_KEYS = ['zeus', 'poseidon', 'anubis', 'thor', 'susanoo', 'heracles', 'hades'];
+const MENU_COL = { zeus: 0xffd77a, poseidon: 0x5ff0e6, anubis: 0xf0c46a, thor: 0xc8b0ff, susanoo: 0x9fffd8, heracles: 0xffb870, hades: 0xff5a78 };
 const menuBG = { title: null, select: null, arena: null, t: 0, flash: 0, boltT: 2 };
 
 // collect everything a builder adds to the scene into one group so whole backdrops can be toggled
@@ -7133,7 +7694,7 @@ function buildTitleBackdrop() {
     // five colossi of the pantheon standing on cliffs, glowing eyes and a beam of their colour
     const bronze = new THREE.MeshStandardMaterial({ color: 0x2a2530, metalness: 0.55, roughness: 0.42 });
     const cliffM = new THREE.MeshStandardMaterial({ color: 0x2a2232, roughness: 0.95, flatShading: true });
-    const builders = { zeus: buildZeus, poseidon: buildPoseidon, anubis: buildAnubis, thor: buildThor, susanoo: buildSusanoo, heracles: buildHeracles };
+    const builders = { zeus: buildZeus, poseidon: buildPoseidon, anubis: buildAnubis, thor: buildThor, susanoo: buildSusanoo, heracles: buildHeracles, hades: buildHades };
     MENU_KEYS.forEach((k, i) => {
       const u = (i - (MENU_KEYS.length - 1) / 2) / ((MENU_KEYS.length - 1) / 2);   // -1..1
       const x = u * 30, z = -44 + Math.abs(u) * 10, y = 1.5 - Math.abs(u) * 2.5;
@@ -7231,7 +7792,7 @@ function buildSelectBackdrop() {
         g.strokeStyle = c; g.lineWidth = 6; g.strokeRect(14, 14, w - 28, h - 70);
         g.fillStyle = c; g.beginPath(); g.moveTo(14, h - 56); g.lineTo(w / 2, h - 6); g.lineTo(w - 14, h - 56); g.closePath(); g.fill();
         g.font = '900 120px serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
-        const glyph = { zeus: 'Ζ', poseidon: 'Ψ', anubis: '𓁢', thor: 'ᚦ', susanoo: '嵐', heracles: 'Η' }[k];
+        const glyph = { zeus: 'Ζ', poseidon: 'Ψ', anubis: '𓁢', thor: 'ᚦ', susanoo: '嵐', heracles: 'Η', hades: 'Ϙ' }[k];
         g.shadowColor = c; g.shadowBlur = 30; g.fillText(glyph, w / 2, h * 0.38);
         g.shadowBlur = 0; g.font = '700 30px serif'; g.fillText(CHARS[k].en, w / 2, h * 0.62);
       });
@@ -7343,7 +7904,9 @@ function boot() {
   const toTitle = () => { setupMatch(ATTRACT); previewKey = ''; showScreen('title'); };
   $('btnTitle').addEventListener('click', toTitle);
   $('btnToTitle').addEventListener('click', toTitle);
-  $('btnToSel').addEventListener('click', () => { previewKey = ''; renderSelect(); refreshPreview(true); showScreen('select'); });
+  const toSelect = () => { previewKey = ''; renderSelect(); refreshPreview(true); showScreen('select'); };
+  $('btnToSel').addEventListener('click', toSelect);
+  $('btnSel').addEventListener('click', toSelect);
   const rematch = () => { setupMatch(cfg); showScreen('match'); };
   $('btnRestart').addEventListener('click', rematch);
   $('btnRematch').addEventListener('click', rematch);
