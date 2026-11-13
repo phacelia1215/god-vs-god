@@ -3226,10 +3226,8 @@ HDP.crouchBlock = mk(HDP.block, { y: -0.44, z: 0.02, spine: [0.4, 0, 0], head: [
 const ODP = {};
 for (const k in HDP) ODP[k] = copyPoseP(HDP[k]);
 function copyPoseP(q) { const r = {}; for (const k in q) r[k] = Array.isArray(q[k]) ? q[k].slice() : q[k]; return r; }
-// stance: tall and still, chin slightly lowered, the free hand open and low with a rune burning in the palm
-ODP.stance = mk(HDP.stance, { y: -0.02, hips: [0, -0.3, 0], spine: [-0.02, -0.08, 0], chest: [-0.06, -0.08, 0], neck: [0.05, 0.15, 0], head: [0.12, 0.3, 0],
-  lHip: [-0.22, 0, 0.12], lKn: [0.18, 0, 0], lAn: [-0.02, 0, 0], rHip: [0.18, 0, 0.12], rKn: [0.14, 0, 0], rAn: [-0.2, 0, 0],
-  lSh: [-0.75, 0.1, 0.32], lEl: [-0.55, 0, 0], lWr: [0.85, 0, 0] });
+// stance: the Allfather stands tall, Gungnir planted upright beside him like a staff, a rune burning over the raised left palm
+ODP.stance = mk(HDP.stance, {"y": -0.01, "hips": [0, -0.18, 0], "spine": [-0.04, -0.05, 0], "chest": [-0.08, -0.05, 0], "neck": [0.05, 0.08, 0], "head": [0.14, 0.12, 0], "lHip": [-0.14, 0, 0.13], "lKn": [0.1, 0, 0], "lAn": [0.04, 0, 0], "rHip": [0.1, 0, 0.13], "rKn": [0.08, 0, 0], "rAn": [-0.02, 0, 0], "lSh": [0.009, -0.566, 0.709], "lEl": [-1.844, 0, 0], "lWr": [0.55, 0, 0.2], "rSh": [-0.218, -0.673, 0.081], "rEl": [-0.175, 0, 0], "rWr": [-0.908, 0.306, -0.107]});
 ODP.backstep = mk(ODP.stance, { spine: [-0.1, -0.1, 0], lHip: [-0.1, 0, 0.12], lKn: [0.5, 0, 0], rHip: [0.12, 0, 0.12], rKn: [0.6, 0, 0] });
 ODP.crouch = mk(ODP.stance, { y: -0.44, z: 0.04, spine: [0.3, -0.1, 0], chest: [0.1, -0.1, 0], head: [-0.2, 0.3, 0], lHip: [-1.2, 0, 0.18], lKn: [2.0, 0, 0], lAn: [-0.6, 0, 0], rHip: [-1.05, 0, 0.18], rKn: [2.0, 0, 0], rAn: [-0.7, 0, 0] });
 // spear throw: weapon drawn back high over the shoulder, then whipped forward
@@ -3238,7 +3236,7 @@ ODP.throw = mk(HDP.jab, { lSh: [0.6, 0, 0.6], lEl: [-0.6, 0, 0] });
 // rune planted into the ground with the free hand
 ODP.runePlant = mk(HDP.sweepEnd, { lSh: [-1.0, 0, 0.2], lEl: [-0.2, 0, 0], lWr: [1.2, 0, 0], spine: [0.5, 0, 0], chest: [0.1, 0, 0], head: [-0.4, 0, 0] });
 // intro / win: spear upright, gaze lowered at the challenger
-ODP.intro = mk(ODP.stance, { head: [0.18, 0.2, 0], lSh: [0.15, 0, 0.5], lEl: [-1.7, 0, 0], lWr: [0.2, 0, 0] });
+ODP.intro = mk(ODP.stance, { head: [0.2, 0.15, 0] });
 const POSES = { zeus: ZP, poseidon: PP, anubis: AP, thor: TP, susanoo: SUP, heracles: HEP, hades: HDP, odin: ODP };
 
 // ------------------------------------------------------------
@@ -6833,14 +6831,185 @@ function runeRing(x, y, z, size, life, vertical = false, col = [1.4, 1.9, 2.8]) 
   timed.add(mesh, life, (o, k) => { const sc = size * (0.6 + 0.4 * easeOutC(Math.min(1, k * 3))); o.scale.set(sc, sc, sc); m.opacity = k < 0.15 ? k / 0.15 : 1 - Math.pow(Math.max(0, (k - 0.6) / 0.4), 1.5); if (vertical) { o.quaternion.copy(camera.quaternion); o.rotateZ(k * 2); } else o.rotation.z += 0.03; });
   return mesh;
 }
-function odinRuneBind(e) {
-  runeRing(e.x, 0.04, 0, 4.2, SUPER_LIFE(1.5));
-  runeRing(e.x, 0.05, 0, 2.6, SUPER_LIFE(1.5), false, [2.4, 1.9, 0.8]);
-  const b = lightBeam(0x9fd4ff, 1.4, 1.6, 5, 0.0); b.position.set(e.x, 0, 0); b.material.userData.own = true;
-  const op = b.material.uniforms.uOp; timed.add(b, SUPER_LIFE(1.4), (o, k) => { op.value = (k < 0.1 ? k / 0.1 : k > 0.8 ? (1 - k) / 0.2 : 1) * 0.16; o.rotation.y += 0.02; });
-  for (let i = 0; i < 4; i++) { const a = (i / 4) * Math.PI * 2; bolts.spawn(new V3(e.x + Math.cos(a) * 1.8, 0.05, Math.sin(a) * 0.9), new V3(e.x, 1.2, 0.1), { r: 0.02, life: 0.4, segs: 10, branches: 0, color: new THREE.Color(1.2, 1.8, 2.8) }); }
-  sfx.ring([330, 495, 660, 990], 1.2, 0.08); sfx.tone(80, 160, 0.8, 'sine', 0.25);
+// single rune glyph textures (cached) for stones and flying sigils
+const RUNES = 'ᚠᚢᚦᚨᚱᚲᚷᚹᚺᚾᛁᛃᛇᛈᛉᛊᛏᛒᛖᛗᛚᛜᛞᛟ';
+const runeGlyphC = {};
+function runeGlyphTex(i) {
+  i = ((i % 24) + 24) % 24;
+  if (runeGlyphC[i]) return runeGlyphC[i];
+  const t = canvasTex(128, 128, (g, w, h) => { g.clearRect(0, 0, w, h); g.fillStyle = '#ffffff'; g.font = 'bold 96px serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.shadowColor = '#ffffff'; g.shadowBlur = 14; g.fillText(RUNES[i], w / 2, h / 2 + 4); });
+  t.userData = { shared: true };
+  return (runeGlyphC[i] = t);
 }
+let runeStoneTexC = null;
+function runeStoneTex() {
+  if (runeStoneTexC) return runeStoneTexC;
+  runeStoneTexC = canvasTex(128, 512, (g, w, h) => {
+    g.fillStyle = '#000000'; g.fillRect(0, 0, w, h);
+    g.strokeStyle = '#ffffff'; g.lineWidth = 6; g.strokeRect(10, 10, w - 20, h - 20);
+    g.fillStyle = '#ffffff'; g.font = 'bold 70px serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
+    for (let k = 0; k < 5; k++) g.fillText(RUNES[(k * 5 + 3) % 24], w / 2, 60 + k * 95);
+  });
+  runeStoneTexC.userData = { shared: true };
+  return runeStoneTexC;
+}
+// a rune sigil sprite that drifts and fades
+function runeSigil(x, y, z, size, life, vx = 0, vy = 0, col = [1.3, 1.9, 2.8]) {
+  const m = new THREE.SpriteMaterial({ map: runeGlyphTex(Math.floor(Math.random() * 24)), color: new THREE.Color(...col), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false });
+  m.userData.own = true;
+  const sp = new THREE.Sprite(m); sp.position.set(x, y, z); sp.scale.setScalar(size);
+  timed.add(sp, life, (o, k, dt) => { o.position.x += vx * dt; o.position.y += vy * dt; m.opacity = k < 0.15 ? k / 0.15 : 1 - Math.pow((k - 0.15) / 0.85, 1.4); m.rotation += dt * 0.5; });
+  return sp;
+}
+// 1) the binding: eight carved rune stones erupt around the foe, chains of light lash them
+function odinRuneBind(e) {
+  const life = SUPER_LIFE(1.55);
+  runeRing(e.x, 0.04, 0, 3.4, life);
+  const stoneM = new THREE.MeshStandardMaterial({ color: 0x24262c, roughness: 0.9, metalness: 0.1, emissive: new THREE.Color(0.35, 0.75, 1.4), emissiveMap: runeStoneTex(), emissiveIntensity: 0 });
+  stoneM.userData.own = true;
+  const chainM = new THREE.MeshBasicMaterial({ color: new THREE.Color(1.1, 1.7, 2.6), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false });
+  chainM.userData.own = true;
+  const g = new THREE.Group(); g.position.set(e.x, 0, 0);
+  const stones = [];
+  for (let i = 0; i < 8; i++) {
+    const a = (i / 8) * Math.PI * 2 + 0.2, r = 2.3, h = 2.0 + (i % 3) * 0.45;
+    const st = new THREE.Mesh(new THREE.BoxGeometry(0.42, h, 0.22), stoneM);
+    st.position.set(Math.cos(a) * r, -h, Math.sin(a) * r * 0.75); st.rotation.y = -a + Math.PI / 2; st.rotation.z = (Math.random() - 0.5) * 0.15; st.castShadow = true;
+    st.userData = { h, a, delay: i * 0.03 };
+    g.add(st); stones.push(st);
+    const top = new V3(st.position.x * 0.92, h * 0.8, st.position.z * 0.92);
+    const ch = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 1, 6), chainM);
+    const mid = top.clone().multiplyScalar(0.5).add(new V3(0, 0.6, 0)); const dir = new V3(0, 1.2, 0).sub(top);
+    ch.position.copy(mid); ch.scale.y = dir.length(); ch.quaternion.setFromUnitVectors(new V3(0, 1, 0), dir.clone().normalize());
+    g.add(ch);
+  }
+  timed.add(g, life, (o, k, dt, t) => {
+    for (const st of stones) { const u = clamp((t - st.userData.delay) / 0.22, 0, 1), sink = k > 0.85 ? (k - 0.85) / 0.15 : 0; st.position.y = st.userData.h * (easeOutC(u) * 0.5 - 0.5) - sink * st.userData.h + (u < 1 ? Math.sin(t * 60) * 0.02 : 0); }
+    stoneM.emissiveIntensity = Math.min(1.1, t * 3) * (0.85 + 0.15 * Math.sin(t * 9));
+    chainM.opacity = t < 0.25 ? 0 : Math.min(0.8, (t - 0.25) * 5) * (k > 0.8 ? (1 - k) / 0.2 : 1);
+    if (Math.random() < 0.5) { const st = stones[Math.floor(Math.random() * 8)]; addP.burst(1, e.x + st.position.x, st.userData.h * 0.5 + rand(-0.3, 0.6), st.position.z, 0.5, { life: [0.4, 0.8], size: [0.05, 0.1], color: COL.odin, up: 1, drag: 1 }); }
+  });
+  dust(e.x, 40, 2.2); shake = Math.max(shake, 0.35);
+  sfx.boom(0.8); sfx.ring([196, 294, 392, 587], 1.4, 0.07); sfx.noise(0.6, 600, 120, 'lowpass', 0.7, 0.3);
+}
+// a storm of ravens circling the bound foe (the dives come from odinRaven)
+function odinRavenStorm(x, y) {
+  const m = new THREE.MeshBasicMaterial({ color: 0x07070c, side: THREE.DoubleSide }); m.userData.own = true;
+  const g = new THREE.Group(); g.position.set(x, 0, 0);
+  const birds = [];
+  for (let i = 0; i < 26; i++) {
+    const b = new THREE.Group();
+    const body = new THREE.Mesh(new THREE.SphereGeometry(0.09, 6, 5), m); body.scale.set(1.8, 0.7, 0.8); b.add(body);
+    const wings = [];
+    for (const sz of [-1, 1]) { const piv = new THREE.Group(); const w = new THREE.Mesh(new THREE.PlaneGeometry(0.22, 0.36), m); w.rotation.x = Math.PI / 2; w.position.z = sz * 0.18; piv.add(w); b.add(piv); wings.push([piv, sz]); }
+    b.userData = { r: rand(1.2, 2.4), h: rand(0.4, 3.2), sp: rand(2.2, 3.6) * (i % 2 ? 1 : -1), ph: Math.random() * 6.28, wings };
+    g.add(b); birds.push(b);
+  }
+  timed.add(g, SUPER_LIFE(0.95), (o, k, dt, t) => {
+    for (const b of birds) { const u = b.userData, a = u.ph + t * u.sp; b.position.set(Math.cos(a) * u.r, u.h + Math.sin(t * 3 + u.ph) * 0.25, Math.sin(a) * u.r * 0.7); b.rotation.y = -a + (u.sp > 0 ? 0 : Math.PI); for (const [piv, sz] of u.wings) piv.rotation.x = sz * Math.sin(t * 30 + u.ph) * 0.9; b.visible = k < 0.9 || Math.random() < (1 - k) * 10; }
+    if (Math.random() < 0.6) normP.burst(1, x + rand(-2, 2), rand(0.4, 3), rand(-1, 1), 0.6, { life: [0.6, 1.2], size: [0.04, 0.09], color: [0.04, 0.04, 0.07], alpha: 0.9, grav: 1.2, drag: 1.2 });
+  });
+  for (let i = 0; i < 4; i++) sfx.tone(rand(700, 1000), 500, 0.14, 'sawtooth', 0.04, i * 0.12);
+}
+// 2) the ascent: aurora floods the sky and the all-seeing eye opens above the battlefield
+let skyEyeTexC = null;
+function skyEyeTex() {
+  if (skyEyeTexC) return skyEyeTexC;
+  skyEyeTexC = canvasTex(512, 256, (g, w, h) => {
+    g.clearRect(0, 0, w, h);
+    const cx = w / 2, cy = h / 2;
+    g.save(); g.beginPath(); g.moveTo(10, cy); g.quadraticCurveTo(cx, -60, w - 10, cy); g.quadraticCurveTo(cx, h + 60, 10, cy); g.closePath(); g.clip();
+    const sg = g.createRadialGradient(cx, cy, 10, cx, cy, 240); sg.addColorStop(0, 'rgba(255,255,255,0.9)'); sg.addColorStop(1, 'rgba(120,170,255,0.35)'); g.fillStyle = sg; g.fillRect(0, 0, w, h);
+    const ig = g.createRadialGradient(cx, cy, 6, cx, cy, 92); ig.addColorStop(0, '#ffffff'); ig.addColorStop(0.25, '#fff2b0'); ig.addColorStop(0.6, '#ffb830'); ig.addColorStop(1, '#6a3a00'); g.fillStyle = ig; g.beginPath(); g.arc(cx, cy, 92, 0, 7); g.fill();
+    g.fillStyle = '#100800'; g.beginPath(); g.ellipse(cx, cy, 16, 70, 0, 0, 7); g.fill();
+    g.strokeStyle = 'rgba(255,255,255,0.8)'; g.lineWidth = 3; g.font = 'bold 22px serif'; g.fillStyle = '#ffffff'; g.textAlign = 'center'; g.textBaseline = 'middle';
+    for (let i = 0; i < 16; i++) { const a = (i / 16) * Math.PI * 2; g.save(); g.translate(cx + Math.cos(a) * 112, cy + Math.sin(a) * 112); g.rotate(a + Math.PI / 2); g.fillText(RUNES[i], 0, 0); g.restore(); }
+    g.restore();
+    g.strokeStyle = '#ffffff'; g.lineWidth = 7; g.beginPath(); g.moveTo(10, cy); g.quadraticCurveTo(cx, -60, w - 10, cy); g.quadraticCurveTo(cx, h + 60, 10, cy); g.stroke();
+  });
+  skyEyeTexC.userData = { shared: true };
+  return skyEyeTexC;
+}
+function odinAscend(e) {
+  const life = SUPER_LIFE(1.05);
+  // aurora curtain
+  const am = new THREE.ShaderMaterial({ uniforms: { uTime: { value: 0 }, uOp: { value: 0 } }, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide,
+    vertexShader: `varying vec2 vUv; void main(){ vUv = uv; vec3 p = position; p.z += sin(p.x * 0.25) * 2.0; gl_Position = projectionMatrix * modelViewMatrix * vec4(p,1.0); }`,
+    fragmentShader: `varying vec2 vUv; uniform float uTime, uOp; void main(){ float w = sin(vUv.x * 18.0 + uTime * 1.5) * 0.5 + 0.5; float band = smoothstep(0.0, 0.25, vUv.y) * (1.0 - smoothstep(0.55, 1.0, vUv.y)); float rays = pow(sin(vUv.x * 120.0 + sin(vUv.x * 9.0 + uTime) * 4.0) * 0.5 + 0.5, 3.0);
+      vec3 c = mix(vec3(0.2, 1.4, 0.8), vec3(0.8, 0.4, 1.6), vUv.y + w * 0.3); gl_FragColor = vec4(c * (0.4 + rays * 0.8), band * uOp * (0.5 + w * 0.5)); }` });
+  am.userData.own = true;
+  const aur = new THREE.Mesh(new THREE.PlaneGeometry(60, 9, 80, 1), am); aur.position.set(e.x, 12, -14);
+  timed.add(aur, life, (o, k, dt, t) => { am.uniforms.uTime.value = t; am.uniforms.uOp.value = (k < 0.2 ? k / 0.2 : k > 0.8 ? (1 - k) / 0.2 : 1) * 0.85; });
+  // the eye
+  const em = new THREE.MeshBasicMaterial({ map: skyEyeTex(), color: new THREE.Color(1.6, 1.6, 1.8), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, fog: false });
+  em.userData.own = true;
+  const eye = new THREE.Mesh(new THREE.PlaneGeometry(9, 4.5), em); eye.position.set(e.x, 10.5, -8);
+  timed.add(eye, life, (o, k, dt, t) => { const open = easeOutC(clamp(t / 0.35, 0, 1)) * (k > 0.85 ? (1 - k) / 0.15 : 1); o.scale.set(1, Math.max(0.02, open), 1); em.opacity = Math.min(1, t * 4) * (k > 0.85 ? (1 - k) / 0.15 : 1); o.lookAt(camera.position); });
+  // Odin's own ascent: a column of rising rune sigils instead of a light beam
+  for (let i = 0; i < 14; i++) runeSigil(e.x + rand(-0.7, 0.7), rand(0.2, 2), rand(-0.3, 0.3), rand(0.35, 0.6), rand(0.6, 1.0), 0, rand(4, 7), i % 3 ? [1.3, 1.9, 2.8] : [2.4, 1.9, 0.8]);
+  ring(e.x, 0.05, 0, 0xbfe0ff, 5, 0.5); dust(e.x, 26, 1.6);
+  stage.flash = Math.max(stage.flash, 0.35);
+  sfx.sweep ? sfx.sweep(0.9, 300, 3000, 0.8, 0.25) : sfx.whoosh(2.5);
+  sfx.ring([392, 523, 659, 784], 1.6, 0.06);
+}
+// 3) the charge: runes spiral around Gungnir and frost gathers on the blade
+function odinCharge(e) {
+  const v = views[e.side]; if (!v || !v.m.spear) return;
+  for (let i = 0; i < 3; i++) setTimeout(() => { const p = new V3(0, 0, 1.8); v.m.spear.localToWorld(p); runeRing(p.x, p.y, p.z + 0.2, 1.2 + i * 0.7, 0.45, true, i % 2 ? [2.4, 1.9, 0.8] : [1.4, 1.9, 2.8]);
+    for (let k = 0; k < 6; k++) { const a = Math.random() * 6.28; runeSigil(p.x + Math.cos(a) * 1.4, p.y + Math.sin(a) * 1.4, p.z + 0.2, 0.35, 0.35, -Math.cos(a) * 4, -Math.sin(a) * 4); }
+    normP.burst(20, p.x, p.y, p.z, 2, { life: [0.3, 0.6], size: [0.04, 0.09], color: [0.85, 0.95, 1.1], alpha: 0.9, drag: 2 }); }, i * 90);
+  sfx.ring([523, 784, 1046, 1568], 0.8, 0.05); sfx.tone(220, 880, 0.5, 'triangle', 0.08);
+}
+// 4) the throw: the spear blazes down trailing a ribbon of runes
+function odinThrow(e) {
+  const from = new V3(e.fx, e.fy, 0.2), to = new V3(e.tx, e.ty, 0.2);
+  const m = new THREE.MeshBasicMaterial({ color: new THREE.Color(1.8, 2.3, 3.2), transparent: true }); m.userData.own = true;
+  const gm = new THREE.MeshBasicMaterial({ color: new THREE.Color(2.6, 2.0, 0.9), transparent: true }); gm.userData.own = true;
+  const g = new THREE.Group();
+  const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.09, 4.6, 8), m); g.add(shaft);
+  const tip = new THREE.Mesh(new THREE.ConeGeometry(0.26, 1.3, 4), gm); tip.position.y = 2.9; tip.scale.z = 0.3; g.add(tip);
+  const dir = to.clone().sub(from); g.rotation.z = Math.atan2(dir.y, dir.x) - Math.PI / 2;
+  g.position.copy(from);
+  const life = SUPER_LIFE(0.14);
+  timed.add(g, life, (o, k) => { o.position.lerpVectors(from, to, k * k); runeSigil(o.position.x + rand(-0.2, 0.2), o.position.y + rand(-0.2, 0.2), 0.2, 0.45, 0.5, rand(-0.5, 0.5), rand(-0.5, 0.5)); normP.burst(3, o.position.x, o.position.y, 0.2, 1, { life: [0.3, 0.6], size: [0.04, 0.09], color: [0.85, 0.95, 1.1], alpha: 0.9, drag: 2 }); });
+  sfx.noise(0.4, 3000, 600, 'bandpass', 1, 0.3); sfx.ring([880, 1320], 0.4, 0.06);
+}
+// 5) the impact: the roots of Yggdrasil burst from the ground, frost spikes erupt and runes scatter
+function odinImpact(x) {
+  const rootM = new THREE.MeshStandardMaterial({ color: 0x3a2814, roughness: 0.85, emissive: new THREE.Color(0.35, 0.6, 0.18), emissiveIntensity: 1.0 }); rootM.userData.own = true;
+  const g = new THREE.Group(); g.position.set(x, 0, 0);
+  const roots = [];
+  for (let i = 0; i < 10; i++) {
+    const a = (i / 10) * Math.PI * 2 + rand(-0.2, 0.2), L = rand(3.5, 6);
+    const pts = []; for (let k = 0; k <= 6; k++) { const u = k / 6; pts.push(new V3(Math.cos(a) * L * u + rand(-0.2, 0.2), Math.sin(u * Math.PI) * (1.2 + Math.random() * 0.8) * (1 - u * 0.3), Math.sin(a) * L * u * 0.6 + rand(-0.2, 0.2))); }
+    const tg = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 24, 0.14, 6, false);
+    const rm = new THREE.Mesh(tg, rootM); rm.castShadow = true; g.add(rm); roots.push([rm, tg.index.count]);
+    rm.geometry.setDrawRange(0, 0);
+  }
+  const iceM = new THREE.MeshPhysicalMaterial({ color: 0xbfe6ff, roughness: 0.08, metalness: 0, transparent: true, opacity: 0.85, emissive: new THREE.Color(0.25, 0.5, 0.9), emissiveIntensity: 0.6 }); iceM.userData.own = true;
+  const spikes = [];
+  for (let i = 0; i < 16; i++) {
+    const a = Math.random() * Math.PI * 2, r = rand(0.8, 3.2), h = rand(0.8, 2.4) * (1.4 - r / 4);
+    const sp = new THREE.Mesh(new THREE.ConeGeometry(rand(0.12, 0.28), h, 5), iceM); sp.position.set(Math.cos(a) * r, -h, Math.sin(a) * r * 0.6); sp.rotation.set(rand(-0.4, 0.4), Math.random() * 6, rand(-0.4, 0.4)); sp.userData = { h, d: r * 0.05 };
+    g.add(sp); spikes.push(sp);
+  }
+  timed.add(g, 1.6, (o, k, dt, t) => {
+    for (const [rm, n] of roots) rm.geometry.setDrawRange(0, Math.floor(n * clamp(t / 0.35, 0, 1) / 3) * 3);
+    rootM.emissiveIntensity = 1.0 * (1 - k * 0.8);
+    for (const sp of spikes) { const u = clamp((t - sp.userData.d) / 0.12, 0, 1); sp.position.y = -sp.userData.h * (1 - easeOutC(u)) * 0.5 + (k > 0.8 ? -(k - 0.8) / 0.2 * sp.userData.h : 0) + sp.userData.h * 0.0; }
+    iceM.opacity = 0.85 * (k > 0.8 ? (1 - k) / 0.2 : 1);
+  });
+  for (let i = 0; i < 24; i++) { const a = Math.random() * Math.PI * 2, sp = rand(4, 9); runeSigil(x, rand(0.6, 2.4), 0.3, rand(0.4, 0.8), rand(0.6, 1.1), Math.cos(a) * sp, Math.abs(Math.sin(a)) * sp * 0.6 + 1, i % 3 ? [1.3, 1.9, 2.8] : [2.4, 1.9, 0.8]); }
+  runeRing(x, 0.06, 0, 11, 1.2, false, [2.4, 1.9, 0.8]); runeRing(x, 2.0, 0.3, 5, 0.8, true);
+  ring(x, 0.08, 0, 0xffffff, 12, 0.6); ring(x, 0.08, 0, 0xa8d8ff, 8, 0.8);
+  normP.burst(160, x, 1, 0, 10, { life: [0.6, 1.4], size: [0.05, 0.14], color: [0.85, 0.95, 1.1], alpha: 0.95, grav: 3, up: 5, drag: 1.2 });
+  addP.burst(80, x, 1.2, 0, 12, { life: [0.3, 0.8], size: [0.05, 0.14], color: COL.odin, drag: 2 });
+  glowPuff(x, 1.6, 0.2, 0xcfe6ff, 10, 0.5);
+  dust(x, 50, 2.6);
+  stage.flash = Math.max(stage.flash, 0.6); screenFlash(0.85, '#eef6ff'); lightFlash(x, 2.5, 0xbfe0ff, 110); shake = 0.7;
+  sfx.boom(1.6); sfx.ring([392, 587, 784, 1175, 1568], 1.6, 0.08); sfx.noise(0.8, 5000, 1500, 'bandpass', 1.2, 0.18);
+}
+
 function odinRaven(e) {
   const side = e.i % 2 ? 1 : -1, from = new V3(e.tx + side * 7, e.ty + 2.5 + (e.i % 3) * 0.6, -1.5 + (e.i % 2));
   const to = new V3(e.tx, e.ty, 0.2);
@@ -6861,47 +7030,6 @@ function odinRaven(e) {
     sfx.tone(1100, 600, 0.1, 'sawtooth', 0.04);
   }, life * 1000);
   sfx.whoosh(0.9);
-}
-function odinAscend(e) {
-  const b = lightBeam(0xffe6a0, 1.0, 0.6, 14, 0.0); b.position.set(e.x, 0, 0); b.material.userData.own = true;
-  const op = b.material.uniforms.uOp; timed.add(b, 0.8, (o, k) => { op.value = 0.7 * (1 - k); o.scale.set(1 - k * 0.5, Math.min(1, k * 4), 1 - k * 0.5); });
-  ring(e.x, 0.05, 0, 0xffe6a0, 6, 0.6); runeRing(e.x, 0.05, 0, 3.2, 0.9, false, [2.4, 1.9, 0.8]); dust(e.x, 24, 1.6);
-  addP.burst(60, e.x, 0.5, 0, 6, { life: [0.4, 0.9], size: [0.06, 0.14], color: COL.rune, up: 10, drag: 1 });
-  sfx.whoosh(2.5); sfx.ring([523, 784, 1046], 0.9, 0.06);
-}
-function odinCharge(e) {
-  const v = views[e.side]; if (!v || !v.m.spear) return;
-  for (let i = 0; i < 3; i++) setTimeout(() => { const p = new V3(0, 0, 1.8); v.m.spear.localToWorld(p); runeRing(p.x, p.y, p.z + 0.2, 1.4 + i * 0.8, 0.45, true, i % 2 ? [2.4, 1.9, 0.8] : [1.4, 1.9, 2.8]); for (let k = 0; k < 3; k++) bolts.spawn(new V3(p.x + rand(-4, 4), p.y + 4, -1), p.clone(), { r: 0.025, life: 0.14, segs: 10, branches: 1 }); }, i * 90);
-  stage.flash = Math.max(stage.flash, 0.5); sfx.bolt(true);
-}
-function odinThrow(e) {
-  const from = new V3(e.fx, e.fy, 0.2), to = new V3(e.tx, e.ty, 0.2);
-  const m = new THREE.MeshBasicMaterial({ color: new THREE.Color(2.2, 2.6, 3.4), transparent: true }); m.userData.own = true;
-  const g = new THREE.Group();
-  const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.08, 4.2, 8), m); g.add(shaft);
-  const tip = new THREE.Mesh(new THREE.ConeGeometry(0.22, 1.2, 4), m); tip.position.y = 2.6; tip.scale.z = 0.3; g.add(tip);
-  const glow = new THREE.Sprite(new THREE.SpriteMaterial({ map: FT.glow, color: 0x9fd4ff, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false })); glow.material.userData.own = true; glow.scale.set(2.5, 5, 1); g.add(glow);
-  const dir = to.clone().sub(from); g.rotation.z = Math.atan2(dir.y, dir.x) - Math.PI / 2;
-  g.position.copy(from);
-  const life = SUPER_LIFE(0.14);
-  timed.add(g, life, (o, k) => { o.position.lerpVectors(from, to, k * k); addP.burst(6, o.position.x, o.position.y, 0.2, 1, { life: [0.15, 0.35], size: [0.1, 0.22], color: COL.odin, drag: 2 }); if (Math.random() < 0.7) bolts.spawn(o.position.clone(), o.position.clone().add(new V3(rand(-1.2, 1.2), rand(-0.8, 0.8), rand(-0.4, 0.4))), { r: 0.025, life: 0.1, segs: 8, branches: 1 }); });
-  slashStreak((from.x + to.x) / 2, (from.y + to.y) / 2, 0.15, from.distanceTo(to), 0.25, Math.atan2(dir.y, dir.x) - Math.PI / 2, [1.4, 1.9, 2.8], 0.4);
-  sfx.noise(0.4, 3000, 600, 'bandpass', 1, 0.3); sfx.ring([880, 1320], 0.4, 0.06);
-}
-function odinImpact(x) {
-  const b = lightBeam(0x9fd4ff, 1.4, 2.6, 22, 0.95); b.position.set(x, 0, 0); b.material.userData.own = true;
-  const op = b.material.uniforms.uOp; timed.add(b, 1.3, (o, k) => { o.scale.set(1 + k * 0.6, Math.min(1, k * 6), 1 + k * 0.6); op.value = 0.95 * (1 - k); });
-  const b2 = lightBeam(0xffe6a0, 0.6, 1.0, 22, 0.9); b2.position.set(x, 0, 0); b2.material.userData.own = true;
-  const op2 = b2.material.uniforms.uOp; timed.add(b2, 0.9, (o, k) => { o.scale.set(1, Math.min(1, k * 8), 1); op2.value = 0.9 * (1 - k); });
-  for (let i = 0; i < 6; i++) setTimeout(() => bolts.spawn(new V3(x + rand(-2, 2), 16, rand(-2, -0.5)), new V3(x + rand(-0.5, 0.5), 0.05, 0), { r: 0.08, life: 0.45, segs: 24, branches: 3, jag: 1.2, color: new THREE.Color(1.4, 1.9, 2.8) }), i * 60);
-  runeRing(x, 0.06, 0, 13, 1.4); runeRing(x, 0.07, 0, 7, 1.1, false, [2.4, 1.9, 0.8]); runeRing(x, 2.2, 0.3, 6, 0.9, true);
-  for (let i = 0; i < 4; i++) ring(x, 0.08, 0, i % 2 ? 0xffffff : 0x9fd4ff, 6 + i * 4, 0.5 + i * 0.15);
-  glowPuff(x, 2.2, 0.2, 0xcfe6ff, 16, 0.7);
-  addP.burst(220, x, 1, 0, 20, { life: [0.4, 1.3], size: [0.06, 0.22], color: COL.odin, drag: 2, up: 6, grav: 5 });
-  addP.burst(90, x, 1, 0, 14, { life: [0.4, 1.0], size: [0.05, 0.16], color: COL.rune, drag: 2, up: 4 });
-  dust(x, 50, 2.6);
-  stage.flash = Math.max(stage.flash, 0.9); screenFlash(0.95, '#eef4ff'); lightFlash(x, 3, 0xbfdcff, 130); shake = 0.7;
-  sfx.boom(1.7); sfx.bolt(true); sfx.ring([392, 587, 784, 1175], 1.4, 0.1);
 }
 function superImpact(e) {
   const x = e.x;
@@ -7597,7 +7725,7 @@ function cineUpdate(dt) {
     }
   } else if (f.key === 'odin') {
     if (t > 0.3 && t < 1.12) { for (let i = 0; i < 3; i++) { const a = t * 6 + i * 2.09, r = 1.4; addP.spawn(o.x + Math.cos(a) * r, 0.3 + ((t * 1.2 + i * 0.3) % 1) * 2.4, Math.sin(a) * r * 0.6, -Math.sin(a) * 3, 1.2, Math.cos(a) * 2, 0.4, 0.12, 0.04, 0.8, 1.3, 2.1, 1, 1, 0); } }
-    if (t > 1.42 && t < 1.62 && Math.random() < 0.6) { const c0 = new V3(f.x, f.y + 1.6, 0); bolts.spawn(c0.clone(), c0.clone().add(new V3(rand(-2, 2), rand(-1.5, 1.5), rand(-0.6, 0.6))), { r: 0.025, life: 0.1, segs: 8, branches: 1, color: new THREE.Color(1.4, 1.9, 2.8) }); }
+    if (t > 1.42 && t < 1.62) { const c0 = new V3(f.x, f.y + 1.6, 0); for (let i = 0; i < 3; i++) { const a = t * 8 + i * 2.1; normP.spawn(c0.x + Math.cos(a) * 1.3, c0.y + rand(-0.8, 0.8), Math.sin(a) * 1.3, -Math.sin(a) * 3, 0.3, Math.cos(a) * 3, 0.5, 0.06, 0.02, 0.85, 0.95, 1.1, 0.9, 1, 0); } }
     if (t >= 1.76 && !cineFin) { cineFin = true; cineTitle(f); }
   } else if (f.key === 'hades') {
     if (t > 0.15 && t < 1.85) { for (let i = 0; i < 3; i++) normP.spawn(o.x + rand(-3, 3), rand(0, 2.6), rand(-1.5, 1.2), rand(-0.5, 0.5), rand(0, 0.4), rand(-0.2, 0.2), rand(1.2, 2), 0.5, 0.9, 0.03, 0.02, 0.04, 0.55, 0.6, -0.05); }
@@ -8431,7 +8559,7 @@ function handleEvents() {
       case 'judgment': lightFlash(e.x, 2.5, 0xffe0a0, 60); maatScales(e.x, 4.3); sfx.whoosh(2.5); break;
       case 'mist': hadesMist(e); break;
       case 'runeBind': odinRuneBind(e); break;
-      case 'ravenStrike': odinRaven(e); break;
+      case 'ravenStrike': if (e.i === 0) odinRavenStorm(e.tx, e.ty); odinRaven(e); break;
       case 'odinAscend': odinAscend(e); break;
       case 'gungnirCharge': odinCharge(e); break;
       case 'gungnirThrow': odinThrow(e); break;
