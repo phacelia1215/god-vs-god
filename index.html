@@ -897,7 +897,7 @@ const HERACLES_MOVES = {
 })();
 
 // balance: Anubis' quick blades hit a little harder (low health pool for a rushdown character)
-(function () { for (const m of Object.values(ANUBIS_MOVES)) { if (m.hits) for (const h of m.hits) h.dmg = Math.round(h.dmg * 1.15); if (m.proj) m.proj.dmg = Math.round(m.proj.dmg * 1.15); } })();
+(function () { for (const m of Object.values(ANUBIS_MOVES)) { if (m.hits) for (const h of m.hits) h.dmg = Math.round(h.dmg * 1.25); if (m.proj) m.proj.dmg = Math.round(m.proj.dmg * 1.25); } })();
 
 // attack heights: low (下段) must be crouch-blocked, mid/overhead (中段) must be stand-blocked
 (function () {
@@ -920,9 +920,58 @@ const HERACLES_MOVES = {
   a.push([1.62, 'superSlamWind'], [1.78, 'superSlamWind'], [1.88, 'superSlam'], [2.2, 'superSlam'], [2.5, 'stance']);
 })();
 
+// ------------------------------------------------------------
+//  Frame-data pass (applied to every god): makes block advantage follow a rule instead of hand-tuning.
+//   light (<45 dmg)            : as authored (about even on block)
+//   medium (45-64 dmg)         : -4f on block
+//   heavy (launch / knockdown / bounce / armour / 65+ dmg) : -14f on block -> punishable by any jab
+//   melee specials             : -18f on block, and little pushback so the punish reaches
+//   projectile moves           : 30f recovery after release (34f big boulders/hammers, 28f small orbs)
+//  Cancel windows open as soon as the last hit has connected so links are easy after hitstop.
+// ------------------------------------------------------------
+const FD = { light: null, medium: -4 / 60, heavy: -14 / 60, special: -18 / 60, minStun: 0.1 };
+function stretchTail(m, from, newDur) {
+  const k = (newDur - from) / Math.max(0.001, m.dur - from);
+  m.anim = m.anim.map(([t, n]) => [t > from ? +(from + (t - from) * k).toFixed(3) : t, n]);
+  m.dur = +newDur.toFixed(3);
+}
+(function frameData() {
+  const PROJ_REC = { kind: { rock: 34 / 60, hammer: 34 / 60, soul: 28 / 60 }, def: 30 / 60 };
+  for (const T of [ZEUS_MOVES, POSEIDON_MOVES, ANUBIS_MOVES, THOR_MOVES, SUSANOO_MOVES, HERACLES_MOVES]) {
+    for (const m of Object.values(T)) {
+      if (m.type === 'super' || m.type === 'air') continue;
+      if (m.proj) {
+        const want = m.proj.t + (PROJ_REC.kind[m.proj.kind] || PROJ_REC.def);
+        stretchTail(m, m.proj.t, want);
+        continue;
+      }
+      if (!m.hits) continue;
+      const hl = m.hits[m.hits.length - 1];
+      if (hl.grab) continue;
+      const heavy = hl.kd || hl.launch || hl.bounce || m.armor || hl.dmg >= 65;
+      const tier = m.type === 'special' ? 'special' : heavy ? 'heavy' : hl.dmg >= 45 ? 'medium' : 'light';
+      m.tier = tier;
+      const rec = m.dur - hl.t1, bs = hl.bs ?? 0.2;
+      if (FD[tier] === null) continue;
+      const adv = Math.min(bs - rec, FD[tier]);            // never make an already unsafe move safer
+      let nbs = rec + adv;
+      if (nbs < FD.minStun) { stretchTail(m, hl.t1, m.dur + (FD.minStun - nbs)); nbs = FD.minStun; }
+      for (const h of m.hits) h.bs = +nbs.toFixed(3);
+      if (tier === 'heavy' || tier === 'special') for (const h of m.hits) h.bkb = Math.min(1.4, h.kb * 0.35);
+      if (m.cancel) m.cancel = [Math.min(m.cancel[0], hl.t1), Math.min(m.dur, m.cancel[1])];
+    }
+  }
+})();
+
+// hitstop: both fighters freeze for a moment on contact; stronger hits stop longer, long combos speed back up
+function hitStop(h, combo) {
+  const base = clamp(0.05 + h.dmg * 0.0009, 0.05, 0.15);
+  return Math.max(base, h.stop || 0) * Math.max(0.6, 1 - 0.04 * ((combo || 1) - 1));
+}
+
 const CHARS = {
   zeus: {
-    key: 'zeus', name: 'ゼウス', en: 'ZEUS', title: '天空の雷神', hp: 1120, walk: 2.7, back: 2.0, dash: 8.5,
+    key: 'zeus', name: 'ゼウス', en: 'ZEUS', title: '天空の雷神', hp: 1040, walk: 2.7, back: 2.0, dash: 8.5,
     jumpV: 10.2, jumpX: 3.6, width: 0.42, height: 2.15, moves: ZEUS_MOVES, air: 'z_air', super: 'z_super',
     guard: 0.58, aggro: 0.85,
     routes: [
@@ -937,7 +986,7 @@ const CHARS = {
     ],
   },
   poseidon: {
-    key: 'poseidon', name: 'ポセイドン', en: 'POSEIDON', title: '大海の支配者', hp: 990, walk: 3.4, back: 3.0, dash: 10.5,
+    key: 'poseidon', name: 'ポセイドン', en: 'POSEIDON', title: '大海の支配者', hp: 1060, walk: 3.4, back: 3.0, dash: 10.5,
     jumpV: 11.2, jumpX: 4.8, width: 0.36, height: 2.05, moves: POSEIDON_MOVES, air: 'p_air', super: 'p_super',
     guard: 0.48, aggro: 0.7,
     routes: [
@@ -952,7 +1001,7 @@ const CHARS = {
     ],
   },
   anubis: {
-    key: 'anubis', name: 'アヌビス', en: 'ANUBIS', title: '冥府の審判者', hp: 1080, walk: 3.9, back: 3.4, dash: 13,
+    key: 'anubis', name: 'アヌビス', en: 'ANUBIS', title: '冥府の審判者', hp: 1270, walk: 3.9, back: 3.4, dash: 13,
     jumpV: 11.6, jumpX: 5.3, width: 0.34, height: 2.0, moves: ANUBIS_MOVES, air: 'a_air', super: 'a_super',
     guard: 0.62, aggro: 0.82,
     routes: [
@@ -967,7 +1016,7 @@ const CHARS = {
     ],
   },
   thor: {
-    key: 'thor', name: 'トール', en: 'THOR', title: '雷槌の戦神', hp: 1120, walk: 2.8, back: 2.1, dash: 8.5,
+    key: 'thor', name: 'トール', en: 'THOR', title: '雷槌の戦神', hp: 880, walk: 2.8, back: 2.1, dash: 8.5,
     jumpV: 9.9, jumpX: 3.4, width: 0.45, height: 2.2, moves: THOR_MOVES, air: 't_air', super: 't_super',
     guard: 0.6, aggro: 0.85,
     routes: [
@@ -982,7 +1031,7 @@ const CHARS = {
     ],
   },
   susanoo: {
-    key: 'susanoo', name: 'スサノオ', en: 'SUSANOO', title: '嵐の荒神', hp: 1000, walk: 3.2, back: 2.7, dash: 11,
+    key: 'susanoo', name: 'スサノオ', en: 'SUSANOO', title: '嵐の荒神', hp: 990, walk: 3.2, back: 2.7, dash: 11,
     jumpV: 11, jumpX: 4.5, width: 0.38, height: 2.1, moves: SUSANOO_MOVES, air: 's_air', super: 's_super',
     guard: 0.55, aggro: 0.85,
     routes: [
@@ -997,7 +1046,7 @@ const CHARS = {
     ],
   },
   heracles: {
-    key: 'heracles', name: 'ヘラクレス', en: 'HERACLES', title: '不屈の半神英雄', hp: 1260, walk: 2.5, back: 1.9, dash: 8,
+    key: 'heracles', name: 'ヘラクレス', en: 'HERACLES', title: '不屈の半神英雄', hp: 1100, walk: 2.5, back: 1.9, dash: 8,
     jumpV: 9.6, jumpX: 3.2, width: 0.47, height: 2.3, moves: HERACLES_MOVES, air: 'h_air', super: 'h_super',
     guard: 0.6, aggro: 0.85,
     routes: [
@@ -1502,13 +1551,13 @@ class Sim {
     if (this.canBlock(o) && !guardOk && !h.grab) this.emit('crush', { side: f.side, lv: h.lv, x: o.x, y: hitY });
     if (this.canBlock(o) && guardOk && !h.grab) {
       o.state = 'blockstun'; o.st = 0; o.stunT = h.bs || 0.2;
-      o.vx = dir * h.kb * 0.9;
+      o.vx = dir * (h.bkb ?? h.kb * 0.9);
       const chip = h.chip ? Math.round(h.dmg * h.chip) : 0;
       o.hp = Math.max(1, o.hp - chip);
       f.meter = Math.min(100, f.meter + h.dmg * 0.07);
       o.meter = Math.min(100, o.meter + h.dmg * 0.06);
-      if (Math.abs(o.x) > STAGE - 0.4) f.push = -dir * h.kb * 0.9;
-      this.hitstop = h.stop * 0.6;
+      if (Math.abs(o.x) > STAGE - 0.4) f.push = -dir * (h.bkb ?? h.kb * 0.9);
+      this.hitstop = hitStop(h, 1) * 0.6;
       this.stats.blocks++;
       this.emit('block', { side: f.side, x: o.x - dir * 0.3, y: hitY, fx: h.fx, power: h.dmg, chip });
       return true;
@@ -1548,7 +1597,7 @@ class Sim {
       o.vx = dir * h.kb;
     }
     if (Math.abs(o.x) > STAGE - 0.4 && !airborne) f.push = -dir * h.kb * 0.8;
-    this.hitstop = Math.max(this.hitstop, h.stop);
+    this.hitstop = Math.max(this.hitstop, hitStop(h, f.combo));
     this.stats.hits++;
     this.emit('hit', { side: f.side, x: o.x - dir * 0.25, y: hitY, fx: h.fx, dmg, power: h.dmg, combo: f.combo, dir });
     if (o.hp <= 0) {
@@ -2013,6 +2062,7 @@ class Sim {
     const toward = Math.sign(dx) || f.facing;
     const L = AI_LEVELS[f.level] || AI_LEVELS[AI_LEVEL_DEFAULT];
 
+    if (f.state === 'blockstun') ai.blockedSerial = o.serial;
     // air attacks
     if (f.state === 'jump') {
       if (!ai.airUsed && f.vy < 3.5 && d < (f.key === 'zeus' || f.key === 'thor' || f.key === 'heracles' ? 1.9 : f.key === 'anubis' ? 1.8 : 2.3) && f.y > 0.5) {
@@ -2023,6 +2073,12 @@ class Sim {
     }
     if (!this.actionable(f)) return;
     if (o.state === 'ko') return;
+    // punish an unsafe move we just blocked (heavy normals, specials)
+    if (ai.blockedSerial === o.serial && ai.bpSerial !== o.serial && o.state === 'attack' && o.move && o.move.type !== 'super' && this.pastActive(o)) {
+      ai.bpSerial = o.serial;
+      const left = o.move.dur - o.mt;
+      if (left > 0.1 && d < 2.0 && R() < L.punish) { this.startRoute(f, o); return; }
+    }
     if (f.state === 'dash' && f.dashDir === f.facing && d > 2.2 && d < 4.2 && R() < 0.05) { this.jump(f, toward); return; }
 
     // ---- defence
@@ -2206,7 +2262,7 @@ class Sim {
   human(f, o, dt) {
     const c = f.c, cmd = f.cmd, b = f.buf;
     for (const k in b) b[k] -= dt;
-    for (const k in cmd.press) b[k] = 0.14;
+    for (const k in cmd.press) b[k] = 0.2;
     cmd.press = {};
     const take = (k) => { if (b[k] > 0) { b[k] = 0; return true; } return false; };
     const toward = Math.sign(o.x - f.x) || f.facing;
