@@ -7755,6 +7755,7 @@ function showScreen(name) {
   bgm.play(name === 'match' ? (cfg.mode === 'practice' ? 'practice' : STAGES[curStage].bgm) : name === 'viewer' ? 'practice' : name === 'story' ? 'mode' : name);
   $('viewer').classList.toggle('hidden', name !== 'viewer');
   $('story').classList.toggle('hidden', name !== 'story');
+  if (name !== 'match') { hud.announce.className = ''; hud.cutin.className = 'hide'; document.body.classList.remove('cine'); $('cineTitle').classList.remove('show'); }
   $('start').classList.toggle('hidden', name !== 'title');
   $('mode').classList.toggle('hidden', name !== 'mode');
   $('select').classList.toggle('hidden', name !== 'select');
