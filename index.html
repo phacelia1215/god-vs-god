@@ -6347,11 +6347,12 @@ function tidalWall(e) {
 function anubisSpirit(e) {
   const v = views[e.side];
   if (!v) return;
-  const m = new THREE.MeshBasicMaterial({ color: new THREE.Color(0.35, 1.0, 1.4), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }); m.userData.own = true;
+  const m = new THREE.MeshBasicMaterial({ color: new THREE.Color(0.08, 0.32, 0.45), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }); m.userData.own = true;
   const g = v.m.root.clone(true);
   g.traverse((o) => { if (o.isSprite) o.visible = false; else if (o.isMesh) { o.material = m; o.castShadow = false; if (o.geometry) o.geometry.userData.shared = true; } });
-  g.scale.setScalar(3.2); g.position.set(e.x - v.f.facing * 2.5, -0.5, -3.5); g.rotation.y = v.f.facing > 0 ? Math.PI / 2 : -Math.PI / 2;
+  g.scale.setScalar(2.6); g.position.set(e.x - v.f.facing * 2.5, -0.5, -3.5); g.rotation.y = v.f.facing > 0 ? Math.PI / 2 : -Math.PI / 2;
   timed.add(g, SUPER_LIFE(0.55), (o, k) => { m.opacity = (k < 0.25 ? k / 0.25 : k > 0.7 ? (1 - k) / 0.3 : 1) * 0.35; o.position.y = -0.5 + k * 0.6; });
+  g.position.z = -5;
   sfx.tone(140, 70, 1.0, 'sawtooth', 0.05);
 }
 // THOR: the sky tears open into a lightning vortex above the leap
@@ -6377,7 +6378,7 @@ function heavenBlade(e) {
 }
 // HERACLES: a golden lion spirit roars out behind the final swing
 function lionSpirit(e) {
-  const m = new THREE.MeshBasicMaterial({ color: new THREE.Color(2.0, 1.3, 0.4), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }); m.userData.own = true;
+  const m = new THREE.MeshBasicMaterial({ color: new THREE.Color(0.55, 0.34, 0.08), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }); m.userData.own = true;
   const g = new THREE.Group();
   const head = new THREE.Mesh(new THREE.SphereGeometry(1.2, 18, 14), m); head.scale.set(1, 0.9, 1.1); g.add(head);
   const snout = new THREE.Mesh(new THREE.SphereGeometry(0.6, 14, 10), m); snout.position.set(0, -0.35, 1.0); g.add(snout);
