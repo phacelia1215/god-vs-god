@@ -137,6 +137,13 @@ body:not(.portrait) .portrait-only{display:none}
 #loading .spin{width:44px;height:44px;border:3px solid rgba(232,192,106,.25);border-top-color:var(--gold);border-radius:50%;animation:sp 1s linear infinite;margin-bottom:16px}
 @keyframes sp{to{transform:rotate(360deg)}}
 #loading .err{color:#ff9a8a;max-width:560px;line-height:1.7}
+#loading .ld{width:min(420px,80vw);text-align:center}
+#loading .ld-t{font-family:var(--jp,serif);letter-spacing:.4em;color:var(--gold2,#f0d590);font-size:18px;margin-bottom:18px;padding-left:.4em}
+#loading .ld-bar{height:6px;border-radius:3px;background:rgba(232,192,106,.15);overflow:hidden;box-shadow:inset 0 0 0 1px rgba(232,192,106,.25)}
+#loading .ld-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#8a5a10,#e8c06a,#fff3c4);box-shadow:0 0 12px rgba(255,220,140,.8);transition:width .25s ease-out}
+#loading .ld-row{display:flex;justify-content:space-between;margin-top:10px;font-size:12px;color:rgba(240,225,190,.75);letter-spacing:.08em}
+#loading.pending .ld-bar i{width:30%!important;animation:ldind 1.2s ease-in-out infinite}
+@keyframes ldind{0%{transform:translateX(-100%)}100%{transform:translateX(340%)}}
 
 /* ---------- move list ---------- */
 #moves{background:rgba(4,2,10,.82);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);overflow:auto;justify-content:flex-start;padding-top:max(30px,env(safe-area-inset-top))}
@@ -591,8 +598,8 @@ body.compact.portrait .vsmark{bottom:calc(max(10px,env(safe-area-inset-bottom)) 
   </div>
 </div>
 
-<div class="overlay" id="loading"><div class="spin"></div><div>神々を召喚中…</div></div>
-<script>setTimeout(function(){var l=document.getElementById('loading');if(l&&!l.classList.contains('hidden')){l.innerHTML='<div class="err">3Dエンジン(three.js)の読み込みに時間がかかっています。通信環境を確認して再読み込みしてください。</div>';}},20000);</script>
+<div class="overlay pending" id="loading"><div class="ld"><div class="ld-t">神々を召喚中</div><div class="ld-bar"><i id="ldFill"></i></div><div class="ld-row"><span id="ldMsg">3Dエンジンを読み込み中…</span><span id="ldPct">0%</span></div></div></div>
+<script>setTimeout(function(){var l=document.getElementById('loading');if(l&&!l.classList.contains('hidden')&&l.classList.contains('pending')){l.innerHTML='<div class="err">3Dエンジン(three.js)の読み込みに時間がかかっています。通信環境を確認して再読み込みしてください。</div>';}},20000);</script>
 
 <script type="module">
 import * as THREE from 'three';
@@ -5768,10 +5775,15 @@ fxLight.position.set(0, 2, 2);
 scene.add(fxLight);
 const BASE = { hemi: 0.5, key: 2.0, rim: 1.6, fill: 0.4 };
 
+// resolution: a sane device-pixel cap per quality, times a dynamic scale that drops when frames run long
+let resScale = 1, resT = 0, frameAvg = 1 / 60;
+function basePR() { return Math.min(window.devicePixelRatio || 1, quality === 'high' ? (isMobile ? 1.3 : 1.5) : (isMobile ? 0.9 : 1)); }
 function applyQuality() {
-  const pr = Math.min(window.devicePixelRatio || 1, quality === 'high' ? (isMobile ? 1.6 : 2) : 1);
+  const pr = basePR() * resScale;
   renderer.setPixelRatio(pr);
-  const ms = quality === 'high' ? 2048 : 1024;
+  bloom.enabled = quality === 'high';
+  renderer.shadowMap.type = quality === 'high' ? THREE.PCFSoftShadowMap : THREE.PCFShadowMap;
+  const ms = quality === 'high' ? (isMobile ? 1024 : 1536) : 1024;
   if (key.shadow.mapSize.x !== ms) {
     key.shadow.mapSize.set(ms, ms);
     if (key.shadow.map) { key.shadow.map.dispose(); key.shadow.map = null; }
@@ -6167,8 +6179,9 @@ function tornado(x, h, n, r0 = 0.9) {
   }
 }
 
+const QUAD = new THREE.PlaneGeometry(1, 1); QUAD.userData.shared = true;
 function ring(x, y, z, color, size, life, vertical = false, opacity = 1) {
-  const m = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: FT.ring, color, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, opacity }));
+  const m = new THREE.Mesh(QUAD, new THREE.MeshBasicMaterial({ map: FT.ring, color, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, opacity }));
   m.material.userData.own = true;
   if (!vertical) m.rotation.x = -Math.PI / 2;
   m.position.set(x, y, z);
@@ -6563,7 +6576,7 @@ function geyser(x) {
 function slashStreak(x, y, z, len, w, rot, color, life) {
   const m = new THREE.MeshBasicMaterial({ color: new THREE.Color(...color), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide, map: FT.glow });
   m.userData.own = true;
-  const mesh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), m);
+  const mesh = new THREE.Mesh(QUAD, m);
   mesh.position.set(x, y, z); mesh.rotation.z = rot;
   timed.add(mesh, life, (o, k) => { const g = k < 0.15 ? k / 0.15 : 1; o.scale.set(w * (1 - k * 0.7), len * g, 1); m.opacity = 1 - Math.pow(k, 1.5); });
 }
@@ -6825,7 +6838,7 @@ function runeCircleTex() {
 function runeRing(x, y, z, size, life, vertical = false, col = [1.4, 1.9, 2.8]) {
   const m = new THREE.MeshBasicMaterial({ map: runeCircleTex(), color: new THREE.Color(...col), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide });
   m.userData.own = true;
-  const mesh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), m);
+  const mesh = new THREE.Mesh(QUAD, m);
   if (!vertical) mesh.rotation.x = -Math.PI / 2;
   mesh.position.set(x, y, z); mesh.renderOrder = 7;
   timed.add(mesh, life, (o, k) => { const sc = size * (0.6 + 0.4 * easeOutC(Math.min(1, k * 3))); o.scale.set(sc, sc, sc); m.opacity = k < 0.15 ? k / 0.15 : 1 - Math.pow(Math.max(0, (k - 0.6) / 0.4), 1.5); if (vertical) { o.quaternion.copy(camera.quaternion); o.rotateZ(k * 2); } else o.rotation.z += 0.03; });
@@ -8701,6 +8714,13 @@ let koBySuper = false;
 function frame(now) {
   requestAnimationFrame(frame);
   let rdt = Math.min(0.05, (now - last) / 1000);
+  // dynamic resolution: keep ~55-60fps by trading pixels (checked twice a second)
+  frameAvg += (Math.min(0.1, (now - last) / 1000) - frameAvg) * 0.05; resT += rdt;
+  if (resT > 0.5 && !document.hidden) {
+    resT = 0;
+    const want = frameAvg > 1 / 45 ? Math.max(0.6, resScale - 0.1) : frameAvg < 1 / 58 ? Math.min(1, resScale + 0.05) : resScale;
+    if (Math.abs(want - resScale) > 0.001) { resScale = want; renderer.setPixelRatio(basePR() * resScale); resize(); }
+  }
   last = now;
   clock += rdt;
   if (started && !paused) {
@@ -9949,10 +9969,9 @@ const STAGES = {
 const STAGE_IDS = Object.keys(STAGES);
 let curStage = 'olympus';
 const LIGHT0 = {};
-function buildStages(arena) {
-  STAGES.olympus.group = arena;
-  LIGHT0.hemi = [hemi.color.getHex(), hemi.groundColor.getHex()]; LIGHT0.key = key.color.getHex(); LIGHT0.rim = rim.color.getHex(); LIGHT0.fill = fill.color.getHex();
-  for (const id of STAGE_IDS) {
+function buildStages(arena, only) {
+  if (!only || !only.length) { STAGES.olympus.group = arena; LIGHT0.hemi = [hemi.color.getHex(), hemi.groundColor.getHex()]; LIGHT0.key = key.color.getHex(); LIGHT0.rim = rim.color.getHex(); LIGHT0.fill = fill.color.getHex(); if (only) return; }
+  for (const id of only || STAGE_IDS) {
     const S = STAGES[id];
     if (!S.build) continue;
     S.group = sceneGroup(() => S.build(S));
@@ -9991,25 +10010,33 @@ function warmObj(root) {
   try { renderer.compile(root, camera, scene); } catch (e) { /* older drivers: textures are still uploaded */ }
   if (loose) scene.remove(root); root.visible = vis;
 }
-function warmUp() {
-  const jobs = [];
-  for (const k of MENU_KEYS) for (const side of [0, 1]) jobs.push(() => warmObj(modelFor(side, k).root));
-  for (const id of STAGE_IDS) jobs.push(() => { if (STAGES[id].group) warmObj(STAGES[id].group); });
-  const next = () => (window.requestIdleCallback ? requestIdleCallback(run, { timeout: 250 }) : setTimeout(run, 50));
-  const run = () => { const j = jobs.shift(); if (!j) return; try { j(); } catch (e) { console.warn('warm-up', e); } next(); };
-  setTimeout(run, 300);
+function setLoad(msg, k) {
+  const l = $('loading'); l.classList.remove('pending');
+  $('ldMsg').textContent = msg; $('ldPct').textContent = Math.round(k * 100) + '%'; $('ldFill').style.width = (k * 100).toFixed(1) + '%';
 }
-function boot() {
-  const arena = sceneGroup(() => buildStage());
-  initFx();
-  buildMenuBackdrops(arena);
-  buildStages(arena);
-  setupMatch(ATTRACT);
-  applyQuality();
+const nextPaint = () => new Promise((r) => requestAnimationFrame(() => setTimeout(r, 0)));
+async function boot() {
+  // every step runs after a repaint so the progress bar actually moves
+  const steps = [];
+  let arena;
+  steps.push(['闘技場を構築中…', () => { arena = sceneGroup(() => buildStage()); }]);
+  steps.push(['エフェクトを準備中…', () => initFx()]);
+  steps.push(['メニュー背景を構築中…', () => buildMenuBackdrops(arena)]);
+  steps.push(['ステージを構築中…', () => buildStages(arena, [])]);
+  for (const id of STAGE_IDS) if (STAGES[id].build) steps.push([`ステージ「${STAGES[id].name}」を構築中…`, () => buildStages(arena, [id])]);
+  steps.push(['対戦を準備中…', () => { setupMatch(ATTRACT); applyQuality(); }]);
+  for (const k of MENU_KEYS) steps.push([`${CHARS[k].name}を召喚中…`, () => { warmObj(modelFor(0, k).root); warmObj(modelFor(1, k).root); }]);
+  steps.push(['ステージを描画準備中…', () => { for (const id of STAGE_IDS) if (STAGES[id].group) warmObj(STAGES[id].group); }]);
+  for (let i = 0; i < steps.length; i++) {
+    setLoad(steps[i][0], i / steps.length);
+    await nextPaint();
+    steps[i][1]();
+  }
+  setLoad('準備完了', 1);
+  await nextPaint();
   hud.announce.classList.remove('show');
   renderSelect();
   showScreen('title');
-  warmUp();
   // title / mode / select
   $('btnStart').addEventListener('click', () => {
     sfx.init();
@@ -10082,7 +10109,8 @@ function buildMoveList() {
   $('movesBody').innerHTML = html.join('');
 }
 
-try { boot(); window.__game = { get sim() { return sim; }, get views() { return views; }, get sfx() { return sfx; }, get bgm() { return bgm; }, get speed() { return speed; }, set speed(v) { speed = v; } }; } catch (err) { showError(err); }
+window.__game = { get sim() { return sim; }, get views() { return views; }, get sfx() { return sfx; }, get bgm() { return bgm; }, get speed() { return speed; }, set speed(v) { speed = v; } };
+boot().catch((err) => showError(err));
 
 function showError(err) {
   const el = $('loading');
