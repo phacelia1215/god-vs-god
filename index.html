@@ -6266,7 +6266,7 @@ function hadesMistStrike(e) {
 // the gate of the underworld: obsidian pillars, skull keystone, a swirling crimson-black portal
 function hadesGate(e) {
   const g = new THREE.Group();
-  const stone = new THREE.MeshStandardMaterial({ color: 0x120c12, roughness: 0.3, metalness: 0.5, emissive: new THREE.Color(0.35, 0.02, 0.08) }); stone.userData.own = true;
+  const stone = new THREE.MeshStandardMaterial({ color: 0x1a141c, roughness: 0.35, metalness: 0.6, emissive: new THREE.Color(0.06, 0.0, 0.015) }); stone.userData.own = true;
   const gold = new THREE.MeshStandardMaterial({ color: 0x8a5a2a, metalness: 1, roughness: 0.35 }); gold.userData.own = true;
   for (const s of [-1, 1]) {
     const pil = new THREE.Mesh(new THREE.BoxGeometry(0.7, 5.2, 0.9), stone); pil.position.set(s * 1.7, 2.6, 0); g.add(pil);
@@ -6537,6 +6537,8 @@ class SwordTrail {
     for (const h of this.hist) h.age += dt;
     if (active) {
       const a = this.def.obj.localToWorld(this.def.a.clone()), b = this.def.obj.localToWorld(this.def.b.clone());
+      // a teleport would stretch the ribbon across the stage: start a fresh trail instead
+      if (this.hist.length && this.hist[0].a.distanceTo(a) > 2.5) this.hist.length = 0;
       this.hist.unshift({ a, b, age: 0 });
     }
     this.hist = this.hist.filter((h) => h.age < this.life).slice(0, this.n);
