@@ -3380,6 +3380,99 @@ function addDetail(P, j, mt, o) {
 // catch-light, lash line), sharp brows, thin lips. Hair is a cap plus clumped locks (bangs, sides, back).
 const FACE_MATS = {};
 function faceMat(key, make) { return FACE_MATS[key] || (FACE_MATS[key] = make()); }
+// streaked hair texture: fine strands plus a soft highlight band
+let HAIR_TEX = null;
+function hairTex() {
+  return HAIR_TEX || (HAIR_TEX = canvasTex(256, 256, (g, w, h) => {
+    g.fillStyle = '#e6e6e6'; g.fillRect(0, 0, w, h);
+    for (let i = 0; i < 90; i++) { g.fillStyle = Math.random() < 0.5 ? `rgba(0,0,0,${0.08 + Math.random() * 0.2})` : `rgba(255,255,255,${0.1 + Math.random() * 0.25})`; g.fillRect(0, Math.random() * h, w, 1 + Math.random() * 3); }
+    const gr = g.createLinearGradient(0, 0, w, 0); gr.addColorStop(0, 'rgba(255,255,255,0)'); gr.addColorStop(0.22, 'rgba(255,255,255,0.55)'); gr.addColorStop(0.34, 'rgba(255,255,255,0)'); gr.addColorStop(1, 'rgba(0,0,0,0.3)');
+    g.fillStyle = gr; g.fillRect(0, 0, w, h);
+  }));
+}
+// paint the face (eyes with layered irises and highlights, lashes, brows, nose, mouth, shading, markings)
+function paintFace(o, F, skinCol) {
+  const W = 1024, Z = 0.93, K = W / 2;
+  const P2 = (x, y) => { const l = Math.hypot(x, y, Z); return [K + (x / l) * K, K - (y / l) * K]; };
+  const hex = (c) => '#' + c.getHexString();
+  const irisC = o.iris.color.clone(); irisC.multiplyScalar(1 / Math.max(irisC.r, irisC.g, irisC.b, 1));
+  const bc0 = (o.browMat || o.hair).color, browHex = hex(bc0.clone().multiplyScalar((bc0.r + bc0.g + bc0.b) / 3 > 0.75 ? 1 : 0.55)), lipC = new THREE.Color(o.lip || 0xb8735f), lashHex = '#' + new THREE.Color(o.lash || 0x1a1014).getHexString();
+  const path = (g, pts) => { g.beginPath(); pts.forEach(([x, y], i) => { const q = P2(x, y); i ? g.lineTo(q[0], q[1]) : g.moveTo(q[0], q[1]); }); };
+  const eye = (s) => {
+    const cx = s * 0.38, cy = 0.07 + F.eyeY, w = 0.235 * F.eyeW, hU = 0.13 * F.eyeH * (1 - 0.45 * F.lid), hL = 0.085 * F.eyeH, N = 22;
+    const pt = (t, v) => [cx + s * t * w, cy + v + F.eyeTilt * t * w * 0.55];
+    const up = [], lo = [];
+    for (let i = 0; i <= N; i++) { const t = -1 + (2 * i) / N; up.push(pt(t, hU * Math.pow(1 - t * t, 0.55) * (1 - 0.12 * t))); lo.push(pt(t, -hL * Math.pow(1 - t * t, 0.8))); }
+    return { cx, cy, w, hU, hL, up, lo, outline: up.concat(lo.slice().reverse()), pt };
+  };
+  const drawEyes = (g, glowOnly) => {
+    for (const s of [-1, 1]) {
+      const E = eye(s), c = P2(E.cx - s * 0.008, E.cy + (E.hU - E.hL) * 0.25), rI = 62 * Math.min(1, 0.6 + 0.45 * F.eyeH);
+      g.save(); path(g, E.outline); g.closePath(); g.clip();
+      if (o.glowEyes) { g.fillStyle = glowOnly ? '#cfe4ff' : '#f4f9ff'; g.fillRect(c[0] - 150, c[1] - 100, 300, 200); g.restore(); continue; }
+      if (!glowOnly) {
+        const wg = g.createLinearGradient(0, c[1] - 55, 0, c[1] + 40); wg.addColorStop(0, '#aaa6bc'); wg.addColorStop(0.45, '#f6f4f2'); wg.addColorStop(1, '#ffffff');
+        g.fillStyle = wg; g.fillRect(c[0] - 150, c[1] - 100, 300, 200);
+      }
+      // iris: dark rim, colour gradient brightening toward the bottom, pupil
+      const ig = g.createLinearGradient(0, c[1] - rI, 0, c[1] + rI);
+      const dark = irisC.clone().multiplyScalar(0.28), mid = irisC.clone().multiplyScalar(0.8), light = irisC.clone().lerp(new THREE.Color(1, 1, 1), 0.45);
+      ig.addColorStop(0, hex(dark)); ig.addColorStop(0.5, hex(mid)); ig.addColorStop(1, hex(light));
+      g.fillStyle = ig; g.beginPath(); g.arc(c[0], c[1], rI, 0, 7); g.fill();
+      if (!glowOnly) {
+        g.strokeStyle = hex(irisC.clone().multiplyScalar(0.18)); g.lineWidth = rI * 0.16; g.beginPath(); g.arc(c[0], c[1], rI * 0.93, 0, 7); g.stroke();
+        g.fillStyle = '#08060c'; g.beginPath(); g.arc(c[0], c[1], rI * 0.4, 0, 7); g.fill();
+        g.strokeStyle = hex(light); g.globalAlpha = 0.55; g.lineWidth = 2.5; g.beginPath(); g.arc(c[0], c[1], rI * 0.62, 0.25 * Math.PI, 0.75 * Math.PI); g.stroke(); g.globalAlpha = 1;
+        const sh = g.createLinearGradient(0, c[1] - rI * 1.3, 0, c[1] - rI * 0.1); sh.addColorStop(0, 'rgba(10,6,20,0.6)'); sh.addColorStop(1, 'rgba(10,6,20,0)');
+        g.fillStyle = sh; g.fillRect(c[0] - 150, c[1] - 100, 300, 100);
+        g.fillStyle = '#ffffff'; g.beginPath(); g.arc(c[0] - rI * 0.36, c[1] - rI * 0.36, rI * 0.27, 0, 7); g.fill();
+        g.beginPath(); g.arc(c[0] + rI * 0.34, c[1] + rI * 0.4, rI * 0.12, 0, 7); g.fill();
+      } else { g.fillStyle = 'rgba(0,0,0,0.75)'; g.beginPath(); g.arc(c[0], c[1], rI * 0.4, 0, 7); g.fill(); }
+      g.restore();
+    }
+  };
+  const map = canvasTex(W, W, (g) => {
+    g.fillStyle = hex(skinCol.clone().multiplyScalar(0.96)); g.fillRect(0, 0, W, W);
+    const vg = g.createLinearGradient(0, K - 200, 0, K + 480); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(40,10,20,0.16)'); g.fillStyle = vg; g.fillRect(0, 0, W, W);
+    const soft = (x, y, r, col) => { const q = P2(x, y), rg = g.createRadialGradient(q[0], q[1], 0, q[0], q[1], r); rg.addColorStop(0, col); rg.addColorStop(1, col.replace(/[\d.]+\)$/, '0)')); g.fillStyle = rg; g.fillRect(q[0] - r, q[1] - r, r * 2, r * 2); };
+    for (const s of [-1, 1]) {
+      soft(s * 0.37, 0.14 + F.eyeY, 120, o.shadow ? 'rgba(45,12,48,0.5)' : 'rgba(90,40,60,0.14)');   // eye socket shade
+      soft(s * 0.5, -0.22, 85, 'rgba(255,110,100,0.13)');                                           // cheeks
+      soft(s * 0.62, -0.5, 120, 'rgba(60,20,30,0.1)');                                              // jaw shade
+    }
+    // nose: side shade, tip highlight, nostrils
+    g.strokeStyle = 'rgba(110,55,50,0.2)'; g.lineWidth = 6; g.lineCap = 'round';
+    path(g, [[0.035, 0.05], [0.05, -0.12 * F.noseLen], [0.06, -0.27 * F.noseLen]]); g.stroke();
+    soft(0, -0.2 * F.noseLen, 22, 'rgba(255,255,255,0.2)');
+    g.fillStyle = 'rgba(70,30,28,0.5)';
+    for (const s of [-1, 1]) { const q = P2(s * 0.045 * F.nose, -0.33 * F.noseLen); g.beginPath(); g.ellipse(q[0], q[1], 7, 3.5, s * 0.4, 0, 7); g.fill(); }
+    drawEyes(g, false);
+    for (const s of [-1, 1]) {
+      const E = eye(s), N = E.up.length - 1, lw = (o.lashW || 1);
+      // upper lash line: tapered band with an outer flick
+      const band = E.up.map(([x, y], i) => { const t = i / N; return [x, y + (0.012 + 0.02 * t) * lw]; });
+      const tip = E.pt(1.22, E.hU * 0.35 + 0.035);
+      g.fillStyle = lashHex; path(g, E.up.concat([tip], band.slice().reverse())); g.closePath(); g.fill();
+      g.strokeStyle = lashHex; g.globalAlpha = 0.75; g.lineWidth = 2.6; path(g, E.lo.slice(Math.floor(N * 0.45))); g.stroke(); g.globalAlpha = 1;
+      g.strokeStyle = 'rgba(90,45,50,0.45)'; g.lineWidth = 2.2; path(g, E.up.slice(3, N - 2).map(([x, y]) => [x, y + 0.045])); g.stroke();   // lid crease
+      // brow
+      const k = 0.22 + -(o.browTilt ?? -0.16) * 0.6, yc = 0.33 + F.browY, th = 0.021 * F.browW * ((o.browW ?? 0.0038) / 0.0038);
+      const top = [], bot = [];
+      for (let i = 0; i <= 12; i++) { const t = i / 12, x = s * (0.19 + 0.4 * t), y = yc + k * 0.36 * (Math.min(t, 0.72) - 0.4) - Math.max(0, t - 0.72) * 0.14, hh = th * (1 - 0.8 * t * t); top.push([x, y + hh]); bot.push([x, y - hh]); }
+      g.fillStyle = browHex; path(g, top.concat(bot.reverse())); g.closePath(); g.fill();
+    }
+    if (!o.beard) {
+      const mw = 0.2 * F.mouthW, my = -0.56;
+      const a = P2(-mw, my + F.smile * 0.035), b = P2(mw, my + F.smile * 0.05), c = P2(0, my - F.smile * 0.03);
+      const lq = P2(0, my - 0.045); g.fillStyle = `rgba(${lipC.r * 255 | 0},${lipC.g * 255 | 0},${lipC.b * 255 | 0},0.6)`; g.beginPath(); g.ellipse(lq[0], lq[1], mw * K * 0.55, 13, 0, 0, 7); g.fill();
+      g.strokeStyle = '#4a2226'; g.lineWidth = 6; g.beginPath(); g.moveTo(a[0], a[1]); g.quadraticCurveTo(c[0], c[1], b[0], b[1]); g.stroke();
+      soft(0, my - 0.1, 26, 'rgba(60,20,30,0.14)');
+    }
+    for (const [x0, y0, x1, y1, w2, mat] of o.marks || []) { g.strokeStyle = hex(mat.color.clone().multiplyScalar(1 / Math.max(1, mat.color.r, mat.color.g, mat.color.b))); g.lineWidth = w2 * K * 2.4; g.lineCap = 'round'; path(g, [[x0, y0], [x1, y1]]); g.stroke(); }
+  });
+  const glow = canvasTex(W, W, (g) => { g.fillStyle = '#000'; g.fillRect(0, 0, W, W); drawEyes(g, true); });
+  return { map, glow };
+}
 function animeHead(P, H, o) {
   const { skin, hair, iris } = o;
   const sclera = faceMat('sclera', () => new THREE.MeshStandardMaterial({ color: 0xf4f1ee, roughness: 0.3 }));
@@ -3399,18 +3492,28 @@ function animeHead(P, H, o) {
     let py = y - 0.1 * F.chin * low * low * Math.max(0, z);        // chin drops forward
     let r = 1;
     r += 0.06 * Math.exp(-((y - 0.28) ** 2) / 0.006 - (x * x) / 0.25) * sm(0.6, 0.95, z);               // brow
-    r += 0.13 * F.nose * Math.exp(-((y + 0.12 * F.noseLen) ** 2) / (0.05 * F.noseLen) - (x * x) / (0.006 * F.nose)) * sm(0.7, 1, z);   // nose ridge
-    r += 0.05 * F.nose * Math.exp(-((y + 0.3 * F.noseLen) ** 2) / 0.006 - (x * x) / (0.012 * F.nose)) * sm(0.7, 1, z);              // nose tip
+    r += 0.07 * F.nose * Math.exp(-((y + 0.12 * F.noseLen) ** 2) / (0.05 * F.noseLen) - (x * x) / (0.006 * F.nose)) * sm(0.7, 1, z);   // nose ridge
+    r += 0.045 * F.nose * Math.exp(-((y + 0.3 * F.noseLen) ** 2) / 0.006 - (x * x) / (0.012 * F.nose)) * sm(0.7, 1, z);              // nose tip
     for (const s2 of [-1, 1]) r -= F.hollow * Math.exp(-((y + 0.25) ** 2) / 0.03 - ((x - s2 * 0.6) ** 2) / 0.03) * sm(0.2, 0.8, z);   // hollow cheeks
     r -= F.cleft * Math.exp(-((y + 0.88) ** 2) / 0.004 - (x * x) / 0.0015) * sm(0.5, 1, z);                                          // chin cleft
-    for (const s2 of [-1, 1]) r -= 0.045 * Math.exp(-((y - 0.12) ** 2) / 0.012 - ((x - s2 * 0.37) ** 2) / 0.02) * sm(0.5, 0.95, z);   // sockets
+    for (const s2 of [-1, 1]) r += 0.02 * Math.exp(-((y + 0.12) ** 2) / 0.02 - ((x - s2 * 0.55) ** 2) / 0.03) * sm(0.3, 0.9, z);   // cheekbones
+    for (const s2 of [-1, 1]) r -= 0.028 * Math.exp(-((y - 0.12) ** 2) / 0.012 - ((x - s2 * 0.37) ** 2) / 0.02) * sm(0.5, 0.95, z);   // sockets
     r += 0.03 * Math.exp(-((y + 0.55) ** 2) / 0.008 - (x * x) / 0.03) * sm(0.6, 1, z);                  // lips
     return new V3(x * sx * r * R.x, py * r * R.y, z * sz * r * R.z).add(C);
   };
   const g = new THREE.SphereGeometry(1, 72, 56);
-  { const pa = g.attributes.position, d = new V3(); for (let i = 0; i < pa.count; i++) { d.set(pa.getX(i), pa.getY(i), pa.getZ(i)).normalize(); const q = shape(d); pa.setXYZ(i, q.x, q.y, q.z); } g.computeVertexNormals(); }
-  P.add(H, g, skin);
-  // surface frame helper for features that sit on the face
+  const DIRS0 = [];
+  { const pa = g.attributes.position; for (let i = 0; i < pa.count; i++) { const d = new V3(pa.getX(i), pa.getY(i), pa.getZ(i)).normalize(); DIRS0.push(d); const q = shape(d); pa.setXYZ(i, q.x, q.y, q.z); } g.computeVertexNormals(); }
+  // face-on UVs: the front hemisphere is projected flat so the painted face texture is sharp
+  { const pa = g.attributes.position, uv = g.attributes.uv, d = new V3();
+    for (let i = 0; i < pa.count; i++) { d.copy(DIRS0[i]); if (d.z > 0.05) uv.setXY(i, 0.5 + d.x / 2, 0.5 + d.y / 2); else { const m = Math.hypot(d.x, d.y) || 1; uv.setXY(i, 0.5 + d.x / m * 0.499, 0.5 + d.y / m * 0.499); } } }
+  const headMat = skin.clone();
+  const ft = paintFace(o, F, skin.color);
+  skin.roughness = Math.max(skin.roughness, 0.9);
+  headMat.color.set(0xffffff); headMat.map = ft.map; headMat.emissiveMap = ft.glow; headMat.emissive = new THREE.Color(1, 1, 1); headMat.emissiveIntensity = o.glowEyes ? 2.6 : 1.1;
+  headMat.roughness = 1.0; headMat.clearcoat = 0.0; headMat.sheen = 0.25;
+  skin.roughness = Math.max(skin.roughness, 0.9); skin.clearcoat = 0;   // matte skin (the noise roughness map halves this)
+  P.add(H, g, headMat);
   const at = (x, y, z, lift = 0) => {
     const d = new V3(x, y, z).normalize(), p0 = shape(d);
     const e = 0.01, n = new V3().crossVectors(shape(new V3(x, y + e, z).normalize()).sub(p0), shape(new V3(x + e, y, z).normalize()).sub(p0)).normalize();
@@ -3423,41 +3526,13 @@ function animeHead(P, H, o) {
     P.add(H, geo, mat, [f.p.x, f.p.y, f.p.z], [e.x, e.y, e.z], scale);
   };
   for (const s of [-1, 1]) {
-    // large layered eyes laid onto the sockets
-    const Y = 0.1 + F.eyeY, tilt = s * F.eyeTilt, ew = F.eyeW, eh = F.eyeH;
-    const ey = at(s * 0.37, Y, 0.93, 0.0);
-    if (o.shadow) put(SPH, o.shadow, at(s * 0.37, Y + 0.02, 0.93, -0.0008), [0.03 * ew, 0.02 * eh + 0.004, 0.004], tilt);
-    if (o.glowEyes) put(SPH, iris, ey, [0.02 * ew, 0.0085 * eh, 0.004], s * -0.1 + tilt);
-    else {
-      put(SPH, sclera, ey, [0.021 * ew, 0.0115 * eh, 0.004], s * -0.06 + tilt);
-      const ir = Math.min(1.1, 0.6 + 0.45 * eh);
-      put(SPH, iris, at(s * 0.355, Y - 0.005, 0.935, 0.0025), [0.0098 * ir, 0.011 * Math.min(1, eh), 0.0025]);
-      put(SPH, pupil, at(s * 0.355, Y - 0.005, 0.935, 0.0042), [0.0045 * ir, 0.0058 * Math.min(1, eh), 0.0012]);
-      put(SPH, shine, at(s * 0.335, Y + 0.02 * eh, 0.935, 0.005), [0.0026, 0.0026, 0.001]);
-      if (F.lid > 0) put(SPH, skin, at(s * 0.37, Y + 0.05, 0.93, 0.0012), [0.022 * ew, 0.0115 * F.lid, 0.004], s * -0.06 + tilt);   // heavy upper lid
-    }
-    const lashY = Y + 0.085 * eh - F.lid * 0.04;
-    put(new THREE.CapsuleGeometry(0.0028 * (o.lashW || 1), 0.036 * ew, 3, 6), lash, at(s * 0.37, lashY, 0.92, 0.002), [1, 1, 0.6], Math.PI / 2 + s * 0.1 + tilt);
-    put(new THREE.CapsuleGeometry(0.0022, 0.012, 3, 6), lash, at(s * (0.37 + 0.21 * ew), lashY + 0.012 + F.eyeTilt * 0.1, 0.8, 0.002), [1, 1, 0.6], Math.PI / 2 + s * (0.55 + F.eyeTilt));
-    put(new THREE.CapsuleGeometry(0.0012, 0.022 * ew, 3, 6), lash, at(s * 0.37, Y - 0.09 * eh, 0.93, 0.0015), [1, 1, 0.6], Math.PI / 2 - s * 0.05 + tilt);
-    // sharp brow
-    put(new THREE.CapsuleGeometry((o.browW ?? 0.0038) * F.browW, 0.036, 3, 6), o.browMat || hair, at(s * 0.38, 0.33 + F.browY, 0.87, 0.003), [1, 1, 0.55], Math.PI / 2 - s * (0.22 + (o.browTilt ?? -0.16) * -0.6));
+    // ears: shell with an inner hollow
+    P.ell(H, skin, [s * 0.094, 0.098, -0.004], [0.012, 0.028, 0.019], [0, s * 0.35, 0]);
+    P.add(H, new THREE.TorusGeometry(0.017, 0.0045, 6, 14, Math.PI * 1.4), skin, [s * 0.1, 0.1, -0.004], [0, s * 1.2, 0.9]);
     if (F.ear > 0) put(new THREE.ConeGeometry(0.012, 0.05 * F.ear, 5), skin, { p: new V3(s * 0.1, 0.13, -0.012), q: new THREE.Quaternion().setFromEuler(new THREE.Euler(-0.5, 0, -s * 0.5)) });
-    // ear
-    P.ell(H, skin, [s * 0.094, 0.098, -0.004], [0.014, 0.028, 0.02]);
-  }
-  if (!o.beard) {
-    put(new THREE.CapsuleGeometry(0.0024, 0.024 * F.mouthW, 3, 6), lip, at(0, -0.5, 0.95, 0.001), [1, 1, 0.6], Math.PI / 2 + F.smile * 0.6);
-    put(SPH, lip, at(0, -0.6, 0.94, -0.001), [0.013 * F.mouthW, 0.005, 0.005]);
-    if (F.smile > 0) for (const s of [-1, 1]) if (F.smile > 0.15 || s > 0) put(new THREE.CapsuleGeometry(0.0018, 0.008, 3, 6), lip, at(s * 0.15 * F.mouthW, -0.47, 0.94, 0.001), [1, 1, 0.6], Math.PI / 2 - s * 0.8);
-  }
-  // face paint, scars, markings: [x0, y0, x1, y1, width, material]
-  for (const mk of o.marks || []) {
-    const [x0, y0, x1, y1, w, mat] = mk, mx = (x0 + x1) / 2, my = (y0 + y1) / 2;
-    const f0 = at(x0, y0, 0.9), f1 = at(x1, y1, 0.9), len = f0.p.distanceTo(f1.p);
-    put(new THREE.CapsuleGeometry(w, Math.max(0.001, len), 3, 6), mat, at(mx, my, 0.9, 0.0015), [1, 1, 0.5], Math.atan2(f1.p.y - f0.p.y, f1.p.x - f0.p.x) - Math.PI / 2);
   }
   const st = o.style || {};
+  const lockMat = hair.clone(); lockMat.map = hairTex();
   const lock = (pts, r) => {
     const curve = new THREE.CatmullRomCurve3(pts.map((q) => new V3(...q)));
     const tg = new THREE.TubeGeometry(curve, 14, r, 6, false);
@@ -3467,7 +3542,7 @@ function animeHead(P, H, o) {
       pa.setXYZ(i, c.x + (pa.getX(i) - c.x) * k, c.y + (pa.getY(i) - c.y) * k, c.z + (pa.getZ(i) - c.z) * k);
     }
     tg.computeVertexNormals();
-    P.add(H, tg, hair);
+    P.add(H, tg, lockMat);
   };
   if (o.beard) {
     const bg = new THREE.SphereGeometry(1, 48, 36), pa = bg.attributes.position, d = new V3();
@@ -7521,7 +7596,16 @@ const modelCache = {};
 function modelFor(side, key) {
   const id = side + key;
   if (!modelCache[id]) modelCache[id] = key === 'zeus' ? buildZeus(FT) : key === 'anubis' ? buildAnubis(FT) : key === 'thor' ? buildThor(FT) : key === 'susanoo' ? buildSusanoo(FT) : key === 'heracles' ? buildHeracles(FT) : key === 'hades' ? buildHades(FT) : buildPoseidon(FT);
+  if (!modelCache[id].outlined) { modelCache[id].outlined = true; if (!isMobile) addOutline(modelCache[id].root); }
   return modelCache[id];
+}
+// anime-style ink outline: back-face hull pushed out along the normals
+const OUTLINE = new THREE.MeshBasicMaterial({ color: 0x0c0810, side: THREE.BackSide });
+OUTLINE.onBeforeCompile = (sh) => { sh.vertexShader = sh.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\n  transformed += normalize(objectNormal) * 0.0055;'); };
+function addOutline(root) {
+  const add = [];
+  root.traverse((o) => { if (o.isMesh && o.material && o.material.isMeshStandardMaterial && !o.material.transparent && o.material.side !== THREE.DoubleSide && o.geometry.attributes.normal) add.push(o); });
+  for (const o of add) { const m = new THREE.Mesh(o.geometry, OUTLINE); m.castShadow = false; m.userData.outline = true; o.parent.add(m); }
 }
 
 function setupMatch(c) {
