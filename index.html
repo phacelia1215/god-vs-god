@@ -85,6 +85,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;color:#fff;font
 #announce.champ .a-main{font-family:var(--jp);font-size:clamp(40px,8vw,110px)}
 #announce.champ.anubis .a-main{background:linear-gradient(#fff8e0 20%,#f0c46a 55%,#1d3f8a 95%);-webkit-background-clip:text;background-clip:text;color:transparent}
 #announce.champ.thor .a-main{background:linear-gradient(#ffffff 20%,#c8b0ff 55%,#5a3aa0 95%);-webkit-background-clip:text;background-clip:text;color:transparent}
+#announce.champ.odin .a-main{background:linear-gradient(#ffffff 20%,#a8d4ff 55%,#1a2a5a 95%);-webkit-background-clip:text;background-clip:text;color:transparent}
 #announce.champ.hades .a-main{background:linear-gradient(#ffe8ee 20%,#ff5a78 55%,#3a0010 95%);-webkit-background-clip:text;background-clip:text;color:transparent}
 #announce.champ.heracles .a-main{background:linear-gradient(#fff6e0 20%,#ffb860 55%,#7a3a10 95%);-webkit-background-clip:text;background-clip:text;color:transparent}
 #announce.champ.susanoo .a-main{background:linear-gradient(#ffffff 20%,#9fffd8 55%,#1b5a4a 95%);-webkit-background-clip:text;background-clip:text;color:transparent}
@@ -98,6 +99,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;color:#fff;font
 .ci-band.zeus{background:linear-gradient(90deg,rgba(10,20,60,.0),rgba(20,40,110,.92) 18%,rgba(40,80,180,.92) 60%,rgba(10,20,60,0));border-top:2px solid #cfe4ff;border-bottom:2px solid #cfe4ff;box-shadow:0 0 40px rgba(130,180,255,.6)}
 .ci-band.anubis{background:linear-gradient(90deg,rgba(10,20,50,0),rgba(29,63,138,.92) 18%,rgba(60,90,170,.92) 60%,rgba(10,20,50,0));border-top:2px solid #f0c46a;border-bottom:2px solid #f0c46a}
 .ci-band.thor{background:linear-gradient(90deg,rgba(30,10,60,0),rgba(60,30,120,.92) 18%,rgba(100,70,180,.92) 60%,rgba(30,10,60,0));border-top:2px solid #e4d8ff;border-bottom:2px solid #e4d8ff;box-shadow:0 0 40px rgba(180,150,255,.55)}
+.ci-band.odin{background:linear-gradient(90deg,rgba(4,8,24,0),rgba(14,26,64,.94) 18%,rgba(40,60,120,.92) 60%,rgba(4,8,24,0));border-top:2px solid #ffe6a0;border-bottom:2px solid #ffe6a0;box-shadow:0 0 40px rgba(140,200,255,.5)}
 .ci-band.hades{background:linear-gradient(90deg,rgba(20,0,6,0),rgba(60,4,18,.94) 18%,rgba(120,10,40,.92) 60%,rgba(20,0,6,0));border-top:2px solid #ffb0c0;border-bottom:2px solid #ffb0c0;box-shadow:0 0 40px rgba(255,60,100,.5)}
 .ci-band.heracles{background:linear-gradient(90deg,rgba(40,15,0,0),rgba(110,50,10,.92) 18%,rgba(170,90,20,.92) 60%,rgba(40,15,0,0));border-top:2px solid #ffe0b0;border-bottom:2px solid #ffe0b0;box-shadow:0 0 40px rgba(255,170,80,.5)}
 .ci-band.susanoo{background:linear-gradient(90deg,rgba(5,30,30,0),rgba(15,60,70,.92) 18%,rgba(30,110,100,.92) 60%,rgba(5,30,30,0));border-top:2px solid #d8fff0;border-bottom:2px solid #d8fff0;box-shadow:0 0 40px rgba(140,255,210,.5)}
@@ -144,7 +146,7 @@ body:not(.portrait) .portrait-only{display:none}
 #movesBody{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
 #movesBody section{border:1px solid rgba(232,192,106,.4);padding:16px 18px;background:rgba(255,255,255,.03)}
 #movesBody h3{font-size:22px;margin-bottom:6px}
-#movesBody .zeus h3{color:var(--zeus)} #movesBody .poseidon h3{color:var(--pos)} #movesBody .anubis h3{color:#f0c46a} #movesBody .thor h3{color:#c8b0ff} #movesBody .susanoo h3{color:#9fffd8} #movesBody .heracles h3{color:#ffb870} #movesBody .hades h3{color:#ff6a88}
+#movesBody .zeus h3{color:var(--zeus)} #movesBody .poseidon h3{color:var(--pos)} #movesBody .anubis h3{color:#f0c46a} #movesBody .thor h3{color:#c8b0ff} #movesBody .susanoo h3{color:#9fffd8} #movesBody .heracles h3{color:#ffb870} #movesBody .hades h3{color:#ff6a88} #movesBody .odin h3{color:#b8d8ff}
 #movesBody h3 small{font-size:12px;margin-left:10px;opacity:.7;letter-spacing:.2em}
 #movesBody h4{font-size:12px;letter-spacing:.3em;color:var(--gold);margin:12px 0 4px}
 #movesBody ul{list-style:none;font-size:14px;line-height:1.8}
@@ -253,7 +255,7 @@ body.portrait #ctrl button{font-size:11px;padding:6px 8px}
 .picks{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .pick{position:relative;flex:1;display:flex;align-items:center;gap:10px;padding:10px 12px;color:rgba(255,255,255,.7);font-family:var(--jp);font-weight:800;font-size:14px;letter-spacing:.08em;background:rgba(10,6,18,.78);border:2px solid rgba(255,255,255,.15);cursor:pointer;transition:all .15s;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
 .pick .emb{width:34px;height:34px;flex:none}
-.pick.zeus{color:var(--zeus)}.pick.poseidon{color:var(--pos)}.pick.anubis{color:#f0c46a}.pick.thor{color:#c8b0ff}.pick.susanoo{color:#9fffd8}.pick.heracles{color:#ffb870}.pick.hades{color:#ff6a88}
+.pick.zeus{color:var(--zeus)}.pick.poseidon{color:var(--pos)}.pick.anubis{color:#f0c46a}.pick.thor{color:#c8b0ff}.pick.susanoo{color:#9fffd8}.pick.heracles{color:#ffb870}.pick.hades{color:#ff6a88}.pick.odin{color:#b8d8ff}
 .pick:not(.on){opacity:.6}
 .pick:hover{opacity:1;border-color:rgba(255,255,255,.5)}
 .pick.on{opacity:1;border-color:var(--gold2);background:rgba(50,36,10,.7);box-shadow:0 0 22px rgba(255,200,90,.5)}
@@ -284,7 +286,7 @@ body.cine #hud,body.cine .meter,body.cine #ctrl,body.cine .keyhelp,body.cine .co
 #cineTitle{position:fixed;left:0;right:0;top:50%;transform:translateY(-50%);text-align:center;z-index:18;pointer-events:none;opacity:0}
 #cineTitle b{display:block;font-size:clamp(54px,11vw,150px);font-weight:800;letter-spacing:.18em;line-height:1;background:linear-gradient(#fff 20%,var(--cc) 70%,#222);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 30px var(--cc)) drop-shadow(0 6px 0 #000)}
 #cineTitle small{display:block;margin-top:10px;font-size:clamp(14px,2.2vw,28px);letter-spacing:.5em;color:#fff;text-shadow:0 0 14px var(--cc),0 2px 4px #000}
-#cineTitle.zeus{--cc:#ffd77a}#cineTitle.poseidon{--cc:#5ff0e6}#cineTitle.anubis{--cc:#f0c46a}#cineTitle.thor{--cc:#c8b0ff}#cineTitle.susanoo{--cc:#9fffd8}#cineTitle.heracles{--cc:#ffb870}#cineTitle.hades{--cc:#ff6a88}
+#cineTitle.zeus{--cc:#ffd77a}#cineTitle.poseidon{--cc:#5ff0e6}#cineTitle.anubis{--cc:#f0c46a}#cineTitle.thor{--cc:#c8b0ff}#cineTitle.susanoo{--cc:#9fffd8}#cineTitle.heracles{--cc:#ffb870}#cineTitle.hades{--cc:#ff6a88}#cineTitle.odin{--cc:#b8d8ff}
 #cineTitle.show{animation:ctl 1.6s cubic-bezier(.2,.8,.2,1) forwards}
 @keyframes ctl{0%{opacity:0;transform:translateY(-50%) scale(1.8);filter:blur(10px)}12%{opacity:1;transform:translateY(-50%) scale(1);filter:none}80%{opacity:1;transform:translateY(-50%) scale(1.05)}100%{opacity:0;transform:translateY(-50%) scale(1.12)}}
 
@@ -1044,6 +1046,64 @@ const HADES_MOVES = {
     anim: [[0, 'summonWind'], [0.12, 'superCall'], [0.36, 'superCall'], [0.42, 'shadeStrike'], [0.5, 'slashEnd'], [0.58, 'shadeStrike'], [0.66, 'riseEnd'], [0.74, 'shadeStrike'], [0.82, 'slashEnd'], [0.9, 'shadeStrike'], [0.98, 'sweepEnd'], [1.06, 'shadeStrike'], [1.16, 'slashEnd'], [1.24, 'superCall'], [1.56, 'superCall'], [1.62, 'palmWind'], [1.7, 'palm'], [2.0, 'palm'], [2.3, 'stance']],
   },
 };
+const ODIN_MOVES = {
+  o_jab: {
+    name: '神槍突き', type: 'normal', dur: 0.32, cancel: [0.13, 0.32],
+    anim: [[0, 'stance'], [0.07, 'jab'], [0.15, 'jab'], [0.32, 'stance']],
+    hits: [H({ t0: 0.07, t1: 0.13, dmg: 36, range: [0.3, 2.1], y: [0.7, 1.9], hs: 0.36, bs: 0.18, kb: 1.6, stop: 0.05, fx: 'rune' })],
+  },
+  o_slash: {
+    name: '神槍薙ぎ', type: 'normal', dur: 0.46, cancel: [0.19, 0.46],
+    anim: [[0, 'stance'], [0.1, 'slashWind'], [0.16, 'slashEnd'], [0.28, 'slashEnd'], [0.46, 'stance']],
+    hits: [H({ t0: 0.12, t1: 0.19, dmg: 52, range: [0.2, 2.1], y: [0.5, 2.1], hs: 0.42, kb: 2.2, stop: 0.08, fx: 'rune' })],
+  },
+  o_sweep: {
+    name: '大地払い', type: 'normal', dur: 0.52, cancel: [0.22, 0.52],
+    anim: [[0, 'stance'], [0.08, 'sweepWind'], [0.15, 'sweepEnd'], [0.3, 'sweepEnd'], [0.52, 'stance']],
+    hits: [H({ t0: 0.13, t1: 0.2, dmg: 50, range: [0.2, 2.1], y: [0.0, 0.8], hs: 0.5, kb: 1.5, kd: true, stop: 0.08, fx: 'rune' })],
+  },
+  o_rise: {
+    name: '天穿ち', type: 'normal', dur: 0.56, cancel: [0.25, 0.56],
+    anim: [[0, 'stance'], [0.09, 'riseWind'], [0.16, 'riseEnd'], [0.32, 'riseEnd'], [0.56, 'stance']],
+    hits: [H({ t0: 0.14, t1: 0.23, dmg: 60, range: [0.2, 2.0], y: [0.2, 2.9], hs: 0.5, kb: 1.2, launch: 10, stop: 0.1, fx: 'rune' })],
+  },
+  o_palm: {
+    name: 'ルーン掌', type: 'normal', dur: 0.54, cancel: [0.25, 0.54], weap: 'fist',
+    anim: [[0, 'stance'], [0.1, 'palmWind'], [0.17, 'palm'], [0.32, 'palm'], [0.54, 'stance']],
+    hits: [H({ t0: 0.16, t1: 0.24, dmg: 58, range: [0.1, 1.4], y: [0.6, 2.0], hs: 0.5, kb: 3.6, stop: 0.12, fx: 'rune' })],
+  },
+  o_slam: {
+    name: '戦神の鉄槌', type: 'normal', dur: 0.7, cancel: [0.32, 0.7],
+    anim: [[0, 'stance'], [0.13, 'slamWind'], [0.22, 'slamEnd'], [0.4, 'slamEnd'], [0.7, 'stance']],
+    hits: [H({ t0: 0.2, t1: 0.29, dmg: 84, range: [0.2, 2.1], y: [0.0, 3.0], hs: 0.5, kb: 2.2, kd: true, bounce: true, stop: 0.12, fx: 'rune' })],
+  },
+  o_spear: {
+    name: 'グングニル投擲', type: 'special', dur: 0.66, glow: 'spear',
+    anim: [[0, 'stance'], [0.1, 'throwWind'], [0.24, 'throw'], [0.44, 'throw'], [0.66, 'stance']],
+    proj: { t: 0.26, kind: 'gungnir', vx: 17, y: 1.45, dmg: 58, hits: 1, hs: 0.48, kb: 3.4, w: 0.55, h: 0.3, fx: 'rune', ret: 22 },
+  },
+  o_ravens: {
+    name: 'フギンとムニン', type: 'special', dur: 0.62, glow: 'spear',
+    anim: [[0, 'stance'], [0.12, 'summonWind'], [0.24, 'summon'], [0.42, 'summon'], [0.62, 'stance']],
+    proj: { t: 0.24, kind: 'raven', vx: 9.5, y: 1.7, dmg: 26, hits: 2, hs: 0.4, kb: 1.8, w: 0.6, h: 0.6, fx: 'rune' },
+  },
+  o_rune: {
+    name: 'ルーンの楔', type: 'special', dur: 0.7, glow: 'spear',
+    anim: [[0, 'stance'], [0.12, 'summonWind'], [0.26, 'runePlant'], [0.46, 'runePlant'], [0.7, 'stance']],
+    proj: { t: 0.28, kind: 'runeTrap', atTarget: 5.5, delay: 0.32, life: 0.7, vx: 0, y: 0.8, dmg: 40, hits: 1, hs: 0.5, kb: 1.2, w: 0.6, h: 1.2, fx: 'rune', kd: true, launch: 8 },
+  },
+  o_air: {
+    name: '神槍落とし', type: 'air', dur: 0.5,
+    anim: [[0, 'airWind'], [0.08, 'airStab'], [0.5, 'airStab']],
+    hits: [H({ t0: 0.08, t1: 0.42, dmg: 58, range: [0.0, 2.0], y: [-1.1, 0.9], hs: 0.46, kb: 2.0, stop: 0.08, fx: 'rune' })],
+  },
+  o_super: {
+    name: '神槍グングニル・ラグナロク', type: 'super', dur: 2.4, glow: 'spear',
+    anim: [[0, 'superCall'], [0.3, 'superCall'], [0.36, 'summonWind'], [0.44, 'summon'], [1.08, 'summon'], [1.14, 'superCall'], [1.42, 'superCall'], [1.48, 'throwWind'], [1.6, 'throwWind'], [1.64, 'throw'], [1.9, 'throw'], [2.1, 'intro'], [2.4, 'stance']],
+  },
+};
+// Odin is the final boss of the story: every blow carries a little more weight
+(function () { for (const m of Object.values(ODIN_MOVES)) { if (m.hits) for (const h of m.hits) h.dmg = Math.round(h.dmg * 1.04); if (m.proj) m.proj.dmg = Math.round(m.proj.dmg * 1.04); } })();
 // Thor swings an oversized Mjolnir: every hammer move is slower to come out, hits much harder
 // and reaches further. [time scale, damage scale, extra reach]
 (function () {
@@ -1075,6 +1135,7 @@ const HADES_MOVES = {
   set(ANUBIS_MOVES.a_low, 'low'); set(ANUBIS_MOVES.a_kick, 'mid'); set(ANUBIS_MOVES.a_air, 'mid');
   set(THOR_MOVES.t_low, 'low'); set(THOR_MOVES.t_slam, 'mid'); set(THOR_MOVES.t_air, 'mid');
   set(HADES_MOVES.hd_sweep, 'low'); set(HADES_MOVES.hd_slam, 'mid'); set(HADES_MOVES.hd_air, 'mid');
+  set(ODIN_MOVES.o_sweep, 'low'); set(ODIN_MOVES.o_slam, 'mid'); set(ODIN_MOVES.o_air, 'mid');
   set(HERACLES_MOVES.h_low, 'low'); set(HERACLES_MOVES.h_smash, 'mid'); set(HERACLES_MOVES.h_air, 'mid');
   set(SUSANOO_MOVES.s_sweep, 'low'); set(SUSANOO_MOVES.s_kabuto, 'mid'); set(SUSANOO_MOVES.s_air, 'mid');
 })();
@@ -1106,7 +1167,7 @@ function stretchTail(m, from, newDur) {
 }
 (function frameData() {
   const PROJ_REC = { kind: { rock: 34 / 60, hammer: 34 / 60, soul: 28 / 60 }, def: 30 / 60 };
-  for (const T of [ZEUS_MOVES, POSEIDON_MOVES, ANUBIS_MOVES, THOR_MOVES, SUSANOO_MOVES, HERACLES_MOVES, HADES_MOVES]) {
+  for (const T of [ZEUS_MOVES, POSEIDON_MOVES, ANUBIS_MOVES, THOR_MOVES, SUSANOO_MOVES, HERACLES_MOVES, HADES_MOVES, ODIN_MOVES]) {
     for (const m of Object.values(T)) {
       if (m.type === 'air') m.tier = 'medium';
       if (m.type === 'super' || m.type === 'air') continue;
@@ -1245,6 +1306,21 @@ const CHARS = {
       ['hd_palm', 'hd_rise', 'SUPER'],
     ],
   },
+  odin: {
+    key: 'odin', name: 'オーディン', en: 'ODIN', title: '九界の主神', hp: 1080, walk: 2.8, back: 2.4, dash: 9.5,
+    jumpV: 10.5, jumpX: 4.2, width: 0.4, height: 2.2, moves: ODIN_MOVES, air: 'o_air', super: 'o_super',
+    guard: 0.6, aggro: 0.85, boss: true,
+    routes: [
+      ['o_jab', 'o_jab', 'o_slash'],
+      ['o_jab', 'o_slash', 'o_palm', 'o_rise'],
+      ['o_sweep', 'o_slam'],
+      ['o_jab', 'o_sweep'],
+      ['o_slash', 'o_palm', 'o_spear'],
+      ['o_slash', 'o_rune'],
+      ['o_jab', 'o_slash', 'o_rise', 'SUPER'],
+      ['o_palm', 'o_rise', 'SUPER'],
+    ],
+  },
 };
 
 // ------------------------------------------------------------
@@ -1319,6 +1395,11 @@ const HUMAN = {
     K: { n: 'hd_slam', f: 'hd_palm', b: 'hd_palm', d: 'hd_sweep', u: 'hd_rise' },
     L: { n: 'hd_dog', f: 'hd_shade', b: 'hd_hands', d: 'hd_hands', u: 'hd_dog' },
   },
+  odin: {
+    J: { n: 'o_jab', f: 'o_slash', b: 'o_jab', d: 'o_sweep', u: 'o_rise' },
+    K: { n: 'o_slam', f: 'o_palm', b: 'o_palm', d: 'o_sweep', u: 'o_rise' },
+    L: { n: 'o_spear', f: 'o_spear', b: 'o_ravens', d: 'o_rune', u: 'o_ravens' },
+  },
 };
 
 // CPU strength, 1 (weakest) .. 5 (strongest). Scales how often the AI guards, reads
@@ -1348,6 +1429,7 @@ const AUTO = {
   susanoo: ['s_cut', 's_kesa', 's_spin', 's_rise', 's_dash', 'SUPER'],
   heracles: ['h_jab', 'h_club', 'h_upper', 'SUPER'],
   hades: ['hd_jab', 'hd_slash', 'hd_palm', 'hd_rise', 'SUPER'],
+  odin: ['o_jab', 'o_slash', 'o_palm', 'o_rise', 'SUPER'],
 };
 
 // does the opponent have a projectile in flight toward f?
@@ -2185,6 +2267,43 @@ class Sim {
         if (s.lock && o.state === 'locked') { o.x = clamp(s.gx - s.dir * 0.4, -STAGE, STAGE); o.y = 0.4; this.superHit(f, o, 175, 'hell', { final: true, launch: 8.5, kb: -3, stop: 0.28 }); }
         else this.hitstop = 0.12;
       });
+    } else if (f.key === 'odin') {
+      // ODIN: a rune circle binds the foe, Huginn and Muninn tear at them, the Allfather rises into the sky and
+      // hurls Gungnir down through them - the spear that never misses
+      if (t < 1.12) f.y = 0;
+      if (t >= 0.16) once('bind', () => { s.tx = o.x; this.emit('runeBind', { side: f.side, x: o.x }); });
+      if (t >= 0.3) once('connect', () => {
+        s.tx = o.x;
+        if (this.canLock(o, 6.8)) { this.lock(f, o); s.lock = true; s.oy = o.y; this.superHit(f, o, 18, 'rune', { stop: 0.06 }); }
+      });
+      if (locked) {
+        if (t < 1.12) o.y = lerp(s.oy, 0.45, easeOut(clamp((t - 0.3) / 0.3, 0, 1))) + Math.sin(t * 14) * 0.03;
+        else if (t < 1.6) o.y = lerp(0.45, 1.4, easeOut((t - 1.12) / 0.48));
+        o.x = clamp(o.x, -STAGE, STAGE);
+      }
+      // the ravens strike from both sides
+      for (let i = 0; i < 6; i++) {
+        if (t >= 0.44 + i * 0.11) once('rv' + i, () => {
+          this.emit('ravenStrike', { side: f.side, tx: s.lock ? o.x : s.tx, ty: (s.lock ? o.y : 0) + 1.2, i });
+          if (s.lock && o.state === 'locked') this.superHit(f, o, 13, 'rune', { stop: 0.03 });
+        });
+      }
+      // ascend
+      if (t >= 1.12 && t < 1.42) {
+        once('ascend', () => { s.ay0 = f.y; this.emit('odinAscend', { side: f.side, x: f.x }); });
+        f.y = lerp(s.ay0, 4.6, easeOut((t - 1.12) / 0.3));
+      } else if (t >= 1.42 && t < 1.8) {
+        f.y = 4.6 + Math.sin((t - 1.42) * 8) * 0.05;
+        if (t >= 1.44) once('charge', () => this.emit('gungnirCharge', { side: f.side, x: f.x, y: f.y }));
+        if (t >= 1.62) once('throw', () => this.emit('gungnirThrow', { side: f.side, fx: f.x + f.facing * 0.4, fy: f.y + 1.6, tx: s.lock ? o.x : s.tx, ty: (s.lock ? o.y : 0) + 1.0 }));
+      } else if (t >= 1.8) {
+        f.y = Math.max(0, lerp(4.6, 0, easeIn((t - 1.8) / 0.3)));
+      }
+      if (t >= 1.76) once('final', () => {
+        this.emit('superImpact', { side: f.side, x: s.lock ? o.x : s.tx, kind: 'gungnir' });
+        if (s.lock && o.state === 'locked') this.superHit(f, o, 185, 'rune', { final: true, launch: 8, kb: 5, stop: 0.3 });
+        else this.hitstop = 0.12;
+      });
     } else if (f.key === 'heracles') {
       // HERACLES: shoulder rush into a grab, lift overhead and slam three times, hurl skywards, home-run club blow
       if (t < 0.3) {
@@ -2417,8 +2536,9 @@ class Sim {
           else if (f.key === 'susanoo') this.startMove(f, d < 1.7 ? 's_rise' : 's_dash');
           else if (f.key === 'heracles') this.startMove(f, d < 1.4 ? 'h_upper' : 'h_club');
           else if (f.key === 'hades') this.startMove(f, d < 1.6 ? 'hd_rise' : 'hd_shade');
+          else if (f.key === 'odin') this.startMove(f, d < 1.6 ? 'o_rise' : 'o_slash');
           else this.startMove(f, d < 1.8 ? 'p_rise' : 'p_slash');
-          if (d < 1.8) f.plan = f.key === 'zeus' ? ['z_hammer'] : f.key === 'anubis' ? ['a_blink'] : f.key === 'thor' ? ['t_slam'] : f.key === 'susanoo' ? ['s_dash'] : f.key === 'heracles' ? ['h_smash'] : f.key === 'hades' ? [] : ['p_slash'];
+          if (d < 1.8) f.plan = f.key === 'zeus' ? ['z_hammer'] : f.key === 'anubis' ? ['a_blink'] : f.key === 'thor' ? ['t_slam'] : f.key === 'susanoo' ? ['s_dash'] : f.key === 'heracles' ? ['h_smash'] : f.key === 'hades' || f.key === 'odin' ? [] : ['p_slash'];
           return;
         }
       }
@@ -2430,7 +2550,7 @@ class Sim {
 
     // opponent on the floor -> reposition
     if (o.state === 'down' || o.state === 'getup' || o.state === 'locked') {
-      const want = f.key === 'zeus' ? 1.5 : f.key === 'thor' ? 1.6 : f.key === 'anubis' ? 1.3 : f.key === 'susanoo' ? 1.8 : f.key === 'heracles' ? 1.4 : f.key === 'hades' ? 2.0 : 2.2;
+      const want = f.key === 'zeus' ? 1.5 : f.key === 'thor' ? 1.6 : f.key === 'anubis' ? 1.3 : f.key === 'susanoo' ? 1.8 : f.key === 'heracles' ? 1.4 : f.key === 'hades' || f.key === 'odin' ? 2.0 : 2.2;
       if (d > want + 0.6) this.walk(f, toward, 0.25);
       else if (d < want - 0.6) this.walk(f, -toward, 0.2);
       else this.idle(f, 0.15);
@@ -2490,6 +2610,23 @@ class Sim {
         if (r < c.aggro * L.aggro) this.startRoute(f, o);
         else if (r < 0.94) this.dash(f, -toward, 0.22);
         else this.idle(f, 0.15);
+      }
+    } else if (f.key === 'odin') {
+      if (d > 4.6) {
+        if (r < 0.22 && !this.weaponOut(f)) this.startMove(f, 'o_spear');
+        else if (r < 0.38) this.startMove(f, 'o_ravens');
+        else if (r < 0.62) this.walk(f, toward, 0.4);
+        else this.dash(f, toward, 0.34);
+      } else if (d > 1.9) {
+        if (r < 0.14 && d < 5.5) this.startMove(f, 'o_rune');
+        else if (r < 0.24 && !this.weaponOut(f)) this.startMove(f, 'o_spear');
+        else if (r < 0.32) this.jump(f, toward);
+        else if (r < 0.5) this.dash(f, toward, 0.22);
+        else this.walk(f, toward, 0.25);
+      } else {
+        if (r < c.aggro * L.aggro) this.startRoute(f, o);
+        else if (r < 0.92) this.walk(f, -toward, 0.3);
+        else this.idle(f, 0.2);
       }
     } else if (f.key === 'hades') {
       if (d > 4.6) {
@@ -2690,6 +2827,7 @@ const SKEL = {
   anubis: { hipH: 1.0, spine: 0.13, chest: 0.25, neck: 0.26, head: 0.1, shX: 0.26, shY: 0.21, upper: 0.3, fore: 0.27, hand: 0.08, hipX: 0.1, hipY: -0.05, thigh: 0.47, shin: 0.47, foot: 0.07, toe: 0.14 },
   thor: { hipH: 1.08, spine: 0.15, chest: 0.28, neck: 0.3, head: 0.115, shX: 0.35, shY: 0.24, upper: 0.33, fore: 0.3, hand: 0.095, hipX: 0.13, hipY: -0.06, thigh: 0.48, shin: 0.47, foot: 0.078, toe: 0.15 },
   poseidon: { hipH: 1.03, spine: 0.14, chest: 0.26, neck: 0.275, head: 0.105, shX: 0.265, shY: 0.225, upper: 0.31, fore: 0.28, hand: 0.085, hipX: 0.105, hipY: -0.05, thigh: 0.46, shin: 0.45, foot: 0.07, toe: 0.14 },
+  odin: { hipH: 1.1, spine: 0.15, chest: 0.28, neck: 0.29, head: 0.112, shX: 0.33, shY: 0.24, upper: 0.33, fore: 0.3, hand: 0.092, hipX: 0.125, hipY: -0.058, thigh: 0.49, shin: 0.48, foot: 0.078, toe: 0.15 },
   hades: { hipH: 1.07, spine: 0.14, chest: 0.27, neck: 0.29, head: 0.11, shX: 0.3, shY: 0.23, upper: 0.32, fore: 0.29, hand: 0.09, hipX: 0.115, hipY: -0.055, thigh: 0.48, shin: 0.47, foot: 0.075, toe: 0.145 },
   heracles: { hipH: 1.1, spine: 0.15, chest: 0.29, neck: 0.3, head: 0.115, shX: 0.37, shY: 0.245, upper: 0.34, fore: 0.31, hand: 0.1, hipX: 0.135, hipY: -0.06, thigh: 0.49, shin: 0.48, foot: 0.08, toe: 0.155 },
 };
@@ -3061,7 +3199,24 @@ HDP.backstep = mk(HDP.stance, { spine: [-0.1, -0.1, 0], lHip: [-0.2, 0, 0.12], l
 HDP.jump = mk(HDP.airWind, { air: true });
 HDP.crouch = mk(HDP.stance, { y: -0.44, z: 0.04, spine: [0.32, -0.1, 0], chest: [0.1, -0.1, 0], head: [-0.25, 0.3, 0], lHip: [-1.2, 0, 0.18], lKn: [2.0, 0, 0], lAn: [-0.6, 0, 0], rHip: [-1.05, 0, 0.18], rKn: [2.0, 0, 0], rAn: [-0.7, 0, 0] });
 HDP.crouchBlock = mk(HDP.block, { y: -0.44, z: 0.02, spine: [0.4, 0, 0], head: [-0.2, 0.1, 0], lHip: [-1.2, 0, 0.18], lKn: [2.0, 0, 0], lAn: [-0.6, 0, 0], rHip: [-1.05, 0, 0.18], rKn: [2.0, 0, 0], rAn: [-0.7, 0, 0] });
-const POSES = { zeus: ZP, poseidon: PP, anubis: AP, thor: TP, susanoo: SUP, heracles: HEP, hades: HDP };
+// ODIN: the polearm library of the underworld king, re-stanced as an upright, regal spear-bearer
+const ODP = {};
+for (const k in HDP) ODP[k] = copyPoseP(HDP[k]);
+function copyPoseP(q) { const r = {}; for (const k in q) r[k] = Array.isArray(q[k]) ? q[k].slice() : q[k]; return r; }
+// stance: tall and still, chin slightly lowered, the free hand open and low with a rune burning in the palm
+ODP.stance = mk(HDP.stance, { y: -0.02, hips: [0, -0.3, 0], spine: [-0.02, -0.08, 0], chest: [-0.06, -0.08, 0], neck: [0.05, 0.15, 0], head: [0.12, 0.3, 0],
+  lHip: [-0.22, 0, 0.12], lKn: [0.18, 0, 0], lAn: [-0.02, 0, 0], rHip: [0.18, 0, 0.12], rKn: [0.14, 0, 0], rAn: [-0.2, 0, 0],
+  lSh: [-0.75, 0.1, 0.32], lEl: [-0.55, 0, 0], lWr: [0.85, 0, 0] });
+ODP.backstep = mk(ODP.stance, { spine: [-0.1, -0.1, 0], lHip: [-0.1, 0, 0.12], lKn: [0.5, 0, 0], rHip: [0.12, 0, 0.12], rKn: [0.6, 0, 0] });
+ODP.crouch = mk(ODP.stance, { y: -0.44, z: 0.04, spine: [0.3, -0.1, 0], chest: [0.1, -0.1, 0], head: [-0.2, 0.3, 0], lHip: [-1.2, 0, 0.18], lKn: [2.0, 0, 0], lAn: [-0.6, 0, 0], rHip: [-1.05, 0, 0.18], rKn: [2.0, 0, 0], rAn: [-0.7, 0, 0] });
+// spear throw: weapon drawn back high over the shoulder, then whipped forward
+ODP.throwWind = mk(HDP.slamWind, { hips: [0, -0.5, 0], spine: [-0.1, -0.3, 0], chest: [-0.1, -0.5, 0], head: [-0.05, 0.6, 0], lSh: [-1.5, 0, 0.3], lEl: [-0.2, 0, 0], lWr: [0.4, 0, 0] });
+ODP.throw = mk(HDP.jab, { lSh: [0.6, 0, 0.6], lEl: [-0.6, 0, 0] });
+// rune planted into the ground with the free hand
+ODP.runePlant = mk(HDP.sweepEnd, { lSh: [-1.0, 0, 0.2], lEl: [-0.2, 0, 0], lWr: [1.2, 0, 0], spine: [0.5, 0, 0], chest: [0.1, 0, 0], head: [-0.4, 0, 0] });
+// intro / win: spear upright, gaze lowered at the challenger
+ODP.intro = mk(ODP.stance, { head: [0.18, 0.2, 0], lSh: [0.15, 0, 0.5], lEl: [-1.7, 0, 0], lWr: [0.2, 0, 0] });
+const POSES = { zeus: ZP, poseidon: PP, anubis: AP, thor: TP, susanoo: SUP, heracles: HEP, hades: HDP, odin: ODP };
 
 // ------------------------------------------------------------
 //  Blending helpers
@@ -5071,8 +5226,184 @@ function buildHades(T) {
   return M;
 }
 
+// ============================================================
+//  ODIN  (the one-eyed Allfather: winged helm, silver mane and long beard, wolf-fur mantle over
+//         rune-etched steel, a raven on the shoulder and the spear Gungnir)
+// ============================================================
+function buildOdin(T) {
+  const M = makeSkeleton('odin');
+  const { j } = M;
+  const P = new PartSet();
 
-return { canvasTex, enhanceModel, buildZeus, buildPoseidon, updateCape, buildAnubis, buildThor, buildSusanoo, buildHeracles, buildHades, SPH };
+  const skin = new THREE.MeshPhysicalMaterial({ color: 0xd9b49a, roughness: 0.6, sheen: 0.4, sheenColor: new THREE.Color(0xffd8c0), sheenRoughness: 0.5 });
+  const steel = new THREE.MeshPhysicalMaterial({ color: 0xa8b4c8, metalness: 0.75, roughness: 0.32, clearcoat: 0.6, clearcoatRoughness: 0.2 });
+  const darkSteel = new THREE.MeshStandardMaterial({ color: 0x2a3040, metalness: 0.85, roughness: 0.35 });
+  const gold = new THREE.MeshStandardMaterial({ color: 0xd8a848, metalness: 1, roughness: 0.25 });
+  const robe = new THREE.MeshStandardMaterial({ color: 0x3a4a80, map: robeTex(), roughness: 0.85, side: THREE.DoubleSide });
+  const fur = new THREE.MeshStandardMaterial({ color: 0x8a8580, roughness: 1 });
+  const furDark = new THREE.MeshStandardMaterial({ color: 0x4a4440, roughness: 1 });
+  const hair = new THREE.MeshPhysicalMaterial({ color: 0xe6e2da, roughness: 0.5, sheen: 1, sheenColor: new THREE.Color(0x9fc8ff), sheenRoughness: 0.4 });
+  const rune = new THREE.MeshStandardMaterial({ color: 0x0a1020, emissive: new THREE.Color(0.6, 1.3, 2.2), emissiveIntensity: 0.9, roughness: 0.3 });
+  const eye = new THREE.MeshBasicMaterial({ color: new THREE.Color(0.6, 1.1, 1.8) });
+  const leather = new THREE.MeshStandardMaterial({ color: 0x1a1210, roughness: 0.7 });
+  const wood = new THREE.MeshStandardMaterial({ color: 0x3a2618, roughness: 0.6 });
+  const raven = new THREE.MeshStandardMaterial({ color: 0x0c0c14, roughness: 0.35, metalness: 0.3 });
+
+  // ---- hips: steel war-belt with a rune buckle, long skirt panels ----
+  P.add(j.hips, lathe([[0, -0.17], [0.17, -0.15], [0.24, -0.08], [0.255, 0.02], [0.245, 0.15], [0, 0.17]]), robe, [0, 0, 0], [0, 0, 0], [1, 1, 0.72]);
+  P.add(j.hips, lathe([[0.25, 0.0], [0.265, 0.03], [0.265, 0.13], [0.25, 0.16]], 48), darkSteel, [0, 0, 0], [0, 0, 0], [1, 1, 0.74]);
+  P.add(j.hips, new THREE.TorusGeometry(0.055, 0.012, 8, 24), gold, [0, 0.08, 0.2]);
+  P.ell(j.hips, rune, [0, 0.08, 0.205], [0.03, 0.03, 0.01]);
+  for (const [z, ry] of [[0.18, 0], [-0.18, Math.PI]]) P.add(j.hips, new THREE.PlaneGeometry(0.3, 0.95, 1, 8).translate(0, -0.47, 0), robe, [0, 0.02, z], [ry ? 0.08 : -0.08, ry, 0]);
+  for (const s of [-1, 1]) P.add(j.hips, new THREE.PlaneGeometry(0.18, 0.6, 1, 4).translate(0, -0.3, 0), robe, [s * 0.23, 0.02, 0], [0, s * Math.PI / 2, s * 0.12]);
+  // steel tassets
+  for (const s of [-1, 0, 1]) P.add(j.hips, new THREE.BoxGeometry(0.12, 0.2, 0.015), s ? steel : gold, [s * 0.125, -0.1, 0.2], [-0.12, s * 0.25, 0]);
+
+  // ---- torso: rune-etched steel cuirass with gold trim ----
+  P.add(j.spine, lathe([[0, -0.06], [0.23, -0.05], [0.235, 0.06], [0.24, 0.16], [0.255, 0.26], [0.26, 0.31], [0, 0.32]]), steel, [0, 0, 0], [0, 0, 0], [1, 1, 0.7]);
+  for (let i = 0; i < 3; i++) P.add(j.spine, new THREE.TorusGeometry(0.245 + i * 0.005, 0.008, 6, 40), gold, [0, 0.04 + i * 0.1, 0], [Math.PI / 2, 0, 0], [1, 0.7, 1]);
+  const chProf = [[0, -0.07], [0.26, -0.06], [0.295, 0.04], [0.32, 0.15], [0.315, 0.23], [0.27, 0.3], [0.15, 0.335], [0, 0.345]];
+  P.add(j.chest, sculptLathe(chProf, MUSCLE.chest(0.8)), steel, [0, 0, 0], [0, 0, 0], [1, 1, 0.66]);
+  P.add(j.chest, new THREE.TorusGeometry(0.29, 0.012, 8, 48), gold, [0, -0.05, 0], [Math.PI / 2, 0, 0], [1, 0.66, 1]);
+  // valknut of glowing runes on the breastplate
+  for (let i = 0; i < 3; i++) {
+    const a = i * 2.094, tri = new THREE.TorusGeometry(0.045, 0.006, 4, 3);
+    P.add(j.chest, tri, rune, [Math.cos(a + 1.57) * 0.025, 0.14 + Math.sin(a + 1.57) * 0.025, 0.215], [0, 0, a + Math.PI / 6]);
+  }
+  // wolf-fur mantle around the shoulders
+  for (let i = 0; i < 22; i++) {
+    const a = (i / 21 - 0.5) * Math.PI * 1.9, r = 0.26;
+    if (Math.abs(a) < 0.5) continue;   // keep the throat and beard clear
+    P.add(j.chest, new THREE.ConeGeometry(0.045, 0.15, 5), i % 3 ? fur : furDark, [Math.sin(a) * r, 0.29, Math.cos(a) * r * 0.7 - 0.03], [Math.cos(a) * 1.2 + 0.4, 0, -Math.sin(a) * 1.3], [1, 1, 0.6]);
+  }
+  P.add(j.chest, new THREE.TorusGeometry(0.235, 0.045, 10, 36, Math.PI * 1.4), fur, [0, 0.29, -0.03], [Math.PI / 2, 0, Math.PI * 0.8], [1.1, 0.72, 0.6]);
+  for (const s of [-1, 1]) P.add(j.chest, new THREE.SphereGeometry(0.03, 12, 10), gold, [s * 0.15, 0.27, 0.17]);
+  // Muninn perched on the left shoulder
+  {
+    const RV = new THREE.Group(); RV.position.set(0.29, 0.47, -0.03); RV.rotation.y = 0.5;
+    const add = (g, pos, rot, sc, mat = raven) => { const m = new THREE.Mesh(g, mat); m.position.set(...pos); if (rot) m.rotation.set(...rot); if (sc) m.scale.set(...sc); m.castShadow = true; RV.add(m); };
+    add(new THREE.SphereGeometry(0.06, 14, 10), [0, 0.03, 0], [0.3, 0, 0], [0.8, 0.85, 1.4]);
+    add(new THREE.SphereGeometry(0.038, 12, 10), [0, 0.1, 0.07]);
+    add(new THREE.ConeGeometry(0.014, 0.06, 6), [0, 0.095, 0.125], [Math.PI / 2, 0, 0], null, darkSteel);
+    add(new THREE.ConeGeometry(0.04, 0.14, 4), [0, 0.0, -0.11], [-Math.PI / 2 - 0.4, 0, 0], [1, 1, 0.3]);
+    for (const s of [-1, 1]) { add(new THREE.SphereGeometry(0.05, 10, 8), [s * 0.04, 0.03, -0.02], [0.4, 0, s * 0.3], [0.35, 0.6, 1.6]); add(new THREE.SphereGeometry(0.006, 6, 4), [s * 0.022, 0.11, 0.1], null, null, eye); }
+    j.chest.add(RV);
+    M.raven = RV;
+  }
+
+  // ---- head: weathered noble face, eyepatch, silver mane, long braided beard, winged helm ----
+  P.add(j.neck, lathe([[0, -0.04], [0.085, -0.03], [0.078, 0.07], [0.074, 0.14], [0, 0.16]]), skin);
+  const H = j.head;
+  const brow = new THREE.MeshStandardMaterial({ color: 0xd8d4cc, roughness: 0.8 });
+  animeHead(P, H, { skin, hair, iris: eye, beard: true, browMat: brow, lip: 0x9a5a48, lash: 0x2a2420, browW: 0.0058, browTilt: 0.05, lashW: 1.1,
+    face: { jaw: 1.08, chin: 1.0, len: 1.06, hollow: 0.035, nose: 1.15, noseLen: 1.15, eyeW: 0.95, eyeH: 0.7, eyeTilt: 0.04, lid: 0.5, browY: 0.02, mouthW: 0.9, smile: 0.0 },
+    style: { bangs: 3, bangLen: 0.05, bangSweep: 0.9, side: 0.2, back: 15, backLen: 0.5, backLift: 0.12 } });
+  // eyepatch over the left eye (the eye given at Mimir's well) and its strap
+  P.ell(H, leather, [0.037, 0.094, 0.113], [0.027, 0.02, 0.005], [0, 0.35, 0]);
+  P.add(H, new THREE.TorusGeometry(0.118, 0.0045, 6, 40), leather, [0, 0.11, 0.0], [Math.PI / 2 + 0.25, 0.25, 0], [1, 1.02, 1]);
+  // long beard: braided locks falling to the chest
+  for (let i = 0; i < 9; i++) {
+    const u = (i - 4) / 4, L = 0.2 + (1 - Math.abs(u)) * 0.12;
+    const curve = new THREE.CatmullRomCurve3([new V3(u * 0.06, 0.01, 0.1), new V3(u * 0.07, -0.06, 0.12), new V3(u * 0.06, -0.06 - L * 0.6, 0.11), new V3(u * 0.045, -0.06 - L, 0.08)]);
+    const tg = new THREE.TubeGeometry(curve, 12, 0.022 - Math.abs(u) * 0.006, 6);
+    { const pa = tg.attributes.position; for (let k = 0; k < pa.count; k++) { const tt = Math.floor(k / 7) / 12, c = curve.getPointAt(Math.min(1, tt)), kk = 1 - 0.75 * tt; pa.setXYZ(k, c.x + (pa.getX(k) - c.x) * kk, c.y + (pa.getY(k) - c.y) * kk, c.z + (pa.getZ(k) - c.z) * kk); } tg.computeVertexNormals(); }
+    P.add(H, tg, hair);
+  }
+  for (const s of [-1, 1]) P.add(H, new THREE.TorusGeometry(0.014, 0.005, 6, 12), gold, [s * 0.03, -0.22, 0.1], [Math.PI / 2, 0, 0]);
+  // winged helm: steel cap, gold brow band, a pair of swept wings
+  P.add(H, new THREE.SphereGeometry(0.128, 28, 14, 0, Math.PI * 2, 0, Math.PI * 0.42), steel, [0, 0.14, -0.012], [-0.12, 0, 0], [1, 0.92, 1.05]);
+  P.add(H, lathe([[0.125, 0.12], [0.13, 0.14], [0.128, 0.165], [0.12, 0.175]], 36), gold, [0, 0.0, -0.01], [-0.12, 0, 0]);
+  P.add(H, new THREE.ConeGeometry(0.016, 0.07, 4), gold, [0, 0.16, 0.12], [0.1, 0, Math.PI], [1, 1, 0.4]);
+  for (const s of [-1, 1]) {
+    for (let k = 0; k < 5; k++) {
+      const len = 0.16 + k * 0.025;
+      P.add(H, new THREE.ConeGeometry(0.03, len, 4).translate(0, len / 2, 0), k % 2 ? hair : steel, [s * 0.125, 0.17, -0.02 - k * 0.012], [-0.6 - k * 0.12, 0, s * (-0.9 + k * 0.06)], [1, 1, 0.22]);
+    }
+  }
+
+  // ---- arms: layered steel pauldrons, gold-banded vambraces ----
+  for (const [s, sg] of [['l', 1], ['r', -1]]) {
+    const sh = j[s + 'Sh'], el = j[s + 'El'], wr = j[s + 'Wr'];
+    P.add(sh, sculpt(muscleLimb(0.33, 0.08, 0.06, 0.012, 0.6), MUSCLE.upperArm(0.75)), skin);
+    P.ell(sh, skin, [sg * 0.012, -0.03, 0], [0.092, 0.1, 0.092]);
+    for (let k = 0; k < 3; k++) P.add(sh, new THREE.SphereGeometry(0.135 - k * 0.014, 24, 10, 0, Math.PI * 2, 0, Math.PI * 0.42), k === 1 ? gold : steel, [sg * (0.015 + k * 0.012), 0.025 - k * 0.045, 0], [0, 0, sg * -(0.35 + k * 0.12)], [1, 0.7, 0.95]);
+    P.add(el, sculpt(muscleLimb(0.29, 0.068, 0.048, 0.012, 0.72), MUSCLE.forearm(0.7)), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.88]);
+    P.add(el, lathe([[0.058, -0.28], [0.063, -0.25], [0.076, -0.1], [0.074, -0.06]], 28), steel, [0, 0, 0], [0, 0, 0], [1, 1, 0.92]);
+    for (const y of [-0.24, -0.09]) P.add(el, new THREE.TorusGeometry(0.068, 0.007, 6, 24), gold, [0, y, 0], [Math.PI / 2, 0, 0], [1, 0.92, 1]);
+    P.ell(el, rune, [0, -0.16, 0.074], [0.016, 0.03, 0.006]);
+    P.ell(wr, skin, [0, -0.05, 0.008], [0.047, 0.058, 0.053]);
+    P.ell(wr, skin, [0, -0.095, 0.022], [0.044, 0.03, 0.038]);
+    P.ell(wr, skin, [sg * -0.034, -0.055, 0.04], [0.017, 0.031, 0.017], [0.4, 0, 0]);
+    // legs: dark trousers under the skirt, steel greaves, fur-topped boots
+    const hp = j[s + 'Hip'], kn = j[s + 'Kn'];
+    P.add(hp, lathe([[0.1, 0.03], [0.118, -0.12], [0.118, -0.3], [0.1, -0.47]], 26), robe);
+    P.add(kn, muscleLimb(0.47, 0.068, 0.046, 0.0, 0.7), skin);
+    P.add(kn, lathe([[0.054, -0.45], [0.064, -0.36], [0.072, -0.2], [0.076, -0.04], [0.072, 0.0]], 26), steel, [0, 0, 0.006], [0, 0, 0], [1, 1, 0.95]);
+    P.add(kn, new THREE.TorusGeometry(0.075, 0.025, 8, 20), fur, [0, -0.06, 0], [Math.PI / 2, 0, 0]);
+    P.add(kn, new THREE.SphereGeometry(0.05, 12, 8), gold, [0, 0.0, 0.06], [0, 0, 0], [1, 1, 0.5]);
+  }
+  addDetail(P, j, { skin, hair, sole: leather, strap: leather, metal: gold }, { anime: true, k: 0.9, eye: [0.04, 0.108, 0.106], lip: 0x6a4a40, curls: false, armored: true });
+  P.build();
+
+  // ---- Gungnir: ash-wood shaft bound in gold, leaf blade carved with burning runes ----
+  const sp = new THREE.Group();
+  const SP = new PartSet();
+  SP.add(sp, new THREE.CylinderGeometry(0.019, 0.023, 2.3, 10), wood, [0, 0, 0.35], [Math.PI / 2, 0, 0]);
+  for (const z of [-0.7, -0.2, 0.1, 0.6, 1.25]) SP.add(sp, new THREE.TorusGeometry(0.027, 0.008, 6, 16), gold, [0, 0, z]);
+  for (let k = 0; k < 4; k++) SP.ell(sp, rune, [0, 0.02, 0.75 + k * 0.1], [0.008, 0.004, 0.03]);
+  SP.add(sp, new THREE.ConeGeometry(0.032, 0.14, 6), gold, [0, 0, -0.86], [-Math.PI / 2, 0, 0]);
+  SP.add(sp, new THREE.CylinderGeometry(0.045, 0.03, 0.12, 8), gold, [0, 0, 1.52], [Math.PI / 2, 0, 0]);
+  // leaf-shaped blade
+  const blade = lathe([[0, 0], [0.05, 0.05], [0.075, 0.16], [0.065, 0.3], [0.03, 0.42], [0, 0.5]], 16);
+  SP.add(sp, blade, steel, [0, 0, 1.57], [Math.PI / 2, 0, 0], [1, 1, 0.22]);
+  SP.add(sp, new THREE.BoxGeometry(0.008, 0.36, 0.024), rune, [0, 0, 1.78], [Math.PI / 2, 0, 0]);
+  for (const s2 of [-1, 1]) SP.add(sp, new THREE.ConeGeometry(0.02, 0.12, 4), gold, [s2 * 0.06, 0, 1.5], [-Math.PI / 2, 0, s2 * 0.6], [1, 1, 0.4]);
+  SP.build();
+  sp.position.set(0, -SKEL.odin.hand * 0.6, 0);
+  j.rWr.add(sp);
+  const spGlow = glowSprite(T.glow, 0x9fd4ff, 1.1);
+  spGlow.position.set(0, 0, 1.8);
+  sp.add(spGlow);
+  // a rune burning over the left palm
+  const runeFire = glowSprite(T.glow, 0x8fd0ff, 0.5);
+  runeFire.position.set(0, -0.13, 0.08);
+  j.lWr.add(runeFire);
+
+  // ---- deep blue cloak with a gold-rune hem ----
+  const capeGeo = new THREE.PlaneGeometry(0.72, 1.4, 10, 18);
+  capeGeo.translate(0, -0.7, 0);
+  {
+    const pos = capeGeo.attributes.position, cols = [];
+    for (let i = 0; i < pos.count; i++) if (pos.getY(i) > 0) pos.setY(i, 0);
+    for (let i = 0; i < pos.count; i++) {
+      const v = -pos.getY(i) / 1.4, u = Math.abs(pos.getX(i)) / 0.36;
+      const c = new THREE.Color(0x141c38).lerp(new THREE.Color(0x0a0e1e), Math.pow(v, 1.4));
+      if (v > 0.9) c.lerp(new THREE.Color(0xd8a848), 0.85);
+      if (u > 0.9) c.lerp(new THREE.Color(0x8a6a2a), 0.6);
+      cols.push(c.r, c.g, c.b);
+    }
+    capeGeo.setAttribute('color', new THREE.Float32BufferAttribute(cols, 3));
+  }
+  const capeBase = capeGeo.attributes.position.array.slice();
+  const cape = new THREE.Mesh(capeGeo, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.75, metalness: 0.1, side: THREE.DoubleSide }));
+  cape.castShadow = true;
+  cape.position.set(0, 0.33, -0.22);
+  j.chest.add(cape);
+
+  M.trident = sp; M.triGlow = spGlow; M.spear = sp; M.soulFire = runeFire;
+  M.trails = [
+    { obj: sp, a: new V3(0, 0, 1.0), b: new V3(0, 0, 2.05), color: [0.7, 1.2, 2.0], core: [2.2, 2.4, 2.8], spark: 'rune' },
+    { obj: j.lWr, a: new V3(0, -0.06, 0.04), b: new V3(0, -0.16, 0.08), color: [0.6, 1.1, 1.9], core: [2.0, 2.2, 2.6], spark: 'rune' },
+  ];
+  M.cape = { mesh: cape, geo: capeGeo, base: capeBase, sway: 0 };
+  M.mats = { skin, gold, gem: rune, eye };
+  M.color = new THREE.Color(0.8, 1.2, 2.0);
+  enhanceModel(M.root, 0x9fd4ff, 0.5);
+  return M;
+}
+
+
+return { canvasTex, enhanceModel, buildZeus, buildPoseidon, updateCape, buildAnubis, buildThor, buildSusanoo, buildHeracles, buildHades, buildOdin, SPH };
 })();
 
 // ======== fx.js ========
@@ -5342,7 +5673,7 @@ return { makeFxTextures, Particles, Bolts, waterMaterial, Timed };
 const __game = (() => {
 const { Sim, DT, STAGE, CHARS, HUMAN, AUTO, SUPER_K } = __sim;
 const { SKEL, POSES, JOINTS, sampleAnim, blend, copyPose, cyclePose } = __poses;
-const { canvasTex, buildZeus, buildPoseidon, buildAnubis, buildThor, buildSusanoo, buildHeracles, buildHades, updateCape } = __models;
+const { canvasTex, buildZeus, buildPoseidon, buildAnubis, buildThor, buildSusanoo, buildHeracles, buildHades, buildOdin, updateCape } = __models;
 const { makeFxTextures, Particles, Bolts, waterMaterial, Timed } = __fx;
 // ============================================================
 //  GAME : renderer, stage, fighters' visuals, camera, HUD, audio
@@ -5791,6 +6122,8 @@ const COL = {
   storm: [0.7, 1.9, 1.35],
   might: [1.9, 1.15, 0.35],
   hell: [1.9, 0.3, 0.6],
+  odin: [0.8, 1.3, 2.1],
+  rune: [1.9, 1.5, 0.6],
 };
 const VIOLET = new THREE.Color(1.0, 0.5, 1.9);
 const violetBolt = (a, b, o = {}) => bolts.spawn(a, b, Object.assign({ color: VIOLET }, o));
@@ -5850,6 +6183,13 @@ function hitFx(e) {
     glowPuff(x, y, z, 0xff4a70, 2.2 * p, 0.26);
     ring(x, y, z, 0xff8aa0, 2.2 * p, 0.24, true);
     lightFlash(x, y, 0xff3060, 60 * p);
+  } else if (e.fx === 'rune') {
+    addP.burst(30, x, y, z, 8, { life: [0.15, 0.42], size: [0.05, 0.13], color: COL.odin, drag: 4 });
+    addP.burst(12, x, y, z, 5, { life: [0.2, 0.5], size: [0.04, 0.1], color: COL.rune, drag: 3 });
+    glowPuff(x, y, z, 0x9fd4ff, 2.2 * p, 0.26);
+    ring(x, y, z, 0xffe6a0, 2.3 * p, 0.26, true);
+    if (p > 0.6) runeRing(x, y, z, 1.6 * p, 0.35, true);
+    lightFlash(x, y, 0x9fc8ff, 70 * p);
   } else if (e.fx === 'might') {
     addP.burst(34, x, y, z, 8, { life: [0.15, 0.4], size: [0.06, 0.16], color: COL.might, drag: 4 });
     glowPuff(x, y, z, 0xffc070, 2.4 * p, 0.26);
@@ -5971,6 +6311,43 @@ function projSpawn(p) {
     disc.rotation.x = -Math.PI / 2; disc.position.y = 0.02;
     g.add(hs, disc); g.userData.hands = hs; g.userData.mats = [];
     g.position.y = 0;
+  } else if (p.kind === 'gungnir') {
+    // Gungnir in flight: the spear itself, wreathed in rune-light
+    const steel = new THREE.MeshStandardMaterial({ color: 0x9aa8c0, metalness: 0.9, roughness: 0.25, emissive: new THREE.Color(0.3, 0.6, 1.2), emissiveIntensity: 0.9 });
+    const wood = new THREE.MeshStandardMaterial({ color: 0x3a2618, roughness: 0.6 });
+    const sp = new THREE.Group();
+    const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.024, 0.028, 2.1, 8), wood); shaft.rotation.z = Math.PI / 2; sp.add(shaft);
+    const bl = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.5, 4), steel); bl.rotation.z = -Math.PI / 2; bl.position.x = 1.3; bl.scale.z = 0.3; sp.add(bl);
+    const core = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.03, 0.03), new THREE.MeshBasicMaterial({ color: new THREE.Color(1.6, 2.2, 3.2) })); sp.add(core);
+    sp.scale.x = Math.sign(p.vx) || 1;
+    const s2 = new THREE.Sprite(new THREE.SpriteMaterial({ map: FT.glow, color: 0x9fd4ff, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false })); s2.scale.set(3.2, 1.2, 1); s2.position.x = (Math.sign(p.vx) || 1) * 0.9;
+    g.add(sp, s2); g.userData.sp = sp; g.userData.mats = [];
+  } else if (p.kind === 'raven') {
+    // Huginn and Muninn
+    const m = new THREE.MeshStandardMaterial({ color: 0x0c0c14, roughness: 0.35, metalness: 0.3, emissive: new THREE.Color(0.05, 0.1, 0.25) });
+    const eyeM = new THREE.MeshBasicMaterial({ color: new THREE.Color(1.2, 2.0, 3.0) });
+    const birds = [];
+    for (const off of [[0, 0.25, 0], [-0.45, -0.2, 0.15]]) {
+      const b = new THREE.Group();
+      const body = new THREE.Mesh(new THREE.SphereGeometry(0.14, 12, 8), m); body.scale.set(1.6, 0.7, 0.75); b.add(body);
+      const head = new THREE.Mesh(new THREE.SphereGeometry(0.09, 10, 8), m); head.position.set(0.2, 0.05, 0); b.add(head);
+      const beak = new THREE.Mesh(new THREE.ConeGeometry(0.03, 0.12, 6), m); beak.rotation.z = -Math.PI / 2; beak.position.set(0.32, 0.03, 0); b.add(beak);
+      const e2 = new THREE.Mesh(new THREE.SphereGeometry(0.018, 6, 4), eyeM); e2.position.set(0.25, 0.08, 0.06); b.add(e2);
+      const tail = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.26, 4), m); tail.rotation.z = Math.PI / 2; tail.position.set(-0.3, 0, 0); tail.scale.z = 0.3; b.add(tail);
+      const wings = [];
+      for (const sz of [-1, 1]) { const w = new THREE.Mesh(new THREE.PlaneGeometry(0.34, 0.5).translate(0, 0, 0), m.clone()); w.material.side = THREE.DoubleSide; const piv = new THREE.Group(); w.position.z = sz * 0.25; w.rotation.x = Math.PI / 2; piv.add(w); b.add(piv); wings.push([piv, sz]); }
+      b.position.set(...off); b.userData.wings = wings; birds.push(b);
+    }
+    const flock = new THREE.Group(); birds.forEach((b) => flock.add(b)); flock.scale.x = Math.sign(p.vx) || 1;
+    const s2 = new THREE.Sprite(new THREE.SpriteMaterial({ map: FT.glow, color: 0x6fa8ff, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false })); s2.scale.setScalar(1.8);
+    g.add(flock, s2); g.userData.birds = birds; g.userData.mats = [];
+  } else if (p.kind === 'runeTrap') {
+    // a rune carved under the foe erupts into a pillar of light
+    const disc = new THREE.Mesh(new THREE.PlaneGeometry(2.2, 2.2), new THREE.MeshBasicMaterial({ map: runeCircleTex(), color: new THREE.Color(1.4, 1.8, 2.6), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }));
+    disc.rotation.x = -Math.PI / 2; disc.position.y = 0.03;
+    const pil = lightBeam(0x9fd4ff, 0.55, 0.75, 4, 0.0);
+    g.add(disc, pil); g.userData.disc = disc; g.userData.pil = pil; g.userData.mats = [];
+    g.position.y = 0;
   } else if (p.kind === 'rock') {
     const rockG = new THREE.DodecahedronGeometry(0.42, 1);
     { const q = rockG.attributes.position; for (let i = 0; i < q.count; i++) { const k = 0.8 + Math.random() * 0.35; q.setXYZ(i, q.getX(i) * k, q.getY(i) * k, q.getZ(i) * k); } rockG.computeVertexNormals(); }
@@ -6014,6 +6391,7 @@ function projEnd(p, hit) {
   else if (p.kind === 'vortex') { normP.burst(40, p.x, 1, 0.1, 6, { life: [0.4, 0.9], size: [0.08, 0.18], color: [0.8, 0.97, 1], alpha: 0.9, grav: 10, up: 4 }); }
   else if (p.kind === 'quake') { dust(p.x, 20, 1.6); }
   else if (p.kind === 'cerberus' || p.kind === 'hands') { addP.burst(30, p.x, p.kind === 'hands' ? 1 : p.y, 0.1, 5, { life: [0.2, 0.5], size: [0.06, 0.14], color: COL.hell, drag: 3, up: 2 }); }
+  else if (p.kind === 'gungnir' || p.kind === 'raven' || p.kind === 'runeTrap') { addP.burst(24, p.x, p.kind === 'runeTrap' ? 1 : p.y, 0.1, 5, { life: [0.15, 0.4], size: [0.05, 0.13], color: COL.odin, drag: 4 }); glowPuff(p.x, p.kind === 'runeTrap' ? 1 : p.y, 0.1, 0x9fd4ff, 1.8, 0.25); if (p.kind === 'raven') normP.burst(20, p.x, p.y, 0.1, 3, { life: [0.5, 1.0], size: [0.05, 0.1], color: [0.05, 0.05, 0.08], alpha: 0.9, grav: 3, drag: 1.5 }); }
   else if (p.kind === 'rock') { normP.burst(30, p.x, Math.max(0.4, p.y), 0.1, 6, { life: [0.4, 0.9], size: [0.06, 0.16], color: [0.5, 0.42, 0.34], alpha: 1, grav: 14, up: 3, drag: 0.5 }); dust(p.x, 14, 1.2); }
   else if (p.kind === 'gale') { addP.burst(26, p.x, p.y, 0.1, 6, { life: [0.12, 0.35], size: [0.05, 0.13], color: COL.storm, drag: 4 }); glowPuff(p.x, p.y, 0.1, 0xb8ffe0, 2, 0.25); }
   else { normP.burst(30, p.x, 0.6, 0.1, 5, { life: [0.4, 0.9], size: [0.08, 0.18], color: [0.8, 0.97, 1], alpha: 0.85, grav: 12, up: 3, drag: 1 }); }
@@ -6063,6 +6441,22 @@ function updateProjViews(dt) {
       const rise = clamp((v.t - 0.22) / 0.14, 0, 1), sink = clamp((v.t - 0.6) / 0.15, 0, 1);
       v.g.userData.hands.position.y = (rise - sink) * 1.25;
       if (Math.random() < 0.6) addP.burst(2, p.x + rand(-0.6, 0.6), 0.1, rand(-0.3, 0.3), 1.5, { life: [0.3, 0.6], size: [0.06, 0.14], color: COL.hell, up: 2.5, drag: 1 });
+    } else if (p.kind === 'gungnir') {
+      v.g.position.y = p.y;
+      v.g.userData.sp.scale.x = Math.sign(p.vx) || 1;
+      addP.burst(3, p.x - Math.sign(p.vx) * 0.6, p.y, 0.1, 0.8, { life: [0.12, 0.3], size: [0.06, 0.14], color: Math.random() < 0.7 ? COL.odin : COL.rune, drag: 2 });
+      if (Math.random() < 0.3) bolts.spawn(new V3(p.x, p.y, 0.1), new V3(p.x - Math.sign(p.vx) * rand(0.6, 1.4), p.y + rand(-0.4, 0.4), rand(-0.3, 0.3)), { r: 0.012, life: 0.07, segs: 6, branches: 0 });
+    } else if (p.kind === 'raven') {
+      v.g.position.y = p.y + Math.sin(v.t * 9) * 0.12;
+      for (const b of v.g.userData.birds) for (const [piv, sz] of b.userData.wings) piv.rotation.x = sz * Math.sin(v.t * 28 + sz) * 0.9;
+      if (Math.random() < 0.5) normP.burst(1, p.x - Math.sign(p.vx) * 0.4, p.y, 0.1, 1, { life: [0.4, 0.8], size: [0.05, 0.1], color: [0.05, 0.05, 0.08], alpha: 0.9, grav: 2, drag: 1.5 });
+      addP.burst(1, p.x, p.y, 0.1, 0.6, { life: [0.15, 0.3], size: [0.06, 0.12], color: COL.odin, drag: 2 });
+    } else if (p.kind === 'runeTrap') {
+      v.g.position.y = 0;
+      const show = clamp(v.t / 0.2, 0, 1), fire = clamp((v.t - 0.3) / 0.08, 0, 1), fade = clamp((v.t - 0.62) / 0.15, 0, 1);
+      v.g.userData.disc.material.opacity = show * (1 - fade); v.g.userData.disc.rotation.z += 0.05;
+      v.g.userData.pil.material.uniforms.uOp.value = fire * (1 - fade) * 0.9; v.g.userData.pil.scale.y = 0.2 + fire;
+      if (fire > 0 && Math.random() < 0.8) addP.burst(3, p.x + rand(-0.4, 0.4), 0.2, rand(-0.3, 0.3), 2, { life: [0.3, 0.6], size: [0.06, 0.14], color: Math.random() < 0.5 ? COL.odin : COL.rune, up: 6, drag: 1 });
     } else if (p.kind === 'rock') {
       v.g.position.y = p.y;
       v.g.userData.spin.rotation.z -= dt * 9 * Math.sign(p.vx || 1); v.g.userData.spin.rotation.x += dt * 4;
@@ -6388,8 +6782,107 @@ function lionSpirit(e) {
   timed.add(g, SUPER_LIFE(0.6), (o, k) => { m.opacity = (k < 0.2 ? k / 0.2 : k > 0.7 ? (1 - k) / 0.3 : 1) * 0.45; o.scale.setScalar(0.7 + k * 0.6); jaw.position.y = -0.95 - Math.sin(Math.min(1, k * 2) * Math.PI) * 0.4; });
   sfx.noise(1.0, 120, 600, 'lowpass', 0.6, 0.45); sfx.tone(90, 55, 1.0, 'sawtooth', 0.12);
 }
+
+// ---------------- ODIN ----------------
+let runeTexC = null;
+function runeCircleTex() {
+  if (runeTexC) return runeTexC;
+  runeTexC = canvasTex(512, 512, (g, w, h) => {
+    const cx = w / 2, cy = h / 2;
+    g.clearRect(0, 0, w, h); g.strokeStyle = '#ffffff'; g.fillStyle = '#ffffff'; g.lineCap = 'round';
+    for (const [r, lw] of [[240, 6], [222, 2], [150, 4], [70, 3]]) { g.lineWidth = lw; g.beginPath(); g.arc(cx, cy, r, 0, 7); g.stroke(); }
+    const R = 'ᚠᚢᚦᚨᚱᚲᚷᚹᚺᚾᛁᛃᛇᛈᛉᛊᛏᛒᛖᛗᛚᛜᛞᛟ';
+    g.font = 'bold 34px serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
+    for (let i = 0; i < 24; i++) { const a = (i / 24) * Math.PI * 2; g.save(); g.translate(cx + Math.cos(a) * 186, cy + Math.sin(a) * 186); g.rotate(a + Math.PI / 2); g.fillText(R[i], 0, 0); g.restore(); }
+    g.lineWidth = 5;
+    for (let i = 0; i < 3; i++) { g.save(); g.translate(cx, cy); g.rotate(i * 2.094); g.beginPath(); for (let k = 0; k < 3; k++) { const a = -Math.PI / 2 + k * 2.094; const x = Math.cos(a) * 60, y = Math.sin(a) * 60 + 22; k ? g.lineTo(x, y) : g.moveTo(x, y); } g.closePath(); g.stroke(); g.restore(); }
+  });
+  runeTexC.userData = { shared: true };
+  return runeTexC;
+}
+// a spinning ring of runes (floor or facing the camera)
+function runeRing(x, y, z, size, life, vertical = false, col = [1.4, 1.9, 2.8]) {
+  const m = new THREE.MeshBasicMaterial({ map: runeCircleTex(), color: new THREE.Color(...col), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide });
+  m.userData.own = true;
+  const mesh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), m);
+  if (!vertical) mesh.rotation.x = -Math.PI / 2;
+  mesh.position.set(x, y, z); mesh.renderOrder = 7;
+  timed.add(mesh, life, (o, k) => { const sc = size * (0.6 + 0.4 * easeOutC(Math.min(1, k * 3))); o.scale.set(sc, sc, sc); m.opacity = k < 0.15 ? k / 0.15 : 1 - Math.pow(Math.max(0, (k - 0.6) / 0.4), 1.5); if (vertical) { o.quaternion.copy(camera.quaternion); o.rotateZ(k * 2); } else o.rotation.z += 0.03; });
+  return mesh;
+}
+function odinRuneBind(e) {
+  runeRing(e.x, 0.04, 0, 4.2, SUPER_LIFE(1.5));
+  runeRing(e.x, 0.05, 0, 2.6, SUPER_LIFE(1.5), false, [2.4, 1.9, 0.8]);
+  const b = lightBeam(0x9fd4ff, 1.4, 1.6, 5, 0.0); b.position.set(e.x, 0, 0); b.material.userData.own = true;
+  const op = b.material.uniforms.uOp; timed.add(b, SUPER_LIFE(1.4), (o, k) => { op.value = (k < 0.1 ? k / 0.1 : k > 0.8 ? (1 - k) / 0.2 : 1) * 0.16; o.rotation.y += 0.02; });
+  for (let i = 0; i < 4; i++) { const a = (i / 4) * Math.PI * 2; bolts.spawn(new V3(e.x + Math.cos(a) * 1.8, 0.05, Math.sin(a) * 0.9), new V3(e.x, 1.2, 0.1), { r: 0.02, life: 0.4, segs: 10, branches: 0, color: new THREE.Color(1.2, 1.8, 2.8) }); }
+  sfx.ring([330, 495, 660, 990], 1.2, 0.08); sfx.tone(80, 160, 0.8, 'sine', 0.25);
+}
+function odinRaven(e) {
+  const side = e.i % 2 ? 1 : -1, from = new V3(e.tx + side * 7, e.ty + 2.5 + (e.i % 3) * 0.6, -1.5 + (e.i % 2));
+  const to = new V3(e.tx, e.ty, 0.2);
+  const m = new THREE.MeshStandardMaterial({ color: 0x0c0c14, roughness: 0.35, metalness: 0.3, emissive: new THREE.Color(0.08, 0.15, 0.35) }); m.userData.own = true;
+  const b = new THREE.Group();
+  const body = new THREE.Mesh(new THREE.SphereGeometry(0.2, 10, 8), m); body.scale.set(1.7, 0.7, 0.8); b.add(body);
+  const head = new THREE.Mesh(new THREE.SphereGeometry(0.12, 8, 6), m); head.position.set(0.3, 0.06, 0); b.add(head);
+  const wl = [];
+  for (const sz of [-1, 1]) { const piv = new THREE.Group(); const w = new THREE.Mesh(new THREE.PlaneGeometry(0.5, 0.75), m); w.rotation.x = Math.PI / 2; w.position.z = sz * 0.38; piv.add(w); b.add(piv); wl.push([piv, sz]); }
+  b.position.copy(from);
+  const dir = to.clone().sub(from); b.rotation.z = Math.atan2(dir.y, Math.abs(dir.x)); b.scale.x = Math.sign(dir.x) || 1;
+  m.side = THREE.DoubleSide;
+  const life = 0.16;
+  timed.add(b, life * 1.6, (o, k, dt, t) => { const kk = Math.min(1, t / life); o.position.lerpVectors(from, to, kk * kk); for (const [piv, sz] of wl) piv.rotation.x = sz * Math.sin(t * 40) * 0.9; if (kk >= 1) o.visible = false; });
+  setTimeout(() => {
+    normP.burst(16, to.x, to.y, 0.2, 4, { life: [0.4, 0.9], size: [0.05, 0.11], color: [0.05, 0.05, 0.08], alpha: 0.9, grav: 3, drag: 1.5 });
+    slashStreak(to.x, to.y, 0.3, 1.6, 0.18, side * 0.9, [1.0, 1.6, 2.6], 0.22);
+    sfx.tone(1100, 600, 0.1, 'sawtooth', 0.04);
+  }, life * 1000);
+  sfx.whoosh(0.9);
+}
+function odinAscend(e) {
+  const b = lightBeam(0xffe6a0, 1.0, 0.6, 14, 0.0); b.position.set(e.x, 0, 0); b.material.userData.own = true;
+  const op = b.material.uniforms.uOp; timed.add(b, 0.8, (o, k) => { op.value = 0.7 * (1 - k); o.scale.set(1 - k * 0.5, Math.min(1, k * 4), 1 - k * 0.5); });
+  ring(e.x, 0.05, 0, 0xffe6a0, 6, 0.6); runeRing(e.x, 0.05, 0, 3.2, 0.9, false, [2.4, 1.9, 0.8]); dust(e.x, 24, 1.6);
+  addP.burst(60, e.x, 0.5, 0, 6, { life: [0.4, 0.9], size: [0.06, 0.14], color: COL.rune, up: 10, drag: 1 });
+  sfx.whoosh(2.5); sfx.ring([523, 784, 1046], 0.9, 0.06);
+}
+function odinCharge(e) {
+  const v = views[e.side]; if (!v || !v.m.spear) return;
+  for (let i = 0; i < 3; i++) setTimeout(() => { const p = new V3(0, 0, 1.8); v.m.spear.localToWorld(p); runeRing(p.x, p.y, p.z + 0.2, 1.4 + i * 0.8, 0.45, true, i % 2 ? [2.4, 1.9, 0.8] : [1.4, 1.9, 2.8]); for (let k = 0; k < 3; k++) bolts.spawn(new V3(p.x + rand(-4, 4), p.y + 4, -1), p.clone(), { r: 0.025, life: 0.14, segs: 10, branches: 1 }); }, i * 90);
+  stage.flash = Math.max(stage.flash, 0.5); sfx.bolt(true);
+}
+function odinThrow(e) {
+  const from = new V3(e.fx, e.fy, 0.2), to = new V3(e.tx, e.ty, 0.2);
+  const m = new THREE.MeshBasicMaterial({ color: new THREE.Color(2.2, 2.6, 3.4), transparent: true }); m.userData.own = true;
+  const g = new THREE.Group();
+  const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.08, 4.2, 8), m); g.add(shaft);
+  const tip = new THREE.Mesh(new THREE.ConeGeometry(0.22, 1.2, 4), m); tip.position.y = 2.6; tip.scale.z = 0.3; g.add(tip);
+  const glow = new THREE.Sprite(new THREE.SpriteMaterial({ map: FT.glow, color: 0x9fd4ff, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false })); glow.material.userData.own = true; glow.scale.set(2.5, 5, 1); g.add(glow);
+  const dir = to.clone().sub(from); g.rotation.z = Math.atan2(dir.y, dir.x) - Math.PI / 2;
+  g.position.copy(from);
+  const life = SUPER_LIFE(0.14);
+  timed.add(g, life, (o, k) => { o.position.lerpVectors(from, to, k * k); addP.burst(6, o.position.x, o.position.y, 0.2, 1, { life: [0.15, 0.35], size: [0.1, 0.22], color: COL.odin, drag: 2 }); if (Math.random() < 0.7) bolts.spawn(o.position.clone(), o.position.clone().add(new V3(rand(-1.2, 1.2), rand(-0.8, 0.8), rand(-0.4, 0.4))), { r: 0.025, life: 0.1, segs: 8, branches: 1 }); });
+  slashStreak((from.x + to.x) / 2, (from.y + to.y) / 2, 0.15, from.distanceTo(to), 0.25, Math.atan2(dir.y, dir.x) - Math.PI / 2, [1.4, 1.9, 2.8], 0.4);
+  sfx.noise(0.4, 3000, 600, 'bandpass', 1, 0.3); sfx.ring([880, 1320], 0.4, 0.06);
+}
+function odinImpact(x) {
+  const b = lightBeam(0x9fd4ff, 1.4, 2.6, 22, 0.95); b.position.set(x, 0, 0); b.material.userData.own = true;
+  const op = b.material.uniforms.uOp; timed.add(b, 1.3, (o, k) => { o.scale.set(1 + k * 0.6, Math.min(1, k * 6), 1 + k * 0.6); op.value = 0.95 * (1 - k); });
+  const b2 = lightBeam(0xffe6a0, 0.6, 1.0, 22, 0.9); b2.position.set(x, 0, 0); b2.material.userData.own = true;
+  const op2 = b2.material.uniforms.uOp; timed.add(b2, 0.9, (o, k) => { o.scale.set(1, Math.min(1, k * 8), 1); op2.value = 0.9 * (1 - k); });
+  for (let i = 0; i < 6; i++) setTimeout(() => bolts.spawn(new V3(x + rand(-2, 2), 16, rand(-2, -0.5)), new V3(x + rand(-0.5, 0.5), 0.05, 0), { r: 0.08, life: 0.45, segs: 24, branches: 3, jag: 1.2, color: new THREE.Color(1.4, 1.9, 2.8) }), i * 60);
+  runeRing(x, 0.06, 0, 13, 1.4); runeRing(x, 0.07, 0, 7, 1.1, false, [2.4, 1.9, 0.8]); runeRing(x, 2.2, 0.3, 6, 0.9, true);
+  for (let i = 0; i < 4; i++) ring(x, 0.08, 0, i % 2 ? 0xffffff : 0x9fd4ff, 6 + i * 4, 0.5 + i * 0.15);
+  glowPuff(x, 2.2, 0.2, 0xcfe6ff, 16, 0.7);
+  addP.burst(220, x, 1, 0, 20, { life: [0.4, 1.3], size: [0.06, 0.22], color: COL.odin, drag: 2, up: 6, grav: 5 });
+  addP.burst(90, x, 1, 0, 14, { life: [0.4, 1.0], size: [0.05, 0.16], color: COL.rune, drag: 2, up: 4 });
+  dust(x, 50, 2.6);
+  stage.flash = Math.max(stage.flash, 0.9); screenFlash(0.95, '#eef4ff'); lightFlash(x, 3, 0xbfdcff, 130); shake = 0.7;
+  sfx.boom(1.7); sfx.bolt(true); sfx.ring([392, 587, 784, 1175], 1.4, 0.1);
+}
 function superImpact(e) {
   const x = e.x;
+  if (e.kind === 'gungnir') { odinImpact(x); return; }
   if (e.kind === 'gateShut') { hadesGateShut(e); return; }
   if (e.kind === 'hellfire') {
     const beam = lightBeam(0xff3060, 1.2, 2.2, 16, 0.9);
@@ -6570,6 +7063,7 @@ function trailSpark(kind, p, speed) {
   else if (kind === 'gold') addP.burst(1, p.x, p.y, p.z, 1.2, { life: [0.15, 0.35], size: [0.04, 0.09], color: COL.gold, drag: 3 });
   else if (kind === 'storm') { addP.burst(1, p.x, p.y, p.z, 1.4, { life: [0.12, 0.3], size: [0.05, 0.1], color: COL.storm, drag: 3 }); if (Math.random() < 0.15 * k) stormBolt(p.clone(), p.clone().add(new V3(rand(-0.4, 0.4), rand(-0.4, 0.4), 0)), { r: 0.01, life: 0.07, segs: 5, branches: 0 }); }
   else if (kind === 'might') addP.burst(1, p.x, p.y, p.z, 1, { life: [0.15, 0.35], size: [0.06, 0.12], color: COL.might, drag: 3 });
+  else if (kind === 'rune') { addP.burst(1, p.x, p.y, p.z, 1.2, { life: [0.15, 0.35], size: [0.05, 0.1], color: Math.random() < 0.7 ? COL.odin : COL.rune, drag: 3 }); }
   else if (kind === 'hell') { addP.burst(2, p.x, p.y, p.z, 1.2, { life: [0.2, 0.45], size: [0.06, 0.13], color: COL.hell, drag: 2, up: 1.5 }); }
 }
 
@@ -6615,6 +7109,11 @@ const INTRO = {
   },
 };
 
+INTRO.odin = {
+  anim: [[0, 'summon'], [0.9, 'summon'], [1.15, 'superCall'], [1.75, 'superCall'], [2.15, 'intro'], [2.6, 'stance']],
+  fx: [[0.05, (f) => { for (let i = 0; i < 2; i++) odinRaven({ i: i + 1, tx: f.x + (i ? 0.6 : -0.6), ty: 2.6 }); addP.burst(40, f.x, 1.2, 0, 3, { life: [0.6, 1.2], size: [0.06, 0.14], color: COL.odin, up: 2, drag: 1 }); }],
+    [1.15, (f) => { runeRing(f.x, 0.05, 0, 4.5, 1.4); const b = lightBeam(0x9fd4ff, 0.9, 1.4, 9, 0.6); b.position.set(f.x, 0, 0); b.material.userData.own = true; const op = b.material.uniforms.uOp; timed.add(b, 1.0, (o, k) => { o.scale.set(1, Math.min(1, k * 4), 1); op.value = 0.6 * (1 - k); }); bolts.spawn(new V3(f.x + 1, 14, -1), new V3(f.x, 0.1, 0), { r: 0.06, life: 0.4, segs: 20, branches: 2, color: new THREE.Color(1.4, 1.9, 2.8) }); dust(f.x, 30, 2); shake = Math.max(shake, 0.3); sfx.boom(0.9); sfx.ring([330, 495, 660], 1.0, 0.07); }]],
+};
 class FighterView {
   constructor(f, model) {
     this.f = f; this.m = model;
@@ -6814,6 +7313,17 @@ class FighterView {
         addP.burst(2, p.x, p.y, p.z, 2, { life: [0.1, 0.25], size: [0.05, 0.1], color: COL.thor, drag: 3 });
       }
       updateCape(M, t, f.vx * f.facing + (f.state === 'dash' ? 6 : 0), f.state === 'attack' ? 1 : 0.3);
+    } else if (f.key === 'odin') {
+      const flick = 0.85 + Math.random() * 0.3;
+      const cs = cineState();
+      const thrown = sim.projs.some((q) => q.owner === f.side && q.ret) || (cs && cs.f === f && cs.t > 1.62 && cs.t < 2.05);
+      M.spear.visible = !thrown;
+      M.triGlow.material.opacity = (0.2 + this.glow * 0.9) * flick * (thrown ? 0 : 1);
+      M.soulFire.material.opacity = (0.5 + this.glow * 0.5) * flick;
+      M.mats.gem.emissiveIntensity = 0.8 + this.glow * 2.6 * flick;
+      if (Math.random() < 0.3) { const p = new V3(0, -0.13, 0.08); M.j.lWr.localToWorld(p); addP.burst(1, p.x, p.y, p.z, 0.4, { life: [0.3, 0.6], size: [0.04, 0.09], color: Math.random() < 0.6 ? COL.odin : COL.rune, up: 1, drag: 1 }); }
+      if (M.raven) M.raven.rotation.y = 0.5 + Math.sin(t * 1.3) * 0.25;
+      updateCape(M, t, f.vx * f.facing + (f.state === 'dash' ? 6 : 0), f.state === 'attack' ? 0.9 : 0.35);
     } else if (f.key === 'hades') {
       const flick = 0.8 + Math.random() * 0.4;
       M.triGlow.material.opacity = (0.2 + this.glow * 0.9) * flick;
@@ -6874,6 +7384,8 @@ class FighterView {
         if (f.grounded && Math.random() < 0.5) dust(f.x, 2, 0.5);
       } else if (f.key === 'hades') {
         addP.burst(3, p.x, p.y + rand(-0.6, 0.4), rand(-0.3, 0.3), 1, { life: [0.2, 0.4], size: [0.08, 0.16], color: COL.hell, drag: 2, up: 1 });
+      } else if (f.key === 'odin') {
+        addP.burst(3, p.x, p.y + rand(-0.6, 0.4), rand(-0.3, 0.3), 1, { life: [0.2, 0.4], size: [0.07, 0.15], color: Math.random() < 0.7 ? COL.odin : COL.rune, drag: 2 });
       } else if (f.key === 'heracles') {
         addP.burst(3, p.x, p.y + rand(-0.6, 0.4), rand(-0.3, 0.3), 1, { life: [0.15, 0.35], size: [0.1, 0.2], color: COL.might, drag: 2 });
         if (f.grounded && Math.random() < 0.7) dust(f.x, 3, 0.7);
@@ -6969,7 +7481,7 @@ function cineShot(f, o, t, portrait) {
     const k = Math.min(1, (t - 1.8) / 0.55), R = fitD(46 * fw) * 1.1;
     return shot('a3', new V3(ox + sideX(-s * (R * 0.6 + k * 1.2)), lookY + 0.6 + k * 0.8, Math.max(R, 5.5)), new V3(ox, lookY * 0.9, 0), 46 * fw, -0.06, 3);
   }
-  if (f.key === 'thor' || f.key === 'heracles' || f.key === 'hades') {
+  if (f.key === 'thor' || f.key === 'heracles' || f.key === 'hades' || f.key === 'odin') {
     const top = Math.max(o.y, f.y) + 2.6;
     const lookY = Math.max(1.15, top * 0.42);
     const aspect = camera.aspect || 1.78;
@@ -7060,6 +7572,10 @@ function cineUpdate(dt) {
       screenFlash(0.8, '#fff3d0'); lightFlash(o.x, 2.5, 0xffe0a0, 100); shake = Math.max(shake, 0.55);
       cineTitle(f);
     }
+  } else if (f.key === 'odin') {
+    if (t > 0.3 && t < 1.12) { for (let i = 0; i < 3; i++) { const a = t * 6 + i * 2.09, r = 1.4; addP.spawn(o.x + Math.cos(a) * r, 0.3 + ((t * 1.2 + i * 0.3) % 1) * 2.4, Math.sin(a) * r * 0.6, -Math.sin(a) * 3, 1.2, Math.cos(a) * 2, 0.4, 0.12, 0.04, 0.8, 1.3, 2.1, 1, 1, 0); } }
+    if (t > 1.42 && t < 1.62 && Math.random() < 0.6) { const c0 = new V3(f.x, f.y + 1.6, 0); bolts.spawn(c0.clone(), c0.clone().add(new V3(rand(-2, 2), rand(-1.5, 1.5), rand(-0.6, 0.6))), { r: 0.025, life: 0.1, segs: 8, branches: 1, color: new THREE.Color(1.4, 1.9, 2.8) }); }
+    if (t >= 1.76 && !cineFin) { cineFin = true; cineTitle(f); }
   } else if (f.key === 'hades') {
     if (t > 0.15 && t < 1.85) { for (let i = 0; i < 3; i++) normP.spawn(o.x + rand(-3, 3), rand(0, 2.6), rand(-1.5, 1.2), rand(-0.5, 0.5), rand(0, 0.4), rand(-0.2, 0.2), rand(1.2, 2), 0.5, 0.9, 0.03, 0.02, 0.04, 0.55, 0.6, -0.05); }
     if (t > 0.3 && t < 1.3 && Math.random() < 0.5) addP.burst(2, o.x + rand(-1, 1), 0.2, rand(-0.5, 0.5), 2, { life: [0.4, 0.8], size: [0.08, 0.16], color: COL.hell, up: 3, drag: 1 });
@@ -7102,6 +7618,7 @@ function cineSlow() {
   if (c.f.key === 'susanoo') return c.t > 1.62 && c.t < 1.86 ? 0.3 : 1;
   if (c.f.key === 'heracles') return c.t > 1.74 && c.t < 1.98 ? 0.3 : 1;
   if (c.f.key === 'hades') return c.t > 1.82 && c.t < 2.05 ? 0.3 : 1;
+  if (c.f.key === 'odin') return c.t > 1.72 && c.t < 1.96 ? 0.3 : 1;
   return c.t > 1.8 && c.t < 2.05 ? 0.3 : 1;
 }
 function cineTitle(f) {
@@ -7353,6 +7870,14 @@ const bgm = {
       if (b16 === 4 || b16 === 12) { this.clack(t, 0.28); this.clack(t + s16 * 0.5, 0.12); }
       if (b16 === 0) this.choir(ch.map((n) => n + 12), t, s16 * 16, 0.028 + I * 0.025);
       if ((b16 === 0 && bar % 2 === 0) || (b16 === 10 && bar % 2)) this.brass(ch, t, s16 * 2.5, 0.055);
+    } else if (st === 'valhalla') {
+      const kick = [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0];
+      if (kick[b16]) this.taiko(t, b16 === 0 ? 1.2 : 0.85, 0.6);
+      if (b16 === 0) { this.choir(ch.map((n) => n + 12), t, s16 * 16, 0.045 + I * 0.025); this.organ([root - 12, root], t, s16 * 16, 0.02 + I * 0.01); }
+      if (b16 === 0 || b16 === 8) this.brass([root, root + 7], t, s16 * 7, 0.04 + I * 0.02);
+      if (b16 % 2 === 0) this.string(ch[(b16 / 2) % 3] + 12, t, s16 * 1.6, 0.025 + I * 0.02);
+      if (b16 === 0 && bar % 2 === 0) this.bell(root + 24, t, 0.035, 3);
+      if (bar === T.bars - 1 && b16 >= 8 && b16 % 2 === 0) this.taiko(t, 0.9, 0.8);
     } else if (st === 'tartarus') {
       if (b16 === 0) { this.organ([root, root + 7], t, s16 * 16, 0.03 + I * 0.015); this.choir([ch[0] + 12, ch[1] + 13], t, s16 * 16, 0.02); }
       if (b16 === 0 || b16 === 2) this.taiko(t, b16 ? 0.55 : 0.9, 0.55);        // heartbeat
@@ -7376,6 +7901,8 @@ const bgm = {
       mel: [[0, 74, 1], [1, 78, 1], [2, 81, 2], [4, 79, 1], [5, 78, 1], [6, 76, 2], [8, 78, 3], [11, 76, 1], [12, 73, 4], [16, 74, 1], [17, 78, 1], [18, 81, 1.5], [19.5, 83, 0.5], [20, 86, 2], [22, 85, 1], [23, 83, 1], [24, 81, 2], [26, 79, 2], [28, 76, 4]] },
     st_tartarus: { bpm: 104, bars: 8, style: 'tartarus', lead: 'organ', chords: [[48, 51, 55], [49, 53, 56], [48, 51, 55], [47, 50, 53], [48, 51, 55], [44, 48, 51], [49, 53, 56], [43, 47, 50]],
       mel: [[0, 72, 2], [2, 73, 2], [4, 72, 1], [5, 70, 1], [6, 67, 2], [8, 68, 4], [12, 67, 4], [16, 72, 2], [18, 75, 2], [20, 73, 2], [22, 72, 2], [24, 71, 4], [28, 67, 4]] },
+    st_valhalla: { bpm: 100, bars: 8, style: 'valhalla', lead: 'horn', chords: [[45, 48, 52], [41, 45, 48], [43, 47, 50], [40, 44, 47], [45, 48, 52], [41, 45, 48], [38, 41, 45], [40, 44, 47]],
+      mel: [[0, 69, 2], [2, 72, 1], [3, 71, 1], [4, 69, 2], [6, 76, 2], [8, 74, 3], [11, 72, 1], [12, 71, 4], [16, 69, 1.5], [17.5, 71, 0.5], [18, 72, 2], [20, 76, 2], [22, 77, 2], [24, 76, 2], [26, 74, 1], [27, 72, 1], [28, 68, 4]] },
     title: { bpm: 68, bars: 8, chords: [[50, 53, 57], [46, 50, 53], [53, 57, 60], [45, 49, 52], [50, 53, 57], [46, 50, 53], [48, 52, 55], [45, 49, 52]],
       mel: [[0, 69, 2], [2, 72, 1], [3, 70, 1], [4, 69, 3], [7, 65, 1], [8, 67, 2], [10, 69, 2], [12, 64, 4], [16, 69, 2], [18, 74, 2], [20, 72, 1.5], [21.5, 70, 0.5], [22, 69, 2], [24, 67, 2], [26, 65, 2], [28, 64, 4]] },
     mode: { bpm: 90, bars: 8, lead: 'bell', chords: [[50, 53, 57], [48, 52, 55], [46, 50, 53], [48, 52, 55], [50, 53, 57], [48, 52, 55], [46, 50, 53], [45, 49, 52]],
@@ -7469,7 +7996,7 @@ const bgm = {
   },
 };
 
-const WEAPON = { zeus: 'fist', poseidon: 'pole', anubis: 'blade', thor: 'hammer', susanoo: 'blade', heracles: 'club', hades: 'pole' };
+const WEAPON = { zeus: 'fist', poseidon: 'pole', anubis: 'blade', thor: 'hammer', susanoo: 'blade', heracles: 'club', hades: 'pole', odin: 'pole' };
 const weaponOf = (f) => (f && f.move && f.move.weap) || (f ? WEAPON[f.key] || 'fist' : 'fist');
 const WEIGHT = { light: 0.3, medium: 0.55, heavy: 0.85, special: 1 };
 const sfx = {
@@ -7565,6 +8092,9 @@ const sfx = {
     else if (kind === 'gale') { this.noise(0.35, 1500, 5000, 'bandpass', 0.9, 0.2); this.tone(2200, 3200, 0.2, 'sine', 0.03); }
     else if (kind === 'cerberus') { this.tone(140, 70, 0.35, 'sawtooth', 0.09); this.noise(0.35, 700, 200, 'lowpass', 0.7, 0.3); }
     else if (kind === 'hands') { this.noise(0.4, 300, 900, 'bandpass', 0.8, 0.25); this.tone(110, 70, 0.4, 'sawtooth', 0.05); }
+    else if (kind === 'gungnir') { this.swing('pole', 1); this.ring([660, 990, 1320], 0.4, 0.05); this.noise(0.3, 2000, 6000, 'bandpass', 1, 0.15); }
+    else if (kind === 'raven') { for (let i = 0; i < 3; i++) this.tone(900 - i * 120, 500, 0.12, 'sawtooth', 0.03, i * 0.09); this.noise(0.3, 800, 2400, 'bandpass', 1.2, 0.12); }
+    else if (kind === 'runeTrap') { this.ring([440, 660, 880], 0.6, 0.06); this.tone(110, 220, 0.5, 'sine', 0.2, 0.3); }
     else this.whoosh(1.5);
   },
   hit(p) { const k = clamp(p / 100, 0.2, 1.5); this.tone(150 - 40 * k, 40, 0.15 + 0.15 * k, 'sine', 0.5 + 0.25 * k); this.noise(0.07 + 0.1 * k, 3000, 300, 'lowpass', 0.7, 0.35 + 0.25 * k); },
@@ -7697,8 +8227,8 @@ function handleEvents() {
         break;
       case 'super':
         cutin(f, e.name);
-        sfx.superFlash(f.key === 'zeus' || f.key === 'thor' || f.key === 'susanoo');
-        screenFlash(0.6, f.key === 'zeus' ? '#cfe4ff' : f.key === 'thor' ? '#e4d8ff' : f.key === 'anubis' ? '#fff0c8' : f.key === 'susanoo' ? '#dcfff0' : f.key === 'heracles' ? '#fff0d8' : f.key === 'hades' ? '#ffe0e8' : '#c8fff6');
+        sfx.superFlash(f.key === 'zeus' || f.key === 'thor' || f.key === 'susanoo' || f.key === 'odin');
+        screenFlash(0.6, f.key === 'zeus' ? '#cfe4ff' : f.key === 'thor' ? '#e4d8ff' : f.key === 'anubis' ? '#fff0c8' : f.key === 'susanoo' ? '#dcfff0' : f.key === 'heracles' ? '#fff0d8' : f.key === 'hades' ? '#ffe0e8' : f.key === 'odin' ? '#e6f0ff' : '#c8fff6');
         stage.dimT = 1;
         callout(e.side, '超必殺技!', true);
         break;
@@ -7714,6 +8244,11 @@ function handleEvents() {
       case 'teleport': ghostOf(views[e.side], [0.35, 1.0, 1.4]); glowPuff(e.x, e.y + 1, 0, 0x9ff3ff, 2.2, 0.3); addP.burst(24, e.x, e.y + 1, 0, 4, { life: [0.1, 0.3], size: [0.05, 0.12], color: COL.soul, drag: 3 }); sfx.whoosh(1.2); break;
       case 'judgment': lightFlash(e.x, 2.5, 0xffe0a0, 60); maatScales(e.x, 4.3); sfx.whoosh(2.5); break;
       case 'mist': hadesMist(e); break;
+      case 'runeBind': odinRuneBind(e); break;
+      case 'ravenStrike': odinRaven(e); break;
+      case 'odinAscend': odinAscend(e); break;
+      case 'gungnirCharge': odinCharge(e); break;
+      case 'gungnirThrow': odinThrow(e); break;
       case 'mistStrike': hadesMistStrike(e); break;
       case 'gateRise': hadesGate(e); break;
       case 'gatePush': { const v = views[e.side]; const p = v ? handOf(v, 'r') : new V3(e.x, 1.2, 0); glowPuff(p.x, p.y, 0.3, 0xff4070, 4, 0.4); ring(p.x, p.y, 0.3, 0xffb0c0, 4, 0.35, true); normP.burst(40, p.x, p.y, 0, 6, { life: [0.3, 0.7], size: [0.15, 0.3], color: [0.05, 0.02, 0.04], alpha: 0.8, drag: 2 }); shake = Math.max(shake, 0.3); sfx.whoosh(2.5); sfx.tone(120, 40, 0.6, 'sawtooth', 0.1); break; }
@@ -7788,7 +8323,7 @@ function handleEvents() {
       }
       case 'stormCharge': skyBoltStorm(e.x, true); tornado(e.x, 6, 50, 0.5); break;
       case 'thorCharge': skyBoltViolet(e.x, true); break;
-      case 'catch': { const v = views[e.side]; if (v) glowPuff(v.f.x, v.f.y + 1.4, 0.2, 0xc8a8ff, 1.4, 0.25); sfx.whoosh(0.8); break; }
+      case 'catch': { const v = views[e.side]; if (v) glowPuff(v.f.x, v.f.y + 1.4, 0.2, v.f.key === 'odin' ? 0x9fd4ff : 0xc8a8ff, 1.4, 0.25); sfx.whoosh(0.8); break; }
       case 'ko':
         announce('K.O.', '', 'ko', 2.0);
         screenFlash(1, '#ffffff');
@@ -7913,7 +8448,7 @@ const lastTap = { left: -9, right: -9 };
 const modelCache = {};
 function modelFor(side, key) {
   const id = side + key;
-  if (!modelCache[id]) modelCache[id] = key === 'zeus' ? buildZeus(FT) : key === 'anubis' ? buildAnubis(FT) : key === 'thor' ? buildThor(FT) : key === 'susanoo' ? buildSusanoo(FT) : key === 'heracles' ? buildHeracles(FT) : key === 'hades' ? buildHades(FT) : buildPoseidon(FT);
+  if (!modelCache[id]) modelCache[id] = key === 'zeus' ? buildZeus(FT) : key === 'anubis' ? buildAnubis(FT) : key === 'thor' ? buildThor(FT) : key === 'susanoo' ? buildSusanoo(FT) : key === 'heracles' ? buildHeracles(FT) : key === 'hades' ? buildHades(FT) : key === 'odin' ? buildOdin(FT) : buildPoseidon(FT);
   if (!modelCache[id].outlined) { modelCache[id].outlined = true; if (!isMobile) addOutline(modelCache[id].root); }
   return modelCache[id];
 }
@@ -7970,6 +8505,7 @@ const GOD = {
   susanoo: { acc: '#9fffd8', acc2: '#1b5a4a', emb: `<svg viewBox="0 0 64 64" class="emb"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/><path d="M20 50 46 12" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/><path d="M17 44l9 6" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M14 30c6-8 14-6 14 0s-8 6-8 0M36 46c6 2 14-2 12-8s-8-2-6 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity=".85"/></svg>`, tag: '嵐の荒神', desc: '草薙の剣を振るう出雲の荒ぶる神。風の刃と雷をまとう踏み込みで、攻めと間合いの両方をこなす万能型。', stats: [['攻撃', 4], ['速度', 4], ['射程', 4], ['防御', 3]] },
   heracles: { acc: '#ffb870', acc2: '#8a3a10', emb: `<svg viewBox="0 0 64 64" class="emb"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/><path d="M22 48 40 16c2-3 7-2 8 1 1 4-1 6-3 8L27 51c-2 2-6 0-5-3z" fill="currentColor"/><circle cx="42" cy="20" r="2" fill="#000" opacity=".4"/><circle cx="37" cy="27" r="1.6" fill="#000" opacity=".4"/></svg>`, tag: '不屈の半神英雄', desc: 'ネメアの獅子を纏い、樫の棍棒を振るう半神の英雄。重い技は一撃を受け止めるアーマー付き、ガード不能の投げで守りを崩す。', stats: [['攻撃', 5], ['速度', 1], ['射程', 3], ['防御', 5]] },
   hades: { acc: '#ff6a88', acc2: '#5a0a1c', emb: `<svg viewBox="0 0 64 64" class="emb"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/><path d="M32 54V24" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M22 10c0 10 2 14 10 14s10-4 10-14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M22 8l-2 6h4zM42 8l-2 6h4z" fill="currentColor"/><circle cx="32" cy="40" r="3" fill="currentColor"/></svg>`, tag: '冥府の王', desc: '二又の槍と魂の炎を操る冥府の王。敵の魂を吸って体力を奪い、隠れ兜で背後を取り、離れた相手も亡者の手で捕らえる。', stats: [['攻撃', 3], ['速度', 3], ['射程', 4], ['防御', 3]] },
+  odin: { acc: '#b8d8ff', acc2: '#1a2a5a', emb: `<svg viewBox="0 0 64 64" class="emb"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/><path d="M32 13L44 34H20Z M24 22L36 43H12Z M40 22L52 43H28Z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><path d="M32 46v8" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>`, tag: '九界の主神', desc: '隻眼の全知神。決して外れぬ神槍グングニルを投げ、二羽の鴉とルーン魔術で間合いを支配する、神座の主にして最後の壁。', stats: [['攻撃', 4], ['速度', 3], ['射程', 5], ['防御', 4]] },
 };
 function panelHTML(side) {
   const key = selState.keys[side], G = GOD[key], c = CHARS[key];
@@ -7978,7 +8514,7 @@ function panelHTML(side) {
   const stat = G.stats.map(([n, v]) => `<div class="stat"><span>${n}</span><div class="bar5">${[1, 2, 3, 4, 5].map((k) => `<i class="${k <= v ? 'on' : ''}"></i>`).join('')}</div></div>`).join('');
   const mv = c.moves;
   const names = (type) => Object.values(mv).filter((x) => x.type === type && !x.hidden).map((x) => `<span>${x.name}${x.lv === 'low' ? '〔下段〕' : x.lv === 'mid' ? '〔中段〕' : ''}${x.armor ? '〔アーマー〕' : ''}${x.hits && x.hits.some((q) => q.grab) ? '〔ガード不能〕' : ''}${x.hits && x.hits.some((q) => q.drain) ? '〔吸命〕' : ''}${x.teleport ? '〔背後移動〕' : ''}</span>`).join('');
-  const picks = MENU_KEYS.map((k) => `<button class="pick ${k} ${k === key ? 'on' : ''}" data-side="${side}" data-key="${k}">${GOD[k].emb}<span>${CHARS[k].name}</span></button>`).join('');
+  const picks = MENU_KEYS.filter((k) => !(m === 'story' && CHARS[k].boss)).map((k) => `<button class="pick ${k} ${k === key ? 'on' : ''}" data-side="${side}" data-key="${k}">${GOD[k].emb}<span>${CHARS[k].name}</span></button>`).join('');
   return `<div class="pside"><i>${side + 1}P</i>${who}</div>
     <div class="pinfo" style="--acc:${G.acc};--acc2:${G.acc2}">
       <div class="en">${c.en}</div><h3 style="color:${G.acc}">${c.name}</h3><div class="ttl">${G.tag}</div>
@@ -8152,7 +8688,7 @@ function openViewer(key) {
   viewer.wait = 0; viewerPlay();
 }
 function viewerDistance(m) {
-  if (m.type === 'super') return m === CHARS.hades.moves.hd_super ? 4 : 1.6;
+  if (m.type === 'super') return m === CHARS.hades.moves.hd_super || m === CHARS.odin.moves.o_super ? 4 : 1.6;
   if (m.proj) return m.proj.atTarget ? 4 : m.proj.at ? 2.6 : 4.6;
   if (m.teleport) return 2.6;
   if (m.counter) return 1.4;
@@ -8229,8 +8765,24 @@ const STORY = {
       challenge: '生ある者も神もいずれ冥府に還る。早いか遅いかの違いだ。', reply: '跪け。冥府の王の前では、神もただの魂にすぎぬ。', lose: '……ふん。冥府の門は、いつでも開いている。',
       ending: ['神座は、静かに闇へと沈んだ。', '「天も海も、いずれ皆ここへ来る。私はただ、待てばよい。」', '冥府の王は、初めて地上を見下ろした。', '永遠の静寂が、すべての神話を包み込んでいく――。'] },
   },
+  // the final boss waiting on the throne of the gods
+  boss: {
+    key: 'odin',
+    arrive: ['四柱の神を下し、神座へと続く虹の橋を渡った先――', '黄金の盾が天井を覆う戦士の館、ヴァルハラ。', 'その奥、高き玉座フリズスキャールヴに、隻眼の神が座していた。'],
+    intro: [['o', 'よくぞ勝ち残った。だが、神座は空席ではない。'], ['o', '九つの世界を見渡すこの玉座こそ神座。我は万物の父、オーディン。'], ['o', '汝が座に相応しいか――このグングニルで量ってやろう。']],
+    challenge: '来るがよい。神座を望むなら、主神を越えてみせよ。',
+    lose: '見事……。ラグナロクの先を見るのは、汝であったか。',
+    win: '未だ足りぬ。九つの世界を背負うには、な。',
+  },
   // rivalries: player>opponent  -> [[speaker 'p'|'o', line], ...]
   vs: {
+    'thor>odin': [['o', '……来たか、トール。我が息子よ。'], ['p', '親父！？ まさか神座の主ってのは――！'], ['o', '左様。この座を継ぐに足るか、父が自ら量ってやろう。'], ['p', 'ハハッ、上等だ！ ミョルニルの重さ、親父にも教えてやる！']],
+    'zeus>odin': [['p', '北の主神か。天の王は二人も要らぬ。'], ['o', 'オリュンポスの雷神よ。汝の天は、我が見る九つの世界の一つにすぎぬ。']],
+    'hades>odin': [['o', '冥府の王が日の下まで来たか。'], ['p', '万物の父も、いずれは死者の一人。冥府で待つのも退屈でな。']],
+    'susanoo>odin': [['p', 'あんたが神座の主か。隻眼のじいさん、嵐の相手ができるのか？'], ['o', '荒ぶる神よ。嵐が知恵に勝ったためしはない。']],
+    'heracles>odin': [['p', '最後の試練は、異国の主神か……！'], ['o', '人の子にして神に至りし者よ。汝の力、玉座の前で示すがよい。']],
+    'anubis>odin': [['p', '全知の神。汝の魂も、量らせてもらう。'], ['o', '知恵のために片目を差し出した我の心臓――羽よりも重いぞ。']],
+    'poseidon>odin': [['p', '神座の主がおったとはな。海はお前の玉座も呑み込むぞ。'], ['o', '海の王よ。我が館の盾は、いかなる潮にも砕けぬ。']],
     'zeus>hades': [['o', '兄上……天を選んだあの日から、この時を待っていた。'], ['p', 'ハデス、冥府の王が日の下に出るか。籤の結果を覆すつもりか？'], ['o', '籤ではない。今日決めるのは、力だ。']],
     'hades>zeus': [['p', '久しいな、兄上。天の座は居心地がよいか？'], ['o', 'ハデス……冥府に籠もっておれば良いものを。'], ['p', '冥府の静寂は、兄上の玉座にこそ相応しい。']],
     'zeus>poseidon': [['o', 'ゼウス。天を得た籤の日の借り、返してもらうぞ。'], ['p', '兄上、まだあの日のことを根に持っておるのか。'], ['o', '海は忘れぬ。決して、な。']],
@@ -8270,6 +8822,7 @@ function storyScene({ chap, vs, lines, buttons, bgmName }) {
 const godTag = (k) => `<span class="sgod" style="color:${GOD[k].acc}">${GOD[k].emb}<b>${CHARS[k].name}</b><small>${CHARS[k].title}</small></span>`;
 const say = (k, text) => `<b style="color:${GOD[k].acc}">${CHARS[k].name}</b>「${text}」`;
 function startStory() {
+  if (CHARS[selState.keys[0]].boss) selState.keys[0] = 'zeus';
   story.key = selState.keys[0]; story.level = selState.level; story.idx = 0; story.active = true;
   const G = STORY.gods[story.key];
   storyScene({ chap: '<small>PROLOGUE</small>神座決戦', vs: godTag(story.key),
@@ -8277,29 +8830,42 @@ function startStory() {
     buttons: [['第一戦へ', storyPreFight]] });
 }
 const ORD = ['一', '二', '三', '四'];
+const storyFoe = () => (story.idx >= 4 ? STORY.boss.key : STORY.gods[story.key].path[story.idx]);
 function storyPreFight() {
-  const a = story.key, b = STORY.gods[a].path[story.idx], st = STAGE_IDS.find((id) => STAGES[id].owner === b) || 'olympus';
-  const lines = storyLines(a, b).map(([who, t]) => say(who === 'p' ? a : b, t));
-  storyScene({ chap: `<small>BATTLE ${story.idx + 1} / 4 ・ ${STAGES[st].en}</small>第${ORD[story.idx]}戦　${STAGES[st].name}`,
-    vs: `${godTag(a)}<em>VS</em>${godTag(b)}`, lines,
-    buttons: [['戦う', () => { story.handled = false; setupMatch({ mode: 'player', keys: [a, b], level: story.level, stage: st, story: true }); showScreen('match'); }]] });
+  const a = story.key, b = storyFoe(), st = STAGE_IDS.find((id) => STAGES[id].owner === b) || 'olympus', boss = story.idx >= 4;
+  const lines = boss ? (STORY.vs[`${a}>${b}`] || STORY.boss.intro).map(([who, t]) => say(who === 'p' ? a : b, t)) : storyLines(a, b).map(([who, t]) => say(who === 'p' ? a : b, t));
+  if (boss && !STORY.vs[`${a}>${b}`]) lines.push(say(a, STORY.gods[a].challenge));
+  // the Allfather fights one level above the chosen strength
+  const lv = boss ? Math.min(5, story.level + 1) : story.level;
+  storyScene({ chap: boss ? `<small>FINAL BATTLE ・ ${STAGES[st].en}</small>最終戦　${STAGES[st].name}` : `<small>BATTLE ${story.idx + 1} / 5 ・ ${STAGES[st].en}</small>第${ORD[story.idx]}戦　${STAGES[st].name}`,
+    vs: `${godTag(a)}<em>VS</em>${godTag(b)}`, lines, bgmName: boss ? 'st_valhalla' : undefined,
+    buttons: [[boss ? '神座を賭けて戦う' : '戦う', () => { story.handled = false; setupMatch({ mode: 'player', keys: [a, b], level: lv, stage: st, story: true }); showScreen('match'); }]] });
+}
+function storyBossArrive() {
+  storyScene({ chap: '<small>THE THRONE OF THE GODS</small>神座', vs: godTag(STORY.boss.key),
+    lines: STORY.boss.arrive, bgmName: 'st_valhalla',
+    buttons: [['玉座へ進む', storyPreFight]] });
 }
 function storyAfterMatch() {
   if (story.handled) return; story.handled = true;
-  const a = story.key, b = STORY.gods[a].path[story.idx];
+  const a = story.key, b = storyFoe();
   if (sim.matchWinner === 0) {
     story.idx++;
-    if (story.idx >= 4) {
+    if (story.idx === 4) {
+      storyScene({ chap: '<small>VICTORY</small>第四戦　勝利', vs: godTag(a),
+        lines: [say(b, STORY.gods[b].lose), `四柱の神を下した。だが神座には、まだ主が座している――。`],
+        buttons: [['神座へ', storyBossArrive]] });
+    } else if (story.idx >= 5) {
       const G = STORY.gods[a];
-      storyScene({ chap: '<small>ENDING</small>神座の主', vs: godTag(a), lines: [say(b, STORY.gods[b].lose), ...G.ending, '<span class="sfin">― 神座決戦　完 ―</span>'], bgmName: 'victory',
+      storyScene({ chap: '<small>ENDING</small>神座の主', vs: godTag(a), lines: [say(b, STORY.boss.lose), ...G.ending, '<span class="sfin">― 神座決戦　完 ―</span>'], bgmName: 'victory',
         buttons: [['タイトルへ', () => { story.active = false; $('btnToTitle').click(); }], ['もう一度', () => startStory(), 'sub']] });
     } else {
       storyScene({ chap: `<small>VICTORY</small>第${ORD[story.idx - 1]}戦　勝利`, vs: godTag(a),
-        lines: [say(b, STORY.gods[b].lose), `${CHARS[b].name}を下した。神座まで、残る神はあと${4 - story.idx}柱――。`],
+        lines: [say(b, STORY.gods[b].lose), `${CHARS[b].name}を下した。神座まで、残る神はあと${5 - story.idx}柱――。`],
         buttons: [[`第${ORD[story.idx]}戦へ`, storyPreFight]] });
     }
   } else {
-    storyScene({ chap: '<small>DEFEAT</small>敗北', vs: godTag(b), lines: [say(b, STORY.gods[b].challenge.replace('――退け。', '')), `${CHARS[a].name}は膝をついた……。`], bgmName: 'defeat',
+    storyScene({ chap: '<small>DEFEAT</small>敗北', vs: godTag(b), lines: [say(b, b === STORY.boss.key ? STORY.boss.win : STORY.gods[b].challenge.replace('――退け。', '')), `${CHARS[a].name}は膝をついた……。`], bgmName: 'defeat',
       buttons: [['再挑戦', storyPreFight], ['タイトルへ', () => { story.active = false; $('btnToTitle').click(); }, 'sub']] });
   }
 }
@@ -8404,8 +8970,8 @@ window.addEventListener('blur', () => { for (const k in held) held[k] = false; c
 // ============================================================
 //  Menu backdrops: dedicated title / mode and character-select scenes (the arena is hidden outside matches)
 // ============================================================
-const MENU_KEYS = ['zeus', 'poseidon', 'anubis', 'thor', 'susanoo', 'heracles', 'hades'];
-const MENU_COL = { zeus: 0xffd77a, poseidon: 0x5ff0e6, anubis: 0xf0c46a, thor: 0xc8b0ff, susanoo: 0x9fffd8, heracles: 0xffb870, hades: 0xff5a78 };
+const MENU_KEYS = ['zeus', 'poseidon', 'anubis', 'thor', 'susanoo', 'heracles', 'hades', 'odin'];
+const MENU_COL = { zeus: 0xffd77a, poseidon: 0x5ff0e6, anubis: 0xf0c46a, thor: 0xc8b0ff, susanoo: 0x9fffd8, heracles: 0xffb870, hades: 0xff5a78, odin: 0xa8d0ff };
 const menuBG = { title: null, select: null, arena: null, t: 0, flash: 0, boltT: 2 };
 
 // collect everything a builder adds to the scene into one group so whole backdrops can be toggled
@@ -8620,7 +9186,7 @@ function buildTitleBackdrop() {
     // five colossi of the pantheon standing on cliffs, glowing eyes and a beam of their colour
     const bronze = new THREE.MeshStandardMaterial({ color: 0x2a2530, metalness: 0.55, roughness: 0.42 });
     const cliffM = new THREE.MeshStandardMaterial({ color: 0x2a2232, roughness: 0.95, flatShading: true });
-    const builders = { zeus: buildZeus, poseidon: buildPoseidon, anubis: buildAnubis, thor: buildThor, susanoo: buildSusanoo, heracles: buildHeracles, hades: buildHades };
+    const builders = { zeus: buildZeus, poseidon: buildPoseidon, anubis: buildAnubis, thor: buildThor, susanoo: buildSusanoo, heracles: buildHeracles, hades: buildHades, odin: buildOdin };
     MENU_KEYS.forEach((k, i) => {
       const u = (i - (MENU_KEYS.length - 1) / 2) / ((MENU_KEYS.length - 1) / 2);   // -1..1
       const x = u * 30, z = -44 + Math.abs(u) * 10, y = 1.5 - Math.abs(u) * 2.5;
@@ -8718,7 +9284,7 @@ function buildSelectBackdrop() {
         g.strokeStyle = c; g.lineWidth = 6; g.strokeRect(14, 14, w - 28, h - 70);
         g.fillStyle = c; g.beginPath(); g.moveTo(14, h - 56); g.lineTo(w / 2, h - 6); g.lineTo(w - 14, h - 56); g.closePath(); g.fill();
         g.font = '900 120px serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
-        const glyph = { zeus: 'Ζ', poseidon: 'Ψ', anubis: '𓁢', thor: 'ᚦ', susanoo: '嵐', heracles: 'Η', hades: 'Ϙ' }[k];
+        const glyph = { zeus: 'Ζ', poseidon: 'Ψ', anubis: '𓁢', thor: 'ᚦ', susanoo: '嵐', heracles: 'Η', hades: 'Ϙ', odin: 'ᚨ' }[k];
         g.shadowColor = c; g.shadowBlur = 30; g.fillText(glyph, w / 2, h * 0.38);
         g.shadowBlur = 0; g.font = '700 30px serif'; g.fillText(CHARS[k].en, w / 2, h * 0.62);
       });
@@ -8861,15 +9427,16 @@ function floorTex(base, line, motif) {
     if (motif === 'cracks') { g.lineWidth = 3; for (let i = 0; i < 40; i++) { let x = Math.random() * w, y = Math.random() * h; g.beginPath(); g.moveTo(x, y); for (let k = 0; k < 6; k++) { x += (Math.random() - 0.5) * 120; y += (Math.random() - 0.5) * 120; g.lineTo(x, y); } g.stroke(); } }
     for (const [r, lw] of [[480, 8], [455, 2], [360, 4], [200, 3]]) { g.lineWidth = lw; g.beginPath(); g.arc(cx, cy, r, 0, 7); g.stroke(); }
     g.lineWidth = 3;
-    const n = motif === 'runes' ? 24 : 16;
+    const n = motif === 'runes' || motif === 'valknut' ? 24 : 16;
     for (let i = 0; i < n; i++) {
       const a = (i / n) * Math.PI * 2;
-      if (motif === 'runes') { g.save(); g.translate(cx + Math.cos(a) * 408, cy + Math.sin(a) * 408); g.rotate(a + Math.PI / 2); g.beginPath(); g.moveTo(0, -18); g.lineTo(0, 18); g.moveTo(0, -18); g.lineTo(12, -6); g.moveTo(0, 0); g.lineTo(-10, 10); g.stroke(); g.restore(); }
+      if (motif === 'runes' || motif === 'valknut') { g.save(); g.translate(cx + Math.cos(a) * 408, cy + Math.sin(a) * 408); g.rotate(a + Math.PI / 2); g.beginPath(); g.moveTo(0, -18); g.lineTo(0, 18); g.moveTo(0, -18); g.lineTo(12, -6); g.moveTo(0, 0); g.lineTo(-10, 10); g.stroke(); g.restore(); }
       else { g.beginPath(); g.moveTo(cx + Math.cos(a) * 360, cy + Math.sin(a) * 360); g.lineTo(cx + Math.cos(a) * 455, cy + Math.sin(a) * 455); g.stroke(); }
     }
     if (motif === 'eye') { g.lineWidth = 8; g.beginPath(); g.ellipse(cx, cy, 160, 80, 0, 0, 7); g.stroke(); g.beginPath(); g.arc(cx, cy, 50, 0, 7); g.stroke(); g.beginPath(); g.moveTo(cx - 40, cy + 70); g.lineTo(cx - 60, cy + 170); g.stroke(); }
     if (motif === 'trident') { g.lineWidth = 10; g.beginPath(); g.moveTo(cx, cy + 180); g.lineTo(cx, cy - 160); g.moveTo(cx - 90, cy - 150); g.lineTo(cx - 90, cy - 60); g.quadraticCurveTo(cx, cy, cx + 90, cy - 60); g.lineTo(cx + 90, cy - 150); g.stroke(); }
     if (motif === 'lion') { g.lineWidth = 8; for (let i = 0; i < 20; i++) { const a = (i / 20) * 6.28; g.beginPath(); g.moveTo(cx + Math.cos(a) * 110, cy + Math.sin(a) * 110); g.lineTo(cx + Math.cos(a) * 170, cy + Math.sin(a) * 170); g.stroke(); } g.beginPath(); g.arc(cx, cy, 100, 0, 7); g.stroke(); }
+    if (motif === 'valknut') { g.lineWidth = 9; g.lineJoin = 'round'; for (let i = 0; i < 3; i++) { const ox = cx + Math.cos(-Math.PI / 2 + i * 2.094) * 55, oy = cy + Math.sin(-Math.PI / 2 + i * 2.094) * 55; g.beginPath(); for (let k = 0; k < 3; k++) { const a = -Math.PI / 2 + k * 2.094; const px = ox + Math.cos(a) * 120, py = oy + Math.sin(a) * 120; k ? g.lineTo(px, py) : g.moveTo(px, py); } g.closePath(); g.stroke(); } }
     if (motif === 'skull') { g.lineWidth = 8; g.beginPath(); g.arc(cx, cy - 20, 110, Math.PI * 0.9, Math.PI * 2.1); g.lineTo(cx + 70, cy + 110); g.lineTo(cx - 70, cy + 110); g.closePath(); g.stroke(); g.beginPath(); g.arc(cx - 45, cy, 26, 0, 7); g.arc(cx + 45, cy, 26, 0, 7); g.stroke(); }
   });
 }
@@ -9028,6 +9595,40 @@ const STAGES = {
       for (const x of [-12, -8, 8, 12]) { const brz = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.3, 1.4, 10), obs); brz.position.set(x, 0.7, -4); scene.add(brz); const fl = new THREE.Sprite(new THREE.SpriteMaterial({ map: FT.glow, color: 0xff3a60, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false })); fl.scale.setScalar(2.4); fl.position.set(x, 1.9, -4); scene.add(fl); const l = new THREE.PointLight(0xff3a60, 10, 10, 1.6); l.position.set(x, 2, -4); scene.add(l); S.flames.push({ fl, l, x }); }
       const gate = new THREE.Mesh(new THREE.TorusGeometry(12, 1.2, 10, 40, Math.PI), obs); gate.position.set(0, 0, -45); scene.add(gate);
       S.tick = () => { if (Math.random() < 0.8) addP.spawn(rand(-22, 22), -1, rand(-16, 4), rand(-0.3, 0.3), rand(1, 2.5), 0, rand(2, 4), 0.07, 0.02, 1.9, 0.5, 0.2, 1, 0.2, -0.2); for (const f of S.flames) { const k = 0.85 + Math.random() * 0.3; f.fl.scale.setScalar(2.4 * k); f.l.intensity = 10 * k; if (Math.random() < 0.3) addP.spawn(f.x + rand(-0.3, 0.3), 1.9, -4, 0, rand(1.5, 2.5), 0, 0.8, 0.12, 0.03, 1.9, 0.3, 0.6, 1, 0.5, -0.5); } };
+    },
+  },
+  valhalla: {
+    name: '戦士の館ヴァルハラ', en: 'VALHALLA', owner: 'odin', bgm: 'st_valhalla', fog: [0x1a2238, 40, 260],
+    light: { hemi: [0xb8d0ff, 0x2a1a10], key: 0xffe0b0, rim: 0x9fd4ff, fill: 0xffb060 },
+    build(S) {
+      const sky = new THREE.Mesh(new THREE.SphereGeometry(500, 48, 24), stageSky({ top: 0x02040c, mid: 0x0c1430, hor: 0x2a3a60, cloud: 0x1a2440, clouds: 0.35, stars: 1.0, aurora: 1.0, moon: [0.3, 0.4, -1], moonR: 0.035, moonCol: 0xe8f0ff }));
+      sky.renderOrder = -10; scene.add(sky); S.sky = sky.material;
+      const ground = new THREE.Mesh(new THREE.PlaneGeometry(600, 600), STD(0x2a2420, 0.9)); ground.rotation.x = -Math.PI / 2; ground.position.y = -0.05; ground.receiveShadow = true; scene.add(ground);
+      scene.add(stageFloor(floorTex('#3a2c1c', '#ffd47a', 'valknut'), { side: 0x2a1e14, rough: 0.35, metal: 0.5, emissive: 0xffc060, ei: 0.35 }));
+      const goldM = STD(0xd8a848, 0.3, 1), woodM = STD(0x4a3020, 0.8), shieldM = STD(0x8a6a3a, 0.4, 0.8), steelM = STD(0x8a98b0, 0.3, 0.9);
+      // great hall: golden columns whose rafters are spears, roofed with shields
+      for (let i = 0; i < 8; i++) { const sx = i % 2 ? 1 : -1, z = -6 - Math.floor(i / 2) * 7; const c = column(11, 0.6, woodM, goldM); c.position.set(sx * 13, 0, z); scene.add(c);
+        const sp = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 26, 6), woodM); sp.rotation.z = Math.PI / 2; sp.position.set(0, 11.6, z); scene.add(sp);
+        const tip = new THREE.Mesh(new THREE.ConeGeometry(0.3, 1.2, 4), steelM); tip.rotation.z = -Math.PI / 2; tip.position.set(13.6, 11.6, z); scene.add(tip); }
+      for (let i = 0; i < 40; i++) { const sh = new THREE.Mesh(new THREE.CylinderGeometry(1.1, 1.1, 0.15, 20), i % 3 ? shieldM : goldM); sh.position.set(-12 + (i % 10) * 2.6, 12.3 + Math.floor(i / 10) * 0.25, -6 - Math.floor(i / 10) * 7); sh.rotation.x = 0.3; scene.add(sh); }
+      // Hlidskjalf: the high seat at the end of the hall
+      const throne = new THREE.Group();
+      throne.add(place(new THREE.Mesh(new THREE.BoxGeometry(6, 1.5, 4), goldM), [0, 0.75, 0]));
+      throne.add(place(new THREE.Mesh(new THREE.BoxGeometry(3.6, 1.2, 2.4), goldM), [0, 2.1, 0]));
+      throne.add(place(new THREE.Mesh(new THREE.BoxGeometry(3.4, 6.5, 0.6), goldM), [0, 5.6, -1.0]));
+      for (const sx of [-1, 1]) { throne.add(place(new THREE.Mesh(new THREE.BoxGeometry(0.5, 2, 2.4), goldM), [sx * 1.7, 3.3, 0])); throne.add(place(new THREE.Mesh(new THREE.SphereGeometry(0.5, 12, 10), goldM), [sx * 1.7, 4.5, 0.9])); }
+      throne.position.set(0, 0, -36); scene.add(throne);
+      const tl = new THREE.PointLight(0x9fd4ff, 40, 30, 1.6); tl.position.set(0, 8, -33); scene.add(tl);
+      // Yggdrasil looming beyond the hall
+      const bark = STD(0x2a2018, 0.95), leaf = STD(0x2a4a3a, 0.9, 0, 0x0a2018);
+      const trunk = new THREE.Mesh(new THREE.CylinderGeometry(6, 11, 90, 12), bark); trunk.position.set(30, 30, -150); scene.add(trunk);
+      for (let i = 0; i < 14; i++) { const a = (i / 14) * Math.PI * 2, br = new THREE.Mesh(new THREE.SphereGeometry(18 + (i % 3) * 5, 10, 8), leaf); br.position.set(30 + Math.cos(a) * 40, 80 + Math.sin(i) * 10, -150 + Math.sin(a) * 20); br.scale.y = 0.5; scene.add(br); }
+      // braziers along the hall
+      S.flames = [];
+      for (const x of [-10, -6, 6, 10]) { const brz = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.3, 1.4, 10), goldM); brz.position.set(x, 0.7, -4); scene.add(brz);
+        const fl = new THREE.Sprite(new THREE.SpriteMaterial({ map: FT.glow, color: 0xffa040, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false })); fl.scale.setScalar(2.4); fl.position.set(x, 1.9, -4); scene.add(fl);
+        const l = new THREE.PointLight(0xff9a40, 10, 12, 1.6); l.position.set(x, 2.2, -4); scene.add(l); S.flames.push({ fl, l }); }
+      S.tick = () => { if (Math.random() < 0.6) addP.spawn(rand(-20, 20), rand(0.5, 8), rand(-14, 4), rand(-0.2, 0.2), rand(0.1, 0.4), 0, rand(3, 5), 0.05, 0.03, 1.4, 1.2, 0.5, 0.8, 0.2, 0); for (const f of S.flames) { const k = 0.85 + Math.random() * 0.3; f.fl.scale.setScalar(2.4 * k); f.l.intensity = 10 * k; } };
     },
   },
 };
