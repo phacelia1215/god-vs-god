@@ -1041,7 +1041,7 @@ const HADES_MOVES = {
   },
   hd_super: {
     name: '冥府の門・タルタロス', type: 'super', dur: 2.3, glow: 'bident',
-    anim: [[0, 'summonWind'], [0.18, 'summon'], [0.32, 'superCall'], [0.42, 'superDrain'], [1.28, 'superDrain'], [1.36, 'superCall'], [1.6, 'superCall'], [1.68, 'summon'], [2.0, 'summon'], [2.3, 'stance']],
+    anim: [[0, 'summonWind'], [0.12, 'superCall'], [0.36, 'superCall'], [0.42, 'shadeStrike'], [0.5, 'slashEnd'], [0.58, 'shadeStrike'], [0.66, 'riseEnd'], [0.74, 'shadeStrike'], [0.82, 'slashEnd'], [0.9, 'shadeStrike'], [0.98, 'sweepEnd'], [1.06, 'shadeStrike'], [1.16, 'slashEnd'], [1.24, 'superCall'], [1.56, 'superCall'], [1.62, 'palmWind'], [1.7, 'palm'], [2.0, 'palm'], [2.3, 'stance']],
   },
 };
 // Thor swings an oversized Mjolnir: every hammer move is slower to come out, hits much harder
@@ -1352,6 +1352,11 @@ const AUTO = {
 
 // does the opponent have a projectile in flight toward f?
 function sim0HasProj(sim, f) { return sim.projs.some((q) => q.owner !== f.side && !q.dead && Math.abs(q.x - f.x) < 5); }
+
+// supers play a little slower than authored so every cinematic has room to breathe
+const SUPER_K = 1.3;
+// stretch every super's duration and keyframes by SUPER_K (scripts run on mt / SUPER_K)
+(function () { for (const c of Object.values(CHARS)) { const m = c.moves[c.super]; m.dur = +(m.dur * SUPER_K).toFixed(3); m.anim = m.anim.map(([tt, n]) => [+(tt * SUPER_K).toFixed(3), n]); } })();
 
 class Sim {
   constructor(opts = {}) {
@@ -1998,7 +2003,7 @@ class Sim {
 
   superScript(f, o, dt) {
     f.mt += dt;
-    const t = f.mt;
+    const t = f.mt / SUPER_K;
     const s = f.sup || (f.sup = { ev: {} });
     const once = (k, fn) => { if (!s.ev[k]) { s.ev[k] = 1; fn(); } };
     if (!s.init) { s.init = true; s.x0 = f.x; s.y0 = f.y; s.lock = false; s.tx = o.x; }
@@ -2024,10 +2029,12 @@ class Sim {
           if (s.lock && o.state === 'locked') this.superHit(f, o, 30, 'bolt', { stop: 0.04 });
         });
       });
+      if (t >= 0.5) once('storm', () => this.emit('zeusStorm', { side: f.side, x: s.lock ? o.x : s.tx }));
       if (t < 0.42) { f.y = Math.max(0, f.y - 10 * dt); }
       else if (t < 1.3) { f.y = 2.8 * easeOut((t - 0.42) / 0.88); }
       else if (t < 1.55) {
         once('dive', () => {
+          this.emit('zeusSpear', { side: f.side, x: s.lock ? o.x : s.tx });
           s.dx0 = f.x; s.dy0 = f.y;
           s.dx1 = clamp((s.lock ? o.x : s.tx) - f.facing * 0.85, -STAGE, STAGE);
           this.emit('superDive', { side: f.side });
@@ -2072,6 +2079,7 @@ class Sim {
           f.x = clamp((s.lock ? o.x : s.tx) - f.facing * 2.4, -STAGE, STAGE);
           f.facing = Math.sign((s.lock ? o.x : s.tx) - f.x) || f.facing; f.y = 0;
           this.emit('judgment', { side: f.side, x: s.lock ? o.x : s.tx });
+          this.emit('anubisSpirit', { side: f.side, x: s.lock ? o.x : s.tx });
         });
       } else if (t >= 1.74 && t < 1.86) {
         once('fd', () => { s.fx0 = f.x; s.fx1 = clamp((s.lock ? o.x : s.tx) + f.facing * 1.6, -STAGE, STAGE); this.emit('superDash', { side: f.side }); });
@@ -2124,6 +2132,7 @@ class Sim {
         const k = easeOut((t - 1.42) / 0.2);
         f.x = lerp(s.jx0, s.jx1, k); f.y = 4.3 * k;
         if (t >= 1.5) once('charge', () => this.emit('thorCharge', { side: f.side, x: f.x, y: f.y }));
+        once('vortex', () => this.emit('thorVortex', { side: f.side, x: s.lock ? o.x : s.tx }));
       } else if (t >= 1.62 && t < 1.76) {
         f.y = lerp(4.3, 0, easeIn((t - 1.62) / 0.14));
       } else if (t >= 1.76) {
@@ -2135,29 +2144,45 @@ class Sim {
         });
       }
     } else if (f.key === 'hades') {
-      // HADES: chains rise under the foe wherever they stand, souls are drained, the gate of Tartarus swallows them, hellfire spits them out
-      f.y = 0;
-      if (t >= 0.3) once('connect', () => {
-        s.tx = o.x;
-        this.emit('chains', { side: f.side, x: o.x });
-        if (this.canLock(o, 7.5)) { this.lock(f, o); s.lock = true; s.oy = o.y; this.superHit(f, o, 24, 'hell', { stop: 0.07 }); }
+      // HADES: black mist swallows the arena, he lunges out of it again and again, the gate of the underworld
+      // rises behind the foe and he drives them through it
+      if (t < 0.3) f.y = 0;
+      if (t >= 0.12) once('mist', () => this.emit('mist', { side: f.side, x: (f.x + o.x) / 2, ox: o.x }));
+      if (t >= 0.32) once('connect', () => {
+        s.tx = o.x; s.dir = Math.sign(o.x - f.x) || f.facing;
+        if (this.canLock(o, 7.5)) { this.lock(f, o); s.lock = true; s.oy = o.y; this.superHit(f, o, 20, 'hell', { stop: 0.06 }); }
       });
       if (locked) {
-        if (t < 1.3) o.y = lerp(s.oy, 1.2, easeOut(clamp((t - 0.3) / 0.35, 0, 1))) + Math.sin(t * 22) * 0.03;
-        else if (t < 1.58) o.y = lerp(1.2, -0.9, easeIn((t - 1.3) / 0.28));
-        else if (t < 1.74) o.y = -0.9;
-        else o.y = 0.05;
+        if (t < 1.3) o.y = lerp(s.oy, 0.6, easeOut(clamp((t - 0.32) / 0.3, 0, 1))) + Math.sin(t * 20) * 0.04;
+        else if (t < 1.62) o.y = lerp(o.y, 0.1, 0.2);
+        o.x = clamp(o.x, -STAGE, STAGE);
       }
-      for (let i = 0; i < 6; i++) {
-        if (t >= 0.46 + i * 0.13) once('dr' + i, () => {
-          this.emit('soulDrain', { side: f.side, x: s.lock ? o.x : s.tx, y: (s.lock ? o.y : 0) + 1.3, fx: f.x });
-          if (s.lock && o.state === 'locked') { this.superHit(f, o, 15, 'soulfire', { stop: 0.025 }); f.hp = Math.min(f.c.hp, f.hp + 12); }
+      // five lunges out of the mist from alternating sides
+      for (let i = 0; i < 5; i++) {
+        if (t >= 0.42 + i * 0.16) once('ms' + i, () => {
+          const cx = s.lock ? o.x : s.tx, side = i % 2 ? 1 : -1;
+          const from = f.x;
+          f.x = clamp(cx + side * 1.15, -STAGE, STAGE); f.facing = Math.sign(cx - f.x) || -side; f.y = i % 2 ? 0.5 : 0;
+          this.emit('mistStrike', { side: f.side, from, x: f.x, y: f.y, tx: cx, ty: (s.lock ? o.y : 0) + 1.1, i });
+          if (s.lock && o.state === 'locked') { this.superHit(f, o, 15, i % 2 ? 'soulfire' : 'hell', { stop: 0.035 }); f.hp = Math.min(f.c.hp, f.hp + 6); }
         });
       }
-      if (t >= 1.3) once('gate', () => this.emit('tartarus', { side: f.side, x: s.lock ? o.x : s.tx }));
-      if (t >= 1.74) once('final', () => {
-        this.emit('superImpact', { side: f.side, x: s.lock ? o.x : s.tx, kind: 'hellfire' });
-        if (s.lock && o.state === 'locked') this.superHit(f, o, 140, 'hell', { final: true, launch: 9, kb: 3, stop: 0.26 });
+      // reappear in front, the gate rises behind the foe
+      if (t >= 1.24) once('gate', () => {
+        const cx = s.lock ? o.x : s.tx;
+        s.dir = Math.sign(cx - f.x) || s.dir || 1;
+        f.x = clamp(cx - s.dir * 1.25, -STAGE, STAGE); f.facing = s.dir; f.y = 0;
+        s.gx = clamp(cx + s.dir * 1.3, -STAGE - 1, STAGE + 1);
+        this.emit('gateRise', { side: f.side, x: s.gx, dir: s.dir, fx: f.x });
+      });
+      // the push: the foe is driven back through the open gate
+      if (t >= 1.62 && t < 1.86) {
+        once('push', () => { s.px0 = o.x; this.emit('gatePush', { side: f.side, x: s.gx }); });
+        if (locked) { const k = easeIn((t - 1.62) / 0.24); o.x = lerp(s.px0, s.gx, k); o.y = 0.2 + k * 0.5; }
+      }
+      if (t >= 1.86) once('final', () => {
+        this.emit('superImpact', { side: f.side, x: s.gx ?? o.x, kind: 'gateShut' });
+        if (s.lock && o.state === 'locked') { o.x = clamp(s.gx - s.dir * 0.4, -STAGE, STAGE); o.y = 0.4; this.superHit(f, o, 175, 'hell', { final: true, launch: 8.5, kb: -3, stop: 0.28 }); }
         else this.hitstop = 0.12;
       });
     } else if (f.key === 'heracles') {
@@ -2190,6 +2215,7 @@ class Sim {
         });
       }
       if (t >= 1.36) once('throw', () => this.emit('hthrow', { side: f.side, x: f.x }));
+      if (t >= 1.56) once('lion', () => this.emit('lionSpirit', { side: f.side, x: f.x, dir: f.facing }));
       if (t >= 1.78) once('final', () => {
         this.emit('superImpact', { side: f.side, x: s.lock ? o.x : f.x + f.facing * 1.2, kind: 'lion' });
         if (s.lock && o.state === 'locked') this.superHit(f, o, 155, 'might', { final: true, launch: 7.5, kb: 9, stop: 0.28 });
@@ -2232,6 +2258,7 @@ class Sim {
         const k = easeOut((t - 1.22) / 0.3);
         f.x = lerp(s.rx0, s.rx1, k); f.y = lerp(s.ry0, 3.8, k);
         if (t >= 1.4) once('charge', () => this.emit('stormCharge', { side: f.side, x: f.x, y: f.y }));
+        once('blade', () => this.emit('heavenBlade', { side: f.side, x: s.lock ? o.x : s.tx }));
       } else if (t >= 1.52 && t < 1.66) {
         f.y = lerp(3.8, 0, easeIn((t - 1.52) / 0.14));
       } else if (t >= 1.66) {
@@ -2274,7 +2301,7 @@ class Sim {
           if (t >= ht) once('f' + i, () => { if (s.lock && o.state === 'locked') this.superHit(f, o, 13, i % 2 ? 'water' : 'mid', { stop: 0.025 }); });
         }
       } else if (t < 1.8) {
-        once('rise', () => { s.rx0 = f.x; s.ry0 = f.y; s.rx1 = clamp((s.lock ? o.x : s.tx) - f.facing * 0.55, -STAGE, STAGE); });
+        once('rise', () => { s.rx0 = f.x; s.ry0 = f.y; s.rx1 = clamp((s.lock ? o.x : s.tx) - f.facing * 0.55, -STAGE, STAGE); this.emit('tidalWall', { side: f.side, x: (s.lock ? o.x : s.tx) + f.facing * 2.2, dir: f.facing }); });
         const k = easeOut((t - 1.62) / 0.18);
         f.x = lerp(s.rx0, s.rx1, k); f.y = lerp(s.ry0, 3.5, k);
       } else if (t < 1.92) {
@@ -2647,7 +2674,7 @@ class Sim {
   }
 }
 
-return { DT, STAGE, GRAV, ROUND_TIME, WINS_NEEDED, setRandom, CHARS, HUMAN, AI_LEVELS, AI_LEVEL_DEFAULT, AUTO, Sim };
+return { DT, STAGE, GRAV, ROUND_TIME, WINS_NEEDED, SUPER_K, setRandom, CHARS, HUMAN, AI_LEVELS, AI_LEVEL_DEFAULT, AUTO, Sim };
 })();
 
 // ======== poses.js ========
@@ -5313,7 +5340,7 @@ return { makeFxTextures, Particles, Bolts, waterMaterial, Timed };
 
 // ======== game.js ========
 const __game = (() => {
-const { Sim, DT, STAGE, CHARS, HUMAN, AUTO } = __sim;
+const { Sim, DT, STAGE, CHARS, HUMAN, AUTO, SUPER_K } = __sim;
 const { SKEL, POSES, JOINTS, sampleAnim, blend, copyPose, cyclePose } = __poses;
 const { canvasTex, buildZeus, buildPoseidon, buildAnubis, buildThor, buildSusanoo, buildHeracles, buildHades, updateCape } = __models;
 const { makeFxTextures, Particles, Bolts, waterMaterial, Timed } = __fx;
@@ -6208,8 +6235,161 @@ function ankhMesh() {
   return g;
 }
 
+// ---------------- super set-pieces ----------------
+const SUPER_LIFE = (t) => t * SUPER_K;     // authored seconds -> real seconds
+function fadeMats(mats, k, inK = 0.1, outK = 0.8, peak = 1) {
+  const a = k < inK ? k / inK : k > outK ? 1 - (k - outK) / (1 - outK) : 1;
+  for (const m of mats) { if (m.uniforms && m.uniforms.uOp) m.uniforms.uOp.value = a * peak; else m.opacity = a * peak; }
+  return a;
+}
+// black mist: dark billows over the whole fight area
+function hadesMist(e) {
+  const g = new THREE.Group(), mats = [];
+  for (let i = 0; i < 26; i++) {
+    const m = new THREE.SpriteMaterial({ map: FT.glow, color: 0x050208, transparent: true, opacity: 0, depthWrite: false });
+    m.userData.own = true; mats.push(m);
+    const sp = new THREE.Sprite(m); sp.scale.setScalar(rand(3, 6)); sp.position.set(e.x + rand(-5, 5), rand(0.3, 3), rand(-2.5, 1.5));
+    sp.userData.v = new V3(rand(-0.3, 0.3), rand(0.05, 0.2), 0); g.add(sp);
+  }
+  timed.add(g, SUPER_LIFE(1.8), (o, k, dt) => { fadeMats(mats, k, 0.12, 0.78, 0.92); for (const c of o.children) { c.position.addScaledVector(c.userData.v, dt); c.material.rotation += dt * 0.3; } });
+  normP.burst(120, e.x, 0.5, 0, 6, { life: [0.8, 1.6], size: [0.3, 0.7], color: [0.04, 0.02, 0.05], alpha: 0.85, drag: 2, up: 2 });
+  stage.dimT = 1; sfx.noise(1.4, 200, 900, 'lowpass', 0.6, 0.35); sfx.tone(55, 35, 1.6, 'sawtooth', 0.08);
+}
+function hadesMistStrike(e) {
+  normP.burst(30, e.from, 1.1, 0, 3, { life: [0.4, 0.8], size: [0.2, 0.45], color: [0.04, 0.02, 0.05], alpha: 0.8, drag: 2 });
+  normP.burst(30, e.x, e.y + 1.1, 0, 4, { life: [0.4, 0.8], size: [0.2, 0.45], color: [0.04, 0.02, 0.05], alpha: 0.8, drag: 2 });
+  const a = new V3(e.x, e.y + 1.2, 0.2), b = new V3(e.tx, e.ty, 0.2);
+  slashStreak((a.x + b.x) / 2, (a.y + b.y) / 2, 0.3, a.distanceTo(b) + 1.2, 0.3, Math.atan2(b.y - a.y, b.x - a.x) - Math.PI / 2, [2.0, 0.25, 0.55], 0.3);
+  addP.burst(20, e.tx, e.ty, 0.2, 5, { life: [0.2, 0.5], size: [0.06, 0.14], color: COL.hell, drag: 3 });
+  ghostOf(views[e.side], [0.9, 0.1, 0.25]); sfx.whoosh(1.6); sfx.noise(0.25, 500, 1500, 'bandpass', 0.8, 0.2);
+}
+// the gate of the underworld: obsidian pillars, skull keystone, a swirling crimson-black portal
+function hadesGate(e) {
+  const g = new THREE.Group();
+  const stone = new THREE.MeshStandardMaterial({ color: 0x120c12, roughness: 0.3, metalness: 0.5, emissive: new THREE.Color(0.35, 0.02, 0.08) }); stone.userData.own = true;
+  const gold = new THREE.MeshStandardMaterial({ color: 0x8a5a2a, metalness: 1, roughness: 0.35 }); gold.userData.own = true;
+  for (const s of [-1, 1]) {
+    const pil = new THREE.Mesh(new THREE.BoxGeometry(0.7, 5.2, 0.9), stone); pil.position.set(s * 1.7, 2.6, 0); g.add(pil);
+    for (let k = 0; k < 3; k++) { const sp = new THREE.Mesh(new THREE.ConeGeometry(0.16, 0.9, 5), stone); sp.position.set(s * (1.4 + k * 0.3), 5.5, 0); g.add(sp); }
+  }
+  const arch = new THREE.Mesh(new THREE.TorusGeometry(1.7, 0.35, 10, 30, Math.PI), stone); arch.position.y = 5.0; g.add(arch);
+  const skull = new THREE.Mesh(new THREE.SphereGeometry(0.42, 16, 12), gold); skull.position.set(0, 6.7, 0.2); skull.scale.set(1, 1.1, 0.9); g.add(skull);
+  const pm = new THREE.ShaderMaterial({
+    uniforms: { uTime: { value: 0 }, uOp: { value: 0 } }, transparent: true, depthWrite: false, side: THREE.DoubleSide,
+    vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`,
+    fragmentShader: `varying vec2 vUv; uniform float uTime, uOp; void main(){ vec2 p = vUv - 0.5; p.y *= 0.62; float r = length(p) * 2.0, a = atan(p.y, p.x);
+      float sw = sin(a * 5.0 - r * 14.0 + uTime * 7.0) * 0.5 + 0.5; vec3 c = mix(vec3(0.0), vec3(1.9, 0.12, 0.35), pow(sw, 3.0) * (1.0 - r) * 1.4);
+      c += vec3(2.2, 0.4, 0.6) * smoothstep(0.92, 1.0, r) * step(r, 1.04); float al = step(r, 1.04) * uOp; gl_FragColor = vec4(c, al); }`,
+  });
+  pm.userData.own = true;
+  const portal = new THREE.Mesh(new THREE.PlaneGeometry(3.3, 5.0), pm); portal.position.y = 2.5; g.add(portal);
+  g.position.set(e.x, -6, -0.7);
+  timed.add(g, SUPER_LIFE(1.25), (o, k, dt, t) => {
+    const rise = Math.min(1, t / 0.4);
+    o.position.y = -6 + easeOutC(rise) * 6;
+    pm.uniforms.uTime.value = t; pm.uniforms.uOp.value = k > 0.85 ? (1 - (k - 0.85) / 0.15) : Math.min(1, t / 0.5);
+    if (k > 0.85) o.position.y = -(k - 0.85) / 0.15 * 6;
+    if (Math.random() < 0.7) addP.burst(2, e.x + rand(-1.5, 1.5), rand(0.3, 4.6), -0.5, 1, { life: [0.3, 0.7], size: [0.08, 0.16], color: COL.hell, drag: 1, up: 1 });
+  });
+  dust(e.x, 40, 2.4); ring(e.x, 0.05, 0, 0xff4a70, 6, 0.6); shake = Math.max(shake, 0.4);
+  sfx.boom(1.2); sfx.tone(48, 30, 1.4, 'sawtooth', 0.1);
+}
+const easeOutC = (k) => 1 - Math.pow(1 - k, 3);
+function hadesGateShut(e) {
+  const x = e.x;
+  const b = lightBeam(0xff3060, 1.0, 1.8, 9, 0.9); b.position.set(x, 0, 0); b.material.userData.own = true;
+  const op = b.material.uniforms.uOp; timed.add(b, 0.9, (o, k) => { o.scale.set(1 + k, Math.min(1, k * 5), 1 + k); op.value = 0.9 * (1 - k); });
+  for (let i = 0; i < 5; i++) setTimeout(() => addP.burst(50, x, rand(0.5, 4), 0, 10, { life: [0.4, 1.0], size: [0.08, 0.2], color: COL.hell, drag: 1.4, up: 3 }), i * 60);
+  normP.burst(90, x, 2, 0, 9, { life: [0.6, 1.4], size: [0.15, 0.35], color: [0.05, 0.02, 0.04], alpha: 0.85, drag: 1.2 });
+  ring(x, 2.4, 0.2, 0xff6080, 9, 0.6, true); ring(x, 0.05, 0, 0xff3050, 12, 0.8);
+  glowPuff(x, 2.4, 0.2, 0xff4070, 10, 0.5);
+  stage.flash = Math.max(stage.flash, 0.8); screenFlash(0.8, '#ffd8e0'); shake = 0.65;
+  sfx.boom(1.6); sfx.ring([90, 135], 1.2, 0.15);
+}
+// ZEUS: crown of storm clouds overhead, then a falling pillar of lightning with the dive
+function zeusStorm(e) {
+  const g = new THREE.Group(), mats = [];
+  for (let i = 0; i < 18; i++) {
+    const a = (i / 18) * Math.PI * 2, m = new THREE.SpriteMaterial({ map: FT.glow, color: 0x1a2440, transparent: true, opacity: 0, depthWrite: false });
+    m.userData.own = true; mats.push(m);
+    const sp = new THREE.Sprite(m); sp.scale.setScalar(3.4); sp.position.set(Math.cos(a) * 4, 8.5 + Math.sin(a * 3) * 0.3, Math.sin(a) * 2.4); g.add(sp);
+  }
+  const glowM = new THREE.SpriteMaterial({ map: FT.glow, color: 0x9fd0ff, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }); glowM.userData.own = true;
+  const core = new THREE.Sprite(glowM); core.scale.setScalar(5); core.position.y = 8.5; g.add(core);
+  g.position.set(e.x, 0, -0.5);
+  timed.add(g, SUPER_LIFE(1.3), (o, k, dt, t) => {
+    fadeMats(mats, k, 0.15, 0.8, 0.9); glowM.opacity = (0.3 + 0.3 * Math.sin(t * 20)) * Math.min(1, k * 6) * (k > 0.8 ? (1 - k) / 0.2 : 1);
+    o.rotation.y += dt * 1.2;
+    if (Math.random() < 0.35) { const a = Math.random() * 6.28, p = new V3(e.x + Math.cos(a) * 3.5, 8.3, Math.sin(a) * 2); bolts.spawn(p, p.clone().add(new V3(rand(-2, 2), rand(-1.5, 0.5), rand(-1, 1))), { r: 0.03, life: 0.12, segs: 8, branches: 1 }); }
+  });
+  sfx.noise(1.2, 200, 700, 'lowpass', 0.6, 0.25);
+}
+function zeusSpear(e) {
+  const m = new THREE.MeshBasicMaterial({ color: new THREE.Color(3, 3.4, 4.5), transparent: true }); m.userData.own = true;
+  const spear = new THREE.Mesh(new THREE.ConeGeometry(0.35, 7, 8), m); spear.rotation.x = Math.PI; spear.position.set(e.x, 12, 0.2);
+  timed.add(spear, SUPER_LIFE(0.3), (o, k) => { o.position.y = 12 - k * 8.5; m.opacity = 1 - Math.max(0, k - 0.8) * 5; if (Math.random() < 0.8) bolts.spawn(o.position.clone(), o.position.clone().add(new V3(rand(-1.5, 1.5), rand(-1, 1), rand(-0.5, 0.5))), { r: 0.025, life: 0.08, segs: 6, branches: 0 }); });
+}
+// POSEIDON: a wall of water rises behind the foe and comes crashing down with the slam
+function tidalWall(e) {
+  const m = waterMaterial(0x0a5a7a, 0xd8ffff, 0.0, 2.2); m.userData.own = true;
+  const wall = new THREE.Mesh(new THREE.CylinderGeometry(3.5, 3.5, 1, 40, 8, true, -1.2, 2.4), m);
+  wall.rotation.y = e.dir > 0 ? Math.PI / 2 : -Math.PI / 2;
+  wall.position.set(e.x - e.dir * 3.3, 0, -0.3);
+  timed.add(wall, SUPER_LIFE(0.8), (o, k, dt, t) => {
+    const h = k < 0.55 ? easeOutC(k / 0.55) * 7 : 7 * (1 - Math.pow((k - 0.55) / 0.45, 2.2));
+    o.scale.y = Math.max(0.01, h); o.position.y = h / 2;
+    m.uniforms.uTime.value = t; m.uniforms.uOp.value = k < 0.9 ? 0.9 : (1 - k) * 9;
+    if (k > 0.5 && Math.random() < 0.9) normP.burst(6, e.x + rand(-2, 2), h, rand(-1.5, 1.5), 6, { life: [0.5, 1.0], size: [0.1, 0.25], color: [0.85, 0.98, 1], alpha: 0.9, grav: 12, drag: 0.8 });
+  });
+  sfx.water(2); sfx.noise(1.4, 300, 1600, 'bandpass', 0.6, 0.3);
+}
+// ANUBIS: a towering spectral Anubis looms over the scales
+function anubisSpirit(e) {
+  const v = views[e.side];
+  if (!v) return;
+  const m = new THREE.MeshBasicMaterial({ color: new THREE.Color(0.35, 1.0, 1.4), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }); m.userData.own = true;
+  const g = v.m.root.clone(true);
+  g.traverse((o) => { if (o.isSprite) o.visible = false; else if (o.isMesh) { o.material = m; o.castShadow = false; if (o.geometry) o.geometry.userData.shared = true; } });
+  g.scale.setScalar(3.2); g.position.set(e.x - v.f.facing * 2.5, -0.5, -3.5); g.rotation.y = v.f.facing > 0 ? Math.PI / 2 : -Math.PI / 2;
+  timed.add(g, SUPER_LIFE(0.55), (o, k) => { m.opacity = (k < 0.25 ? k / 0.25 : k > 0.7 ? (1 - k) / 0.3 : 1) * 0.35; o.position.y = -0.5 + k * 0.6; });
+  sfx.tone(140, 70, 1.0, 'sawtooth', 0.05);
+}
+// THOR: the sky tears open into a lightning vortex above the leap
+function thorVortex(e) {
+  const m = new THREE.ShaderMaterial({ uniforms: { uTime: { value: 0 }, uOp: { value: 0 } }, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide,
+    vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`,
+    fragmentShader: `varying vec2 vUv; uniform float uTime, uOp; void main(){ vec2 p = vUv - 0.5; float r = length(p) * 2.0, a = atan(p.y, p.x); float sw = pow(sin(a * 4.0 + r * 10.0 - uTime * 6.0) * 0.5 + 0.5, 4.0); vec3 c = vec3(0.9, 0.6, 2.2) * sw * (1.0 - r) * 1.6 + vec3(2.4, 2.2, 3.0) * exp(-r * 8.0); gl_FragColor = vec4(c, uOp * step(r, 1.0)); }` });
+  m.userData.own = true;
+  const disc = new THREE.Mesh(new THREE.CircleGeometry(5, 48), m); disc.rotation.x = 0.9; disc.position.set(e.x, 9, -0.5);
+  timed.add(disc, SUPER_LIFE(0.7), (o, k, dt, t) => { m.uniforms.uTime.value = t; m.uniforms.uOp.value = k < 0.2 ? k / 0.2 : k > 0.75 ? (1 - k) / 0.25 : 1; o.scale.setScalar(0.4 + k * 0.8); if (Math.random() < 0.5) violetBolt(new V3(e.x + rand(-3, 3), 9, rand(-1, 0)), new V3(e.x + rand(-2, 2), rand(2, 5), 0), { r: 0.03, life: 0.1, segs: 8, branches: 1 }); });
+  sfx.bolt(true);
+}
+// SUSANOO: Ame-no-Habakiri descends from the storm as a giant blade of light
+function heavenBlade(e) {
+  const m = new THREE.MeshBasicMaterial({ color: new THREE.Color(1.6, 3.0, 2.4), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }); m.userData.own = true;
+  const g = new THREE.Group();
+  const blade = new THREE.Mesh(new THREE.BoxGeometry(0.5, 8, 0.08), m); blade.position.y = 4; g.add(blade);
+  const tip = new THREE.Mesh(new THREE.ConeGeometry(0.36, 1.2, 4), m); tip.rotation.x = Math.PI; tip.scale.z = 0.25; tip.position.y = -0.6; g.add(tip);
+  const guard = new THREE.Mesh(new THREE.TorusGeometry(0.8, 0.08, 6, 24), m); guard.position.y = 8; g.add(guard);
+  g.position.set(e.x, 16, -0.4);
+  timed.add(g, SUPER_LIFE(0.45), (o, k) => { m.opacity = k < 0.2 ? k / 0.2 : k > 0.8 ? (1 - k) / 0.2 : 1; o.position.y = 16 - easeOutC(Math.min(1, k * 1.4)) * 13; if (Math.random() < 0.6) addP.burst(2, e.x + rand(-0.3, 0.3), o.position.y + rand(0, 6), 0, 1, { life: [0.2, 0.5], size: [0.06, 0.14], color: COL.storm, drag: 2 }); });
+  sfx.ring([800, 1200, 1800], 0.9, 0.08);
+}
+// HERACLES: a golden lion spirit roars out behind the final swing
+function lionSpirit(e) {
+  const m = new THREE.MeshBasicMaterial({ color: new THREE.Color(2.0, 1.3, 0.4), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }); m.userData.own = true;
+  const g = new THREE.Group();
+  const head = new THREE.Mesh(new THREE.SphereGeometry(1.2, 18, 14), m); head.scale.set(1, 0.9, 1.1); g.add(head);
+  const snout = new THREE.Mesh(new THREE.SphereGeometry(0.6, 14, 10), m); snout.position.set(0, -0.35, 1.0); g.add(snout);
+  const jaw = new THREE.Mesh(new THREE.SphereGeometry(0.5, 12, 8), m); jaw.position.set(0, -0.95, 0.75); jaw.scale.set(1, 0.5, 1); g.add(jaw);
+  for (let i = 0; i < 16; i++) { const a = (i / 16) * Math.PI * 2; const tuft = new THREE.Mesh(new THREE.ConeGeometry(0.35, 1.4, 6), m); tuft.position.set(Math.cos(a) * 1.4, Math.sin(a) * 1.4, -0.3); tuft.rotation.z = a - Math.PI / 2; g.add(tuft); }
+  g.position.set(e.x - e.dir * 1.2, 3.2, -1.5); g.rotation.y = e.dir > 0 ? Math.PI / 2 : -Math.PI / 2;
+  timed.add(g, SUPER_LIFE(0.6), (o, k) => { m.opacity = (k < 0.2 ? k / 0.2 : k > 0.7 ? (1 - k) / 0.3 : 1) * 0.45; o.scale.setScalar(0.7 + k * 0.6); jaw.position.y = -0.95 - Math.sin(Math.min(1, k * 2) * Math.PI) * 0.4; });
+  sfx.noise(1.0, 120, 600, 'lowpass', 0.6, 0.45); sfx.tone(90, 55, 1.0, 'sawtooth', 0.12);
+}
 function superImpact(e) {
   const x = e.x;
+  if (e.kind === 'gateShut') { hadesGateShut(e); return; }
   if (e.kind === 'hellfire') {
     const beam = lightBeam(0xff3060, 1.2, 2.2, 16, 0.9);
     beam.position.set(x, 0, 0); beam.material.userData.own = true;
@@ -6704,12 +6884,12 @@ class FighterView {
       }
     }
     // Zeus super: storm aura while floating
-    if (f.key === 'zeus' && f.state === 'attack' && m && m.type === 'super' && f.mt > 0.4 && f.mt < 1.4) {
+    if (f.key === 'zeus' && f.state === 'attack' && m && m.type === 'super' && f.mt / SUPER_K > 0.4 && f.mt / SUPER_K < 1.4) {
       const p = new V3(); M.j.chest.getWorldPosition(p);
       if (Math.random() < 0.7) bolts.spawn(p, p.clone().add(new V3(rand(-1.5, 1.5), rand(-1.2, 1.5), rand(-0.8, 0.8))), { r: 0.02, life: 0.12, segs: 8, branches: 1 });
     }
     // Thor super: lightning gathering on Mjolnir during the leap
-    if (f.key === 'thor' && f.state === 'attack' && m && m.type === 'super' && f.mt > 1.38 && f.mt < 1.7) {
+    if (f.key === 'thor' && f.state === 'attack' && m && m.type === 'super' && f.mt / SUPER_K > 1.38 && f.mt / SUPER_K < 1.7) {
       const p = new V3(0, 0, 0.68); M.hammer.localToWorld(p);
       for (let i = 0; i < 2; i++) violetBolt(p, p.clone().add(new V3(rand(-1.6, 1.6), rand(-1.2, 1.6), rand(-0.8, 0.8))), { r: 0.022, life: 0.1, segs: 8, branches: 1 });
       addP.burst(4, p.x, p.y, p.z, 3, { life: [0.15, 0.35], size: [0.08, 0.18], color: COL.thor, drag: 3 });
@@ -6717,12 +6897,12 @@ class FighterView {
     // Poseidon super: water swirl during call / afterimage flurry
     if (f.key === 'poseidon' && f.state === 'attack' && m && m.type === 'super') {
       const p = new V3(); M.j.hips.getWorldPosition(p);
-      if (f.mt < 0.9) {
+      if (f.mt / SUPER_K < 0.9) {
         for (let i = 0; i < 3; i++) {
           const a = t * 8 + i * 2.1, r = 1.0;
           normP.spawn(p.x + Math.cos(a) * r, p.y - 0.8 + ((t * 2 + i * 0.3) % 1) * 2.4, Math.sin(a) * r, -Math.sin(a) * 3, 1.5, Math.cos(a) * 3, 0.5, 0.12, 0.05, 0.75, 0.97, 1, 0.85, 1, 0);
         }
-      } else if (f.mt < 1.62) {
+      } else if (f.mt / SUPER_K < 1.62) {
         const tp = new V3(0, 0, 1.5); M.trident.localToWorld(tp);
         addP.burst(3, tp.x, tp.y, tp.z, 2, { life: [0.15, 0.3], size: [0.15, 0.3], color: COL.water, drag: 3 });
         normP.burst(2, tp.x, tp.y, tp.z, 4, { life: [0.3, 0.5], size: [0.08, 0.15], color: [0.85, 0.98, 1], alpha: 0.8, grav: 8, drag: 1 });
@@ -6822,7 +7002,7 @@ function cineShot(f, o, t, portrait) {
 }
 function cineState() {
   const f = sim.fighters.find((x) => x.state === 'attack' && x.move && x.move.type === 'super' && x.sup && (x.sup.lock || x.sup.hadLock));
-  return f ? { f, t: f.mt } : null;
+  return f ? { f, t: f.mt / SUPER_K } : null;
 }
 let cineFlag = false, cineFin = false;
 function cineUpdate(dt) {
@@ -6878,8 +7058,9 @@ function cineUpdate(dt) {
       cineTitle(f);
     }
   } else if (f.key === 'hades') {
-    if (t > 0.3 && t < 1.3 && Math.random() < 0.7) addP.burst(2, o.x + rand(-0.8, 0.8), 0.1, rand(-0.5, 0.5), 2, { life: [0.4, 0.8], size: [0.08, 0.16], color: COL.hell, up: 3, drag: 1 });
-    if (t >= 1.74 && !cineFin) { cineFin = true; cineTitle(f); }
+    if (t > 0.15 && t < 1.85) { for (let i = 0; i < 3; i++) normP.spawn(o.x + rand(-3, 3), rand(0, 2.6), rand(-1.5, 1.2), rand(-0.5, 0.5), rand(0, 0.4), rand(-0.2, 0.2), rand(1.2, 2), 0.5, 0.9, 0.03, 0.02, 0.04, 0.55, 0.6, -0.05); }
+    if (t > 0.3 && t < 1.3 && Math.random() < 0.5) addP.burst(2, o.x + rand(-1, 1), 0.2, rand(-0.5, 0.5), 2, { life: [0.4, 0.8], size: [0.08, 0.16], color: COL.hell, up: 3, drag: 1 });
+    if (t >= 1.86 && !cineFin) { cineFin = true; cineTitle(f); }
   } else if (f.key === 'heracles') {
     if (t > 1.5 && t < 1.78) { const p = new V3(0, 0, 0.75); M_club(f, p); addP.burst(4, p.x, p.y, p.z, 2.5, { life: [0.15, 0.35], size: [0.08, 0.18], color: COL.might, drag: 3 }); }
     if (t >= 1.78 && !cineFin) { cineFin = true; cineTitle(f); }
@@ -6917,7 +7098,7 @@ function cineSlow() {
   if (c.f.key === 'thor') return c.t > 1.72 && c.t < 1.96 ? 0.3 : 1;
   if (c.f.key === 'susanoo') return c.t > 1.62 && c.t < 1.86 ? 0.3 : 1;
   if (c.f.key === 'heracles') return c.t > 1.74 && c.t < 1.98 ? 0.3 : 1;
-  if (c.f.key === 'hades') return c.t > 1.7 && c.t < 1.94 ? 0.3 : 1;
+  if (c.f.key === 'hades') return c.t > 1.82 && c.t < 2.05 ? 0.3 : 1;
   return c.t > 1.8 && c.t < 2.05 ? 0.3 : 1;
 }
 function cineTitle(f) {
@@ -7529,6 +7710,17 @@ function handleEvents() {
       case 'soulBurst': ring(e.x, 0.06, 0, 0x9ff3ff, 4.5, 0.4); addP.burst(30, e.x, 1.0, 0, 6, { life: [0.15, 0.4], size: [0.05, 0.12], color: COL.soul, drag: 3 }); sfx.whoosh(2); break;
       case 'teleport': ghostOf(views[e.side], [0.35, 1.0, 1.4]); glowPuff(e.x, e.y + 1, 0, 0x9ff3ff, 2.2, 0.3); addP.burst(24, e.x, e.y + 1, 0, 4, { life: [0.1, 0.3], size: [0.05, 0.12], color: COL.soul, drag: 3 }); sfx.whoosh(1.2); break;
       case 'judgment': lightFlash(e.x, 2.5, 0xffe0a0, 60); maatScales(e.x, 4.3); sfx.whoosh(2.5); break;
+      case 'mist': hadesMist(e); break;
+      case 'mistStrike': hadesMistStrike(e); break;
+      case 'gateRise': hadesGate(e); break;
+      case 'gatePush': { const v = views[e.side]; const p = v ? handOf(v, 'r') : new V3(e.x, 1.2, 0); glowPuff(p.x, p.y, 0.3, 0xff4070, 4, 0.4); ring(p.x, p.y, 0.3, 0xffb0c0, 4, 0.35, true); normP.burst(40, p.x, p.y, 0, 6, { life: [0.3, 0.7], size: [0.15, 0.3], color: [0.05, 0.02, 0.04], alpha: 0.8, drag: 2 }); shake = Math.max(shake, 0.3); sfx.whoosh(2.5); sfx.tone(120, 40, 0.6, 'sawtooth', 0.1); break; }
+      case 'zeusStorm': zeusStorm(e); break;
+      case 'zeusSpear': zeusSpear(e); break;
+      case 'tidalWall': tidalWall(e); break;
+      case 'anubisSpirit': anubisSpirit(e); break;
+      case 'thorVortex': thorVortex(e); break;
+      case 'heavenBlade': heavenBlade(e); break;
+      case 'lionSpirit': lionSpirit(e); break;
       case 'dashJump': dust(e.x, 10, 0.9); sfx.whoosh(1.2); break;
       case 'thorStrike': {
         const yy = e.y || 1.2;
