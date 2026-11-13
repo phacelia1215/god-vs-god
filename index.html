@@ -283,6 +283,85 @@ body.cine #hud,body.cine .meter,body.cine #ctrl,body.cine .keyhelp,body.cine .co
 #cineTitle.zeus{--cc:#ffd77a}#cineTitle.poseidon{--cc:#5ff0e6}#cineTitle.anubis{--cc:#f0c46a}#cineTitle.thor{--cc:#c8b0ff}#cineTitle.susanoo{--cc:#9fffd8}
 #cineTitle.show{animation:ctl 1.6s cubic-bezier(.2,.8,.2,1) forwards}
 @keyframes ctl{0%{opacity:0;transform:translateY(-50%) scale(1.8);filter:blur(10px)}12%{opacity:1;transform:translateY(-50%) scale(1);filter:none}80%{opacity:1;transform:translateY(-50%) scale(1.05)}100%{opacity:0;transform:translateY(-50%) scale(1.12)}}
+
+/* ================= phones / small screens ================= */
+#btnMenu{display:none}
+#touchpad{display:none}
+body.touch #keysHelp,body.touch #keyhelp,body.touch .kh,body.touch #start .press{display:none!important}
+body.compact #keyhelp{display:none!important}
+/* match: one menu button instead of eight, meters under the health bars */
+body.compact #btnMenu{display:block;min-width:44px;font-size:16px;padding:4px 12px;align-self:center}
+body.compact #ctrl{top:calc(max(10px,env(safe-area-inset-top)) + 62px);bottom:auto;flex-direction:column;align-items:stretch;gap:6px;max-width:none}
+body.compact #ctrl:not(.open)>button:not(#btnMenu){display:none}
+body.compact #ctrl.open{background:rgba(8,5,16,.92);padding:10px;border:1px solid rgba(232,192,106,.6);z-index:40}
+body.compact #ctrl.open>button{font-size:13px;min-height:38px}
+body.compact .meter,body.compact.portrait .meter{top:calc(max(10px,env(safe-area-inset-top)) + 54px);bottom:auto;width:min(30vw,220px)}
+body.compact .meter .lbl{font-size:9px;margin-bottom:2px}
+body.compact .callout{top:calc(max(10px,env(safe-area-inset-top)) + 84px);font-size:13px}
+body.compact .combo,body.compact.portrait .combo{top:30%}
+body.compact .combo .c-n{font-size:34px}
+/* touch controls */
+body.touch #touchpad.on{display:block}
+#stick{position:fixed;left:calc(18px + env(safe-area-inset-left));bottom:calc(max(18px,env(safe-area-inset-bottom)) + 6px);width:132px;height:132px;border-radius:50%;z-index:16;touch-action:none;background:radial-gradient(circle,rgba(255,255,255,.06),rgba(0,0,0,.4));border:1.5px solid rgba(232,192,106,.55);box-shadow:0 0 18px rgba(0,0,0,.5) inset}
+#stick:before,#stick:after{content:'';position:absolute;left:50%;top:50%;background:rgba(232,192,106,.25)}
+#stick:before{width:2px;height:80%;margin:-40% 0 0 -1px}#stick:after{height:2px;width:80%;margin:-1px 0 0 -40%}
+#knob{position:absolute;left:50%;top:50%;width:56px;height:56px;margin:-28px 0 0 -28px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#fff6c9,#d29a2c 70%,#7a4c10);box-shadow:0 2px 10px rgba(0,0,0,.6);opacity:.85;pointer-events:none}
+#tbtns{position:fixed;right:calc(14px + env(safe-area-inset-right));bottom:calc(max(16px,env(safe-area-inset-bottom)) + 4px);z-index:16;display:grid;grid-template-columns:repeat(2,66px);grid-template-rows:repeat(2,66px);gap:10px;touch-action:none}
+#tbtns button{border-radius:50%;font-family:var(--jp);font-weight:800;font-size:15px;color:#fff;background:radial-gradient(circle at 40% 35%,rgba(70,55,110,.85),rgba(14,10,26,.85));border:1.5px solid rgba(232,192,106,.7);box-shadow:0 3px 10px rgba(0,0,0,.6);touch-action:none;-webkit-user-select:none;user-select:none}
+#tbtns button.sp{color:#1a0f00;background:radial-gradient(circle at 40% 35%,#fff3c4,#e8b444 60%,#a8680c)}
+#tbtns button.dn{transform:scale(.92);filter:brightness(1.4)}
+body.portrait #tbtns{grid-template-columns:repeat(2,62px);grid-template-rows:repeat(2,62px)}
+/* mode select: compact horizontal cards */
+body.compact .head{top:max(10px,1.6vh)}
+body.compact .head .t-en{font-size:9px}
+body.compact .head h2{font-size:20px;margin-top:2px}
+body.compact .head .orn{display:none}
+body.compact .cards{flex-direction:column;flex-wrap:nowrap;gap:10px;width:min(92vw,520px);margin:64px 0 64px;max-height:calc(100% - 140px);overflow:auto}
+body.compact .card{width:100%;min-height:0;display:grid;grid-template-columns:48px 1fr;column-gap:14px;row-gap:1px;align-items:center;text-align:left;padding:12px 14px}
+body.compact .card em,body.compact .card u{display:none}
+body.compact .card .ico{grid-column:1;grid-row:1/span 3;width:46px;height:46px;margin:0}
+body.compact .card b{grid-column:2;grid-row:1;font-size:17px}
+body.compact .card small{grid-column:2;grid-row:2;padding:0}
+body.compact .card span{grid-column:2;grid-row:3;margin:2px 0 0;font-size:11.5px;line-height:1.55}
+body.compact .card:hover,body.compact .card.focus{transform:none}
+body.compact .foot{bottom:max(12px,env(safe-area-inset-bottom))}
+body.compact.landscape .cards{flex-direction:row;width:96vw;margin-top:52px}
+body.compact.landscape .card{grid-template-columns:40px 1fr;padding:10px}
+body.compact.landscape .card .ico{width:38px;height:38px}
+body.compact.landscape .card span{font-size:10.5px}
+/* character select: name chips, one row of emblem picks, controls at the bottom */
+body.compact #select .head .t-en{display:none}
+body.compact .panel{top:calc(max(8px,env(safe-area-inset-top)) + 40px);bottom:auto!important;width:calc(50vw - 16px);gap:6px}
+body.compact .panel.left{left:8px}body.compact .panel.right{right:8px}
+body.compact .pside{font-size:11px}
+body.compact .pinfo{flex:none;padding:7px 10px;overflow:visible}
+body.compact .pinfo .desc2,body.compact .pinfo .stat,body.compact .pinfo h4,body.compact .pinfo .mv{display:none}
+body.compact .pinfo .en{font-size:9px}
+body.compact .pinfo h3{font-size:19px;letter-spacing:.06em}
+body.compact .pinfo .ttl{font-size:10px;margin:0;letter-spacing:.15em}
+body.compact .picks{grid-template-columns:repeat(5,1fr);gap:4px}
+body.compact .pick{padding:5px 0;justify-content:center;border-width:1.5px}
+body.compact .pick span{display:none}
+body.compact .pick .emb{width:24px;height:24px}
+body.compact .vsmark{font-size:24px;bottom:calc(max(10px,env(safe-area-inset-bottom)) + 104px)!important}
+body.compact .dummy-opt{bottom:calc(max(10px,env(safe-area-inset-bottom)) + 56px)!important;padding:5px 8px;gap:4px;font-size:11px;white-space:nowrap;max-width:96vw}
+body.compact .dummy-opt button{padding:5px 7px;font-size:11px}
+body.compact .selfoot{bottom:max(10px,env(safe-area-inset-bottom));gap:10px}
+body.compact .selfoot .bigbtn{font-size:15px;padding:10px 30px 10px 36px}
+body.compact .selfoot .sub{padding:8px 12px;font-size:12px}
+body.compact.landscape .panel{width:min(34vw,300px)}
+body.compact.landscape .vsmark{bottom:auto!important;top:42%}
+/* title on short (landscape phone) screens */
+@media (max-height:520px){
+  #start .t-top,#start .desc,#start .orn{display:none}
+  #start h1{font-size:clamp(30px,7vh,48px)}
+  #start .t-en{margin-bottom:2px}
+  #start .roster{margin:8px 0 10px}
+  #start .roster .emb{width:28px;height:28px}
+  #start .hint{margin-top:8px}
+  #btnStart{padding:10px 40px 10px 46px}
+}
+body.portrait #start .t-top{letter-spacing:.3em;font-size:8px}
 </style>
 <script type="importmap">
 { "imports": {
@@ -322,6 +401,7 @@ body.cine #hud,body.cine .meter,body.cine #ctrl,body.cine .keyhelp,body.cine .co
 <div id="cineTitle"></div>
 
 <div id="ctrl">
+  <button id="btnMenu" aria-label="メニュー">☰</button>
   <button id="btnPause">❚❚ 一時停止</button>
   <button id="btnSpeed">速度 ×1</button>
   <button id="btnCam">カメラ:接近</button>
@@ -381,6 +461,8 @@ body.cine #hud,body.cine .meter,body.cine #ctrl,body.cine .keyhelp,body.cine .co
   </div>
 </div>
 
+<div id="touchpad"><div id="stick"><i id="knob"></i></div>
+  <div id="tbtns"><button data-k="KeyJ">弱</button><button data-k="KeyK">強</button><button data-k="KeyL">必殺</button><button data-k="KeyO" class="sp">超</button></div></div>
 <div class="endpanel hidden" id="endpanel">
   <button id="btnRematch">再試合</button>
   <button id="btnToSel">キャラ選択へ</button>
@@ -4203,6 +4285,8 @@ function resize() {
   camera.aspect = w / h;
   camera.updateProjectionMatrix();
   document.body.classList.toggle('portrait', h > w * 1.05);
+  document.body.classList.toggle('landscape', !(h > w * 1.05));
+  document.body.classList.toggle('compact', isMobile || w < 820 || h < 520);
 }
 window.addEventListener('resize', resize);
 
@@ -6108,6 +6192,8 @@ function showScreen(name) {
   for (const id of ['hud', 'ctrl', 'mb0', 'mb1']) $(id).classList.toggle('hidden', !inMatch);
   if (!inMatch) $('endpanel').classList.add('hidden');
   $('keyhelp').classList.toggle('hidden', !(inMatch && cfg.mode !== 'auto'));
+  $('touchpad').classList.toggle('on', inMatch && cfg.mode !== 'auto');
+  $('ctrl').classList.remove('open');
 }
 
 const GOD = {
@@ -6256,6 +6342,38 @@ window.addEventListener('keyup', (e) => {
   const f = humanFighter();
   if (f) syncCmd(f);
 });
+// ---------------- touch controls: virtual stick + buttons emit the same key events as the keyboard ----------------
+(function touchControls() {
+  const isTouch = isMobile || 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  document.body.classList.toggle('touch', isTouch);
+  const key = (code, down) => window.dispatchEvent(new KeyboardEvent(down ? 'keydown' : 'keyup', { code, bubbles: true }));
+  const stick = document.getElementById('stick'), knob = document.getElementById('knob');
+  let sid = null; const dirs = { KeyA: false, KeyD: false, KeyW: false, KeyS: false };
+  const setDir = (code, on) => { if (dirs[code] !== on) { dirs[code] = on; key(code, on); } };
+  const move = (e) => {
+    const r = stick.getBoundingClientRect();
+    let dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
+    const max = r.width * 0.36, d = Math.hypot(dx, dy);
+    if (d > max) { dx *= max / d; dy *= max / d; }
+    knob.style.transform = `translate(${dx}px,${dy}px)`;
+    const dz = r.width * 0.14;
+    setDir('KeyA', dx < -dz); setDir('KeyD', dx > dz);
+    setDir('KeyW', dy < -r.width * 0.22); setDir('KeyS', dy > r.width * 0.22);
+  };
+  const end = () => { sid = null; knob.style.transform = ''; for (const c in dirs) setDir(c, false); };
+  stick.addEventListener('pointerdown', (e) => { e.preventDefault(); sid = e.pointerId; stick.setPointerCapture(sid); move(e); });
+  stick.addEventListener('pointermove', (e) => { if (e.pointerId === sid) move(e); });
+  for (const ev of ['pointerup', 'pointercancel', 'lostpointercapture']) stick.addEventListener(ev, (e) => { if (e.pointerId === sid) end(); });
+  document.querySelectorAll('#tbtns button').forEach((b) => {
+    const up = () => { if (b.classList.contains('dn')) { b.classList.remove('dn'); key(b.dataset.k, false); } };
+    b.addEventListener('pointerdown', (e) => { e.preventDefault(); b.setPointerCapture(e.pointerId); b.classList.add('dn'); key(b.dataset.k, true); });
+    for (const ev of ['pointerup', 'pointercancel', 'lostpointercapture']) b.addEventListener(ev, up);
+    b.addEventListener('contextmenu', (e) => e.preventDefault());
+  });
+  // in-match menu: one button that opens the control list on small screens
+  document.getElementById('btnMenu').addEventListener('click', (e) => { e.stopPropagation(); document.getElementById('ctrl').classList.toggle('open'); });
+  document.querySelectorAll('#ctrl button:not(#btnMenu)').forEach((b) => b.addEventListener('click', () => document.getElementById('ctrl').classList.remove('open')));
+})();
 window.addEventListener('blur', () => { for (const k in held) held[k] = false; const f = humanFighter(); if (f) syncCmd(f); });
 
 // ============================================================
