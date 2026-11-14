@@ -8826,7 +8826,7 @@ function shakaLotus(e, life, scale = 1) {
   const geo = new THREE.SphereGeometry(0.6, 12, 8, 0, Math.PI);
   const petals = [];
   for (let L = 0; L < 3; L++) for (let i = 0; i < 10; i++) { const a = (i / 10) * Math.PI * 2 + L * 0.3; const pt = new THREE.Mesh(geo, pm); pt.scale.set(0.55 * (1 - L * 0.18), 0.32, 1.1 - L * 0.22); pt.position.set(Math.cos(a) * (0.75 - L * 0.22), 0.04 + L * 0.06, Math.sin(a) * (0.75 - L * 0.22)); pt.rotation.y = -a; pt.userData = { L }; g.add(pt); petals.push(pt); }
-  const pad = new THREE.Mesh(new THREE.CircleGeometry(1.6, 28), new THREE.MeshStandardMaterial({ color: 0x3a7a3a, roughness: 0.6, side: THREE.DoubleSide, emissive: new THREE.Color(0.05, 0.2, 0.05) })); pad.material.userData.own = true; pad.rotation.x = -Math.PI / 2; pad.position.y = -0.02; g.add(pad);
+  const pad = new THREE.Mesh(new THREE.CircleGeometry(1.6, 28), new THREE.MeshStandardMaterial({ color: 0x24502a, roughness: 0.7, side: THREE.DoubleSide, transparent: true, opacity: 0.85 })); pad.material.userData.own = true; pad.rotation.x = -Math.PI / 2; pad.position.y = -0.02; g.add(pad);
   g.scale.setScalar(0.01);
   timed.add(g, life, (o, k, dt, t) => {
     if (v) o.position.x = v.f.x;
@@ -8847,7 +8847,7 @@ function shakaUrnaBeam(e) {
   g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.06, len, 12).rotateZ(Math.PI / 2).translate(len / 2, 0, 0), om));
   timed.add(g, SUPER_LIFE(0.3), (o, k, dt, t) => { const w = Math.min(1, t * 12) * (k > 0.7 ? (1 - k) / 0.3 : 1); o.scale.set(1, w, w); });
   glowPuff(from.x, from.y, from.z, 0xfff0c0, 1.6, 0.4);
-  runeRing(e.tx, e.ty, 0.3, 3.2, SUPER_LIFE(1.0), true, [2.4, 1.8, 0.7], dharmaTex());
+  runeRing(e.tx, e.ty, 0.3, 2.1, SUPER_LIFE(0.6), true, [1.8, 1.35, 0.5], dharmaTex());
   for (let i = 0; i < 3; i++) setTimeout(() => ring(e.tx, e.ty, 0.3, 0xfff0c0, 2.5 + i, 0.4, true), i * 90);
   sfx.ring([1046, 1568, 2093], 0.8, 0.05); sfx.sweep(0.4, 2000, 6000, 1.5, 0.12);
 }
@@ -8881,18 +8881,18 @@ function shakaSeat(e) {
 }
 // the Buddha's own palm falls from heaven (Journey to the West: the hand that pinned the Monkey King)
 function shakaPalmFall(e) {
-  const pm = new THREE.MeshBasicMaterial({ color: new THREE.Color(2.2, 1.6, 0.55), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }); pm.userData.own = true;
+  const pm = new THREE.MeshBasicMaterial({ color: new THREE.Color(1.25, 0.9, 0.32), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }); pm.userData.own = true;
   const v = views[e.side], dir = v ? v.f.facing : 1;
   const hand = palmMesh(pm, dir); hand.scale.setScalar(3.4); hand.position.set(e.x, 16, -0.2);
   const ttl = SUPER_LIFE(0.62), fallT = SUPER_LIFE(0.3) / ttl;
   timed.add(hand, ttl, (o, k) => {
     const u = Math.min(1, k / fallT);
     o.position.y = lerp(16, 2.3, u * u);
-    pm.opacity = Math.min(1, k * 8) * (k > 0.85 ? (1 - k) / 0.15 : 0.9);
+    pm.opacity = Math.min(1, k * 8) * (k > 0.85 ? (1 - k) / 0.15 : 0.6);
     if (u < 1 && Math.random() < 0.8) addP.burst(3, o.position.x + rand(-1.5, 1.5), o.position.y + rand(-0.5, 0.5), rand(-0.6, 0.6), 1, { life: [0.3, 0.6], size: [0.06, 0.14], color: COL.dharma, drag: 1 });
   });
-  const b = lightBeam(0xffd890, 1.6, 2.2, 16, 0.5); b.position.set(e.x, 0, -0.3); b.material.userData.own = true; const op = b.material.uniforms.uOp;
-  timed.add(b, SUPER_LIFE(0.4), (o, k) => { op.value = 0.5 * Math.sin(k * Math.PI); });
+  const b = lightBeam(0xffd890, 1.6, 2.2, 16, 0.3); b.position.set(e.x, 0, -0.3); b.material.userData.own = true; const op = b.material.uniforms.uOp;
+  timed.add(b, SUPER_LIFE(0.4), (o, k) => { op.value = 0.3 * Math.sin(k * Math.PI); });
   sfx.ring([98, 131, 196], 1.6, 0.08); sfx.sweep(0.6, 200, 900, 0.8, 0.2);
 }
 // nirvana: the palm strikes, five pillars of light rise (the Five Elements Mountain) and the lotus scatters
@@ -8926,7 +8926,7 @@ function apolloLyreChord(e) {
   const m = new THREE.MeshBasicMaterial({ map: FT.ring, color: new THREE.Color(2.6, 1.9, 0.7), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false }); m.userData.own = true;
   const rm = new THREE.Mesh(QUAD, m); rm.renderOrder = 7;
   timed.add(rm, SUPER_LIFE(0.14), (o, k) => { o.position.lerpVectors(from, new V3(e.tx, e.ty, 0.25), k); o.quaternion.copy(camera.quaternion); const s = 0.6 + k * (big ? 2.6 : 1.4); o.scale.set(s, s, s); m.opacity = 1 - k * 0.4; },
-    () => { ring(e.tx, e.ty, 0.3, 0xfff0b0, big ? 3.6 : 2.0, 0.3, true); if (big) runeRing(e.tx, e.ty, 0.3, 3.0, SUPER_LIFE(1.2), true, [2.6, 1.9, 0.7], sunTex()); addP.burst(10, e.tx, e.ty, 0.3, 4, { life: [0.15, 0.35], size: [0.05, 0.1], color: COL.sun, drag: 3 }); });
+    () => { ring(e.tx, e.ty, 0.3, 0xfff0b0, big ? 3.6 : 2.0, 0.3, true); if (big) runeRing(e.tx, e.ty, 0.3, 2.1, SUPER_LIFE(0.8), true, [1.8, 1.3, 0.45], sunTex()); addP.burst(10, e.tx, e.ty, 0.3, 4, { life: [0.15, 0.35], size: [0.05, 0.1], color: COL.sun, drag: 3 }); });
   for (let i = 0; i < (big ? 4 : 2); i++) musicNote(from.x + rand(-0.3, 0.3), from.y + rand(0, 0.4), from.z, 0.9, rand(-0.6, 0.6) + (e.tx > from.x ? 1 : -1) * 0.8, rand(0.8, 1.6));
   const scale = [523, 587, 659, 784, 880, 988, 1046], n = scale[(e.i ?? 0) % 7];
   if (big) sfx.ring([392, 523, 659, 784], 1.0, 0.06); else { sfx.harpNote ? sfx.harpNote(n) : sfx.ring([n, n * 1.5], 0.4, 0.05); }
