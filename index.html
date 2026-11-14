@@ -465,6 +465,32 @@ body.compact.portrait .vsmark{bottom:calc(max(10px,env(safe-area-inset-bottom)) 
 @keyframes sline{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 .sbtns{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
 .sbtns button{opacity:0;animation:sline .5s forwards}
+/* phone character select: portrait uses one shared grid of big named cells; landscape gets a named 4-column grid per side */
+.sharedpick{display:none}
+body.compact.portrait .sharedpick{display:block;position:absolute;left:8px;right:8px;top:calc(max(8px,env(safe-area-inset-top)) + 150px);z-index:3;pointer-events:auto}
+body.compact.portrait .panel .picks{display:none}
+body.compact.portrait .panel .pinfo{border-color:rgba(232,192,106,.25);opacity:.7}
+body.compact.portrait .panel.act .pinfo{border-color:var(--gold2);box-shadow:0 0 18px rgba(255,200,90,.55);opacity:1}
+body.compact.portrait .panel.act .pside:after{content:'選択中';font-size:10px;letter-spacing:.1em;color:var(--gold2);border:1px solid var(--gold);padding:0 6px}
+body.compact.portrait .panel:not(.act) .pside:after{content:'タップで切替';font-size:9px;letter-spacing:.05em;opacity:.7}
+.sp-head{display:flex;align-items:center;gap:6px;font-size:12px;letter-spacing:.05em;color:var(--gold2);margin-bottom:6px;text-shadow:0 1px 4px #000}
+.sp-head i{font-style:normal;font-family:var(--en);background:var(--gold);color:#1a0f00;padding:1px 7px}
+.sp-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}
+.sp-grid .pick{flex-direction:column;justify-content:center;gap:2px;padding:6px 0 4px;min-height:60px;background:rgba(10,6,18,.88)}
+.sp-grid .pick .emb{width:30px;height:30px}
+.sp-grid .pick span{display:block!important;font-size:9.5px;letter-spacing:-.02em;white-space:nowrap}
+.sp-grid .pick:not(.on){opacity:.9}
+.sp-grid .pick.on{border-width:2.5px}
+.sp-grid .pick.other{border-color:rgba(255,255,255,.5)}
+.sp-grid .pick .tag{position:absolute;top:1px;right:2px;font-size:9px;font-family:var(--en);font-weight:700;color:#fff;background:rgba(0,0,0,.7);padding:0 3px;border:1px solid rgba(232,192,106,.7)}
+body.compact.landscape .panel{width:min(40vw,340px)}
+body.compact.landscape .pinfo{width:60%}
+body.compact.landscape .panel.right .pinfo{margin-left:auto}
+body.compact.landscape .picks{display:grid;grid-template-columns:repeat(5,1fr);gap:3px}
+body.compact.landscape .pick{flex-direction:column;gap:1px;padding:4px 0 3px;min-height:42px}
+body.compact.landscape .pick .emb{width:22px;height:22px}
+body.compact.landscape .pick span{display:block;font-size:9px;letter-spacing:-.03em;white-space:nowrap}
+body.compact.landscape .vsmark{display:none}
 /* volume panel */
 .volpanel{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(max(10px,env(safe-area-inset-bottom)) + 48px);z-index:35;display:flex;flex-direction:column;gap:8px;padding:10px 14px;background:rgba(8,5,16,.92);border:1px solid rgba(232,192,106,.6);color:var(--gold2);font-size:12px;letter-spacing:.08em}
 .volpanel label{display:grid;grid-template-columns:4em 1fr 3em;align-items:center;gap:8px}
@@ -569,6 +595,7 @@ body.compact.portrait .vsmark{bottom:calc(max(10px,env(safe-area-inset-bottom)) 
   <div class="panel left" id="panel0"></div>
   <div class="panel right" id="panel1"></div>
   <div class="vsmark">VS</div>
+  <div class="sharedpick" id="sharedPick"></div>
   <div class="dummy-opt hidden" id="dummyOpt"><span>木人の動き</span><button data-dummy="stand" class="on">立ち</button><button data-dummy="guard">ガード</button></div>
   <div class="dummy-opt" id="levelOpt"><span id="levelLbl">CPUの強さ</span><button data-level="1">1 入門</button><button data-level="2">2 修行</button><button data-level="3" class="on">3 標準</button><button data-level="4">4 強敵</button><button data-level="5">5 神域</button></div>
   <div class="selfoot">
@@ -9874,7 +9901,7 @@ function frame(now) {
 const ATTRACT = { mode: 'auto', keys: ['zeus', 'poseidon'], attract: true };
 let cfg = ATTRACT;
 let screen = 'title';
-const selState = { mode: 'player', keys: ['zeus', 'poseidon'], dummy: 'stand', level: 3, stage: 'auto' };
+const selState = { mode: 'player', keys: ['zeus', 'poseidon'], dummy: 'stand', level: 3, stage: 'auto', active: 0 };
 const held = { left: false, right: false, down: false, up: false };
 const lastTap = { left: -9, right: -9 };
 const modelCache = {};
@@ -9959,6 +9986,16 @@ function panelHTML(side) {
     </div>
     <div class="picks">${picks}</div>`;
 }
+// phone portrait: one big shared grid that edits whichever side (1P / 2P) is active
+function renderSharedPick() {
+  const m = selState.mode, act = selState.active;
+  const who = m === 'auto' ? 'AI' : act === 0 ? 'あなた' : m === 'practice' ? '木人' : 'CPU';
+  const cells = MENU_KEYS.filter((k) => !(m === 'story' && CHARS[k].boss)).map((k) => {
+    const mine = selState.keys[act] === k, other = m !== 'story' && selState.keys[1 - act] === k;
+    return `<button class="pick ${k} ${mine ? 'on' : ''} ${other ? 'other' : ''}" data-side="${act}" data-key="${k}">${other ? `<b class="tag">${2 - act}P</b>` : ''}${GOD[k].emb}<span>${CHARS[k].name}</span></button>`;
+  }).join('');
+  $('sharedPick').innerHTML = `<div class="sp-head"><i>${act + 1}P</i>${who}のキャラを選択${m === 'story' ? '' : '（上の1P/2Pをタップで切替）'}</div><div class="sp-grid">${cells}</div>`;
+}
 let previewKey = '';
 const STAGE_CHOICES = () => ['auto', ...STAGE_IDS, 'random'];
 function renderStagePick() {
@@ -9977,6 +10014,9 @@ function renderSelect() {
   $('selTitle').textContent = { player: 'プレイヤー対戦', auto: '自動戦闘', practice: 'プラクティス', story: 'ストーリー' }[m];
   $('panel0').innerHTML = panelHTML(0);
   $('panel1').innerHTML = m === 'story' ? `<div class="pside"><i>2P</i>CPU</div><div class="pinfo" style="--acc:#e8c06a;--acc2:#8a5a10"><div class="en">RIVALS</div><h3 style="color:var(--gold2)">？？？</h3><div class="ttl">神座決戦</div><p class="desc2">因縁の神々が、選んだ神の前に立ちはだかる。4柱すべてを下し、神座を目指せ。対戦は相手のステージで行われる。</p></div>` : panelHTML(1);
+  if (m === 'story') selState.active = 0;
+  $('panel0').classList.toggle('act', selState.active === 0); $('panel1').classList.toggle('act', selState.active === 1);
+  renderSharedPick();
   document.querySelector('.stagePick').classList.toggle('hidden', m === 'story');
   $('btnFight').innerHTML = `<span>${m === 'story' ? 'ストーリー開始' : '試合開始'}</span>`;
   document.querySelectorAll('.pick').forEach((b) => b.addEventListener('click', () => { selState.keys[+b.dataset.side] = b.dataset.key; renderSelect(); refreshPreview(false, +b.dataset.side); }));
@@ -10038,7 +10078,8 @@ function menuCam(t, portrait) {
   }
   // select: the two chosen gods centred between the info panels
   const s = Math.sin(t * 0.25) * 0.4;
-  return { pos: new V3(s, 1.35, 6.4), look: new V3(0, 1.2, 0), fov: 36 * w, rate: 3 };
+  const lift = !portrait && document.body.classList.contains('compact') ? 0.65 : 0;
+  return { pos: new V3(s, 1.35 - lift, 6.4), look: new V3(0, 1.2 - lift, 0), fov: 36 * w, rate: 3 };
 }
 
 // ============================================================
@@ -11251,6 +11292,11 @@ async function boot() {
   }
   document.querySelectorAll('.dummy-opt button[data-dummy]').forEach((b) => b.addEventListener('click', () => { selState.dummy = b.dataset.dummy; renderSelect(); }));
   document.querySelectorAll('#levelOpt button').forEach((b) => b.addEventListener('click', () => { selState.level = +b.dataset.level; renderSelect(); }));
+  // tapping a side's name card makes that side the one the shared phone grid edits
+  [['panel0', 0], ['panel1', 1]].forEach(([id, side]) => $(id).addEventListener('click', (e) => {
+    if (e.target.closest('.pick') || selState.mode === 'story' || selState.active === side) return;
+    selState.active = side; renderSelect(); sfx.whoosh(0.5);
+  }));
   $('stPrev').addEventListener('click', () => stepStage(-1));
   $('stNext').addEventListener('click', () => stepStage(1));
   $('btnFight').addEventListener('click', () => {
