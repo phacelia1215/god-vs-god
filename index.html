@@ -11300,9 +11300,11 @@ async function boot() {
     setLoad(steps[i][0], i / steps.length);
     await nextPaint();
     steps[i][1]();
+    setLoad(steps[i][0], (i + 1) / steps.length);
   }
   setLoad('準備完了', 1);
-  await nextPaint();
+  // let the bar's width transition reach the right end before the screen closes
+  await new Promise((r) => setTimeout(r, 400));
   hud.announce.classList.remove('show');
   renderSelect();
   showScreen('title');
