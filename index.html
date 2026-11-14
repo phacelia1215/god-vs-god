@@ -1301,41 +1301,49 @@ const APHRODITE_MOVES = {
   },
 };
 // ============================================================
-//  SHAKA (釈迦) : the Awakened One. Bare open palms, an unhurried stance, and no wasted motion.
+//  SHAKA (釈迦) : the Awakened One. He hardly moves: every blow is a mudra whose light strikes at arm's length,
+//  a lotus from the ground, the roar of the Dharma, or the reclining Buddha gliding under an attack. He floats when he jumps.
 //  Unique: 施無畏印 parries a strike (the attacker is left reeling) or dissolves a projectile,
 //  坐禅 sits in meditation to build the super gauge, 法輪 rolls a low (crouch-block) wheel of the Dharma,
 //  如来掌 drops the Buddha's palm on the foe from above (stand-block). Takes no chip damage.
 // ============================================================
 const SHAKA_MOVES = {
-  sk_palm: {
-    name: '掌打', type: 'normal', weap: 'fist', dur: 0.3, cancel: [0.12, 0.3],
-    anim: [[0, 'stance'], [0.06, 'palm'], [0.14, 'palm'], [0.3, 'stance']],
-    hits: [H({ t0: 0.06, t1: 0.12, dmg: 34, range: [0.1, 1.45], y: [0.8, 1.9], hs: 0.34, bs: 0.18, kb: 1.3, stop: 0.05, fx: 'dharma' })],
+  // 説法印: the teaching gesture - he barely moves; a small wheel of light flashes an arm's length away
+  sk_vitarka: {
+    name: '説法印', type: 'normal', dur: 0.32, cancel: [0.13, 0.32], fxAt: [[0.06, 'vitarka']],
+    anim: [[0, 'stance'], [0.05, 'vitarka'], [0.18, 'vitarka'], [0.32, 'stance']],
+    hits: [H({ t0: 0.07, t1: 0.13, dmg: 32, range: [0.55, 1.95], y: [0.8, 2.0], hs: 0.34, bs: 0.18, kb: 1.3, stop: 0.05, fx: 'dharma' })],
   },
-  sk_kick: {
-    name: '転法輪脚', type: 'normal', weap: 'fist', dur: 0.5, cancel: [0.25, 0.5], spin: [[0.04, 0.27, 1]],
-    anim: [[0, 'stance'], [0.04, 'spinKick'], [0.27, 'spinKick'], [0.5, 'stance']],
-    hits: [H({ t0: 0.08, t1: 0.13, dmg: 24, range: [-0.4, 1.55], y: [0.6, 2.0], hs: 0.38, kb: 0.4, stop: 0.04, fx: 'dharma' }), H({ t0: 0.19, t1: 0.25, dmg: 32, range: [-0.4, 1.6], y: [0.6, 2.0], hs: 0.42, kb: 1.6, stop: 0.07, fx: 'dharma' })],
+  // 転法輪印: both hands form the wheel before the heart and it turns - two hits of spinning light
+  sk_seal: {
+    name: '転法輪印', type: 'normal', dur: 0.5, cancel: [0.24, 0.5], fxAt: [[0.07, 'sealWheel']],
+    anim: [[0, 'stance'], [0.06, 'seal'], [0.3, 'seal'], [0.5, 'stance']],
+    hits: [H({ t0: 0.08, t1: 0.13, dmg: 24, range: [0.4, 1.8], y: [0.6, 2.0], hs: 0.38, kb: 0.5, stop: 0.04, fx: 'dharma' }), H({ t0: 0.2, t1: 0.25, dmg: 30, range: [0.4, 1.85], y: [0.6, 2.0], hs: 0.44, kb: 2.2, stop: 0.07, fx: 'dharma' })],
   },
-  sk_twin: {
-    name: '双掌', type: 'normal', weap: 'fist', dur: 0.48, cancel: [0.2, 0.48],
-    anim: [[0, 'stance'], [0.08, 'twinWind'], [0.15, 'twin'], [0.3, 'twin'], [0.48, 'stance']],
-    hits: [H({ t0: 0.13, t1: 0.2, dmg: 48, range: [0.1, 1.6], y: [0.6, 2.0], hs: 0.46, kb: 2.6, stop: 0.09, fx: 'dharma' })],
+  // 降魔印: the earth-touching gesture that routed Mara - the right hand touches the ground and the earth answers
+  sk_earth: {
+    name: '降魔印', type: 'normal', dur: 0.54, cancel: [0.24, 0.54], fxAt: [[0.14, 'earthTouch']],
+    anim: [[0, 'stance'], [0.08, 'earthWind'], [0.14, 'earth'], [0.34, 'earth'], [0.54, 'stance']],
+    hits: [H({ t0: 0.15, t1: 0.24, dmg: 44, range: [0.3, 2.3], y: [0.0, 0.7], hs: 0.48, kb: 1.4, kd: true, stop: 0.08, fx: 'dharma' })],
   },
-  sk_low: {
-    name: '降魔払い', type: 'normal', weap: 'fist', dur: 0.5, cancel: [0.22, 0.5],
-    anim: [[0, 'stance'], [0.08, 'lowWind'], [0.15, 'low'], [0.3, 'low'], [0.5, 'stance']],
-    hits: [H({ t0: 0.13, t1: 0.2, dmg: 44, range: [0.1, 1.7], y: [0.0, 0.8], hs: 0.48, kb: 1.4, kd: true, stop: 0.08, fx: 'dharma' })],
+  // 蓮華化生: a lotus bursts open from the ground in front of him and carries the foe up into the air
+  sk_lotus: {
+    name: '蓮華化生', type: 'normal', dur: 0.58, cancel: [0.26, 0.58], fxAt: [[0.12, 'lotusRise']],
+    anim: [[0, 'stance'], [0.08, 'offerWind'], [0.15, 'offer'], [0.36, 'offer'], [0.58, 'stance']],
+    hits: [H({ t0: 0.15, t1: 0.24, dmg: 54, range: [0.7, 2.0], y: [0.0, 2.8], hs: 0.5, kb: 0.8, launch: 10, stop: 0.1, fx: 'nirvana' })],
   },
-  sk_rise: {
-    name: '白毫昇掌', type: 'normal', weap: 'fist', dur: 0.56, cancel: [0.25, 0.56],
-    anim: [[0, 'stance'], [0.09, 'riseWind'], [0.16, 'rise'], [0.32, 'rise'], [0.56, 'stance']],
-    hits: [H({ t0: 0.14, t1: 0.22, dmg: 56, range: [0.1, 1.45], y: [0.2, 2.8], hs: 0.5, kb: 1.2, launch: 10, stop: 0.1, fx: 'dharma' })],
+  // 獅子吼: the lion's roar of the Dharma - one word, and a ring of sound and light throws the foe down
+  sk_roar: {
+    name: '獅子吼', type: 'normal', dur: 0.7, cancel: [0.32, 0.7], fxAt: [[0.2, 'lionRoar']],
+    anim: [[0, 'stance'], [0.1, 'roarWind'], [0.2, 'roar'], [0.42, 'roar'], [0.7, 'stance']],
+    hits: [H({ t0: 0.2, t1: 0.3, dmg: 74, range: [0.2, 2.2], y: [0.3, 2.3], hs: 0.5, kb: 3.4, kd: true, stop: 0.12, fx: 'nirvana' })],
   },
-  sk_kongo: {
-    name: '金剛掌', type: 'normal', weap: 'fist', dur: 0.66, cancel: [0.3, 0.66],
-    anim: [[0, 'stance'], [0.12, 'chopWind'], [0.22, 'chop'], [0.4, 'chop'], [0.66, 'stance']],
-    hits: [H({ t0: 0.2, t1: 0.28, dmg: 76, range: [0.15, 1.6], y: [0.0, 3.0], hs: 0.5, kb: 2.2, kd: true, bounce: true, stop: 0.12, fx: 'nirvana' })],
+  // 寝釈迦: he lies down on his side like the reclining Buddha and glides in under high attacks, sweeping the legs
+  sk_recline: {
+    name: '寝釈迦', type: 'normal', dur: 0.66, cancel: [0.4, 0.66], low: [0.06, 0.48], fxAt: [[0.08, 'reclineSlide']],
+    motion: [{ t0: 0.08, t1: 0.4, vx: 6.2 }], stopNear: 0.7,
+    anim: [[0, 'stance'], [0.06, 'recline'], [0.44, 'recline'], [0.66, 'stance']],
+    hits: [H({ t0: 0.14, t1: 0.4, dmg: 46, range: [0.0, 1.3], y: [0.0, 0.6], hs: 0.46, kb: 1.2, kd: true, stop: 0.08, fx: 'dharma' })],
   },
   sk_wheel: {
     name: '法輪', type: 'special', dur: 0.62, glow: 'both',
@@ -1355,14 +1363,15 @@ const SHAKA_MOVES = {
     name: '坐禅', type: 'special', dur: 1.1, glow: 'both', meditate: [0.25, 0.95, 30], fxAt: [[0.25, 'zazen']],
     anim: [[0, 'stance'], [0.14, 'sitDown'], [0.25, 'zazen'], [0.95, 'zazen'], [1.1, 'stance']],
   },
+  // 散華: floating above the foe he scatters heavenly flowers, and they fall as blades of light
   sk_air: {
-    name: '天降掌', type: 'air', weap: 'fist', dur: 0.5,
-    anim: [[0, 'airWind'], [0.08, 'airPalm'], [0.5, 'airPalm']],
-    hits: [H({ t0: 0.08, t1: 0.42, dmg: 52, range: [0.0, 1.55], y: [-1.0, 0.9], hs: 0.46, kb: 2.0, stop: 0.08, fx: 'dharma' })],
+    name: '散華', type: 'air', weap: 'fist', dur: 0.5, fxAt: [[0.06, 'petalShower']],
+    anim: [[0, 'airWind'], [0.06, 'scatter'], [0.5, 'scatter']],
+    hits: [H({ t0: 0.08, t1: 0.42, dmg: 50, range: [-0.4, 1.5], y: [-1.4, 0.6], hs: 0.46, kb: 1.8, stop: 0.08, fx: 'dharma' })],
   },
   sk_super: {
     name: '天上天下唯我独尊・如来神掌', type: 'super', dur: 2.4, glow: 'both',
-    anim: [[0, 'gassho'], [0.3, 'gassho'], [0.34, 'urna'], [0.44, 'urna'], [0.48, 'palm'], [0.56, 'twin'], [0.66, 'palm'], [0.76, 'twin'], [0.86, 'palm'], [0.96, 'twin'], [1.06, 'palm'], [1.14, 'zazen'], [1.46, 'zazen'], [1.54, 'lotusSky'], [1.66, 'lotusSky'], [1.74, 'lotusPress'], [2.2, 'lotusPress'], [2.32, 'tenjo'], [2.4, 'tenjo']],
+    anim: [[0, 'gassho'], [0.3, 'gassho'], [0.34, 'urna'], [0.44, 'urna'], [0.48, 'vitarka'], [0.56, 'seal'], [0.66, 'vitarka'], [0.76, 'seal'], [0.86, 'vitarka'], [0.96, 'seal'], [1.06, 'vitarka'], [1.14, 'zazen'], [1.46, 'zazen'], [1.54, 'lotusSky'], [1.66, 'lotusSky'], [1.74, 'lotusPress'], [2.2, 'lotusPress'], [2.32, 'tenjo'], [2.4, 'tenjo']],
   },
 };
 // ============================================================
@@ -1470,7 +1479,7 @@ const APOLLO_MOVES = {
   set(SHIVA_MOVES.sv_low, 'low'); set(SHIVA_MOVES.sv_heel, 'mid'); set(SHIVA_MOVES.sv_air, 'mid');
   set(APHRODITE_MOVES.ap_low, 'low'); set(APHRODITE_MOVES.ap_heel, 'mid'); set(APHRODITE_MOVES.ap_air, 'mid');
   set(ODIN_MOVES.o_sweep, 'low'); set(ODIN_MOVES.o_slam, 'mid'); set(ODIN_MOVES.o_air, 'mid');
-  set(SHAKA_MOVES.sk_low, 'low'); set(SHAKA_MOVES.sk_kongo, 'mid'); set(SHAKA_MOVES.sk_air, 'mid');
+  set(SHAKA_MOVES.sk_earth, 'low'); set(SHAKA_MOVES.sk_recline, 'low'); set(SHAKA_MOVES.sk_air, 'mid');
   set(APOLLO_MOVES.apo_low, 'low'); set(APOLLO_MOVES.apo_bash, 'mid');
   set(HERACLES_MOVES.h_low, 'low'); set(HERACLES_MOVES.h_smash, 'mid'); set(HERACLES_MOVES.h_air, 'mid');
   set(SUSANOO_MOVES.s_sweep, 'low'); set(SUSANOO_MOVES.s_kabuto, 'mid'); set(SUSANOO_MOVES.s_air, 'mid');
@@ -1675,17 +1684,17 @@ const CHARS = {
   },
   shaka: {
     key: 'shaka', name: '釈迦', en: 'SHAKA', title: '天上天下の覚者', hp: 1040, walk: 2.6, back: 2.3, dash: 8.8,
-    jumpV: 10.0, jumpX: 3.8, width: 0.4, height: 2.1, moves: SHAKA_MOVES, air: 'sk_air', super: 'sk_super',
+    jumpV: 8.0, jumpX: 3.1, width: 0.4, height: 2.1, moves: SHAKA_MOVES, air: 'sk_air', super: 'sk_super', jumpGrav: 0.6,
     guard: 0.62, aggro: 0.7, noChip: true,
     routes: [
-      ['sk_palm', 'sk_palm', 'sk_twin'],
-      ['sk_palm', 'sk_kick', 'sk_rise'],
-      ['sk_low', 'sk_kongo'],
-      ['sk_palm', 'sk_twin', 'sk_wheel'],
-      ['sk_kick', 'sk_rise', 'sk_kongo'],
-      ['sk_twin', 'sk_wheel'],
-      ['sk_palm', 'sk_kick', 'sk_rise', 'SUPER'],
-      ['sk_kick', 'sk_twin', 'SUPER'],
+      ['sk_vitarka', 'sk_vitarka', 'sk_seal'],
+      ['sk_vitarka', 'sk_seal', 'sk_lotus'],
+      ['sk_earth', 'sk_roar'],
+      ['sk_vitarka', 'sk_seal', 'sk_wheel'],
+      ['sk_recline', 'sk_lotus'],
+      ['sk_seal', 'sk_roar'],
+      ['sk_vitarka', 'sk_seal', 'sk_lotus', 'SUPER'],
+      ['sk_earth', 'sk_seal', 'SUPER'],
     ],
   },
   apollo: {
@@ -1808,8 +1817,8 @@ const HUMAN = {
     L: { n: 'o_spear', f: 'o_spear', b: 'o_ravens', d: 'o_rune', u: 'o_ravens' },
   },
   shaka: {
-    J: { n: 'sk_palm', f: 'sk_twin', b: 'sk_kick', d: 'sk_low', u: 'sk_rise' },
-    K: { n: 'sk_kongo', f: 'sk_kick', b: 'sk_twin', d: 'sk_low', u: 'sk_rise' },
+    J: { n: 'sk_vitarka', f: 'sk_seal', b: 'sk_vitarka', d: 'sk_earth', u: 'sk_lotus' },
+    K: { n: 'sk_roar', f: 'sk_recline', b: 'sk_roar', d: 'sk_recline', u: 'sk_lotus' },
     L: { n: 'sk_wheel', f: 'sk_palmsky', b: 'sk_mudra', d: 'sk_zazen', u: 'sk_palmsky' },
   },
   apollo: {
@@ -1849,7 +1858,7 @@ const AUTO = {
   odin: ['o_jab', 'o_slash', 'o_palm', 'o_rise', 'SUPER'],
   shiva: ['sv_palm', 'sv_whirl', 'sv_kick', 'sv_rise', 'sv_tandava', 'SUPER'],
   aphrodite: ['ap_flick', 'ap_spiral', 'ap_lash', 'ap_rise', 'ap_petal', 'SUPER'],
-  shaka: ['sk_palm', 'sk_kick', 'sk_twin', 'sk_rise', 'SUPER'],
+  shaka: ['sk_vitarka', 'sk_seal', 'sk_lotus', 'SUPER'],
   apollo: ['apo_jab', 'apo_kick', 'apo_bash', 'apo_rise', 'apo_sun', 'SUPER'],
 };
 
@@ -2190,7 +2199,7 @@ class Sim {
 
     if (physics) {
       if (physics !== 'x' && (f.y > 0 || f.vy > 0)) {
-        const g = f.state === 'juggle' ? GRAV * 0.86 : (f.state === 'jump' || (f.state === 'attack' && f.move && f.move.type === 'air')) ? JUMP_GRAV : GRAV;
+        const g = f.state === 'juggle' ? GRAV * 0.86 : (f.state === 'jump' || (f.state === 'attack' && f.move && f.move.type === 'air')) ? JUMP_GRAV * (f.c.jumpGrav || 1) : GRAV;
         f.vy -= g * dt;
         f.y += f.vy * dt;
         if (f.y <= 0) { f.y = 0; this.land(f, o); }
@@ -2245,6 +2254,7 @@ class Sim {
     if (o.state === 'down' || o.state === 'ko') y1 = o.y + 0.5;
     // airborne: the legs are tucked, so the hurtbox starts higher - makes jumping over low projectiles reliable
     else if (proj && o.y > 0.2 && (o.state === 'jump' || (o.state === 'attack' && o.move && o.move.type === 'air'))) y0 = o.y + 0.5;
+    else if (o.state === 'attack' && o.move && o.move.low && o.mt >= o.move.low[0] && o.mt <= o.move.low[1]) y1 = o.y + 0.55;   // lying low (寝釈迦)
     else if (o.state === 'crouch' || (o.state === 'block' && o.crouchG)) y1 = o.y + o.c.height * 0.55;
     return { x0: o.x - w, x1: o.x + w, y0, y1 };
   }
@@ -3181,10 +3191,10 @@ class Sim {
           else if (f.key === 'odin') this.startMove(f, d < 1.6 ? 'o_rise' : 'o_slash');
           else if (f.key === 'shiva') this.startMove(f, d < 1.4 ? 'sv_rise' : 'sv_tandava');
           else if (f.key === 'aphrodite') this.startMove(f, d < 1.7 ? 'ap_rise' : 'ap_lash');
-          else if (f.key === 'shaka') this.startMove(f, d < 1.4 ? 'sk_rise' : d < 2.2 ? 'sk_twin' : 'sk_palmsky');
+          else if (f.key === 'shaka') this.startMove(f, d < 2.0 ? 'sk_lotus' : d < 2.6 ? 'sk_recline' : 'sk_palmsky');
           else if (f.key === 'apollo') this.startMove(f, d < 1.6 ? 'apo_rise' : 'apo_point');
           else this.startMove(f, d < 1.8 ? 'p_rise' : 'p_slash');
-          if (d < 1.8) f.plan = f.key === 'zeus' ? ['z_hammer'] : f.key === 'anubis' ? ['a_blink'] : f.key === 'thor' ? ['t_slam'] : f.key === 'susanoo' ? ['s_dash'] : f.key === 'heracles' ? ['h_smash'] : f.key === 'hades' || f.key === 'odin' ? [] : f.key === 'shiva' ? ['sv_heel'] : f.key === 'aphrodite' ? ['ap_petal'] : f.key === 'shaka' ? ['sk_kongo'] : f.key === 'apollo' ? ['apo_sun'] : ['p_slash'];
+          if (d < 1.8) f.plan = f.key === 'zeus' ? ['z_hammer'] : f.key === 'anubis' ? ['a_blink'] : f.key === 'thor' ? ['t_slam'] : f.key === 'susanoo' ? ['s_dash'] : f.key === 'heracles' ? ['h_smash'] : f.key === 'hades' || f.key === 'odin' ? [] : f.key === 'shiva' ? ['sv_heel'] : f.key === 'aphrodite' ? ['ap_petal'] : f.key === 'shaka' ? [] : f.key === 'apollo' ? ['apo_sun'] : ['p_slash'];
           return;
         }
       }
@@ -4113,11 +4123,30 @@ Object.assign(SKP, {
   block: mk(skStance, { y: -0.12, spine: [0.1, -0.1, 0], chest: [0.05, -0.2, 0], head: [0.05, 0.3, 0], lSh: [-1.15, 0, -0.05], lEl: [-1.85, 0, 0], lWr: [-0.2, 0, 0], rSh: [-0.75, -0.5, 0], rEl: [-1.6, 0, 0], rWr: [0, 0, 0], lHip: [-0.5, 0, 0.14], lKn: [0.65, 0, 0], lAn: [-0.1, 0, 0], rHip: [0.25, 0, 0.16], rKn: [0.5, 0, 0], rAn: [-0.6, 0, 0] }),
   run: mk(skStance, { y: -0.08, z: 0.08, hips: [0, -0.1, 0], spine: [0.35, 0, 0], chest: [0.05, 0, 0], head: [-0.35, 0.1, 0], lHip: [-0.2, 0, 0.1], lKn: [0.3, 0, 0], lAn: [0, 0, 0], rHip: [0.1, 0, 0.1], rKn: [0.3, 0, 0], rAn: [-0.2, 0, 0], lSh: [0.5, 0, 0.3], lEl: [-0.5, 0, 0], lWr: [0, 0, 0], rSh: [0.5, 0, 0.3], rEl: [-0.5, 0, 0] }),
 });
+Object.assign(SKP, {
+  // vitarka mudra: the right hand raised before the shoulder, thumb and finger joined; nothing else moves
+  vitarka: mk(skStance, { y: -0.04, hips: [0, -0.28, 0], chest: [-0.03, 0.1, 0], head: [0.04, 0.18, 0], rSh: [-1.15, 0, 0.35], rEl: [-1.55, 0, 0], rWr: [-0.5, 0, 0], lSh: [-0.25, -0.3, 0.1], lEl: [-1.35, 0, 0], lWr: [0.2, 0, 0] }),
+  // dharmachakra mudra: both hands turning the wheel before the heart, leaning gently in
+  seal: mk(skStance, { y: -0.07, z: 0.04, hips: [0, -0.1, 0], spine: [0.08, 0, 0], chest: [0.02, 0, 0], neck: [0, 0, 0], head: [0, 0, 0], lSh: [-1.15, -0.65, 0], lEl: [-1.35, 0, 0], lWr: [-0.4, 0, 0], rSh: [-1.3, -0.55, 0], rEl: [-1.15, 0, 0], rWr: [0.3, 0, 0], lHip: [-0.48, 0, 0.12], lKn: [0.55, 0, 0], lAn: [-0.05, 0, 0], rHip: [0.22, 0, 0.14], rKn: [0.4, 0, 0], rAn: [-0.5, 0, 0] }),
+  // bhumisparsha: down on one knee, the right fingertips touching the earth
+  earthWind: mk(skStance, { y: -0.25, spine: [0.25, 0, 0], head: [-0.1, 0.25, 0], rSh: [-0.6, 0, 0.3], rEl: [-1.2, 0, 0], lSh: [-0.4, -0.5, 0.1], lEl: [-1.4, 0, 0], lHip: [-0.9, 0, 0.12], lKn: [1.3, 0, 0], lAn: [-0.4, 0, 0], rHip: [-0.2, 0, 0.14], rKn: [1.2, 0, 0], rAn: [-0.9, 0, 0] }),
+  earth: mk(skStance, { y: -0.52, z: 0.04, hips: [0, -0.2, 0], spine: [0.5, 0.1, 0], chest: [0.12, 0, 0], head: [-0.42, 0.2, 0], rSh: [-0.75, 0, 0.12], rEl: [-0.08, 0, 0], rWr: [0.6, 0, 0], lSh: [-0.5, -0.6, 0.05], lEl: [-1.5, 0, 0], lWr: [0.2, 0, 0], lHip: [-1.45, 0, 0.12], lKn: [1.55, 0, 0], lAn: [-0.1, 0, 0], rHip: [0.15, 0, 0.12], rKn: [1.85, 0, 0], rAn: [0.4, 0, 0] }),
+  // offering: palms cupped low, then lifted to the sky as the lotus opens
+  offerWind: mk(skStance, { y: -0.3, spine: [0.3, 0, 0], head: [-0.25, 0, 0], lSh: [-0.35, -0.4, 0.05], lEl: [-0.9, 0, 0], lWr: [-1.3, 0, 0], rSh: [-0.35, -0.4, 0.05], rEl: [-0.9, 0, 0], rWr: [-1.3, 0, 0], lHip: [-0.9, 0, 0.18], lKn: [1.3, 0, 0], lAn: [-0.4, 0, 0], rHip: [-0.3, 0, 0.2], rKn: [1.2, 0, 0], rAn: [-0.9, 0, 0] }),
+  offer: mk(skStance, { y: 0.02, hips: [0, -0.1, 0], spine: [-0.15, 0, 0], chest: [-0.12, 0, 0], neck: [0, 0, 0], head: [-0.35, 0, 0], lSh: [-2.3, -0.2, 0.2], lEl: [-0.4, 0, 0], lWr: [-1.4, 0, 0], rSh: [-2.3, -0.2, 0.2], rEl: [-0.4, 0, 0], rWr: [-1.4, 0, 0], lHip: [-0.2, 0, 0.1], lKn: [0.15, 0, 0], lAn: [0.2, 0, 0], rHip: [0.12, 0, 0.12], rKn: [0.1, 0, 0], rAn: [-0.1, 0, 0] }),
+  // the lion's roar: drawn in, then the chest opens and the voice goes out
+  roarWind: mk(skStance, { y: -0.12, spine: [0.3, 0, 0], chest: [0.15, 0, 0], neck: [0.2, 0, 0], head: [0.25, 0, 0], lSh: [-0.6, -0.9, 0], lEl: [-1.9, 0, 0], lWr: [0.2, 0, 0], rSh: [-0.6, -0.9, 0], rEl: [-1.9, 0, 0], rWr: [0.2, 0, 0], lHip: [-0.5, 0, 0.14], lKn: [0.6, 0, 0], rHip: [0.2, 0, 0.16], rKn: [0.5, 0, 0], rAn: [-0.6, 0, 0] }),
+  roar: mk(skStance, Object.assign({ y: -0.08, z: 0.08, hips: [0, 0, 0], spine: [-0.18, 0, 0], chest: [-0.15, 0, 0], neck: [-0.1, 0, 0], head: [-0.2, 0, 0], lSh: [-0.6, 0, 1.0], lEl: [-0.3, 0, 0], lWr: [-0.8, 0, 0], rSh: [-0.6, 0, 1.0], rEl: [-0.3, 0, 0], rWr: [-0.8, 0, 0] }, skLunge)),
+  // the reclining Buddha: on his right side, head propped on the right hand, gliding along the ground
+  recline: mk(skStance, { y: -0.82, z: 0.05, rz: 1.42, hips: [0, 0, 0], spine: [0, 0, 0], chest: [0, 0, 0], neck: [0, 0, -0.15], head: [0, 0, -0.2], rSh: [-2.6, 0, 0.6], rEl: [-2.1, 0, 0], rWr: [0.2, 0, 0], lSh: [0.1, 0, 0.05], lEl: [-0.1, 0, 0], lWr: [0, 0, 0], lHip: [-0.08, 0, 0.02], lKn: [0.1, 0, 0], lAn: [0.3, 0, 0], rHip: [-0.05, 0, 0.02], rKn: [0.06, 0, 0], rAn: [0.3, 0, 0] }),
+  // scattering heavenly flowers from the air
+  scatter: mk(skStance, Object.assign({ air: true, y: 0, rx: 0.25, spine: [0.15, 0, 0], head: [-0.3, 0, 0], lSh: [-1.0, 0, 0.9], lEl: [-0.3, 0, 0], lWr: [1.0, 0, 0], rSh: [-1.0, 0, 0.9], rEl: [-0.3, 0, 0], rWr: [1.0, 0, 0] }, skLotus, { y: 0 })),
+});
+SKP.jump = mk(SKP.zazen, { air: true, y: 0, lSh: [-0.6, 0, 0.5], lEl: [-0.6, 0, 0], rSh: [-0.6, 0, 0.5], rEl: [-0.6, 0, 0] });
 SKP.intro = mk(SKP.zazen, {});
 SKP.win = mk(SKP.tenjo, {});
 Object.assign(SKP, generic(SKP.stance, false));
 SKP.backstep = mk(SKP.stance, { spine: [-0.1, -0.1, 0], lHip: [-0.2, 0, 0.12], lKn: [0.6, 0, 0], lAn: [0, 0, 0], rHip: [0.1, 0, 0.12], rKn: [0.7, 0, 0] });
-SKP.jump = mk(SKP.airWind, { air: true });
 SKP.crouch = mk(SKP.stance, Object.assign({ y: -0.42, z: 0.04, spine: [0.28, -0.1, 0], chest: [0.08, -0.15, 0], head: [-0.22, 0.3, 0] }, skSquat));
 SKP.crouchBlock = mk(SKP.block, Object.assign({ y: -0.42, z: 0.02, spine: [0.36, 0, 0], head: [-0.2, 0.15, 0] }, skSquat));
 
@@ -8821,7 +8850,7 @@ function fallingArrow(x, z) {
   timed.add(a, 0.16, (o, k) => { o.position.y = 7 - k * 6.6; o.position.x = x + 0.6 * (1 - k); }, () => { if (Math.random() < 0.5) addP.burst(3, x, 0.1, z, 2, { life: [0.15, 0.3], size: [0.04, 0.08], color: COL.sun, up: 1.5, drag: 2 }); if (Math.random() < 0.3) dust(x, 1, 0.3); });
 }
 function shakaLotus(e, life, scale = 1) {
-  const v = views[e.side];
+  const v = e.side >= 0 ? views[e.side] : null;
   const g = new THREE.Group(); g.position.set(e.x, 0.04, 0);
   const pm = new THREE.MeshStandardMaterial({ color: 0xffe2ec, roughness: 0.5, side: THREE.DoubleSide, emissive: new THREE.Color(0.9, 0.5, 0.55), emissiveIntensity: 0.7 }); pm.userData.own = true;
   const geo = new THREE.SphereGeometry(0.6, 12, 8, 0, Math.PI);
@@ -8911,6 +8940,47 @@ function shakaNirvana(x) {
   stage.flash = Math.max(stage.flash, 0.9); screenFlash(0.95, '#fff6e0'); lightFlash(x, 2.2, 0xffd890, 130); shake = 0.7;
   sfx.boom(1.6); sfx.ring([131, 196, 262, 392, 523], 2.0, 0.09);
 }
+// light constructs for Shaka's mudras (all placed relative to where he stands)
+function shakaFx(e) {
+  const v = views[e.side]; if (!v) return; const f = v.f, dir = f.facing;
+  if (e.type === 'vitarka') {
+    const x = f.x + dir * 1.35, y = 1.45;
+    runeRing(x, y, 0.25, 0.9, 0.22, true, [2.4, 1.8, 0.7], dharmaTex()); glowPuff(x, y, 0.25, 0xffe0a0, 1.2, 0.18);
+    addP.burst(8, x, y, 0.25, 3, { life: [0.12, 0.28], size: [0.04, 0.09], color: COL.dharma, drag: 3 }); sfx.ring([1175, 1568], 0.25, 0.04);
+  } else if (e.type === 'sealWheel') {
+    const x = f.x + dir * 1.2, y = 1.35;
+    runeRing(x, y, 0.3, 1.4, 0.38, true, [2.4, 1.8, 0.7], dharmaTex()); runeRing(x, y, 0.32, 0.8, 0.38, true, [2.6, 2.0, 0.9], dharmaTex());
+    ring(x, y, 0.3, 0xfff0c0, 1.6, 0.3, true); sfx.ring([784, 1046], 0.4, 0.04); sfx.sweep(0.3, 600, 2400, 1.4, 0.1);
+  } else if (e.type === 'earthTouch') {
+    // the earth answers: a ripple of golden light runs out along the ground
+    for (let i = 0; i < 6; i++) setTimeout(() => { const x = f.x + dir * (0.5 + i * 0.36); ring(x, 0.05, 0, 0xffd070, 0.9 + i * 0.12, 0.35); addP.burst(6, x, 0.1, rand(-0.3, 0.3), 2, { life: [0.2, 0.45], size: [0.05, 0.1], color: COL.dharma, up: 3, drag: 2 }); dust(x, 3, 0.5); }, i * 22);
+    runeRing(f.x + dir * 0.6, 0.04, 0, 1.6, 0.45, false, [2.4, 1.8, 0.7], dharmaTex());
+    shake = Math.max(shake, 0.12); sfx.kick(110, 50, 0.3, 0.5); sfx.ring([196, 294], 0.5, 0.05);
+  } else if (e.type === 'lotusRise') {
+    const x = f.x + dir * 1.4;
+    shakaLotus({ side: -1, x }, 0.55, 0.75);
+    const b = lightBeam(0xffe0a0, 0.45, 0.25, 3.4, 0.6); b.position.set(x, 0, 0); b.material.userData.own = true; const op = b.material.uniforms.uOp;
+    timed.add(b, 0.45, (o, k) => { o.scale.set(1, Math.min(1, k * 5), 1); op.value = 0.6 * (1 - k); });
+    for (let i = 0; i < 10; i++) lotusPetal(x + rand(-0.4, 0.4), 0.3, rand(-0.3, 0.3), 1.0, rand(-1, 1), rand(3, 6), rand(-0.5, 0.5));
+    sfx.ring([523, 784, 1046], 0.5, 0.05); sfx.sweep(0.3, 400, 2400, 1.2, 0.12);
+  } else if (e.type === 'lionRoar') {
+    const p = new V3(); v.m.j.head.getWorldPosition(p);
+    for (let i = 0; i < 4; i++) setTimeout(() => ring(p.x + dir * (0.4 + i * 0.35), p.y - 0.15, 0.2, i % 2 ? 0xffffff : 0xffd070, 1.2 + i * 0.6, 0.3, true), i * 40);
+    const lion = new THREE.Sprite(new THREE.SpriteMaterial({ map: ROAR_TEX, color: new THREE.Color(2.4, 1.8, 0.7), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false })); lion.material.userData.own = true;
+    lion.position.set(p.x + dir * 0.9, p.y - 0.1, 0.3);
+    timed.add(lion, 0.4, (o, k) => { o.position.x = p.x + dir * (0.9 + k * 1.1); o.scale.setScalar(0.8 + k * 1.2); o.material.opacity = 1 - k; });
+    shake = Math.max(shake, 0.25); sfx.tone(140, 70, 0.45, 'sawtooth', 0.12); sfx.noise(0.5, 900, 120, 'lowpass', 0.7, 0.3, 0, 0.01, true); sfx.ring([262, 392], 0.6, 0.06);
+  } else if (e.type === 'reclineSlide') {
+    const t0 = performance.now();
+    const iv = setInterval(() => { if (performance.now() - t0 > 330 || !views[e.side]) { clearInterval(iv); return; } const ff = views[e.side].f; lotusPetal(ff.x - ff.facing * 0.3, 0.15, rand(-0.2, 0.2), 0.7, -ff.facing * 0.8, 0.6, 0); addP.burst(2, ff.x, 0.25, 0, 1, { life: [0.2, 0.4], size: [0.04, 0.09], color: COL.dharma, drag: 2 }); }, 40);
+    sfx.sweep(0.35, 300, 1200, 1, 0.1);
+  } else if (e.type === 'petalShower') {
+    for (let i = 0; i < 18; i++) lotusPetal(f.x + dir * rand(0, 1.2), f.y + 0.6, rand(-0.3, 0.3), 0.7, dir * rand(0.5, 2), rand(-5, -2), rand(-0.5, 0.5));
+    for (let i = 0; i < 4; i++) slashStreak(f.x + dir * (0.3 + i * 0.3), f.y - 0.1, 0.25, 1.2, 0.05, dir * 0.4, [2.4, 1.8, 0.7], 0.2);
+    sfx.ring([1046, 1568], 0.3, 0.04);
+  }
+}
+const ROAR_TEX = canvasTex(128, 128, (g, w, h) => { g.clearRect(0, 0, w, h); g.fillStyle = '#fff'; g.font = '900 96px serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('喝', w / 2, h / 2 + 4); });
 // --- Apollo ---
 const NOTE_TEX = canvasTex(64, 64, (g, w, h) => { g.clearRect(0, 0, w, h); g.fillStyle = '#fff'; g.font = '900 52px serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('♪', w / 2, h / 2); });
 function musicNote(x, y, z, life, vx, vy) {
@@ -9571,6 +9641,7 @@ class FighterView {
       // the halo stays behind the head as seen from the camera
       const hp = new V3(0, 0.13, 0); M.j.head.localToWorld(hp); const away = hp.clone().sub(camera.position).normalize(); hp.addScaledVector(away, 0.2);
       M.j.head.worldToLocal(hp); M.halo.position.copy(hp); M.halo.lookAt(camera.position); M.halo.rotateZ(t * 0.3); M.halo.scale.setScalar(1 + this.glow * 0.25 + (calm ? 0.25 : 0));
+      if ((f.state === 'jump' || (f.state === 'attack' && f.move && f.move.type === 'air')) && Math.random() < 0.5) addP.burst(1, f.x + rand(-0.3, 0.3), f.y + 0.3, rand(-0.2, 0.2), 0.4, { life: [0.3, 0.6], size: [0.05, 0.1], color: COL.dharma, up: -0.5, drag: 1 });
       if (calm && Math.random() < 0.5) { const p = new V3(); M.j.lWr.getWorldPosition(p); addP.burst(1, p.x, p.y, p.z, 0.6, { life: [0.3, 0.6], size: [0.04, 0.09], color: COL.dharma, up: 1.2, drag: 1 }); }
       updateCape(M, t, f.vx * f.facing + (f.state === 'dash' ? 6 : 0), f.state === 'attack' ? 0.8 : 0.3);
     } else if (f.key === 'apollo') {
@@ -10831,6 +10902,7 @@ function handleEvents() {
       }
       case 'absorb': glowPuff(e.x, e.y, 0.2, 0xffe0a0, 2.2, 0.3); ring(e.x, e.y, 0.2, 0xfff0c0, 2, 0.3, true); for (let i = 0; i < 6; i++) lotusPetal(e.x, e.y, 0.2, 0.8, rand(-1.5, 1.5), rand(0.5, 2), rand(-1, 1)); callout(e.side, '浄化!', false); sfx.ring([784, 1175, 1568], 0.6, 0.06); break;
       case 'zazen': { const v = views[e.side], x = v ? v.f.x : e.x; shakaLotus({ side: e.side, x }, 0.95, 0.55); runeRing(x, 0.05, 0, 3.2, 0.9, false, [2.4, 1.8, 0.7], dharmaTex()); sfx.ring([262, 392, 523], 1.6, 0.06); break; }
+      case 'vitarka': case 'sealWheel': case 'earthTouch': case 'lotusRise': case 'lionRoar': case 'reclineSlide': case 'petalShower': shakaFx(e); break;
       case 'lotusBloom': shakaLotus(e, SUPER_LIFE(2.1), 1); glowPuff(e.x, 1.2, 0, 0xffe0a0, 4, 0.6); sfx.ring([392, 523, 784], 1.2, 0.05); break;
       case 'urnaBeam': shakaUrnaBeam(e); break;
       case 'thousandPalm': shakaThousandPalm(e); break;
@@ -11128,7 +11200,7 @@ const GOD = {
   hades: { acc: '#ff6a88', acc2: '#5a0a1c', emb: `<svg viewBox="0 0 64 64" class="emb"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/><path d="M32 54V24" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M22 10c0 10 2 14 10 14s10-4 10-14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M22 8l-2 6h4zM42 8l-2 6h4z" fill="currentColor"/><circle cx="32" cy="40" r="3" fill="currentColor"/></svg>`, tag: '冥府の王', desc: '二又の槍と魂の炎を操る冥府の王。敵の魂を吸って体力を奪い、隠れ兜で背後を取り、離れた相手も亡者の手で捕らえる。', stats: [['攻撃', 3], ['速度', 3], ['射程', 4], ['防御', 3]] },
   shiva: { acc: '#8fa8ff', acc2: '#2a1a6a', emb: `<svg viewBox="0 0 64 64" class="emb"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/><path d="M12 30c8-9 14-13 20-13s12 4 20 13c-8 9-14 13-20 13s-12-4-20-13z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><ellipse cx="32" cy="30" rx="4" ry="9" fill="currentColor"/><path d="M32 8v6M22 50h20M26 55h12" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>`, tag: '破壊と舞踏の神', desc: '四本の腕で宇宙の舞を踊る青き破壊神。舞うような連撃で攻め、斜めに降る第三の眼の光線で空と中距離を制し、ダマルの鼓動で飛び道具をかき消す。', stats: [['攻撃', 4], ['速度', 4], ['射程', 3], ['防御', 2]] },
   aphrodite: { acc: '#ff9cc8', acc2: '#7a1a4a', emb: `<svg viewBox="0 0 64 64" class="emb"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/><path d="M32 47C19 37.500 15 30 19 23.500c3.500-5.500 10-4.500 13 1 3-5.500 9.500-6.500 13-1 4 6.500 0 14-13 23.500z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M20 54c4-3 8 3 12 0s8 3 12 0" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>`, tag: '愛と美の女神', desc: '海の泡から生まれた愛の女神。長いリボンで中間距離を舞い、魅了の口づけを受けた相手は無防備に歩み寄ってしまう。泡沫の舞でひらりと身をかわす。', stats: [['攻撃', 3], ['速度', 5], ['射程', 4], ['防御', 2]] },
-  shaka: { acc: '#ff9e4a', acc2: '#6a2a0a', emb: `<svg viewBox="0 0 64 64" class="emb"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/><circle cx="32" cy="32" r="15" fill="none" stroke="currentColor" stroke-width="2.6"/><circle cx="32" cy="32" r="4" fill="currentColor"/><path d="M32 17v30M17 32h30M21.4 21.4l21.2 21.2M42.6 21.4 21.4 42.6" stroke="currentColor" stroke-width="2.2"/><g fill="currentColor"><circle cx="32" cy="13" r="2.4"/><circle cx="32" cy="51" r="2.4"/><circle cx="13" cy="32" r="2.4"/><circle cx="51" cy="32" r="2.4"/><circle cx="18.6" cy="18.6" r="2.2"/><circle cx="45.4" cy="45.4" r="2.2"/><circle cx="45.4" cy="18.6" r="2.2"/><circle cx="18.6" cy="45.4" r="2.2"/></g></svg>`, tag: '天上天下の覚者', desc: '悟りを開いた覚者。施無畏印で打撃を受け流し、相手をよろけさせる。坐禅で神威を溜め、地を這う法輪と天から降る如来掌で上下を揺さぶる。削りダメージを受けない。', stats: [['攻撃', 3], ['速度', 2], ['射程', 3], ['防御', 5]] },
+  shaka: { acc: '#ff9e4a', acc2: '#6a2a0a', emb: `<svg viewBox="0 0 64 64" class="emb"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/><circle cx="32" cy="32" r="15" fill="none" stroke="currentColor" stroke-width="2.6"/><circle cx="32" cy="32" r="4" fill="currentColor"/><path d="M32 17v30M17 32h30M21.4 21.4l21.2 21.2M42.6 21.4 21.4 42.6" stroke="currentColor" stroke-width="2.2"/><g fill="currentColor"><circle cx="32" cy="13" r="2.4"/><circle cx="32" cy="51" r="2.4"/><circle cx="13" cy="32" r="2.4"/><circle cx="51" cy="32" r="2.4"/><circle cx="18.6" cy="18.6" r="2.2"/><circle cx="45.4" cy="45.4" r="2.2"/><circle cx="45.4" cy="18.6" r="2.2"/><circle cx="18.6" cy="45.4" r="2.2"/></g></svg>`, tag: '天上天下の覚者', desc: '悟りを開いた覚者。ほとんど動かず、印を結ぶだけで光が間合いの先を打つ。降魔印の地走り、蓮華化生の打ち上げ、獅子吼、寝釈迦のすべり込み。施無畏印で打撃を受け流し、坐禅で神威を溜める。ふわりと浮く跳躍、削りダメージ無効。', stats: [['攻撃', 3], ['速度', 2], ['射程', 3], ['防御', 5]] },
   apollo: { acc: '#ffe14d', acc2: '#8a5a00', emb: `<svg viewBox="0 0 64 64" class="emb"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/><circle cx="32" cy="32" r="9" fill="currentColor"/><g stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M32 13v6M32 45v6M13 32h6M45 32h6M18.6 18.6l4.2 4.2M41.2 41.2l4.2 4.2M45.4 18.6l-4.2 4.2M22.8 41.2l-4.2 4.2"/></g><path d="M14 50C24 40 40 24 50 14" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M46 12l5 1-1 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>`, tag: '太陽と弓矢の神', desc: '太陽と音楽と弓を司る美しき神。遠くから射るほど強くなる光の矢、空中からの斜め撃ち、立ちガード必須の矢の雨で距離を支配する。神託で次の一撃を予知してかわす。', stats: [['攻撃', 3], ['速度', 4], ['射程', 5], ['防御', 2]] },
   odin: { acc: '#b8d8ff', acc2: '#1a2a5a', emb: `<svg viewBox="0 0 64 64" class="emb"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/><path d="M32 13L44 34H20Z M24 22L36 43H12Z M40 22L52 43H28Z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><path d="M32 46v8" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>`, tag: '九界の主神', desc: '隻眼の全知神。決して外れぬ神槍グングニルを投げ、二羽の鴉とルーン魔術で間合いを支配する、神座の主にして最後の壁。', stats: [['攻撃', 4], ['速度', 3], ['射程', 5], ['防御', 4]] },
 };
@@ -11291,6 +11363,8 @@ function moveFacts(key, id) {
     if (m.ghost) tags.push('すり抜け');
     if (m.leap) tags.push('跳躍');
     if (m.reflect) tags.push('飛び道具反射');
+    if (m.low) tags.push('姿勢が低い（上段・飛び道具をくぐる）');
+    if (m.hits[0].range[0] >= 0.5) tags.push('離れた位置を打つ');
   } else if (m.counter) { facts.push(['受付', Math.round(m.counter[0] * 60) + '〜' + Math.round(m.counter[1] * 60) + 'F']); tags.push('当て身（打撃を返す）'); }
   else if (m.parry) { facts.push(['受付', Math.round(m.parry[0] * 60) + '〜' + Math.round(m.parry[1] * 60) + 'F']); tags.push('受け流し（相手をよろけさせる）', '飛び道具を消す'); }
   else if (m.meditate) { facts.push(['ゲージ', '+' + m.meditate[2] + '%'], ['全体', f(m.dur) + 'F']); tags.push('神威ゲージ溜め'); }
