@@ -302,16 +302,15 @@ body.cine #hud,body.cine .meter,body.cine #ctrl,body.cine .keyhelp,body.cine .co
 @keyframes ctl{0%{opacity:0;transform:translateY(-50%) scale(1.8);filter:blur(10px)}12%{opacity:1;transform:translateY(-50%) scale(1);filter:none}80%{opacity:1;transform:translateY(-50%) scale(1.05)}100%{opacity:0;transform:translateY(-50%) scale(1.12)}}
 
 /* ================= phones / small screens ================= */
-#btnMenu{display:none}
+#ctrl #btnMenu{font-size:13px}
+#pauseMenu .pm-opts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#pauseMenu .pm-opts .sub{padding:9px 6px;font-size:12px}
 #touchpad{display:none}
 body.touch #keysHelp,body.touch #keyhelp,body.touch .kh,body.touch #start .press{display:none!important}
 body.compact #keyhelp{display:none!important}
 /* match: one menu button instead of eight, meters under the health bars */
-body.compact #btnMenu{display:block;min-width:44px;font-size:16px;padding:4px 12px;align-self:center}
-body.compact #ctrl{top:calc(max(10px,env(safe-area-inset-top)) + 62px);bottom:auto;flex-direction:column;align-items:stretch;gap:6px;max-width:none}
-body.compact #ctrl:not(.open)>button:not(#btnMenu){display:none}
-body.compact #ctrl.open{background:rgba(8,5,16,.92);padding:10px;border:1px solid rgba(232,192,106,.6);z-index:40}
-body.compact #ctrl.open>button{font-size:13px;min-height:38px}
+body.compact #ctrl #btnMenu{min-width:44px;font-size:14px;padding:4px 12px}
+body.compact #ctrl{top:calc(max(10px,env(safe-area-inset-top)) + 62px);bottom:auto}
 body.compact .meter,body.compact.portrait .meter{top:calc(max(10px,env(safe-area-inset-top)) + 54px);bottom:auto;width:min(30vw,220px)}
 body.compact .meter .lbl{font-size:9px;margin-bottom:2px}
 body.compact .name{white-space:nowrap}
@@ -543,17 +542,7 @@ body.compact.landscape .vsmark{display:none}
 <div id="cineTitle"></div>
 
 <div id="ctrl">
-  <button id="btnMenu" aria-label="メニュー">☰</button>
-  <button id="btnPause">❚❚ 一時停止</button>
-  <button id="btnSpeed">速度 ×1</button>
-  <button id="btnCam">カメラ:接近</button>
-  <button id="btnQ">画質:高</button>
-  <button id="btnSnd">音:ON</button>
-  <button id="btnVol">音量</button>
-  <button id="btnMoves">技表</button>
-  <button id="btnSel">キャラ選択</button>
-  <button id="btnTitle">タイトルへ</button>
-  <button id="btnRestart">↻ 再試合</button>
+  <button id="btnMenu" aria-label="メニュー">☰ メニュー</button>
 </div>
 
 <div class="overlay" id="start">
@@ -622,12 +611,19 @@ body.compact.landscape .vsmark{display:none}
   <div class="pm-h">PAUSE</div>
   <div class="pm-col">
     <button class="bigbtn" id="pmResume"><span>再開</span></button>
-    <button class="sub" id="pmVol">音量</button>
+    <div class="pm-opts">
+      <button class="sub" id="btnSpeed">速度 ×1</button>
+      <button class="sub" id="btnCam">カメラ:接近</button>
+      <button class="sub" id="btnQ">画質:高</button>
+      <button class="sub" id="btnSnd">音:ON</button>
+      <button class="sub" id="btnVol">音量</button>
+      <button class="sub" id="btnMoves">技表</button>
+    </div>
     <button class="sub" id="pmRestart">↻ 再試合</button>
     <button class="sub" id="pmSel">キャラ選択へ</button>
     <button class="sub" id="pmTitle">タイトルへ</button>
   </div>
-  <div class="keys-help">Esc で再開</div>
+  <div class="keys-help kh">Esc で再開</div>
 </div>
 <div class="volpanel hidden" id="volPanel">
   <label>BGM<input type="range" id="volBgm" min="0" max="100" step="5"><output id="volBgmV"></output></label>
@@ -9956,7 +9952,6 @@ function setupMatch(c) {
   if (c.attract) sim.events.length = 0; else handleEvents();
   renderPips();
   paused = false; started = true;
-  $('btnPause').textContent = '❚❚ 一時停止';
   $('endpanel').classList.add('hidden');
   const hf = sim.fighters.find((f) => f.ctl === 'human');
   if (hf) syncCmd(hf);
@@ -9969,7 +9964,6 @@ function setPause(open) {
   if (open) { pauseWas = paused; paused = true; } else { paused = pauseWas; }
   $('pauseMenu').classList.toggle('hidden', !open);
   if (!open) $('volPanel').classList.add('hidden');
-  $('btnPause').textContent = paused ? '▶ 再開' : '❚❚ 一時停止';
 }
 function showScreen(name) {
   screen = name;
@@ -10493,8 +10487,7 @@ window.addEventListener('keyup', (e) => {
     b.addEventListener('contextmenu', (e) => e.preventDefault());
   });
   // in-match menu: one button that opens the control list on small screens
-  document.getElementById('btnMenu').addEventListener('click', (e) => { e.stopPropagation(); document.getElementById('ctrl').classList.toggle('open'); });
-  document.querySelectorAll('#ctrl button:not(#btnMenu)').forEach((b) => b.addEventListener('click', () => document.getElementById('ctrl').classList.remove('open')));
+  document.getElementById('btnMenu').addEventListener('click', (e) => { e.stopPropagation(); if (screen === 'match' && $('endpanel').classList.contains('hidden')) setPause(true); });
 })();
 window.addEventListener('blur', () => { for (const k in held) held[k] = false; const f = humanFighter(); if (f) syncCmd(f); });
 
@@ -11347,13 +11340,10 @@ async function boot() {
     showScreen('match');
   });
   const toTitle = () => { setupMatch(ATTRACT); previewKey = ''; showScreen('title'); };
-  $('btnTitle').addEventListener('click', toTitle);
   $('btnToTitle').addEventListener('click', toTitle);
   const toSelect = () => { previewKey = ''; renderSelect(); refreshPreview(true); showScreen('select'); };
   $('btnToSel').addEventListener('click', toSelect);
-  $('btnSel').addEventListener('click', toSelect);
   $('pmResume').addEventListener('click', () => setPause(false));
-  $('pmVol').addEventListener('click', () => $('volPanel').classList.toggle('hidden'));
   $('pmRestart').addEventListener('click', () => { setPause(false); rematch(); });
   $('pmSel').addEventListener('click', () => { setPause(false); toSelect(); });
   $('pmTitle').addEventListener('click', () => { setPause(false); toTitle(); });
@@ -11362,10 +11352,8 @@ async function boot() {
   $('vRepeat').addEventListener('click', () => { viewer.repeat = !viewer.repeat; $('vRepeat').textContent = 'リピート:' + (viewer.repeat ? 'ON' : 'OFF'); });
   $('vGuard').addEventListener('click', () => { viewer.guard = !viewer.guard; $('vGuard').textContent = '木人:' + (viewer.guard ? 'ガード' : '立ち'); viewerPlay(); });
   const rematch = () => { setupMatch(cfg); showScreen('match'); };
-  $('btnRestart').addEventListener('click', rematch);
   $('btnRematch').addEventListener('click', rematch);
   // in-match controls
-  $('btnPause').addEventListener('click', () => { paused = !paused; $('btnPause').textContent = paused ? '▶ 再開' : '❚❚ 一時停止'; });
   $('btnSpeed').addEventListener('click', () => { speed = speed === 1 ? 2 : speed === 2 ? 0.5 : 1; $('btnSpeed').textContent = `速度 ×${speed}`; });
   $('btnQ').addEventListener('click', () => { quality = quality === 'high' ? 'low' : 'high'; fpsChecked = true; try { localStorage.setItem('gods-quality', quality); } catch (e) { } applyQuality(); });
   $('btnCam').addEventListener('click', () => { camState.mode = camState.mode === 'auto' ? 'wide' : 'auto'; $('btnCam').textContent = camState.mode === 'auto' ? 'カメラ:接近' : 'カメラ:広角'; });
