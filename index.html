@@ -1385,28 +1385,33 @@ const SHAKA_MOVES = {
 // ============================================================
 const APOLLO_MOVES = {
   apo_jab: {
-    name: '弓弦打ち', type: 'normal', dur: 0.3, cancel: [0.12, 0.3],
-    anim: [[0, 'stance'], [0.06, 'jab'], [0.14, 'jab'], [0.3, 'stance']],
+    // 弦鳴り: the bow held upright before him, the string plucked like a lyre - the note itself strikes
+    name: '弦鳴り', type: 'normal', dur: 0.3, cancel: [0.12, 0.3], fxAt: [[0.05, 'twang']],
+    anim: [[0, 'stance'], [0.03, 'pluckWind'], [0.07, 'pluck'], [0.16, 'pluck'], [0.3, 'stance']],
     hits: [H({ t0: 0.06, t1: 0.12, dmg: 30, range: [0.2, 1.75], y: [0.8, 1.9], hs: 0.34, bs: 0.18, kb: 1.4, stop: 0.05, fx: 'sun' })],
   },
   apo_kick: {
-    name: '日輪蹴り', type: 'normal', weap: 'fist', dur: 0.44, cancel: [0.19, 0.44],
-    anim: [[0, 'stance'], [0.08, 'kickWind'], [0.15, 'kick'], [0.28, 'kick'], [0.44, 'stance']],
+    // 月桂薙ぎ: a wide sweep of the bow that leaves an arc of laurel leaves (Daphne's tree) in the air
+    name: '月桂薙ぎ', type: 'normal', dur: 0.44, cancel: [0.19, 0.44], fxAt: [[0.1, 'laurelArc']],
+    anim: [[0, 'stance'], [0.08, 'sweepWind'], [0.15, 'sweep'], [0.28, 'sweep'], [0.44, 'stance']],
     hits: [H({ t0: 0.12, t1: 0.19, dmg: 44, range: [0.2, 1.7], y: [0.6, 2.1], hs: 0.42, kb: 1.8, stop: 0.07, fx: 'sun' })],
   },
   apo_low: {
-    name: '射手の払い', type: 'normal', weap: 'fist', dur: 0.48, cancel: [0.22, 0.48],
-    anim: [[0, 'stance'], [0.08, 'lowWind'], [0.15, 'low'], [0.3, 'low'], [0.48, 'stance']],
+    // 大蛇討ち: as he slew the Python at Delphi - the bow's lower limb driven along the floor, a golden serpent of light
+    name: '大蛇討ち', type: 'normal', dur: 0.48, cancel: [0.22, 0.48], fxAt: [[0.11, 'pythonStrike']],
+    anim: [[0, 'stance'], [0.08, 'stabWind'], [0.15, 'stab'], [0.3, 'stab'], [0.48, 'stance']],
     hits: [H({ t0: 0.13, t1: 0.2, dmg: 42, range: [0.15, 1.7], y: [0.0, 0.8], hs: 0.48, kb: 1.4, kd: true, stop: 0.08, fx: 'sun' })],
   },
   apo_rise: {
-    name: '昇陽弓', type: 'normal', dur: 0.56, cancel: [0.25, 0.56],
+    // 曙光: the bow swept up from the ground and the sun rises with it
+    name: '曙光', type: 'normal', dur: 0.56, cancel: [0.25, 0.56], fxAt: [[0.12, 'dawn']],
     anim: [[0, 'stance'], [0.09, 'riseWind'], [0.16, 'rise'], [0.32, 'rise'], [0.56, 'stance']],
     hits: [H({ t0: 0.14, t1: 0.22, dmg: 54, range: [0.2, 1.75], y: [0.2, 2.9], hs: 0.5, kb: 1.2, launch: 10, stop: 0.1, fx: 'sun' })],
   },
   apo_bash: {
-    name: '弓撃', type: 'normal', dur: 0.56, cancel: [0.26, 0.56],
-    anim: [[0, 'stance'], [0.1, 'bashWind'], [0.18, 'bash'], [0.34, 'bash'], [0.56, 'stance']],
+    // 白鳥の翼: arms crossed, then flung open - the wings of his sacred swan beat forward
+    name: '白鳥の翼', type: 'normal', dur: 0.56, cancel: [0.26, 0.56], fxAt: [[0.14, 'swanWings']],
+    anim: [[0, 'stance'], [0.1, 'wingWind'], [0.18, 'wing'], [0.34, 'wing'], [0.56, 'stance']],
     hits: [H({ t0: 0.16, t1: 0.24, dmg: 58, range: [0.3, 1.95], y: [0.2, 2.6], hs: 0.46, kb: 2.2, stop: 0.09, fx: 'sun' })],
   },
   apo_point: {
@@ -1438,9 +1443,11 @@ const APOLLO_MOVES = {
     anim: [[0, 'airDraw'], [0.12, 'airLoose'], [0.5, 'airLoose']],
     proj: { t: 0.12, kind: 'sunArrow', vx: 15, vy: -9, y: 1.25, dmg: 40, hits: 1, hs: 0.44, kb: 2.2, w: 0.42, h: 0.3, fx: 'sun' },
   },
+  // 太陽戦車: the sun is called down, laurel binds the foe, the sun chariot and its four horses of fire run them
+  // down, and the arrow he looses into the sun comes back as a lance of sunlight
   apo_super: {
-    name: '太陽神の凱歌・ヘリオスの矢', type: 'super', dur: 2.4, glow: 'both',
-    anim: [[0, 'lyre'], [0.3, 'lyre'], [0.34, 'strum'], [0.42, 'lyre'], [0.52, 'strum'], [0.62, 'lyre'], [0.72, 'strum'], [0.82, 'lyre'], [0.92, 'strum'], [1.02, 'lyre'], [1.1, 'strum'], [1.16, 'leapBack'], [1.38, 'skyDraw'], [1.7, 'skyDraw'], [1.74, 'heliosLoose'], [2.1, 'heliosLoose'], [2.3, 'stance'], [2.4, 'stance']],
+    name: '太陽神の戦車・天陽の槍', type: 'super', dur: 2.4, glow: 'both',
+    anim: [[0, 'stance'], [0.1, 'sunRaise'], [0.3, 'sunRaise'], [0.36, 'command'], [0.6, 'command'], [0.68, 'hail'], [1.12, 'hail'], [1.22, 'skyDraw'], [1.7, 'skyDraw'], [1.74, 'skyLoose'], [2.1, 'skyLoose'], [2.3, 'stance'], [2.4, 'stance']],
   },
 };
 
@@ -2902,32 +2909,26 @@ class Sim {
         else this.hitstop = 0.12;
       });
     } else if (f.key === 'apollo') {
-      // APOLLO: a golden lyre appears in his hands; its chords bind the foe in rings of sound, each note strikes,
-      // then he springs up and back, the sun rises behind him, and the arrow of Helios is loosed
-      if (t >= 0.06) once('lyre', () => this.emit('lyreAppear', { side: f.side, x: f.x }));
-      if (t >= 0.34) once('connect', () => {
+      // APOLLO: he raises his bow and the sun comes down low in the sky; laurel binds the foe; the sun chariot runs
+      // down out of the sky and its four horses of fire trample through them; he looses an arrow into the sun
+      // and it answers with a lance of sunlight
+      if (f.y > 0 && t < 2.3) f.y = 0;
+      if (t >= 0.08) once('sun', () => this.emit('sunCall', { side: f.side, x: (f.x + o.x) / 2 }));
+      if (t >= 0.32) once('connect', () => {
         s.tx = o.x;
-        this.emit('lyreChord', { side: f.side, tx: o.x, ty: o.y + 1.2, big: true });
+        this.emit('laurelBind', { side: f.side, x: o.x, foe: o.side });
         if (this.canLock(o, 7.0)) { this.lock(f, o); s.lock = true; s.oy = o.y; this.superHit(f, o, 16, 'sun', { stop: 0.06 }); }
       });
-      if (locked && t < 1.7) { o.y = lerp(s.oy, 0.95, easeOut(clamp((t - 0.34) / 0.5, 0, 1))) + Math.sin(t * 9) * 0.06; o.x = clamp(o.x, -STAGE, STAGE); }
-      for (let i = 0; i < 7; i++) {
-        if (t >= 0.46 + i * 0.1) once('nt' + i, () => {
-          this.emit('lyreChord', { side: f.side, tx: s.lock ? o.x : s.tx, ty: (s.lock ? o.y : 0) + 1.2, i });
-          if (s.lock && o.state === 'locked') this.superHit(f, o, 12, 'sun', { stop: 0.03 });
-        });
-      }
-      if (t < 1.16) f.y = 0;
-      else if (t < 1.4) {
-        once('leap', () => { s.lx0 = f.x; s.lx1 = clamp(f.x - f.facing * 1.6, -STAGE, STAGE); this.emit('sunRise', { side: f.side, x: s.lx1 - f.facing * 0.6 }); this.emit('superDash', { side: f.side }); });
-        const k = easeOut((t - 1.16) / 0.24); f.x = lerp(s.lx0, s.lx1, k); f.y = 1.7 * Math.sin(k * Math.PI * 0.5);
-      } else if (t < 1.9) f.y = 1.7 + Math.sin((t - 1.4) * 7) * 0.04;
-      else f.y = Math.max(0, lerp(1.7, 0, easeIO((t - 1.9) / 0.34)));
+      const tgx = s.lock ? o.x : s.tx;
+      for (let i = 0; i < 2; i++) if (t >= 0.46 + i * 0.13) once('lb' + i, () => { this.emit('laurelTight', { side: f.side, x: tgx, y: (s.lock ? o.y : 0) + 1.1 }); if (s.lock && o.state === 'locked') this.superHit(f, o, 12, 'sun', { stop: 0.05 }); });
+      if (locked && t < 1.76) { o.y = lerp(s.oy, t < 0.86 ? 0.35 : 0.6, easeOut(clamp((t - 0.32) / 0.4, 0, 1))) + Math.sin(t * 9) * 0.04; o.x = clamp(o.x, -STAGE, STAGE); }
+      if (t >= 0.62) once('chariot', () => this.emit('sunChariot', { side: f.side, x: f.x, tx: tgx, dir: f.facing }));
+      for (let i = 0; i < 4; i++) if (t >= 0.96 + i * 0.07) once('tr' + i, () => { this.emit('trample', { side: f.side, x: tgx, y: (s.lock ? o.y : 0) + 0.8, i }); if (s.lock && o.state === 'locked') this.superHit(f, o, 12, 'solar', { stop: 0.035 }); });
       if (t >= 1.42) once('charge', () => this.emit('heliosCharge', { side: f.side }));
-      if (t >= 1.72) once('loose', () => this.emit('heliosLoose', { side: f.side, tx: s.lock ? o.x : s.tx, ty: (s.lock ? o.y : 0) + 1.2 }));
+      if (t >= 1.72) once('loose', () => this.emit('skyArrow', { side: f.side }));
       if (t >= 1.8) once('final', () => {
-        this.emit('superImpact', { side: f.side, x: s.lock ? o.x : s.tx, kind: 'solar' });
-        if (s.lock && o.state === 'locked') this.superHit(f, o, 165, 'solar', { final: true, launch: 8, kb: 5, stop: 0.3 });
+        this.emit('superImpact', { side: f.side, x: tgx, kind: 'sunLance' });
+        if (s.lock && o.state === 'locked') this.superHit(f, o, 172, 'solar', { final: true, launch: 8, kb: 5, stop: 0.3 });
         else this.hitstop = 0.12;
       });
     } else if (f.key === 'odin') {
@@ -4222,6 +4223,23 @@ Object.assign(AOP, {
   heliosLoose: mk(aoStance, Object.assign({ air: true, y: 0, hips: [0, -0.75, 0], spine: [0.05, -0.2, 0], chest: [0.02, -0.3, 0], neck: [0, 0.25, 0], head: [0.15, 0.75, 0], lHip: [-0.9, 0, 0.12], lKn: [1.2, 0, 0], lAn: [0.4, 0, 0], rHip: [-0.2, 0, 0.12], rKn: [1.0, 0, 0], rAn: [0.4, 0, 0] }, { lSh: [0, 0, 1.25], lEl: [-0.04, 0, 0], lWr: [0, 1.57, 0], rSh: [0.2, 0, 1.3], rEl: [-0.5, 0, 0], rWr: [0, 0, 0] })),
   block: mk(aoStance, { y: -0.1, hips: [0, -0.5, 0], spine: [0.1, -0.15, 0], chest: [0.05, -0.2, 0], head: [0.05, 0.6, 0], lSh: [-1.2, -0.3, -0.1], lEl: [-1.4, 0, 0], lWr: [0.3, 0, 0], rSh: [-0.9, -0.5, 0], rEl: [-1.7, 0, 0], lHip: [-0.5, 0, 0.1], lKn: [0.6, 0, 0], lAn: [0.0, 0, 0], rHip: [0.2, 0, 0.12], rKn: [0.4, 0, 0], rAn: [-0.5, 0, 0] }),
   run: mk(aoStance, { y: -0.06, z: 0.08, hips: [0, -0.1, 0], spine: [0.38, 0, 0], chest: [0.05, 0, 0], head: [-0.38, 0.1, 0], lHip: [-0.2, 0, 0.08], lKn: [0.3, 0, 0], lAn: [0, 0, 0], rHip: [0.1, 0, 0.08], rKn: [0.3, 0, 0], rAn: [-0.2, 0, 0], lSh: [0.7, 0, 0.3], lEl: [-0.4, 0, 0], lWr: [-0.3, 0, 0], rSh: [0.7, 0, 0.4], rEl: [-0.3, 0, 0] }),
+});
+Object.assign(AOP, {
+  // the bow upright before him like a lyre, the right hand plucking its string
+  pluckWind: mk(aoStance, { z: 0.03, hips: [0, -0.3, 0], spine: [0.06, -0.1, 0], chest: [0.02, -0.2, 0], head: [-0.04, 0.35, 0], lSh: [-1.35, 0, -0.05], lEl: [-0.35, 0, 0], lWr: [0.1, 0, 0], rSh: [-1.15, -0.5, 0], rEl: [-1.1, 0, 0], rWr: [0, 0, 0], lHip: [-0.55, 0, 0.1], lKn: [0.55, 0, 0], lAn: [0, 0, 0], rHip: [0.3, 0, 0.12], rKn: [0.2, 0, 0], rAn: [-0.5, 0, 0] }),
+  pluck: mk(aoStance, { z: 0.05, hips: [0, -0.3, 0], spine: [0.06, -0.1, 0], chest: [0.02, -0.25, 0], head: [-0.04, 0.4, 0], lSh: [-1.4, 0, -0.05], lEl: [-0.3, 0, 0], lWr: [0.1, 0, 0], rSh: [-0.75, 0, 0.75], rEl: [-0.5, 0, 0], rWr: [0.3, 0, 0], lHip: [-0.6, 0, 0.1], lKn: [0.6, 0, 0], lAn: [0, 0, 0], rHip: [0.3, 0, 0.12], rKn: [0.2, 0, 0], rAn: [-0.5, 0, 0] }),
+  // the laurel sweep: the bow drawn back across the body, then swept wide in front
+  sweepWind: mk(aoStance, Object.assign({ y: -0.1, hips: [0, 0.35, 0], spine: [0.05, 0.3, 0], chest: [0, 0.45, 0], head: [0, -0.4, 0], lSh: [-0.9, -1.0, 0.1], lEl: [-1.0, 0, 0], lWr: [0, 0, 0], rSh: [-0.2, 0, 0.5], rEl: [-0.6, 0, 0] }, aoLunge)),
+  sweep: mk(aoStance, Object.assign({ y: -0.14, z: 0.08, hips: [0, -0.35, 0], spine: [0.12, -0.3, 0], chest: [0.02, -0.5, 0], head: [-0.05, 0.6, 0], lSh: [-1.2, 0.9, 0.9], lEl: [-0.1, 0, 0], lWr: [0, 0, 0], rSh: [-0.1, 0, 0.6], rEl: [-0.5, 0, 0] }, aoLunge)),
+  // the Python strike: down low, the bow driven along the floor like a spear
+  stabWind: mk(aoStance, Object.assign({ y: -0.36, spine: [0.3, 0.2, 0], chest: [0.05, 0.25, 0], head: [-0.25, -0.1, 0], lSh: [-0.3, 0, 0.3], lEl: [-1.3, 0, 0], lWr: [-0.6, 0, 0], rSh: [-0.5, 0, 0.4], rEl: [-1.2, 0, 0] }, aoSquat)),
+  stab: mk(aoStance, { y: -0.55, z: 0.1, hips: [0, -0.3, 0], spine: [0.55, -0.1, 0], chest: [0.12, -0.2, 0], head: [-0.55, 0.3, 0], lHip: [-1.0, 0, 0.05], lKn: [0.25, 0, 0], lAn: [0.35, 0, 0], rHip: [-0.9, 0, 0.4], rKn: [2.1, 0, 0], rAn: [-1.0, 0, 0], lSh: [-0.75, 0, -0.05], lEl: [-0.05, 0, 0], lWr: [-1.45, 0, 0], rSh: [0.4, 0, 0.6], rEl: [-0.3, 0, 0] }),
+  // the swan's wings: arms crossed before him, then flung open wide
+  wingWind: mk(aoStance, { y: -0.14, hips: [0, -0.2, 0], spine: [0.25, 0, 0], chest: [0.12, 0, 0], head: [0.1, 0.2, 0], lSh: [-1.0, -0.9, 0], lEl: [-1.7, 0, 0], lWr: [0, 0, 0], rSh: [-1.0, -0.9, 0], rEl: [-1.7, 0, 0], rWr: [0, 0, 0], lHip: [-0.55, 0, 0.12], lKn: [0.6, 0, 0], lAn: [0, 0, 0], rHip: [0.2, 0, 0.12], rKn: [0.35, 0, 0], rAn: [-0.4, 0, 0] }),
+  wing: mk(aoStance, Object.assign({ y: -0.06, z: 0.1, hips: [0, 0, 0], spine: [-0.12, 0, 0], chest: [-0.18, 0, 0], head: [-0.15, 0, 0], lSh: [-0.9, 0, 1.35], lEl: [-0.1, 0, 0], lWr: [0, 0, 0], rSh: [-0.9, 0, 1.35], rEl: [-0.1, 0, 0], rWr: [0, 0, 0] }, aoLunge)),
+  // super: pointing the foe out to the chariot, then hailing it with the bow raised
+  command: mk(aoStance, { y: -0.04, hips: [0, -0.4, 0], spine: [-0.04, -0.1, 0], chest: [-0.06, -0.3, 0], head: [-0.08, 0.5, 0], rSh: [-1.55, 0, 0.05], rEl: [-0.04, 0, 0], rWr: [0, 0, 0], lSh: [-0.2, 0, 0.35], lEl: [-0.3, 0, 0] }),
+  hail: mk(aoStance, { y: 0.02, hips: [0, -0.2, 0], spine: [-0.18, 0, 0], chest: [-0.12, 0.1, 0], head: [-0.4, 0.1, 0], lSh: [-2.9, 0, 0.25], lEl: [-0.1, 0, 0], lWr: [0, 0, 0], rSh: [-0.6, 0, 0.6], rEl: [-0.4, 0, 0] }),
 });
 AOP.intro = mk(AOP.lyre, {});
 AOP.win = mk(AOP.sunRaise, { y: 0, head: [-0.3, 0.2, 0], lSh: [-0.6, 0, 0.2], lEl: [-0.6, 0, 0], lWr: [-0.25, 0, 0], rSh: [-2.85, 0, 0.3], rEl: [-0.1, 0, 0] });
@@ -9083,67 +9101,206 @@ function musicNote(x, y, z, life, vx, vy) {
   s.position.set(x, y, z); const sc = rand(0.22, 0.34);
   timed.add(s, life, (o, k, dt) => { o.position.x += vx * dt; o.position.y += vy * dt; o.position.x += Math.sin(k * 12) * dt * 0.6; o.scale.setScalar(sc * (k < 0.15 ? k / 0.15 : 1)); o.material.opacity = 1 - k * k; });
 }
-function apolloLyreChord(e) {
-  const v = views[e.side], from = new V3(e.tx, e.ty, 0.2);
-  if (v) { from.set(0, -0.1, 0.25); v.m.j.lWr.localToWorld(from); }
-  const big = !!e.big;
-  for (let i = 0; i < (big ? 3 : 1); i++) setTimeout(() => ring(from.x, from.y, from.z, 0xffe080, big ? 3 : 1.6, 0.35, true), i * 80);
-  // the sound travels as a ring to the foe and closes round them
-  const m = new THREE.MeshBasicMaterial({ map: FT.ring, color: new THREE.Color(2.6, 1.9, 0.7), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false }); m.userData.own = true;
-  const rm = new THREE.Mesh(QUAD, m); rm.renderOrder = 7;
-  timed.add(rm, SUPER_LIFE(0.14), (o, k) => { o.position.lerpVectors(from, new V3(e.tx, e.ty, 0.25), k); o.quaternion.copy(camera.quaternion); const s = 0.6 + k * (big ? 2.6 : 1.4); o.scale.set(s, s, s); m.opacity = 1 - k * 0.4; },
-    () => { ring(e.tx, e.ty, 0.3, 0xfff0b0, big ? 3.6 : 2.0, 0.3, true); if (big) runeRing(e.tx, e.ty, 0.3, 2.1, SUPER_LIFE(0.8), true, [1.8, 1.3, 0.45], sunTex()); addP.burst(10, e.tx, e.ty, 0.3, 4, { life: [0.15, 0.35], size: [0.05, 0.1], color: COL.sun, drag: 3 }); });
-  for (let i = 0; i < (big ? 4 : 2); i++) musicNote(from.x + rand(-0.3, 0.3), from.y + rand(0, 0.4), from.z, 0.9, rand(-0.6, 0.6) + (e.tx > from.x ? 1 : -1) * 0.8, rand(0.8, 1.6));
-  const scale = [523, 587, 659, 784, 880, 988, 1046], n = scale[(e.i ?? 0) % 7];
-  if (big) sfx.ring([392, 523, 659, 784], 1.0, 0.06); else { sfx.harpNote ? sfx.harpNote(n) : sfx.ring([n, n * 1.5], 0.4, 0.05); }
+// the super's set-pieces follow the super's own clock (so hit-stop never puts them out of step)
+function supClock(side, st) {
+  const v = views[side], f = v && v.f;
+  if (f && f.state === 'attack' && f.move && f.move.type === 'super') { st.t = f.mt / SUPER_K; return st.t; }
+  return st.t;
 }
-function apolloSunRise(e) {
-  const v = views[e.side];
-  const g = new THREE.Group(); g.position.set(e.x, -2.5, -2.6);
-  const core = new THREE.Mesh(new THREE.CircleGeometry(2.0, 48), new THREE.MeshBasicMaterial({ color: new THREE.Color(3, 2.2, 0.9), transparent: true, opacity: 0.95, depthWrite: false })); core.material.userData.own = true;
-  const corona = new THREE.Mesh(new THREE.CircleGeometry(4.4, 48), new THREE.MeshBasicMaterial({ map: sunTex(), color: new THREE.Color(2.6, 1.6, 0.4), transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending, depthWrite: false })); corona.material.userData.own = true; corona.position.z = -0.05;
-  const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: FT.glow, color: 0xffb030, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false })); halo.material.userData.own = true; halo.scale.setScalar(13);
-  g.add(halo, corona, core);
-  timed.add(g, SUPER_LIFE(1.0), (o, k, dt, t) => {
-    o.position.y = -2.5 + easeOutC(Math.min(1, t / 0.5)) * 6.2;
-    if (v) o.position.x += ((v.f.x - v.f.facing * 0.9) - o.position.x) * Math.min(1, dt * 4);
-    corona.rotation.z += dt * 0.6;
-    const f = k > 0.85 ? (1 - k) / 0.15 : 1; core.material.opacity = 0.95 * f; corona.material.opacity = 0.9 * f; halo.material.opacity = f;
-    if (Math.random() < 0.6) addP.burst(2, o.position.x + rand(-2, 2), o.position.y + rand(-2, 2), -2.4, 1, { life: [0.4, 0.8], size: [0.08, 0.16], color: COL.sun, drag: 1 });
+const LEAF_M = [0x6fae3a, 0x9cc94a, 0xd9c060].map((c) => new THREE.MeshBasicMaterial({ color: new THREE.Color(c).multiplyScalar(1.1), side: THREE.DoubleSide }));
+function laurelLeaf(x, y, z, life, vx, vy, vz) {
+  const pt = new THREE.Mesh(PETAL_GEO, LEAF_M[Math.floor(Math.random() * 3)]); pt.position.set(x, y, z);
+  const sp = new V3(rand(-7, 7), rand(-7, 7), rand(-7, 7));
+  timed.add(pt, life, (o, k, dt) => { o.position.x += vx * dt; o.position.y += vy * dt; o.position.z += vz * dt; vy -= 2.2 * dt; vx *= 1 - 2 * dt; o.rotation.x += sp.x * dt; o.rotation.y += sp.y * dt; o.rotation.z += sp.z * dt; const f = k > 0.7 ? (1 - k) / 0.3 : 1; o.scale.set(0.07 * f, 0.18 * f, 1); });
+}
+const FEATHER_M = new THREE.MeshBasicMaterial({ color: new THREE.Color(1.5, 1.45, 1.3), side: THREE.DoubleSide, transparent: true });
+function feather(x, y, z, life, vx, vy, vz) {
+  const pt = new THREE.Mesh(PETAL_GEO, FEATHER_M); pt.position.set(x, y, z); const sp = rand(-4, 4);
+  timed.add(pt, life, (o, k, dt) => { o.position.x += vx * dt + Math.sin(k * 14) * dt * 0.5; o.position.y += vy * dt; o.position.z += vz * dt; vy = Math.max(-0.6, vy - 3 * dt); vx *= 1 - 2.5 * dt; o.rotation.z += sp * dt; o.rotation.y += dt * 3; const f = k > 0.7 ? (1 - k) / 0.3 : 1; o.scale.set(0.06 * f, 0.2 * f, 1); });
+}
+// one wing of light: a fan of long feathers on a pivot at the shoulder; it opens and beats forward
+function swanWing(v, sd, life) {
+  const g = new THREE.Group();
+  const wm = new THREE.MeshBasicMaterial({ color: new THREE.Color(1.8, 1.7, 1.3), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide }); wm.userData.own = true;
+  for (let i = 0; i < 9; i++) { const L = 0.9 + i * 0.14, fe = new THREE.Mesh(PETAL_GEO, wm); fe.scale.set(0.22, L, 1); const a = -0.3 + i * 0.16; fe.position.set(Math.sin(a) * L * 0.5 + i * 0.06, Math.cos(a) * L * 0.5, 0); fe.rotation.z = -a; g.add(fe); }
+  const piv = new THREE.Group(); piv.add(g);
+  timed.add(piv, life, (o, k) => {
+    const f = v.f, dir = f.facing, p = new V3(); v.m.j.chest.getWorldPosition(p);
+    o.position.set(p.x - dir * 0.15, p.y + 0.15, p.z + sd * 0.15);
+    const open = easeOutC(Math.min(1, k / 0.3)), beat = k > 0.3 ? easeOutC(Math.min(1, (k - 0.3) / 0.35)) : 0;
+    // folded up behind him -> spread out to the side -> swept forward toward the foe
+    o.rotation.set(0, (dir > 0 ? 0 : Math.PI) + sd * (1.4 - open * 0.9 - beat * 1.0), 0);
+    g.rotation.z = -0.4 - open * 0.6 + beat * 0.5;
+    wm.opacity = 0.7 * Math.min(1, k * 6) * (k > 0.7 ? (1 - k) / 0.3 : 1);
   });
-  stage.dimT = 1; stage.flash = Math.max(stage.flash, 0.4);
-  sfx.ring([196, 294, 392, 587], 1.6, 0.06); sfx.sweep(0.9, 300, 2400, 0.8, 0.18);
+}
+// light effects for Apollo's normal moves
+function apolloFx(e) {
+  const v = views[e.side]; if (!v) return; const f = v.f, dir = f.facing;
+  if (e.type === 'twang') {
+    const x = f.x + dir * 1.25, y = 1.5;
+    ring(x, y, 0.25, 0xffe080, 1.4, 0.22, true); ring(x, y, 0.25, 0xffffff, 0.8, 0.16, true);
+    for (let i = 0; i < 3; i++) slashStreak(f.x + dir * (0.5 + i * 0.12), 1.5, 0.25, 0.9 - i * 0.2, 0.05, 0, [2.6, 1.9, 0.7], 0.14);
+    musicNote(x, y + 0.2, 0.3, 0.6, dir * 0.6, 1.1);
+    addP.burst(8, x, y, 0.25, 3, { life: [0.12, 0.28], size: [0.04, 0.08], color: COL.sun, drag: 3 });
+    sfx.ring([988, 1480], 0.35, 0.05); sfx.click(0.25, 2400);
+  } else if (e.type === 'laurelArc') {
+    // a crescent of leaves traced along the bow's sweep
+    for (let i = 0; i < 16; i++) { const a = -1.2 + (i / 15) * 2.0, x = f.x + dir * (0.4 + Math.cos(a) * 1.3), y = 1.35 + Math.sin(a) * 0.45; setTimeout(() => { laurelLeaf(x, y, rand(-0.2, 0.3), 0.7, dir * rand(0.5, 2.2), rand(0, 1.2), rand(-0.6, 0.6)); addP.burst(1, x, y, 0.2, 1, { life: [0.15, 0.3], size: [0.04, 0.08], color: COL.sun, drag: 2 }); }, i * 6); }
+    slashStreak(f.x + dir * 1.1, 1.35, 0.2, 2.2, 0.16, dir * 1.35, [1.6, 2.2, 0.7], 0.2);
+    sfx.sweep(0.18, 700, 2600, 1.4, 0.1); sfx.noise(0.12, 2000, 6000, 'bandpass', 0.6, 0.05);
+  } else if (e.type === 'pythonStrike') {
+    // a serpent of golden light slithers along the floor and rears up at the end
+    for (let i = 0; i < 12; i++) setTimeout(() => { const u = i / 11, x = f.x + dir * (0.4 + u * 1.4), z = Math.sin(u * Math.PI * 3) * 0.28, y = 0.1 + (u > 0.8 ? (u - 0.8) * 2.5 : 0);
+      addP.burst(3, x, y, z, 0.6, { life: [0.18, 0.35], size: [0.06, 0.12], color: COL.sun, drag: 3 }); if (i === 11) { ring(x, 0.05, 0, 0xffd060, 1.2, 0.3); dust(x, 4, 0.5); } }, i * 9);
+    slashStreak(f.x + dir * 1.0, 0.22, 0.2, 1.6, 0.08, dir * Math.PI / 2, [2.6, 1.8, 0.5], 0.18);
+    sfx.noise(0.2, 1500, 5000, 'highpass', 0.7, 0.06); sfx.tone(600, 150, 0.2, 'sawtooth', 0.04);
+  } else if (e.type === 'dawn') {
+    // a half sun rises out of the floor in front of him
+    const x = f.x + dir * 0.9;
+    const m = new THREE.MeshBasicMaterial({ map: sunTex(), color: new THREE.Color(2.2, 1.4, 0.4), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide }); m.userData.own = true;
+    const disc = new THREE.Mesh(new THREE.CircleGeometry(1, 40), m); disc.position.set(x, -0.6, 0.1);
+    timed.add(disc, 0.42, (o, k) => { o.position.y = -0.7 + easeOutC(Math.min(1, k * 2)) * 1.6; o.rotation.z += 0.05; o.scale.setScalar(0.8 + k * 0.4); m.opacity = k > 0.6 ? (1 - k) / 0.4 : 1; });
+    for (let i = 0; i < 7; i++) { const a = Math.PI * (0.15 + i * 0.7 / 6); slashStreak(x + Math.cos(a) * 0.9, 0.3 + Math.sin(a) * 0.9, 0.15, 1.2, 0.08, a - Math.PI / 2, [2.6, 1.7, 0.45], 0.25); }
+    addP.burst(20, x, 0.4, 0.2, 4, { life: [0.2, 0.5], size: [0.05, 0.11], color: COL.sun, up: 4, drag: 2 });
+    sfx.sweep(0.3, 300, 2000, 1.2, 0.12); sfx.ring([523, 784], 0.4, 0.05);
+  } else if (e.type === 'swanWings') {
+    swanWing(v, 1, 0.42); swanWing(v, -1, 0.42);
+    setTimeout(() => { const x = f.x + dir * 1.2; for (let i = 0; i < 14; i++) feather(x + rand(-0.3, 0.3), rand(0.8, 2.2), rand(-0.4, 0.4), 1.0, dir * rand(1, 3.5), rand(-0.2, 1.2), rand(-0.6, 0.6)); ring(x, 1.4, 0.25, 0xffffff, 1.8, 0.25, true); }, 70);
+    sfx.noise(0.25, 400, 1800, 'bandpass', 0.8, 0.12); sfx.sweep(0.22, 400, 1600, 1, 0.08);
+  }
+}
+// the sun comes down low over the field; it stays until the lance
+let sunRef = null;
+function apolloSunCall(e) {
+  const g = new THREE.Group(); g.position.set(e.x, 12, -5.5);
+  const core = new THREE.Mesh(new THREE.CircleGeometry(1.5, 48), new THREE.MeshBasicMaterial({ color: new THREE.Color(2.6, 2.0, 0.9), transparent: true, opacity: 0, depthWrite: false, fog: false })); core.material.userData.own = true;
+  const corona = new THREE.Mesh(new THREE.CircleGeometry(3.6, 48), new THREE.MeshBasicMaterial({ map: sunTex(), color: new THREE.Color(2.2, 1.4, 0.35), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, fog: false })); corona.material.userData.own = true; corona.position.z = -0.05;
+  const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: FT.glow, color: 0xffa020, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, fog: false })); halo.material.userData.own = true; halo.scale.setScalar(11);
+  g.add(halo, corona, core);
+  const st = { t: 0 }, ref = sunRef = { g, charge: 0 };
+  timed.add(g, SUPER_LIFE(2.6), (o, k, dt) => {
+    const T = supClock(e.side, st) || 0; if (!(views[e.side] && views[e.side].f.state === 'attack')) st.t += dt / SUPER_K;
+    o.position.y = 12 - easeOutC(Math.min(1, T / 0.35)) * 5.2;
+    corona.rotation.z += dt * (0.5 + ref.charge * 3);
+    const a = Math.min(1, T * 5) * (T > 2.1 ? Math.max(0, 1 - (T - 2.1) / 0.25) : 1);
+    if (a <= 0 && T > 2.1) { o.visible = false; return; }
+    const ch = 1 + ref.charge * 0.5; o.scale.setScalar(ch);
+    core.material.opacity = 0.95 * a; corona.material.opacity = 0.85 * a; halo.material.opacity = (0.6 + ref.charge * 0.4) * a;
+    if (Math.random() < 0.4 + ref.charge) addP.burst(1, o.position.x + rand(-2, 2), o.position.y + rand(-2, 2), -5.4, 1, { life: [0.4, 0.8], size: [0.08, 0.16], color: COL.sun, drag: 1 });
+  }, () => { if (sunRef === ref) sunRef = null; });
+  stage.dimT = 1;
+  sfx.ring([392, 494, 587, 784], 1.4, 0.06); sfx.sweep(0.8, 300, 2000, 0.8, 0.14);
+}
+// laurel: Daphne's branches spiral up out of the floor and bind the foe
+function apolloLaurelBind(e) {
+  const g = new THREE.Group(); g.position.set(e.x, 0, 0);
+  const bm = new THREE.MeshStandardMaterial({ color: 0x6a4a22, roughness: 0.8, emissive: new THREE.Color(0.25, 0.18, 0.04) }); bm.userData.own = true;
+  const lm = new THREE.MeshStandardMaterial({ color: 0x5f9a34, roughness: 0.6, side: THREE.DoubleSide, emissive: new THREE.Color(0.18, 0.3, 0.06) }); lm.userData.own = true;
+  const branches = [];
+  for (let b = 0; b < 3; b++) {
+    const pts = []; for (let i = 0; i <= 40; i++) { const u = i / 40, a = b * 2.09 + u * Math.PI * 3.2, r = 0.75 - u * 0.2; pts.push(new V3(Math.cos(a) * r, u * 2.5, Math.sin(a) * r)); }
+    const tube = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 80, 0.035, 5), bm); g.add(tube);
+    const leaves = [];
+    for (let i = 3; i < 40; i += 2) { const p = pts[i], q = pts[i + 1]; for (const sd of [-1, 1]) { const lf = new THREE.Mesh(PETAL_GEO, lm); lf.position.copy(p); lf.lookAt(q.x * 3, p.y, q.z * 3); lf.rotateZ(sd * 0.9); lf.translateY(0.1); lf.scale.set(0.09, 0.22, 1); lf.visible = false; lf.userData.u = i / 40; g.add(lf); leaves.push(lf); } }
+    branches.push({ tube, leaves, n: tube.geometry.index.count });
+  }
+  const st = { t: 0.32 };
+  timed.add(g, SUPER_LIFE(1.9), (o, k, dt) => {
+    const T = supClock(e.side, st), grow = clamp((T - 0.32) / 0.22, 0, 1);
+    if (T > 1.8) { o.visible = false; return; }
+    for (const br of branches) { br.tube.geometry.setDrawRange(0, Math.floor(br.n * grow / 3) * 3); for (const lf of br.leaves) lf.visible = lf.userData.u < grow; }
+    const tight = T > 0.46 ? 1 - Math.min(1, (T - 0.46) / 0.3) * 0.25 : 1; o.scale.set(tight, 1, tight);
+    o.rotation.y += dt * 0.6;
+    const fv = views[e.foe]; if (fv) o.position.y = Math.max(0, fv.f.y - 0.15);
+  });
+  for (let i = 0; i < 14; i++) laurelLeaf(e.x + rand(-0.8, 0.8), rand(0.2, 1), rand(-0.6, 0.6), 0.9, rand(-1, 1), rand(1.5, 3.5), rand(-1, 1));
+  dust(e.x, 10, 0.9); sfx.noise(0.5, 300, 1500, 'bandpass', 0.6, 0.12); sfx.ring([330, 440], 0.5, 0.05);
+}
+// four horses of fire and the golden chariot of the sun
+function fireHorse(mat) {
+  const h = new THREE.Group(), S = new THREE.SphereGeometry(1, 14, 10), C = (r, L) => new THREE.CapsuleGeometry(r, L, 4, 8);
+  const add = (geo, x, y, z, sx, sy, sz, rz = 0, par = h) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.scale.set(sx, sy, sz); m.rotation.z = rz; par.add(m); return m; };
+  add(S, 0, 1.25, 0, 0.75, 0.33, 0.3);
+  add(C(0.15, 0.55), 0.62, 1.62, 0, 1, 1, 1, -0.75);
+  add(S, 0.98, 1.9, 0, 0.32, 0.13, 0.13, -0.5);
+  const legs = [];
+  for (const [lx, lz, ph] of [[0.5, 0.15, 0], [0.5, -0.15, 0.5], [-0.5, 0.15, 0.25], [-0.5, -0.15, 0.75]]) { const piv = new THREE.Group(); piv.position.set(lx, 1.1, lz); h.add(piv); add(C(0.07, 0.75), 0, -0.48, 0, 1, 1, 1, 0, piv); legs.push({ piv, ph }); }
+  h.userData.legs = legs; return h;
+}
+function apolloSunChariot(e) {
+  const dir = e.dir, g = new THREE.Group(), rig = new THREE.Group(); g.add(rig); rig.scale.x = dir;
+  const hm = new THREE.MeshBasicMaterial({ color: new THREE.Color(1.7, 0.62, 0.12), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, fog: false }); hm.userData.own = true;
+  const cm = new THREE.MeshStandardMaterial({ color: 0xe0b040, metalness: 0.8, roughness: 0.3, emissive: new THREE.Color(0.6, 0.38, 0.08), transparent: true, opacity: 0, fog: false }); cm.userData.own = true;
+  const horses = [];
+  for (let i = 0; i < 4; i++) { const hs = fireHorse(hm); hs.position.set(1.2 + (i >> 1) * 1.7, 0, (i & 1 ? -0.45 : 0.45)); rig.add(hs); horses.push(hs); }
+  // the car: a curved shell on two sun-wheels
+  const car = new THREE.Mesh(new THREE.CylinderGeometry(0.75, 0.6, 0.9, 20, 1, true, -Math.PI / 2, Math.PI), cm); car.position.set(-0.3, 1.0, 0); car.rotation.y = Math.PI; rig.add(car);
+  const wm = new THREE.MeshBasicMaterial({ map: sunTex(), color: new THREE.Color(2.4, 1.6, 0.5), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide, fog: false }); wm.userData.own = true;
+  const wheels = []; for (const z of [0.62, -0.62]) { const w = new THREE.Mesh(new THREE.CircleGeometry(0.6, 32), wm); w.position.set(-0.4, 0.6, z); rig.add(w); wheels.push(w); }
+  rig.add(new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 2.4, 6).rotateZ(Math.PI / 2).translate(1.0, 1.0, 0), cm));
+  g.scale.setScalar(1.05);
+  // path (super time): down out of the sky behind him, along the floor through the foe, then up and away
+  const x0 = e.x - dir * 9, x1 = e.x - dir * 1.2, x2 = e.tx + dir * 3.5, x3 = e.tx + dir * 11;
+  const pos = (T) => {
+    if (T < 0.92) { const u = easeIOC(clamp((T - 0.62) / 0.3, 0, 1)); return [lerp(x0, x1, u), lerp(8, 0, u), lerp(-4, -0.2, u)]; }
+    if (T < 1.24) { const u = (T - 0.92) / 0.32; return [lerp(x1, x2, u), 0, -0.2]; }
+    const u = clamp((T - 1.24) / 0.3, 0, 1); return [lerp(x2, x3, u), u * u * 7, -0.2 - u * 3];
+  };
+  const st = { t: 0.62 };
+  timed.add(g, SUPER_LIFE(1.4), (o, k, dt, t) => {
+    const T = supClock(e.side, st); if (!(views[e.side] && views[e.side].f.state === 'attack')) st.t += dt / SUPER_K;
+    const [px, py, pz] = pos(T); o.position.set(px, py, pz);
+    const a = Math.min(1, (T - 0.62) * 8) * (T > 1.45 ? Math.max(0, 1 - (T - 1.45) / 0.1) : 1);
+    if (a <= 0 && T > 1.45) { o.visible = false; return; }
+    hm.opacity = 0.75 * a; cm.opacity = a; wm.opacity = 0.9 * a;
+    for (const hs of horses) for (const L of hs.userData.legs) L.piv.rotation.z = Math.sin(t * 22 + L.ph * 6.28) * 0.7;
+    for (const w of wheels) w.rotation.z -= dt * 14;
+    rig.rotation.z = T < 0.92 ? -dir * 0.25 : T > 1.24 ? dir * 0.35 : 0;
+    // flaming manes and tails
+    for (const hs of horses) if (Math.random() < 0.7) { const p = new V3(0.9, 2.0, 0); hs.localToWorld(p); addP.burst(1, p.x, p.y, p.z, 0.6, { life: [0.2, 0.4], size: [0.12, 0.24], color: COL.flame || COL.sun, up: 1.5, drag: 1 }); const q = new V3(-0.8, 1.3, 0); hs.localToWorld(q); addP.burst(1, q.x, q.y, q.z, 0.4, { life: [0.2, 0.4], size: [0.1, 0.2], color: COL.sun, drag: 1 }); }
+    if (py < 0.1 && Math.random() < 0.8) { addP.burst(2, px + rand(-1, 1), 0.1, rand(-0.6, 0.6), 1.5, { life: [0.3, 0.6], size: [0.08, 0.16], color: COL.sun, up: 1.5, drag: 1.5 }); if (Math.random() < 0.3) dust(px, 2, 0.5); }
+  });
+  sfx.noise(1.4, 200, 1200, 'lowpass', 0.6, 0.2); for (let i = 0; i < 8; i++) sfx.kick(130, 60, 0.06, 0.18, 0.25 + i * 0.09);
+  sfx.ring([392, 523, 659], 1.0, 0.05, 0.2);
+}
+function apolloTrample(e) {
+  glowPuff(e.x, e.y, 0.3, 0xffb040, 1.6, 0.2); ring(e.x, e.y, 0.3, 0xffd080, 1.8, 0.2, true);
+  addP.burst(16, e.x, e.y, 0.3, 5, { life: [0.15, 0.35], size: [0.06, 0.13], color: COL.sun, drag: 3 });
+  dust(e.x, 5, 0.8); shake = Math.max(shake, 0.18); sfx.kick(150, 50, 0.12, 0.4);
 }
 function apolloCharge(e) {
+  if (sunRef) sunRef.charge = 1;
   const v = views[e.side]; if (!v) return; const p = new V3(0, -0.1, 0.0); v.m.j.lWr.localToWorld(p);
-  for (let i = 0; i < 40; i++) { const a = Math.random() * 6.28, r = rand(1.2, 2.2); addP.spawn(p.x + Math.cos(a) * r, p.y + Math.sin(a) * r, p.z, -Math.cos(a) * r * 2.6, -Math.sin(a) * r * 2.6, 0, 0.38, 0.1, 0.03, COL.sun[0], COL.sun[1], COL.sun[2], 1, 0, 0); }
-  glowPuff(p.x, p.y, p.z, 0xffd060, 3, 0.5); ring(p.x, p.y, p.z, 0xffe0a0, 3, 0.4, true);
+  for (let i = 0; i < 30; i++) { const a = Math.random() * 6.28, r = rand(1.0, 1.8); addP.spawn(p.x + Math.cos(a) * r, p.y + Math.sin(a) * r, p.z, -Math.cos(a) * r * 2.6, -Math.sin(a) * r * 2.6, 0, 0.38, 0.1, 0.03, COL.sun[0], COL.sun[1], COL.sun[2], 1, 0, 0); }
+  glowPuff(p.x, p.y, p.z, 0xffd060, 2, 0.5);
   sfx.sweep(0.5, 400, 3000, 1, 0.16); sfx.tone(220, 880, 0.5, 'triangle', 0.06);
 }
-function apolloLoose(e) {
-  const v = views[e.side]; const from = new V3(e.tx, e.ty + 2, 0.2); if (v) { from.set(0, -0.1, 0.1); v.m.j.lWr.localToWorld(from); }
-  const to = new V3(e.tx, e.ty, 0.2), dirV = to.clone().sub(from), len = dirV.length();
-  const am = new THREE.MeshBasicMaterial({ color: new THREE.Color(3.2, 2.6, 1.3) }); am.userData.own = true;
-  const g = new THREE.Group(); g.rotation.z = Math.atan2(dirV.y, dirV.x);
-  const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 2.4, 8).rotateZ(Math.PI / 2).translate(-1.2, 0, 0), am); g.add(shaft);
-  const tip = new THREE.Mesh(new THREE.ConeGeometry(0.2, 0.6, 8).rotateZ(-Math.PI / 2).translate(0.3, 0, 0), am); g.add(tip);
-  const fl = new THREE.Sprite(new THREE.SpriteMaterial({ map: FT.glow, color: 0xffb030, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false })); fl.material.userData.own = true; fl.scale.set(5, 1.6, 1); fl.position.x = -1.4; g.add(fl);
-  const T2 = SUPER_LIFE(0.08);
-  timed.add(g, T2, (o, k) => { o.position.lerpVectors(from, to, k); addP.burst(6, o.position.x, o.position.y, 0.2, 1.5, { life: [0.2, 0.45], size: [0.08, 0.18], color: COL.sun, drag: 2 }); });
-  slashStreak((from.x + to.x) / 2, (from.y + to.y) / 2, 0.2, len, 0.5, Math.atan2(dirV.y, dirV.x) - Math.PI / 2, [2.8, 1.9, 0.6], 0.4);
-  shake = Math.max(shake, 0.3); sfx.tone(2400, 400, 0.4, 'triangle', 0.12); sfx.sweep(0.4, 6000, 900, 2, 0.2); sfx.click(0.5, 3000);
+// the arrow loosed straight up into the sun
+function apolloSkyArrow(e) {
+  const v = views[e.side]; const from = new V3(0, 0, 0); if (v) v.m.j.lWr.getWorldPosition(from);
+  const to = sunRef ? sunRef.g.position.clone() : new V3(from.x, 9, -5);
+  const dirV = to.clone().sub(from), len = dirV.length();
+  slashStreak((from.x + to.x) / 2, (from.y + to.y) / 2, (from.z + to.z) / 2, len, 0.3, Math.atan2(dirV.y, dirV.x) - Math.PI / 2, [2.8, 2.0, 0.7], 0.3);
+  addP.burst(14, from.x, from.y, from.z, 3, { life: [0.15, 0.3], size: [0.05, 0.1], color: COL.sun, drag: 3 });
+  setTimeout(() => { glowPuff(to.x, to.y, to.z + 0.3, 0xfff0b0, 5, 0.3); }, 70);
+  sfx.tone(1800, 4000, 0.3, 'triangle', 0.08); sfx.click(0.5, 3000);
 }
-function apolloSolar(x) {
-  const sm = new THREE.MeshBasicMaterial({ color: new THREE.Color(3, 2.4, 1.1), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false }); sm.userData.own = true;
-  const ball = new THREE.Mesh(new THREE.SphereGeometry(1, 28, 20), sm); ball.position.set(x, 1.3, 0.1);
-  timed.add(ball, 0.7, (o, k) => { o.scale.setScalar(0.3 + easeOutC(k) * 3.4); sm.opacity = (1 - k) * 0.9; });
-  for (let i = 0; i < 16; i++) { const a = (i / 16) * Math.PI * 2; slashStreak(x + Math.cos(a) * 1.4, 1.3 + Math.sin(a) * 1.4, 0.3, 4.5, 0.2, a - Math.PI / 2, [2.8, 1.8, 0.5], 0.55); }
-  runeRing(x, 1.3, 0.4, 7, 1.0, true, [2.8, 1.9, 0.6], sunTex()); runeRing(x, 0.06, 0, 11, 1.2, false, [2.6, 1.7, 0.5], sunTex());
-  for (let i = 0; i < 4; i++) ring(x, 0.08, 0, i % 2 ? 0xffffff : 0xffc040, 6 + i * 4, 0.6 + i * 0.12);
-  addP.burst(200, x, 1.3, 0.2, 16, { life: [0.4, 1.2], size: [0.05, 0.18], color: COL.sun, drag: 2, up: 2 });
-  glowPuff(x, 1.4, 0.2, 0xffd060, 16, 0.7); dust(x, 40, 2.6);
-  stage.flash = Math.max(stage.flash, 1); screenFlash(0.95, '#fff8d8'); lightFlash(x, 2.2, 0xffc040, 140); shake = 0.7;
-  sfx.boom(1.6); sfx.ring([392, 587, 784, 1175], 1.6, 0.08);
+// the sun's answer: a lance of sunlight straight down through the foe, and a sunburst on the floor
+function apolloSunLance(x) {
+  const top = sunRef ? sunRef.g.position.y : 8;
+  const cm = new THREE.MeshBasicMaterial({ color: new THREE.Color(2.4, 2.0, 1.1), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, fog: false }); cm.userData.own = true;
+  const core = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.28, top + 1, 16).translate(0, (top + 1) / 2, 0), cm); core.position.set(x, 0, 0.1);
+  timed.add(core, 0.7, (o, k) => { o.scale.set(1 + k * 1.5, 1, 1 + k * 1.5); cm.opacity = 0.9 * (1 - k); });
+  const b = lightBeam(0xffb030, 1.2, 1.8, top + 1, 0.5); b.position.set(x, 0, 0); b.material.userData.own = true; const op = b.material.uniforms.uOp;
+  timed.add(b, 1.0, (o, k) => { op.value = 0.5 * (1 - k); o.scale.set(1 + k, 1, 1 + k); });
+  runeRing(x, 0.06, 0, 10, 1.2, false, [2.4, 1.6, 0.45], sunTex());
+  for (let i = 0; i < 12; i++) { const a = (i / 12) * Math.PI * 2; slashStreak(x + Math.cos(a) * 2.2, 0.08, Math.sin(a) * 2.2, 3.2, 0.25, a, [2.6, 1.7, 0.45], 0.5); }
+  for (let i = 0; i < 3; i++) ring(x, 0.08, 0, i % 2 ? 0xffffff : 0xffc040, 6 + i * 4, 0.6 + i * 0.12);
+  addP.burst(150, x, 1.0, 0.2, 12, { life: [0.4, 1.1], size: [0.05, 0.15], color: COL.sun, drag: 2, up: 4 });
+  glowPuff(x, 1.2, 0.2, 0xffd060, 8, 0.6); dust(x, 40, 2.4);
+  stage.flash = Math.max(stage.flash, 0.5); screenFlash(0.5, '#fff0c0'); lightFlash(x, 2.2, 0xffc040, 90); shake = 0.7;
+  sfx.boom(1.5); sfx.ring([392, 587, 784, 1175], 1.6, 0.08);
 }
 // --- Aphrodite ---
 function aphShell(e) {
@@ -9270,7 +9427,7 @@ function superImpact(e) {
   if (e.kind === 'pralaya') { shivaPralaya(x); return; }
   if (e.kind === 'heartBurst') { aphHeartBurst(x); return; }
   if (e.kind === 'bloom') { shakaBloom(x); return; }
-  if (e.kind === 'solar') { apolloSolar(x); return; }
+  if (e.kind === 'sunLance') { apolloSunLance(x); return; }
   if (e.kind === 'gateShut') { hadesGateShut(e); return; }
   if (e.kind === 'hellfire') {
     const beam = lightBeam(0xff3060, 1.2, 2.2, 16, 0.9);
@@ -9741,7 +9898,7 @@ class FighterView {
       updateCape(M, t, f.vx * f.facing + (f.state === 'dash' ? 6 : 0), f.state === 'attack' ? 0.8 : 0.3);
     } else if (f.key === 'apollo') {
       const flick = 0.85 + Math.random() * 0.3, inSup = f.state === 'attack' && f.move && f.move.type === 'super';
-      const lyreOn = (inSup && f.mt / SUPER_K < 1.13) || (f.state === 'intro' && f.st < 1.22);
+      const lyreOn = f.state === 'intro' && f.st < 1.22;
       M.lyre.visible = lyreOn; M.bow.visible = !lyreOn;
       M.sunGlow.material.opacity = (0.22 + this.glow * 0.5 + (f.oracleT > 0 ? 0.5 : 0)) * flick;
       M.bowGlow.material.opacity = (f.state === 'attack' && f.move && (f.move.proj || f.moveId === 'apo_point' || (inSup && f.mt / SUPER_K > 1.38)) ? 0.95 : 0.08 + this.glow * 0.25) * flick;
@@ -9984,6 +10141,15 @@ function cineShot(f, o, t, portrait) {
       const k = Math.min(1, (t - 1.8) / 0.6), R = Math.max(fitD(52 * fw) * 1.1, 6.5);
       return shot('k3', new V3(ox + sideX(-s * (1.2 + k * 1.8)), 0.5 + k * 1.2, R + k * 2.5), new V3(ox, Math.max(1.4, lookY) + k * 0.8, 0), 52 * fw, -0.06, 3);
     }
+    if (f.key === 'apollo') {
+      // low under him as the sun comes down, close on the laurel, wide for the chariot run, up at the sun, then the lance
+      if (t < 0.32) return shot('h0', new V3(fx + s * 1.2, 0.4, 3.4), new V3(fx + s * 0.6, 2.4, -1), 50 * fw, 0.06, 3);
+      if (t < 0.62) { const k = (t - 0.32) / 0.3; return shot('h1', new V3(ox - s * (1.0 - k * 0.6), 1.1, 3.6), new V3(ox, 1.4, 0), 46 * fw, -0.05, 4); }
+      if (t < 1.36) { const R = Math.max(fitD(64 * fw) * 1.1, 8.5); return shot('h2', new V3(mx, 1.6, R), new V3(mx, 2.4, -1.5), 64 * fw, 0, 3); }
+      if (t < 1.8) return shot('h3', new V3(fx - s * 1.6, 0.6, 3.2), new V3(fx + s * 1.2, 3.4, -3), 56 * fw, -0.08, 3);
+      const k = Math.min(1, (t - 1.8) / 0.6), R = Math.max(fitD(54 * fw) * 1.1, 6.5);
+      return shot('h4', new V3(ox + sideX(s * (1.0 + k * 1.6)), 0.6 + k * 1.2, R + k * 2.5), new V3(ox, Math.max(1.6, lookY) + k, 0), 54 * fw, 0.06, 3);
+    }
     if (t < 0.36) return shot('t0', new V3(mx - s * 0.8, lookY * 0.7, Math.max(fitD(42 * fw), 3.4)), new V3(mx, lookY, 0), 42 * fw, 0.08, 3);
     if (t < 1.16) {
       const k = (t - 0.36) / 0.8, a = (0.5 - k * 1.1) * s, R = Math.max(fitD(48 * fw), 4.4);
@@ -10073,7 +10239,7 @@ function cineUpdate(dt) {
     if (t > 1.1 && t < 1.8 && Math.random() < 0.5) { const a = Math.random() * 6.28; addP.spawn(o.x + Math.cos(a) * 1.6, o.y + 1 + Math.sin(a) * 1.6, 0.3, -Math.cos(a) * 3, -Math.sin(a) * 3, 0, 0.45, 0.08, 0.02, COL.dharma[0], COL.dharma[1], COL.dharma[2], 1, 0, 0); }
     if (t >= 1.8 && !cineFin) { cineFin = true; cineTitle(f); }
   } else if (f.key === 'apollo') {
-    if (t > 0.46 && t < 1.12 && Math.random() < 0.3) musicNote(o.x + rand(-1.2, 1.2), o.y + rand(0.6, 2), 0.3, 0.8, rand(-0.4, 0.4), rand(0.4, 1.2));
+    if (t > 0.34 && t < 0.9 && Math.random() < 0.25) laurelLeaf(o.x + rand(-0.8, 0.8), o.y + rand(0.4, 2.2), rand(-0.5, 0.5), 0.8, rand(-0.5, 0.5), rand(0.2, 1), 0);
     if (t > 1.42 && t < 1.74) { const v = views[f.side]; if (v) { const p = new V3(0, -0.1, 0.1); v.m.j.lWr.localToWorld(p); for (let i = 0; i < 2; i++) { const a = Math.random() * 6.28, r = 1.2; addP.spawn(p.x + Math.cos(a) * r, p.y + Math.sin(a) * r, p.z, -Math.cos(a) * 4, -Math.sin(a) * 4, 0, 0.3, 0.1, 0.03, COL.sun[0], COL.sun[1], COL.sun[2], 1, 0, 0); } } }
     if (t >= 1.8 && !cineFin) { cineFin = true; cineTitle(f); }
   } else if (f.key === 'aphrodite') {
@@ -11016,10 +11182,14 @@ function handleEvents() {
       case 'foresee': { const v = views[e.side]; if (v) ghostOf(v, [2.0, 1.5, 0.5]); glowPuff(e.from, e.y + 1.1, 0.2, 0xffe080, 2.2, 0.3); addP.burst(26, e.from, e.y + 1.1, 0.1, 4, { life: [0.2, 0.45], size: [0.05, 0.11], color: COL.sun, drag: 3 }); glowPuff(e.to, e.y + 1.1, 0.2, 0xffd060, 1.6, 0.25); callout(e.side, '予知!', true); sfx.ring([988, 1319, 1976], 0.5, 0.06); sfx.whoosh(1.4); break; }
       case 'sunFlare': { const v = views[e.side], x = v ? v.f.x + v.f.facing * 0.3 : e.x; glowPuff(x, 2.6, 0.2, 0xffd060, 3.6, 0.35); ring(x, 2.6, 0.2, 0xfff0b0, 3.2, 0.3, true); runeRing(x, 2.6, 0.25, 2.4, 0.4, true, [2.8, 1.9, 0.6], sunTex()); addP.burst(40, x, 2.5, 0.2, 7, { life: [0.15, 0.4], size: [0.05, 0.12], color: COL.sun, drag: 3 }); lightFlash(x, 2.6, 0xffc040, 90); sfx.ring([784, 1175, 1568], 0.5, 0.06); sfx.sweep(0.25, 1500, 6000, 1.6, 0.14); break; }
       case 'lyreAppear': { const v = views[e.side]; const p = new V3(e.x, 1.2, 0); if (v) { p.set(0, -0.1, 0.2); v.m.j.lWr.localToWorld(p); } glowPuff(p.x, p.y, p.z, 0xffe080, 1.8, 0.4); addP.burst(24, p.x, p.y, p.z, 2, { life: [0.3, 0.6], size: [0.04, 0.09], color: COL.sun, drag: 2, up: 1 }); for (let i = 0; i < 4; i++) musicNote(p.x + rand(-0.3, 0.3), p.y + 0.2, p.z, 1.0, rand(-0.6, 0.6), rand(0.8, 1.5)); sfx.ring([392, 494, 587, 784], 0.9, 0.05); break; }
-      case 'lyreChord': apolloLyreChord(e); break;
-      case 'sunRise': apolloSunRise(e); break;
+      case 'twang': case 'laurelArc': case 'pythonStrike': case 'dawn': case 'swanWings': apolloFx(e); break;
+      case 'sunCall': apolloSunCall(e); break;
+      case 'laurelBind': apolloLaurelBind(e); break;
+      case 'laurelTight': ring(e.x, e.y, 0.3, 0x9cc94a, 2.2, 0.25, true); for (let i = 0; i < 8; i++) laurelLeaf(e.x + rand(-0.6, 0.6), e.y + rand(-0.6, 0.6), rand(-0.4, 0.4), 0.7, rand(-2, 2), rand(0, 2), rand(-1, 1)); sfx.noise(0.15, 600, 2400, 'bandpass', 0.6, 0.08); sfx.kick(160, 70, 0.08, 0.25); break;
+      case 'sunChariot': apolloSunChariot(e); break;
+      case 'trample': apolloTrample(e); break;
       case 'heliosCharge': apolloCharge(e); break;
-      case 'heliosLoose': apolloLoose(e); break;
+      case 'skyArrow': apolloSkyArrow(e); break;
       case 'charmKiss': aphCharmKiss(e); break;
       case 'ribbonLash': aphRibbonLash(e); break;
       case 'roseStorm': aphRoseStorm(e.big ? e.x : (views[e.side] ? views[e.side].f.x : e.x), !!e.big); break;
