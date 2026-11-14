@@ -4138,12 +4138,13 @@ Object.assign(SKP, {
   roarWind: mk(skStance, { y: -0.12, spine: [0.3, 0, 0], chest: [0.15, 0, 0], neck: [0.2, 0, 0], head: [0.25, 0, 0], lSh: [-0.6, -0.9, 0], lEl: [-1.9, 0, 0], lWr: [0.2, 0, 0], rSh: [-0.6, -0.9, 0], rEl: [-1.9, 0, 0], rWr: [0.2, 0, 0], lHip: [-0.5, 0, 0.14], lKn: [0.6, 0, 0], rHip: [0.2, 0, 0.16], rKn: [0.5, 0, 0], rAn: [-0.6, 0, 0] }),
   roar: mk(skStance, Object.assign({ y: -0.08, z: 0.08, hips: [0, 0, 0], spine: [-0.18, 0, 0], chest: [-0.15, 0, 0], neck: [-0.1, 0, 0], head: [-0.2, 0, 0], lSh: [-0.6, 0, 1.0], lEl: [-0.3, 0, 0], lWr: [-0.8, 0, 0], rSh: [-0.6, 0, 1.0], rEl: [-0.3, 0, 0], rWr: [-0.8, 0, 0] }, skLunge)),
   // the reclining Buddha: on his right side, head propped on the right hand, gliding along the ground
-  recline: mk(skStance, { y: -0.82, z: 0.05, rz: 1.42, hips: [0, 0, 0], spine: [0, 0, 0], chest: [0, 0, 0], neck: [0, 0, -0.15], head: [0, 0, -0.2], rSh: [-2.6, 0, 0.6], rEl: [-2.1, 0, 0], rWr: [0.2, 0, 0], lSh: [0.1, 0, 0.05], lEl: [-0.1, 0, 0], lWr: [0, 0, 0], lHip: [-0.08, 0, 0.02], lKn: [0.1, 0, 0], lAn: [0.3, 0, 0], rHip: [-0.05, 0, 0.02], rKn: [0.06, 0, 0], rAn: [0.3, 0, 0] }),
+  recline: mk(skStance, { y: -0.82, z: 0.05, rx: -1.45, ry: 1.5, rz: 0, hips: [0, 0, 0], spine: [0, 0, 0], chest: [0, 0, 0], neck: [0, 0, -0.15], head: [0, 0, -0.2], rSh: [-2.6, 0, 0.6], rEl: [-2.1, 0, 0], rWr: [0.2, 0, 0], lSh: [0.1, 0, 0.05], lEl: [-0.1, 0, 0], lWr: [0, 0, 0], lHip: [-0.08, 0, 0.02], lKn: [0.1, 0, 0], lAn: [0.3, 0, 0], rHip: [-0.05, 0, 0.02], rKn: [0.06, 0, 0], rAn: [0.3, 0, 0] }),
   // scattering heavenly flowers from the air
   scatter: mk(skStance, Object.assign({ air: true, y: 0, rx: 0.25, spine: [0.15, 0, 0], head: [-0.3, 0, 0], lSh: [-1.0, 0, 0.9], lEl: [-0.3, 0, 0], lWr: [1.0, 0, 0], rSh: [-1.0, 0, 0.9], rEl: [-0.3, 0, 0], rWr: [1.0, 0, 0] }, skLotus, { y: 0 })),
 });
 SKP.jump = mk(SKP.zazen, { air: true, y: 0, lSh: [-0.6, 0, 0.5], lEl: [-0.6, 0, 0], rSh: [-0.6, 0, 0.5], rEl: [-0.6, 0, 0] });
 SKP.intro = mk(SKP.zazen, {});
+SKP.reclineB = mk(SKP.recline, { ry: -1.5 });
 SKP.win = mk(SKP.tenjo, {});
 Object.assign(SKP, generic(SKP.stance, false));
 SKP.backstep = mk(SKP.stance, { spine: [-0.1, -0.1, 0], lHip: [-0.2, 0, 0.12], lKn: [0.6, 0, 0], lAn: [0, 0, 0], rHip: [0.1, 0, 0.12], rKn: [0.7, 0, 0] });
