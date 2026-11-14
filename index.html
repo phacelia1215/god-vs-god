@@ -9912,7 +9912,7 @@ function frame(now) {
   updateCamera(rdt, clock);
   updateHUD(paused ? 0 : rdt);
   if (screen === 'match' && cfg.story && sim.phase === 'matchEnd' && sim.phaseT > 2.6) storyAfterMatch();
-  else if (screen === 'match' && cfg.mode !== 'auto' && !cfg.story && sim.phase === 'matchEnd' && sim.phaseT > 1.6) $('endpanel').classList.remove('hidden');
+  else if (screen === 'match' && !cfg.attract && !cfg.story && sim.phase === 'matchEnd' && sim.phaseT > 1.6) $('endpanel').classList.remove('hidden');
   if (quality === 'high') composer.render(); else renderer.render(scene, camera);
 }
 
@@ -9946,7 +9946,7 @@ function setupMatch(c) {
   for (const v of projViews.values()) scene.remove(v.g);
   projViews.clear();
   const ctl = c.mode === 'auto' ? ['ai', 'ai'] : c.mode === 'player' ? ['human', 'ai'] : ['human', c.dummy === 'guard' ? 'guard' : 'dummy'];
-  sim = new Sim({ keys: c.keys, ctl, practice: c.mode === 'practice', holdEnd: c.mode !== 'auto', aiLevel: c.level || 3 });
+  sim = new Sim({ keys: c.keys, ctl, practice: c.mode === 'practice', holdEnd: !c.attract, aiLevel: c.level || 3 });
   views = sim.fighters.map((f, i) => new FighterView(f, modelFor(i, f.key)));
   document.querySelectorAll('#hud .pl .name').forEach((el, i) => { const k = sim.fighters[i].key; el.innerHTML = `<b style="color:${GOD[k].acc}">${CHARS[k].name}</b><small>${CHARS[k].en}</small>`; });
   if (c.attract) sim.events.length = 0; else handleEvents();
