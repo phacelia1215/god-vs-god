@@ -11283,7 +11283,8 @@ function setLoad(msg, k) {
   const l = $('loading'); l.classList.remove('pending');
   $('ldMsg').textContent = msg; $('ldPct').textContent = Math.round(k * 100) + '%'; $('ldFill').style.width = (k * 100).toFixed(1) + '%';
 }
-const nextPaint = () => new Promise((r) => requestAnimationFrame(() => setTimeout(r, 0)));
+// two animation frames guarantee the browser really painted (Safari can run a 0ms timer before painting)
+const nextPaint = () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(r, 0))));
 async function boot() {
   // every step runs after a repaint so the progress bar actually moves
   const steps = [];
@@ -11304,7 +11305,8 @@ async function boot() {
   }
   setLoad('準備完了', 1);
   // let the bar's width transition reach the right end before the screen closes
-  await new Promise((r) => setTimeout(r, 400));
+  await nextPaint();
+  await new Promise((r) => setTimeout(r, 450));
   hud.announce.classList.remove('show');
   renderSelect();
   showScreen('title');
