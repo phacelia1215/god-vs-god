@@ -491,8 +491,16 @@ body.compact.landscape .pick{flex-direction:column;gap:1px;padding:4px 0 3px;min
 body.compact.landscape .pick .emb{width:22px;height:22px}
 body.compact.landscape .pick span{display:block;font-size:9px;letter-spacing:-.03em;white-space:nowrap}
 body.compact.landscape .vsmark{display:none}
+/* global volume button (every non-match screen) and the Esc pause menu */
+#btnVolG{position:fixed;top:max(8px,env(safe-area-inset-top));right:8px;z-index:44;font-family:var(--jp);font-weight:700;font-size:12px;letter-spacing:.05em;color:var(--gold2);background:rgba(12,8,22,.72);border:1px solid rgba(232,192,106,.6);padding:6px 10px;min-height:32px;border-radius:2px;cursor:pointer;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+#btnVolG:hover{border-color:var(--gold)}
+#pauseMenu{background:rgba(4,2,10,.62);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+#pauseMenu .pm-h{font-family:var(--en);font-weight:900;letter-spacing:.4em;font-size:clamp(20px,3vw,30px);color:var(--gold2);margin-bottom:18px;padding-left:.4em}
+#pauseMenu .pm-col{display:flex;flex-direction:column;gap:12px;align-items:stretch;width:min(280px,80vw)}
+#pauseMenu .pm-col button{width:100%}
+#pauseMenu .keys-help{margin-top:16px}
 /* volume panel */
-.volpanel{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(max(10px,env(safe-area-inset-bottom)) + 48px);z-index:35;display:flex;flex-direction:column;gap:8px;padding:10px 14px;background:rgba(8,5,16,.92);border:1px solid rgba(232,192,106,.6);color:var(--gold2);font-size:12px;letter-spacing:.08em}
+.volpanel{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(max(10px,env(safe-area-inset-bottom)) + 48px);z-index:45;display:flex;flex-direction:column;gap:8px;padding:10px 14px;background:rgba(8,5,16,.92);border:1px solid rgba(232,192,106,.6);color:var(--gold2);font-size:12px;letter-spacing:.08em}
 .volpanel label{display:grid;grid-template-columns:4em 1fr 3em;align-items:center;gap:8px}
 .volpanel input{width:min(260px,58vw);accent-color:var(--gold)}
 .volpanel output{text-align:right;font-family:var(--en)}
@@ -608,6 +616,19 @@ body.compact.landscape .vsmark{display:none}
 
 <div id="touchpad"><div id="stick"><i id="knob"></i></div>
   <div id="tbtns"><button data-k="KeyJ">弱</button><button data-k="KeyK">強</button><button data-k="KeyL">必殺</button><button data-k="KeyO" class="sp">超</button></div></div>
+<button id="btnVolG" class="hidden" aria-label="音量">🔊 音量</button>
+<div class="overlay hidden" id="pauseMenu">
+  <div class="vig"></div>
+  <div class="pm-h">PAUSE</div>
+  <div class="pm-col">
+    <button class="bigbtn" id="pmResume"><span>再開</span></button>
+    <button class="sub" id="pmVol">音量</button>
+    <button class="sub" id="pmRestart">↻ 再試合</button>
+    <button class="sub" id="pmSel">キャラ選択へ</button>
+    <button class="sub" id="pmTitle">タイトルへ</button>
+  </div>
+  <div class="keys-help">Esc で再開</div>
+</div>
 <div class="volpanel hidden" id="volPanel">
   <label>BGM<input type="range" id="volBgm" min="0" max="100" step="5"><output id="volBgmV"></output></label>
   <label>効果音<input type="range" id="volSe" min="0" max="100" step="5"><output id="volSeV"></output></label>
@@ -9939,8 +9960,18 @@ function setupMatch(c) {
   if (hf) syncCmd(hf);
 }
 
+let pauseOpen = false, pauseWas = false;
+function setPause(open) {
+  if (open === pauseOpen) return;
+  pauseOpen = open;
+  if (open) { pauseWas = paused; paused = true; } else { paused = pauseWas; }
+  $('pauseMenu').classList.toggle('hidden', !open);
+  if (!open) $('volPanel').classList.add('hidden');
+  $('btnPause').textContent = paused ? '▶ 再開' : '❚❚ 一時停止';
+}
 function showScreen(name) {
   screen = name;
+  if (name !== 'match' && pauseOpen) { pauseOpen = false; $('pauseMenu').classList.add('hidden'); $('volPanel').classList.add('hidden'); }
   bgm.play(name === 'match' ? (cfg.mode === 'practice' ? 'practice' : STAGES[curStage].bgm) : name === 'viewer' ? 'practice' : name === 'story' ? 'mode' : name);
   $('viewer').classList.toggle('hidden', name !== 'viewer');
   $('story').classList.toggle('hidden', name !== 'story');
@@ -9954,6 +9985,7 @@ function showScreen(name) {
   $('keyhelp').classList.toggle('hidden', !(inMatch && cfg.mode !== 'auto'));
   $('touchpad').classList.toggle('on', inMatch && cfg.mode !== 'auto');
   $('ctrl').classList.remove('open');
+  $('btnVolG').classList.toggle('hidden', inMatch);
 }
 
 const GOD = {
@@ -10382,6 +10414,8 @@ function syncCmd(f) {
   f.cmd.up = held.up; f.cmd.down = held.down;
 }
 window.addEventListener('keydown', (e) => {
+  // Esc during a match opens the pause menu (and closes it again); the match is frozen while it is open
+  if (e.code === 'Escape' && screen === 'match' && $('endpanel').classList.contains('hidden')) { e.preventDefault(); setPause(!pauseOpen); return; }
   if (screen === 'title' && (e.code === 'Enter' || e.code === 'Space')) { e.preventDefault(); $('btnStart').click(); return; }
   if (screen === 'mode') {
     if (e.code === 'ArrowLeft' || e.code === 'KeyA') focusCard(modeFocus - 1);
@@ -11312,6 +11346,11 @@ async function boot() {
   const toSelect = () => { previewKey = ''; renderSelect(); refreshPreview(true); showScreen('select'); };
   $('btnToSel').addEventListener('click', toSelect);
   $('btnSel').addEventListener('click', toSelect);
+  $('pmResume').addEventListener('click', () => setPause(false));
+  $('pmVol').addEventListener('click', () => $('volPanel').classList.toggle('hidden'));
+  $('pmRestart').addEventListener('click', () => { setPause(false); rematch(); });
+  $('pmSel').addEventListener('click', () => { setPause(false); toSelect(); });
+  $('pmTitle').addEventListener('click', () => { setPause(false); toTitle(); });
   $('vBack').addEventListener('click', () => { showScreen('mode'); focusCard(3); });
   $('vReplay').addEventListener('click', () => viewerPlay());
   $('vRepeat').addEventListener('click', () => { viewer.repeat = !viewer.repeat; $('vRepeat').textContent = 'リピート:' + (viewer.repeat ? 'ON' : 'OFF'); });
@@ -11332,7 +11371,9 @@ async function boot() {
     inp.value = Math.round(vol[key] * 100); out.textContent = inp.value + '%';
     inp.addEventListener('input', () => { vol[key] = inp.value / 100; out.textContent = inp.value + '%'; applyVol(); });
   }
-  $('btnVol').addEventListener('click', () => { sfx.init(); if (sfx.ctx) sfx.ctx.resume(); $('volPanel').classList.toggle('hidden'); });
+  const toggleVol = () => { sfx.init(); if (sfx.ctx) sfx.ctx.resume(); $('volPanel').classList.toggle('hidden'); };
+  $('btnVol').addEventListener('click', toggleVol);
+  $('btnVolG').addEventListener('click', toggleVol);
   $('btnMoves').addEventListener('click', () => $('moves').classList.toggle('hidden'));
   $('moves').addEventListener('click', (e) => { if (e.target.id === 'moves' || e.target.classList.contains('close')) $('moves').classList.add('hidden'); });
   buildMoveList();
