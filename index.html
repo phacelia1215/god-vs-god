@@ -1109,8 +1109,8 @@ const ODIN_MOVES = {
     hits: [H({ t0: 0.08, t1: 0.42, dmg: 58, range: [0.0, 2.0], y: [-1.1, 0.9], hs: 0.46, kb: 2.0, stop: 0.08, fx: 'rune' })],
   },
   o_super: {
-    name: '神槍グングニル・ラグナロク', type: 'super', dur: 2.4, glow: 'spear',
-    anim: [[0, 'superCall'], [0.3, 'superCall'], [0.36, 'summonWind'], [0.44, 'summon'], [1.08, 'summon'], [1.14, 'superCall'], [1.42, 'superCall'], [1.48, 'throwWind'], [1.6, 'throwWind'], [1.64, 'throw'], [1.9, 'throw'], [2.1, 'intro'], [2.4, 'stance']],
+    name: '神槍グングニル・ラグナロク', type: 'super', dur: 2.62, glow: 'spear',
+    anim: [[0, 'superCall'], [0.3, 'superCall'], [0.36, 'summonWind'], [0.44, 'summon'], [1.08, 'summon'], [1.16, 'skyRise'], [1.38, 'skyRise'], [1.46, 'skyWind'], [1.6, 'skyWind'], [1.63, 'skyHurl'], [1.88, 'skyHurl'], [2.0, 'skyFall'], [2.3, 'skyFall'], [2.36, 'skyLand'], [2.48, 'skyLand'], [2.62, 'stance']],
   },
 };
 // Odin is the final boss of the story: every blow carries a little more weight
@@ -2575,7 +2575,9 @@ class Sim {
         if (t >= 1.44) once('charge', () => this.emit('gungnirCharge', { side: f.side, x: f.x, y: f.y }));
         if (t >= 1.62) once('throw', () => this.emit('gungnirThrow', { side: f.side, fx: f.x + f.facing * 0.4, fy: f.y + 1.6, tx: s.lock ? o.x : s.tx, ty: (s.lock ? o.y : 0) + 1.0 }));
       } else if (t >= 1.8) {
-        f.y = Math.max(0, lerp(4.6, 0, easeIn((t - 1.8) / 0.3)));
+        // glide down with the cloak spread, then a heavy landing
+        if (t < 2.34) { const u = clamp((t - 1.8) / 0.54, 0, 1); f.y = 4.6 * (1 - u * u * (3 - 2 * u)); }
+        else { f.y = 0; once('land', () => this.emit('odinLand', { side: f.side, x: f.x })); }
       }
       if (t >= 1.76) once('final', () => {
         this.emit('superImpact', { side: f.side, x: s.lock ? o.x : s.tx, kind: 'gungnir' });
@@ -3535,6 +3537,12 @@ ODP.throwWind = mk(HDP.slamWind, { hips: [0, -0.5, 0], spine: [-0.1, -0.3, 0], c
 ODP.throw = mk(HDP.jab, { lSh: [0.6, 0, 0.6], lEl: [-0.6, 0, 0] });
 // rune planted into the ground with the free hand
 ODP.runePlant = mk(HDP.sweepEnd, { lSh: [-1.0, 0, 0.2], lEl: [-0.2, 0, 0], lWr: [1.2, 0, 0], spine: [0.5, 0, 0], chest: [0.1, 0, 0], head: [-0.4, 0, 0] });
+// super: rise into the sky, draw Gungnir back with the whole body arched, then whip it down at the foe
+ODP.skyRise = mk(null, { air: true, rx: -0.1, hips: [0, -0.2, 0], spine: [-0.12, 0, 0], chest: [-0.1, 0, 0], neck: [0, 0.1, 0], head: [-0.25, 0, 0], lHip: [-0.9, 0, 0.12], lKn: [1.5, 0, 0], lAn: [0.35, 0, 0], rHip: [0.15, 0, 0.12], rKn: [0.7, 0, 0], rAn: [0.4, 0, 0], lSh: [0.35, 0, 0.9], lEl: [-0.3, 0, 0], lWr: [0, 0, 0], rSh: [-2.82, 0.01, 0], rEl: [-0.01, 0, 0], rWr: [1.58, 0, 0] });
+ODP.skyWind = mk(null, { air: true, rx: -0.28, hips: [0, -0.55, 0], spine: [-0.25, -0.35, 0], chest: [-0.2, -0.5, 0], neck: [0.1, 0.25, 0], head: [0.25, 0.55, 0], lHip: [-1.1, 0, 0.15], lKn: [1.2, 0, 0], lAn: [0.3, 0, 0], rHip: [0.55, 0, 0.12], rKn: [1.5, 0, 0], rAn: [0.5, 0, 0], lSh: [-1.15, 0, 0.25], lEl: [-0.1, 0, 0], lWr: [0.3, 0, 0], rSh: [-2.7, -0.2, 0.55], rEl: [-1.9, 0, 0], rWr: [0.9, 0.45, 0] });
+ODP.skyHurl = mk(null, { air: true, rx: 0.5, z: 0.1, hips: [0, 0.2, 0], spine: [0.45, 0.25, 0], chest: [0.15, 0.45, 0], neck: [-0.1, -0.2, 0], head: [-0.55, -0.4, 0], lHip: [-1.4, 0, 0.15], lKn: [1.7, 0, 0], lAn: [0.3, 0, 0], rHip: [0.7, 0, 0.12], rKn: [0.9, 0, 0], rAn: [0.6, 0, 0], lSh: [0.9, 0, 0.55], lEl: [-0.3, 0, 0], lWr: [0, 0, 0], rSh: [-0.75, -0.2, 0.25], rEl: [-0.12, 0, 0], rWr: [0.4, 0, 0] });
+ODP.skyFall = mk(null, { air: true, rx: 0.05, hips: [0, -0.2, 0], spine: [0.05, -0.05, 0], chest: [-0.05, -0.05, 0], neck: [0.05, 0.1, 0], head: [0.1, 0.15, 0], lHip: [-0.55, 0, 0.16], lKn: [0.8, 0, 0], lAn: [0.2, 0, 0], rHip: [-0.1, 0, 0.16], rKn: [0.6, 0, 0], rAn: [0.25, 0, 0], lSh: [-0.2, 0, 1.15], lEl: [-0.25, 0, 0], lWr: [0.3, 0, 0], rSh: [-0.218, -0.673, 0.081], rEl: [-0.175, 0, 0], rWr: [-0.908, 0.306, -0.107] });
+ODP.skyLand = mk(ODP.crouch, { y: -0.38, spine: [0.35, -0.1, 0], head: [-0.25, 0.2, 0], lSh: [-0.4, 0, 0.95], lEl: [-0.4, 0, 0], rSh: [-0.218, -0.673, 0.081], rEl: [-0.175, 0, 0], rWr: [-0.908, 0.306, -0.107] });
 // intro / win: spear upright, gaze lowered at the challenger
 ODP.intro = mk(ODP.stance, { head: [0.2, 0.15, 0] });
 // ============================================================
@@ -9645,6 +9653,7 @@ function handleEvents() {
       case 'heartSeal': aphHeartSeal(e); break;
       case 'ravenStrike': if (e.i === 0) odinRavenStorm(e.tx, e.ty); odinRaven(e); break;
       case 'odinAscend': odinAscend(e); break;
+      case 'odinLand': dust(e.x, 14, 1.1); ring(e.x, 0.06, 0, 0x9fd4ff, 3.2, 0.35); addP.burst(18, e.x, 0.3, 0, 3, { life: [0.2, 0.45], size: [0.05, 0.12], color: COL.rune, up: 1.5, drag: 2 }); shake = Math.max(shake, 0.15); sfx.whoosh(0.9); break;
       case 'gungnirCharge': odinCharge(e); break;
       case 'gungnirThrow': odinThrow(e); break;
       case 'mistStrike': hadesMistStrike(e); break;
