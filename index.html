@@ -540,6 +540,11 @@ body.compact.landscape .vsmark{display:none}
 #btnVolG{position:fixed;top:max(8px,env(safe-area-inset-top));right:8px;z-index:44;font-family:var(--jp);font-weight:700;font-size:12px;letter-spacing:.05em;color:var(--gold2);background:rgba(12,8,22,.72);border:1px solid rgba(232,192,106,.6);padding:6px 10px;min-height:32px;border-radius:2px;cursor:pointer;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
 #btnVolG:hover{border-color:var(--gold)}
 #pauseMenu{background:rgba(4,2,10,.62);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+/* phones: a blur over the live 3D canvas is redone every frame for every panel and button (24 god buttons on the
+   select screen), which costs more than the whole scene there; the panels are opaque enough without it */
+html.mob *{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+html.mob .pick{background:rgba(10,6,18,.9)}
+html.mob #pauseMenu{background:rgba(4,2,10,.8)}
 #pauseMenu .pm-h{font-family:var(--en);font-weight:900;letter-spacing:.4em;font-size:clamp(20px,3vw,30px);color:var(--gold2);margin-bottom:18px;padding-left:.4em}
 #pauseMenu .pm-col{display:flex;flex-direction:column;gap:12px;align-items:stretch;width:min(280px,80vw)}
 #pauseMenu .pm-col button{width:100%}
@@ -8376,6 +8381,7 @@ const angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d 
 //  Setup
 // ============================================================
 const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && window.innerWidth < 1100);
+document.documentElement.classList.toggle('mob', isMobile);
 let quality = 'high';
 try { const q = localStorage.getItem('gods-quality'); if (q) quality = q; } catch (e) { }
 
@@ -8425,7 +8431,7 @@ scene.add(fxLight);
 const BASE = { hemi: 0.5, key: 2.0, rim: 1.6, fill: 0.4 };
 
 // resolution: a sane device-pixel cap per quality, times a dynamic scale that drops when frames run long
-let resScale = 1, resT = 0, frameAvg = 1 / 60;
+let resScale = 1, resT = 0, frameAvg = 1 / 60, slowT = 0, fastT = 0, pinT = 0;
 function basePR() { return Math.min(window.devicePixelRatio || 1, quality === 'high' ? (isMobile ? 1.3 : 1.5) : (isMobile ? 0.9 : 1)); }
 function applyQuality() {
   const pr = basePR() * resScale;
@@ -12443,11 +12449,15 @@ function frame(now) {
   let rdt = Math.min(0.05, (now - last) / 1000);
   // dynamic resolution: keep ~55-60fps by trading pixels (checked twice a second)
   frameAvg += (Math.min(0.1, (now - last) / 1000) - frameAvg) * 0.05; resT += rdt;
-  if (resT > 0.5 && !document.hidden) {
+  // a resolution change reallocates every render target, itself a hitch: change only when slow (or fast) frames have
+  // lasted a while, and never during a super's cinematic, whose heavy effects are short
+  slowT = frameAvg > 1 / 45 ? slowT + rdt : 0; fastT = frameAvg < 1 / 57 ? fastT + rdt : 0;
+  if (resT > 0.5 && !document.hidden && !document.body.classList.contains('cine')) {
     resT = 0;
-    const want = frameAvg > 1 / 45 ? Math.max(0.6, resScale - 0.1) : frameAvg < 1 / 58 ? Math.min(1, resScale + 0.05) : resScale;
-    if (Math.abs(want - resScale) > 0.001) { resScale = want; renderer.setPixelRatio(basePR() * resScale); resize(); }
+    const want = slowT > 1.5 ? Math.max(0.6, resScale - 0.12) : fastT > 4 ? Math.min(1, resScale + 0.06) : resScale;
+    if (Math.abs(want - resScale) > 0.001) { resScale = want; slowT = fastT = 0; renderer.setPixelRatio(basePR() * resScale); resize(); }
   }
+  if ((pinT += rdt) > 1) { pinT = 0; pinPrograms(); }
   last = now;
   clock += rdt;
   if (started && !paused) {
@@ -12636,7 +12646,9 @@ function renderSelect() {
   renderSharedPick();
   document.querySelector('.stagePick').classList.toggle('hidden', m === 'story');
   $('btnFight').innerHTML = `<span>${m === 'story' ? 'ストーリー開始' : '試合開始'}</span>`;
-  document.querySelectorAll('.pick').forEach((b) => b.addEventListener('click', () => { selState.keys[+b.dataset.side] = b.dataset.key; renderSelect(); refreshPreview(false, +b.dataset.side); }));
+  // only the select screen's freshly rendered buttons (the move viewer's god buttons persist, and adding a handler to
+  // them on every render piled up copies that each re-rendered the screen and rebuilt the preview match)
+  document.querySelectorAll('#select .pick').forEach((b) => b.addEventListener('click', () => { selState.keys[+b.dataset.side] = b.dataset.key; renderSelect(); refreshPreview(false, +b.dataset.side); }));
   $('dummyOpt').classList.toggle('hidden', m !== 'practice');
   $('levelOpt').classList.toggle('hidden', m === 'practice');
   $('levelLbl').textContent = m === 'auto' ? 'AIの強さ' : m === 'story' ? '敵の強さ' : 'CPUの強さ';
@@ -14083,6 +14095,50 @@ function warmAll() {
   for (const r of added) scene.remove(r);
   for (const [g, v] of vis) g.visible = v;
 }
+// three.js frees a shader as soon as no live material uses it, so an effect, sword trail or select-screen preview that
+// is thrown away and made again later compiles its shader all over again (a visible hitch on phones). Every shader is
+// pinned once built, so it stays ready for the next time at the cost of a little GPU memory.
+function pinPrograms() { for (const p of renderer.info.programs) if (!p.pinned) { p.pinned = true; p.usedTimes++; } }
+// A custom (ShaderMaterial) effect also loses its cached shader source when its material is disposed; the next copy then
+// gets a new source id, misses the pinned program and compiles again. The first compiled material of each source is
+// kept (never disposed) so the source stays cached; every later copy is disposed as usual.
+const shaderKeepers = new Set();
+const disposeShaderMaterial = THREE.ShaderMaterial.prototype.dispose;
+THREE.ShaderMaterial.prototype.dispose = function () {
+  const k = this.vertexShader + '\n//\n' + this.fragmentShader;
+  if (!shaderKeepers.has(k) && renderer.properties.get(this).currentProgram) { shaderKeepers.add(k); return; }
+  disposeShaderMaterial.call(this);
+};
+// ---- effects: raise every effect once during loading ----
+// An effect's materials compile and its textures are painted the first time it plays; with the richer scenes that
+// made the first super (and other first-time effects) of a fight stall on phones. Every event the fight can raise is
+// dispatched once here, drawn once into the composer's target, and cleared away. Effects that need a particular god's
+// model (a club, a spear...) are retried with each god in turn until they succeed.
+const WARM_EVENTS = ['move', 'hit', 'block', 'clash', 'bolt', 'geyser', 'crush', 'superDash', 'superDive', 'soulBurst', 'teleport', 'judgment', 'mist', 'runeBind', 'fireRing', 'danceStrike', 'cosmicDance', 'thirdEye', 'eyeBeam', 'damaru', 'nullify', 'charm', 'shellRise', 'parry', 'absorb', 'zazen', 'vitarka', 'sealWheel', 'earthTouch', 'lotusRise', 'lionRoar', 'reclineSlide', 'petalShower', 'birthLight', 'stepLotus', 'lotusBud', 'bell', 'daibutsu', 'kaigen', 'oracle', 'foresee', 'sunFlare', 'lyreAppear', 'twang', 'laurelArc', 'pythonStrike', 'dawn', 'swanWings', 'sunCall', 'laurelBind', 'laurelTight', 'sunChariot', 'trample', 'heliosCharge', 'skyArrow', 'charmKiss', 'ribbonLash', 'roseStorm', 'foamLeap', 'heartSeal', 'ravenStrike', 'odinAscend', 'odinLand', 'gungnirCharge', 'gungnirThrow', 'mistStrike', 'gateRise', 'gatePush', 'zeusStorm', 'zeusSpear', 'tidalWall', 'anubisSpirit', 'thorVortex', 'heavenBlade', 'lionSpirit', 'dashJump', 'thorStrike', 'storm', 'counter', 'thorLand', 'windWall', 'reflect', 'drain', 'shade', 'chains', 'soulDrain', 'tartarus', 'armor', 'grabBreak', 'hgrab', 'hslam', 'hthrow', 'rockLand', 'orochi', 'serpent', 'stormCharge', 'thorCharge', 'catch'];
+const WARM_KINDS = ['bloom', 'gateShut', 'gungnir', 'heartBurst', 'hellfire', 'judgment', 'lion', 'mjolnir', 'pralaya', 'storm', 'sunLance', 'thunder', 'tidal'];
+function warmFx() {
+  pinPrograms();
+  let todo = WARM_EVENTS.map((type) => ({ type })).concat(WARM_KINDS.map((kind) => ({ type: 'superImpact', kind })));
+  // every god takes a turn (its sword trails and ribbons are built with the match, so each is drawn at least once)
+  for (const k of MENU_KEYS) {
+    setupMatch({ mode: 'auto', keys: [k, k === 'zeus' ? 'poseidon' : 'zeus'], attract: true });
+    const failed = [];
+    for (const ev of todo) {
+      sim.events = [Object.assign({ side: 0, x: 0.4, y: 1.0, z: 0, i: 0, n: 3, tx: 1.6, ty: 1.0, from: 0, to: 1.6, dir: 1, power: 1, big: true, dmg: 40, lv: 'mid', life: 0.5, t: 0.5 }, ev)];
+      try { handleEvents(); } catch (err) { failed.push(ev); }
+    }
+    sim.events = [];
+    renderer.setRenderTarget(composer.renderTarget1);
+    // compile reaches what is still hidden (trails, ribbons, effects that fade in); the render adds the shadow passes
+    try { renderer.compile(scene, camera); renderer.render(scene, camera); } catch (e) { /* only the warm-up is lost */ }
+    renderer.setRenderTarget(null);
+    pinPrograms();   // before the effects are cleared away, so their shaders outlive them
+    timed.update(1e5); addP.update(10); normP.update(10); bolts.update(10);
+    todo = failed;
+  }
+  shake = 0; stage.flash = 0;
+  setupMatch(ATTRACT);
+}
 function setLoad(msg, k) {
   const l = $('loading'); l.classList.remove('pending');
   $('ldMsg').textContent = msg; $('ldPct').textContent = Math.round(k * 100) + '%'; $('ldFill').style.width = (k * 100).toFixed(1) + '%';
@@ -14103,6 +14159,7 @@ async function boot() {
   for (const k of MENU_KEYS) steps.push([`${CHARS[k].name}を召喚中…`, () => { warmObj(modelFor(0, k).root); warmObj(modelFor(1, k).root); }]);
   steps.push(['ステージを描画準備中…', () => { for (const id of STAGE_IDS) if (STAGES[id].group) warmObj(STAGES[id].group); }]);
   steps.push(['描画を最終準備中…', () => warmAll()]);
+  steps.push(['技の演出を準備中…', () => warmFx()]);
   for (let i = 0; i < steps.length; i++) {
     setLoad(steps[i][0], i / steps.length);
     await nextPaint();
@@ -14214,7 +14271,7 @@ function buildMoveList() {
   $('movesBody').innerHTML = html.join('');
 }
 
-window.__game = { get renderer() { return renderer; }, get sim() { return sim; }, get views() { return views; }, get sfx() { return sfx; }, get bgm() { return bgm; }, get speed() { return speed; }, set speed(v) { speed = v; } };
+window.__game = { get renderer() { return renderer; }, get scene() { return scene; }, setupMatch: (c) => setupMatch(c), get sim() { return sim; }, get views() { return views; }, get sfx() { return sfx; }, get bgm() { return bgm; }, get speed() { return speed; }, set speed(v) { speed = v; } };
 boot().catch((err) => showError(err));
 
 function showError(err) {
