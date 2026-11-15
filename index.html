@@ -6021,129 +6021,129 @@ function anubisBlade(P, wr, mt) {
 }
 
 // ============================================================
-//  ANUBIS  (jackal-headed judge of the dead: obsidian body, gold & lapis regalia, night cloak, twin soul blades)
+//  ANUBIS  (the jackal god as a young warden of the dead: a black-and-gold jackal mask worn over the brow, tall
+//           gilded ears, long blue hair and a gold-banded braid down the back, golden eyes and a sly smile; a gold
+//           usekh collar over a navy shoulder piece, a cut body, gold armbands and vambraces; a white shendyt with a
+//           gold braided apron; navy leggings; a long navy cape; twin soul blades)
 // ============================================================
+// the gold apron: a braided cord pattern down a gold panel ending in a point (alpha-cut)
+function apronTex() {
+  return canvasTex(128, 512, (g, w, h) => {
+    g.clearRect(0, 0, w, h);
+    const sh = h * 0.86;
+    g.beginPath(); g.moveTo(0, 0); g.lineTo(w, 0); g.lineTo(w, sh); g.lineTo(w / 2, h - 4); g.lineTo(0, sh); g.closePath();
+    const gr = g.createLinearGradient(0, 0, w, 0); gr.addColorStop(0, '#9a6c1c'); gr.addColorStop(0.5, '#f0cc70'); gr.addColorStop(1, '#9a6c1c'); g.fillStyle = gr; g.fill();
+    g.strokeStyle = '#6a4610'; g.lineWidth = 4; g.stroke();
+    g.strokeStyle = '#7a5214'; g.lineWidth = 5;
+    for (const ph of [0, Math.PI]) { g.beginPath(); for (let y = 30; y < sh; y += 4) g.lineTo(w / 2 + Math.sin(y * 0.06 + ph) * 18, y); g.stroke(); }
+    g.fillStyle = '#1d3f8a'; g.fillRect(8, 6, w - 16, 18);
+  });
+}
+// a braid of blue hair with gold bands (alpha-cut)
+function braidTex() {
+  return canvasTex(64, 512, (g, w, h) => {
+    g.clearRect(0, 0, w, h);
+    for (let y = 0; y < h - 30; y += 22) {
+      for (const s of [-1, 1]) { const gr = g.createLinearGradient(0, y, 0, y + 26); gr.addColorStop(0, '#2c4aa8'); gr.addColorStop(0.5, '#4a78e0'); gr.addColorStop(1, '#162a6a'); g.fillStyle = gr; g.beginPath(); g.ellipse(w / 2 + s * 9, y + 13, 16, 14, s * 0.6, 0, 7); g.fill(); }
+    }
+    for (const y of [60, 200, 340]) { g.fillStyle = '#e8c060'; g.fillRect(8, y, w - 16, 12); }
+    g.fillStyle = '#2c4aa8'; for (let x = 10; x < w - 10; x += 5) g.fillRect(x, h - 40, 3, 36);
+  });
+}
 function buildAnubis(T) {
   const M = makeSkeleton('anubis');
   const { j } = M;
   const P = new PartSet();
+  const DS = THREE.DoubleSide;
 
-  const skin = new THREE.MeshPhysicalMaterial({ color: 0x1c1724, roughness: 0.38, sheen: 0.7, sheenColor: new THREE.Color(0x6f7cff), sheenRoughness: 0.4, clearcoat: 0.45, clearcoatRoughness: 0.3 });
-  const fur = new THREE.MeshPhysicalMaterial({ color: 0x0f0d13, roughness: 0.62, sheen: 1, sheenColor: new THREE.Color(0x4f62d8), sheenRoughness: 0.45, clearcoat: 0.25, clearcoatRoughness: 0.4 });
+  const skin = new THREE.MeshPhysicalMaterial({ color: 0xe8b48c, roughness: 0.52, sheen: 0.5, sheenColor: new THREE.Color(0xffd0a8), sheenRoughness: 0.45, clearcoat: 0.08, clearcoatRoughness: 0.5 });
   const gold = new THREE.MeshStandardMaterial({ color: 0xf0c060, metalness: 1, roughness: 0.2, envMapIntensity: 1.4 });
   const goldDark = new THREE.MeshStandardMaterial({ color: 0xa8742a, metalness: 1, roughness: 0.32 });
   const lapis = new THREE.MeshPhysicalMaterial({ color: 0x1f46a8, roughness: 0.18, metalness: 0.1, clearcoat: 1, clearcoatRoughness: 0.1, envMapIntensity: 1.2 });
-  const nemes = new THREE.MeshStandardMaterial({ color: 0xffffff, map: nemesTex(), metalness: 0.55, roughness: 0.32, side: THREE.DoubleSide });
-  const collar = new THREE.MeshStandardMaterial({ color: 0xffffff, map: collarTex(), metalness: 0.5, roughness: 0.3, side: THREE.DoubleSide });
-  const kilt = new THREE.MeshStandardMaterial({ color: 0xffffff, map: kiltTex(), roughness: 0.75, side: THREE.DoubleSide });
+  const navy = new THREE.MeshStandardMaterial({ color: 0x1a2350, roughness: 0.55, side: DS });
+  const mask = new THREE.MeshPhysicalMaterial({ color: 0x141a36, roughness: 0.25, metalness: 0.3, clearcoat: 1, clearcoatRoughness: 0.15 });
+  const linen = new THREE.MeshStandardMaterial({ color: 0xffffff, map: linenTex(), roughness: 0.75 });
+  const linenIn = new THREE.MeshStandardMaterial({ color: 0xc8ccd6, roughness: 0.8, side: THREE.BackSide });
   const grip = new THREE.MeshStandardMaterial({ color: 0x241a2e, roughness: 0.6 });
   const blade = new THREE.MeshPhysicalMaterial({ color: 0x3a4660, metalness: 1, roughness: 0.14, clearcoat: 1, clearcoatRoughness: 0.05, envMapIntensity: 1.6 });
   const soul = new THREE.MeshStandardMaterial({ color: 0x0a1a20, emissive: new THREE.Color(0.45, 1.35, 1.8), emissiveIntensity: 0.8, roughness: 0.3 });
-  const eye = new THREE.MeshBasicMaterial({ color: new THREE.Color(3.4, 2.3, 0.45) });
-  const nose = new THREE.MeshPhysicalMaterial({ color: 0x050407, roughness: 0.15, clearcoat: 1 });
+  const hair = new THREE.MeshPhysicalMaterial({ color: 0x22347e, roughness: 0.42, sheen: 1, sheenColor: new THREE.Color(0x6a9aff), sheenRoughness: 0.35 });
+  const eye = new THREE.MeshBasicMaterial({ color: new THREE.Color(1.0, 0.78, 0.22) });
 
-  // ---- hips: pleated shendyt, jeweled belt, banded front apron ----
-  P.add(j.hips, lathe([[0, -0.15], [0.14, -0.14], [0.2, -0.07], [0.21, 0.02], [0.2, 0.13], [0, 0.15]]), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.66]);
-  P.add(j.hips, lathe([[0.205, 0.04], [0.225, -0.1], [0.26, -0.26], [0.29, -0.4]], 48), kilt, [0, 0, 0.0], [0, 0, 0], [1, 1, 0.78]);
-  P.add(j.hips, lathe([[0.2, -0.0], [0.215, 0.02], [0.215, 0.09], [0.2, 0.11]], 48), gold, [0, 0, 0], [0, 0, 0], [1, 1, 0.7]);
-  for (let i = 0; i < 14; i++) {
-    const a = (i / 14) * Math.PI * 2;
-    P.add(j.hips, new THREE.BoxGeometry(0.036, 0.05, 0.012), i % 2 ? lapis : goldDark, [Math.sin(a) * 0.218, 0.055, Math.cos(a) * 0.153], [0, a, 0]);
+  // ---- hips: navy leggings' seat, the belt in blue and gold ----
+  P.add(j.hips, lathe([[0, -0.15], [0.14, -0.14], [0.2, -0.07], [0.21, 0.02], [0.2, 0.13], [0, 0.15]]), navy, [0, 0, 0], [0, 0, 0], [1, 1, 0.68]);
+  P.add(j.hips, lathe([[0.206, 0.0], [0.218, 0.02], [0.218, 0.07], [0.206, 0.085]], 48), lapis, [0, 0, 0], [0, 0, 0], [1, 1, 0.72]);
+  for (const y of [0.004, 0.082]) P.add(j.hips, new THREE.TorusGeometry(0.217, 0.005, 6, 48), gold, [0, y, 0], [Math.PI / 2, 0, 0], [1, 0.72, 1]);
+  P.add(j.hips, plate([[0, 0.05], [0.03, 0.0], [0, -0.03], [-0.03, 0.0]], 0.01, 0.003), gold, [0, 0.06, 0.16]);
+  P.ell(j.hips, lapis, [0, 0.06, 0.168], [0.012, 0.016, 0.006]);
+  // ---- torso: cut abs and chest, the navy shoulder piece, the gold usekh collar ----
+  const abProf = [[0, -0.06], [0.205, -0.05], [0.2, 0.05], [0.212, 0.16], [0.228, 0.26], [0.236, 0.31], [0, 0.32]];
+  P.add(j.spine, sculptLathe(abProf, MUSCLE.abs(1.1, [0.035, 0.11, 0.185], 0.032).concat([-1, 1].map((sd) => ({ a: sd * 1.0, y: 0.1, sa: 0.32, sy: 0.12, h: 0.02 })))), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.68]);
+  const chProf = [[0, -0.07], [0.235, -0.06], [0.27, 0.04], [0.3, 0.15], [0.296, 0.23], [0.255, 0.3], [0.14, 0.33], [0, 0.34]];
+  P.add(j.chest, sculptLathe(chProf, MUSCLE.chest(1.25)), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.64]);
+  {
+    const sp = maskedLathe(chProf.map(([r, y], i) => [i === 0 || i === chProf.length - 1 ? 0 : r + 0.014, y]), MUSCLE.chest(1.0), 0.66, (x, y, z) => Math.min(y - 0.17 + Math.max(0, -z) * 0.4, z > 0.02 ? Math.abs(x) - 0.13 - (0.3 - y) * 0.4 : 1));
+    P.add(j.chest, sp, navy);
+    const ring = []; for (let i = 0; i <= 40; i++) { const a = (i / 40) * Math.PI * 2; ring.push(new V3(Math.sin(a) * 0.2, 0.355, Math.cos(a) * 0.15 - 0.01)); }
+    for (let k = 0; k < 4; k++) P.add(j.chest, lathe([[0.1 + k * 0.03, 0.34 - k * 0.02], [0.13 + k * 0.03, 0.33 - k * 0.022]], 48), k === 3 ? lapis : gold, [0, 0, 0.005], [0, 0, 0], [1.05, 1, 0.82]);
+    for (let k = 0; k < 4; k++) P.add(j.chest, new THREE.TorusGeometry(0.12 + k * 0.03, 0.004, 5, 48), goldDark, [0, 0.338 - k * 0.021, 0.005], [Math.PI / 2, 0, 0], [1.05, 0.82, 1]);
   }
-  P.add(j.hips, new THREE.BoxGeometry(0.13, 0.36, 0.008).translate(0, -0.18, 0), nemes, [0, 0.0, 0.2], [-0.12, 0, 0]);
-  for (const s of [-1, 1]) P.add(j.hips, new THREE.BoxGeometry(0.008, 0.36, 0.012).translate(0, -0.18, 0), gold, [s * 0.068, 0.0, 0.2], [-0.12, 0, 0]);
-  P.add(j.hips, new THREE.BoxGeometry(0.14, 0.02, 0.014), gold, [0, -0.355, 0.245], [-0.12, 0, 0]);
-  P.ell(j.hips, soul, [0, 0.055, 0.162], [0.026, 0.026, 0.01]);
-  P.add(j.hips, new THREE.TorusGeometry(0.034, 0.007, 6, 24), gold, [0, 0.055, 0.162]);
-
-  // ---- abdomen + lean, defined chest ----
-  P.add(j.spine, sculptLathe([[0, -0.06], [0.19, -0.05], [0.2, 0.06], [0.2, 0.18], [0.19, 0.27], [0, 0.29]], MUSCLE.abs(0.8, [0.02, 0.095, 0.17], 0.018)), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.62]);
-  P.add(j.chest, sculptLathe([[0, -0.07], [0.2, -0.06], [0.235, 0.05], [0.26, 0.15], [0.245, 0.23], [0.19, 0.27], [0, 0.28]], MUSCLE.chest(0.7)), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.64]);
-  // usekh broad collar
-  P.add(j.chest, lathe([[0.13, 0.3], [0.19, 0.27], [0.25, 0.21], [0.29, 0.13], [0.3, 0.1]], 56), collar, [0, 0, 0], [0, 0, 0], [1, 1, 0.72]);
-  P.add(j.chest, new THREE.TorusGeometry(0.3, 0.008, 6, 56), gold, [0, 0.1, 0], [Math.PI / 2, 0, 0], [1, 0.72, 1]);
-  P.add(j.chest, new THREE.TorusGeometry(0.13, 0.01, 6, 40), gold, [0, 0.3, 0], [Math.PI / 2, 0, 0], [1, 0.72, 1]);
-  // winged scarab pectoral holding the soul gem
-  P.ell(j.chest, gold, [0, 0.045, 0.172], [0.034, 0.045, 0.018]);
-  P.ell(j.chest, soul, [0, 0.055, 0.186], [0.018, 0.022, 0.008]);
-  for (const s of [-1, 1]) {
-    for (let k = 0; k < 3; k++) P.ell(j.chest, k % 2 ? gold : lapis, [s * (0.06 + k * 0.026), 0.06 - k * 0.006, 0.166 - k * 0.012], [0.04 - k * 0.005, 0.012, 0.008], [0, s * 0.25, s * (0.2 + k * 0.12)]);
-  }
-
-  // ---- neck + jackal head ----
-  P.add(j.neck, lathe([[0, -0.04], [0.07, -0.03], [0.064, 0.06], [0.058, 0.13], [0, 0.14]]), fur);
+  // ---- head: the human face beneath the jackal mask ----
+  P.add(j.neck, lathe([[0, -0.04], [0.074, -0.03], [0.069, 0.06], [0.066, 0.15], [0, 0.17]]), skin);
   const H = j.head;
-  P.ell(H, fur, [0, 0.095, -0.01], [0.094, 0.1, 0.11]);                               // cranium
-  P.ell(H, fur, [0, 0.125, 0.068], [0.07, 0.024, 0.05]);                               // brow ridge
-  for (const s of [-1, 1]) P.ell(H, fur, [s * 0.052, 0.058, 0.058], [0.048, 0.05, 0.062]);   // cheeks
-  P.add(H, lathe([[0, 0], [0.054, 0.01], [0.056, 0.06], [0.044, 0.14], [0.026, 0.2], [0.012, 0.235], [0, 0.24]], 28), fur, [0, 0.07, 0.05], [Math.PI / 2, 0, 0], [0.82, 1, 0.68]);   // muzzle
-  P.ell(H, fur, [0, 0.098, 0.15], [0.026, 0.018, 0.1], [-0.12, 0, 0]);                 // nasal bridge
-  P.ell(H, fur, [0, 0.025, 0.14], [0.032, 0.016, 0.1], [0.08, 0, 0]);                  // lower jaw
-  P.ell(H, nose, [0, 0.07, 0.288], [0.02, 0.015, 0.018]);
-  P.add(H, new THREE.TorusGeometry(0.035, 0.0035, 5, 18, Math.PI), gold, [0, 0.045, 0.21], [Math.PI / 2, 0, Math.PI], [1, 2.4, 1]);   // gold mouth line
-  for (const s of [-1, 1]) {
-    // tall, sharp ears with lapis inner and gold rims / rings
-    P.add(H, new THREE.ConeGeometry(0.046, 0.3, 4).translate(0, 0.15, 0), fur, [s * 0.058, 0.14, -0.04], [-0.16, s * 0.785, s * 0.15], [1, 1, 0.55]);
-    P.add(H, new THREE.ConeGeometry(0.03, 0.22, 4).translate(0, 0.12, 0), lapis, [s * 0.058, 0.15, -0.026], [-0.16, s * 0.785, s * 0.15], [1, 1, 0.3]);
-    for (const k of [0, 1]) P.add(H, new THREE.TorusGeometry(0.036 - k * 0.006, 0.004, 6, 18), gold, [s * (0.064 + k * 0.006), 0.175 + k * 0.04, -0.045], [Math.PI / 2 - 0.16, 0, s * 0.15], [1, 0.55, 1]);
-    // glowing almond eyes with Horus-style kohl wing
-    P.ell(H, eye, [s * 0.048, 0.105, 0.105], [0.021, 0.0095, 0.012], [0, s * 0.35, s * -0.18]);
-    P.add(H, new THREE.CapsuleGeometry(0.0038, 0.07, 3, 6), gold, [s * 0.078, 0.1, 0.075], [Math.PI / 2, s * 0.62, 0]);
-    P.add(H, new THREE.CapsuleGeometry(0.0034, 0.04, 3, 6), gold, [s * 0.05, 0.08, 0.1], [0.4, 0, s * 0.2]);
-    // nemes headcloth lappets falling over the collar
-    P.add(H, new THREE.BoxGeometry(0.06, 0.34, 0.11).translate(0, -0.15, 0), nemes, [s * 0.098, 0.1, -0.035], [0.05, 0, s * 0.16]);
-    P.add(H, new THREE.BoxGeometry(0.064, 0.016, 0.114), gold, [s * 0.15, -0.235, -0.02], [0.05, 0, s * 0.16]);
+  const brow = new THREE.MeshStandardMaterial({ color: 0x1a2660, roughness: 0.8 });
+  animeHead(P, H, { lashes: 2, lowerLash: 1, lipFull: 0.4, contour: 0.14, blush: 0.06, mole: [0.12, -0.72],
+    skin, hair, iris: eye, browMat: brow, lip: 0xa86458, lash: 0x10142a, browW: 0.0034, browTilt: -0.04, lashW: 1.3,
+    face: { jaw: 0.92, chin: 0.96, len: 1.02, hollow: 0.01, nose: 0.98, noseLen: 1.02, eyeW: 1.06, eyeH: 0.78, eyeTilt: 0.1, lid: 0.3, browY: -0.02, mouthW: 0.9, smile: 0.42, ear: 0 },
+    style: { bangs: 0, side: 0.22, back: 13, backLen: 0.4, backLift: 0.06 } });
+  {
+    const lockMat = hair.clone(); lockMat.map = hairTex();
+    const lk = (pts, r, r1 = 0.14, sq = null) => P.add(H, taperTube(pts, r, r * r1, 18, 7, sq), lockMat);
+    for (const s of [-1, 1]) for (let k = 0; k < 4; k++) lk([[s * (0.08 + k * 0.01), 0.2, 0.07 - k * 0.04], [s * (0.115 + k * 0.008), 0.1, 0.075 - k * 0.04], [s * (0.13 + k * 0.01), -0.05, 0.07 - k * 0.035], [s * (0.14 + k * 0.012), -0.22, 0.08 - k * 0.03], [s * (0.15 + k * 0.012), -0.36, 0.1 - k * 0.03]], 0.026, 0.3, [0.7, 1, 1.3]);
+    for (const x of [-0.07, -0.035, 0.01, 0.05]) lk([[x * 0.6, 0.21, 0.09], [x, 0.18, 0.125], [x * 1.25, 0.13, 0.128], [x * 1.4, 0.09, 0.122]], 0.016, 0.12, [1.3, 1, 0.6]);
   }
-  P.ell(H, nemes, [0, 0.11, -0.055], [0.108, 0.11, 0.1]);                              // nemes over the crown
-  P.add(H, new THREE.CylinderGeometry(0.05, 0.03, 0.18, 12).translate(0, -0.09, 0), nemes, [0, 0.03, -0.12], [-0.3, 0, 0]);   // queue
-  P.add(H, new THREE.TorusGeometry(0.105, 0.011, 8, 40), gold, [0, 0.14, -0.01], [Math.PI / 2 + 0.15, 0, 0], [1, 1.05, 1]);   // diadem
-  // uraeus cobra rising from the brow
-  P.add(H, new THREE.CapsuleGeometry(0.011, 0.04, 4, 8), gold, [0, 0.168, 0.095], [-0.3, 0, 0]);
-  P.ell(H, gold, [0, 0.2, 0.098], [0.022, 0.026, 0.008]);
-  P.ell(H, soul, [0, 0.2, 0.104], [0.008, 0.01, 0.004]);
-  // halo disk of judgement behind the head
-  P.add(H, new THREE.TorusGeometry(0.2, 0.009, 8, 64), gold, [0, 0.16, -0.2], [0, 0, 0]);
-  P.add(H, new THREE.TorusGeometry(0.175, 0.004, 6, 64), soul, [0, 0.16, -0.2], [0, 0, 0]);
-  for (let i = 0; i < 12; i++) {
-    const a = (i / 12) * Math.PI * 2;
-    P.add(H, new THREE.ConeGeometry(0.012, 0.05, 4), i % 3 ? goldDark : gold, [Math.sin(a) * 0.228, 0.16 + Math.cos(a) * 0.228, -0.2], [0, 0, -a]);
+  // the jackal mask: a dome over the crown, a long muzzle over the brow, tall ears gilded inside, gold eye-lines
+  {
+    const jm = new THREE.Group(); jm.position.set(0, 0.2, 0.0); jm.rotation.set(0.1, 0, 0); H.add(jm);
+    P.ell(jm, mask, [0, 0.02, -0.01], [0.122, 0.085, 0.13]);
+    P.ell(jm, mask, [0, 0.0, 0.11], [0.06, 0.05, 0.08], [0.25, 0, 0]);
+    P.add(jm, new THREE.ConeGeometry(0.048, 0.2, 16), mask, [0, -0.025, 0.24], [Math.PI / 2 + 0.25, 0, 0], [1, 1, 0.8]);
+    P.ell(jm, mask, [0, -0.052, 0.335], [0.016, 0.012, 0.014]);   // the nose
+    for (const s of [-1, 1]) {
+      P.add(jm, new THREE.ConeGeometry(0.05, 0.26, 4), mask, [s * 0.065, 0.15, -0.04], [-0.15, 0, -s * 0.18], [1, 1, 0.45]);
+      P.add(jm, new THREE.ConeGeometry(0.036, 0.2, 4), gold, [s * 0.065, 0.14, -0.022], [-0.15, 0, -s * 0.18], [1, 1, 0.25]);
+      P.ell(jm, gold, [s * 0.042, 0.018, 0.13], [0.024, 0.008, 0.012], [0, s * 0.5, s * 0.25]);   // eye-lines
+      P.ell(jm, mask, [s * 0.1, -0.05, 0.04], [0.03, 0.07, 0.06]);                                   // cheek guards
+    }
+    P.add(jm, new THREE.TorusGeometry(0.03, 0.006, 6, 20), gold, [-0.12, -0.04, -0.04], [0, Math.PI / 2, 0]);
+    // the ankh hanging at the left side
+    P.add(jm, new THREE.TorusGeometry(0.011, 0.0035, 5, 12), gold, [0.13, -0.09, -0.02], [0, Math.PI / 2, 0], [1, 1.3, 1]);
+    P.add(jm, new THREE.BoxGeometry(0.006, 0.035, 0.006), gold, [0.13, -0.122, -0.02]);
+    P.add(jm, new THREE.BoxGeometry(0.006, 0.006, 0.028), gold, [0.13, -0.11, -0.02]);
   }
-
-  // ---- arms: gold pauldrons, lapis-banded bracers with soul runes, hands gripping the twin blades ----
+  // ---- arms: gold armbands and vambraces trimmed in lapis, hands on the blades ----
   for (const [s, sg] of [['l', 1], ['r', -1]]) {
     const sh = j[s + 'Sh'], el = j[s + 'El'], wr = j[s + 'Wr'];
-    P.add(sh, muscleLimb(0.28, 0.068, 0.05, 0.012, 0.6), skin);
-    P.ell(sh, skin, [sg * 0.01, -0.02, 0], [0.08, 0.088, 0.08]);
-    // layered pauldron
-    for (let k = 0; k < 3; k++) {
-      P.add(sh, new THREE.SphereGeometry(0.11 - k * 0.012, 28, 10, 0, Math.PI * 2, 0, Math.PI * 0.42), k === 1 ? lapis : gold, [sg * (0.015 + k * 0.012), 0.02 - k * 0.045, 0], [0, 0, sg * -(0.35 + k * 0.12)], [1, 0.7, 0.95]);
-    }
-    P.ell(sh, soul, [sg * 0.075, 0.035, 0], [0.012, 0.016, 0.016]);
-    P.add(sh, new THREE.TorusGeometry(0.072, 0.009, 6, 26), gold, [0, -0.2, 0], [Math.PI / 2, 0, 0]);
-    P.add(el, muscleLimb(0.27, 0.058, 0.042, 0.012, 0.72), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.9]);
-    P.add(el, lathe([[0.05, -0.27], [0.056, -0.24], [0.064, -0.14], [0.066, -0.07], [0.062, -0.05]], 28), gold, [0, 0, 0], [0, 0, 0], [1, 1, 0.9]);
-    for (const y of [-0.1, -0.2]) P.add(el, new THREE.TorusGeometry(0.066 - (y + 0.1) * 0.05, 0.007, 6, 26), lapis, [0, y, 0], [Math.PI / 2, 0, 0], [1, 0.9, 1]);
-    P.add(el, new THREE.TorusGeometry(0.061, 0.003, 4, 26), soul, [0, -0.15, 0], [Math.PI / 2, 0, 0], [1, 0.9, 1]);
-    P.ell(el, soul, [0, -0.15, 0.058], [0.012, 0.018, 0.006]);
-    // hand gripping the blade
+    const ua = sculpt(muscleLimb(0.3, 0.086, 0.064, 0.018, 0.6), MUSCLE.upperArm(1.25));
+    P.add(sh, ua, skin);
+    P.ell(sh, navy, [sg * 0.015, -0.02, 0], [0.1, 0.1, 0.096]);
+    P.add(sh, bandOn(ua, -0.14, -0.08, 1, 0.006), gold);
+    const fa = sculpt(muscleLimb(0.27, 0.072, 0.05, 0.016, 0.72), MUSCLE.forearm(1.2));
+    P.add(el, fa, skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.9]);
+    P.add(el, bandOn(fa, -0.26, -0.08, 0.9, 0.007), gold);
+    for (const y of [-0.085, -0.255]) P.add(el, bandOn(fa, y - 0.006, y + 0.006, 0.9, 0.011, 32), lapis);
     P.ell(wr, skin, [0, -0.05, 0.008], [0.042, 0.054, 0.048]);
     P.ell(wr, skin, [0, -0.097, 0.022], [0.04, 0.026, 0.036]);
     P.ell(wr, skin, [sg * -0.03, -0.055, 0.037], [0.016, 0.028, 0.016], [0.4, 0, 0]);
     anubisBlade(P, wr, { blade, soul, gold, lapis, grip });
-
-    // legs: lean, gold greaves and knee guards, jeweled sandals
+    // legs in navy leggings, dark shoes
     const hp = j[s + 'Hip'], kn = j[s + 'Kn'], an = j[s + 'An'];
-    P.add(hp, sculpt(muscleLimb(0.46, 0.1, 0.062, 0.016, 0.6), MUSCLE.thigh(0.75, sg)), skin);
-    P.add(kn, sculpt(muscleLimb(0.45, 0.062, 0.042, 0.0, 0.7), MUSCLE.calf(0.75)), skin);
-    P.add(kn, lathe([[0.048, -0.41], [0.056, -0.33], [0.064, -0.16], [0.07, -0.06], [0.074, -0.02]], 26), gold, [0, 0, 0.006], [0, 0, 0], [1, 1, 0.9]);
-    for (const y of [-0.12, -0.26]) P.add(kn, new THREE.TorusGeometry(0.066 - (y + 0.12) * 0.06, 0.006, 6, 24), lapis, [0, y, 0.006], [Math.PI / 2, 0, 0], [1, 0.9, 1]);
-    P.add(kn, new THREE.SphereGeometry(0.068, 20, 10, 0, Math.PI * 2, 0, Math.PI * 0.5), gold, [0, 0.0, 0.02], [Math.PI / 2 - 0.3, 0, 0], [1, 1, 0.75]);
-    P.ell(kn, soul, [0, -0.005, 0.07], [0.014, 0.018, 0.008]);
-    P.ell(an, skin, [0, -0.03, 0.045], [0.042, 0.032, 0.1]);
-    P.ell(an, goldDark, [0, -0.07, 0.05], [0.05, 0.01, 0.12]);
-    P.add(an, new THREE.TorusGeometry(0.05, 0.007, 6, 20), gold, [0, -0.015, 0.0], [Math.PI / 2, 0, 0]);
-    P.add(an, new THREE.TorusGeometry(0.04, 0.006, 6, 20, Math.PI), gold, [0, -0.05, 0.08], [0, 0, 0]);
+    P.add(hp, sculpt(muscleLimb(0.47, 0.106, 0.064, 0.016, 0.6), MUSCLE.thigh(0.9, sg)), navy);
+    P.add(kn, sculpt(muscleLimb(0.47, 0.066, 0.044, 0.004, 0.7), MUSCLE.calf(0.9)), navy);
+    P.ell(an, navy, [0, -0.032, 0.045], [0.048, 0.04, 0.11]);
+    P.ell(an, mask, [0, -0.066, 0.05], [0.052, 0.01, 0.12]);
   }
+  addDetail(P, j, { skin, hair, sole: mask, strap: mask, metal: gold }, { anime: true, k: 0.86, eye: [0.04, 0.108, 0.106], lip: 0xa86458, curls: false, armored: true, boots: true });
   P.build();
 
   // ---- soul glow on both blades (shared material so both follow the right blade's intensity) ----
@@ -6157,39 +6157,35 @@ function buildAnubis(T) {
   lGlow.scale.copy(bladeGlow.scale); lGlow.position.copy(bladeGlow.position);
   j.lWr.add(lGlow);
 
-  // ---- night cloak: deep lapis to black, gold-bordered hem ----
-  const capeGeo = new THREE.PlaneGeometry(0.62, 1.22, 10, 18);
-  capeGeo.translate(0, -0.61, 0);
-  {
-    const cols = [];
-    const pos = capeGeo.attributes.position;
-    for (let i = 0; i < pos.count; i++) if (pos.getY(i) > 0) pos.setY(i, 0);   // float error would make updateCape's pow() NaN
-    const cTop = new THREE.Color(0x0c1230), cBot = new THREE.Color(0x05060c), cGold = new THREE.Color(0xd9a440), cLap = new THREE.Color(0x1d3f8a);
-    for (let i = 0; i < pos.count; i++) {
-      const v = -pos.getY(i) / 1.22, u = Math.abs(pos.getX(i)) / 0.31;
-      const c = cTop.clone().lerp(cBot, Math.pow(v, 0.9));
-      if (v > 0.86) c.copy(v > 0.93 ? cGold : cLap);
-      else if (u > 0.9) c.lerp(cGold, 0.8);
-      cols.push(c.r, c.g, c.b);
-    }
-    capeGeo.setAttribute('color', new THREE.Float32BufferAttribute(cols, 3));
-  }
-  const capeBase = capeGeo.attributes.position.array.slice();
-  const capeMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.55, metalness: 0.35, side: THREE.DoubleSide });
-  const cape = new THREE.Mesh(capeGeo, capeMat);
-  cape.castShadow = true;
-  cape.position.set(0, 0.27, -0.17);
-  j.chest.add(cape);
+  // ---- cloth: the white shendyt, its gold apron, the long navy cape, the braid ----
+  makeCloth(M, { joint: j.hips, rows: 7, cols: 25, pin: 2, loop: true, mats: [linen, linenIn],
+    rest: (v, u) => { const a = Math.PI + u * Math.PI * 2, k = 1 + 0.05 * Math.sin(a * 8) * v; return [Math.sin(a) * (0.222 + 0.1 * v) * k, 0.03 - (0.4 - 0.08 * Math.max(0, Math.cos(a))) * v, Math.cos(a) * (0.165 + 0.09 * v) * k]; },
+    hold: (v) => 0.16 * (1 - v) * (1 - v) + 0.03 });
+  const apron = new THREE.MeshStandardMaterial({ color: 0xffffff, map: apronTex(), metalness: 0.7, roughness: 0.3, alphaTest: 0.5, side: DS });
+  makeCloth(M, { joint: j.hips, rows: 9, cols: 3, pin: 1, mats: [apron],
+    rest: (v, u) => [(u - 0.5) * (0.1 + 0.03 * v), 0.04 - 0.58 * v, 0.19 + 0.04 * v],
+    hold: (v) => 0.12 * (1 - v) + 0.03 });
+  const capeOut = new THREE.MeshStandardMaterial({ color: 0x1a2458, roughness: 0.45, metalness: 0.2 });
+  const capeIn = new THREE.MeshStandardMaterial({ color: 0x0e1430, roughness: 0.6, side: THREE.BackSide });
+  makeCloth(M, { joint: j.chest, rows: 13, cols: 11, pin: 1, mats: [capeOut, capeIn],
+    rest: (v, u) => { const a = Math.PI + (u - 0.5) * (2.4 + 0.6 * v); return [Math.sin(a) * (0.29 + 0.25 * v), 0.3 - 1.55 * v, -0.04 + Math.cos(a) * (0.17 + 0.16 * v)]; },
+    hold: (v) => 0.1 * (1 - v) * (1 - v) + 0.012 });
+  const braid = new THREE.MeshStandardMaterial({ color: 0xffffff, map: braidTex(), roughness: 0.45, alphaTest: 0.5, side: DS });
+  makeCloth(M, { joint: j.head, rows: 10, cols: 2, pin: 2, mats: [braid],
+    rest: (v, u) => [(u - 0.5) * 0.06, 0.1 - 0.8 * v, -0.13 - 0.12 * Math.min(1, v * 2)],
+    hold: (v) => 0.06 * (1 - v) + 0.01 });
+  M.clothR = { pelvis: 0.16, pelvisX: 0.09, torso: 0.2, thigh: 0.115, shin: 0.08, foot: 0.06 };
+  M.clothExtra = [[j.chest, [-0.13, 0.22, -0.03], j.chest, [0.13, 0.22, -0.03], 0.2], [j.neck, [0, 0.0, 0], j.neck, [0, 0.12, 0], 0.085]];
 
   M.trident = bladeAnchor; M.triGlow = bladeGlow;
   M.trails = [
     { obj: j.rWr, a: new V3(0.0, -0.23, 0.02), b: new V3(0.02, -0.73, 0.02), color: [0.35, 1.3, 1.9], core: [1.4, 2.4, 2.8], spark: 'soul' },
     { obj: j.lWr, a: new V3(0.0, -0.23, 0.02), b: new V3(0.02, -0.73, 0.02), color: [1.7, 1.1, 0.35], core: [2.6, 2.0, 1.0], spark: 'gold' },
   ];
-  M.cape = { mesh: cape, geo: capeGeo, base: capeBase, sway: 0 };
   M.mats = { skin, gold, gem: soul, eye };
   M.color = new THREE.Color(0.6, 1.2, 1.5);
-  enhanceModel(M.root, 0x8fdcff, 0.55);
+  enhanceModel(M.root, 0x8fdcff, 0.5);
+  settleCloth(M, 30);
   return M;
 }
 
@@ -6678,187 +6674,213 @@ function buildSusanoo(T) {
 
 
 // ============================================================
-//  HERACLES  (demigod hero: Nemean lion pelt hood and cloak, leather war-kilt, bronze bracers, knotted oak club)
+//  HERACLES  (the hero: a wild crest of red-orange hair with a long tail behind, an easy smile, blue eyes; red tribal
+//             swirls inked over the right arm and side of the chest; a leather pauldron on the right shoulder and a
+//             strap across the chest; a gold armlet on the left arm; a broad belt with a round gold lion medallion;
+//             a ragged skirt of brown fur; leather straps crossed round the right leg; gladiator sandals; and the
+//             club - a white marble column, its capital at the grip and a lion's head carved at its swollen end)
 // ============================================================
-function barkTex() {
-  return canvasTex(256, 512, (g, w, h) => {
-    g.fillStyle = '#4a3220'; g.fillRect(0, 0, w, h);
-    for (let i = 0; i < 70; i++) {
-      const x = Math.random() * w;
-      g.strokeStyle = `rgba(${20 + Math.random() * 30 | 0},${12 + Math.random() * 20 | 0},6,${0.4 + Math.random() * 0.4})`;
-      g.lineWidth = 1 + Math.random() * 3;
-      g.beginPath(); g.moveTo(x, 0);
-      for (let y = 0; y < h; y += 16) g.lineTo(x + Math.sin(y * 0.05 + i) * 6, y);
-      g.stroke();
+// red tribal swirls on a white ground (multiplied over the skin colour)
+// u0..u1 limits the ink to a band of the lathe (u runs from the back, round the right side, to the front at 0.5)
+function tattooTex(dense, u0 = 0, u1 = 1) {
+  return canvasTex(512, 512, (g, w, h) => {
+    g.fillStyle = '#ffffff'; g.fillRect(0, 0, w, h);
+    g.save(); g.beginPath(); g.rect(u0 * w, 0, (u1 - u0) * w, h); g.clip();
+    g.strokeStyle = '#b8301c'; g.lineCap = 'round'; g.lineJoin = 'round';
+    const swirl = (x, y, r, a0, turns, lw) => { g.lineWidth = lw; g.beginPath(); for (let i = 0; i <= 40; i++) { const t = i / 40, a = a0 + t * turns * Math.PI * 2, rr = r * (1 - t * 0.8); g.lineTo(x + Math.cos(a) * rr, y + Math.sin(a) * rr); } g.stroke(); };
+    const flame = (x, y, L, dir, lw) => { g.lineWidth = lw; g.beginPath(); g.moveTo(x, y); g.quadraticCurveTo(x + dir * L * 0.6, y - L * 0.3, x + dir * L * 0.2, y - L); g.stroke(); };
+    const n = dense ? 9 : 5;
+    for (let k = 0; k < n; k++) {
+      const x = ((k * 173) % w), y = ((k * 97 + 60) % h);
+      swirl(x, y, 34 + (k % 3) * 10, k, 1.3, 12); swirl(x + w, y, 34, k, 1.3, 12); swirl(x - w, y, 34, k, 1.3, 12);
+      flame(x + 30, y + 40, 70, k % 2 ? 1 : -1, 9); flame(x - 20, y - 30, 50, k % 2 ? -1 : 1, 7);
     }
-    for (let i = 0; i < 26; i++) { g.fillStyle = 'rgba(30,18,8,0.7)'; g.beginPath(); g.ellipse(Math.random() * w, Math.random() * h, 6 + Math.random() * 8, 10 + Math.random() * 14, 0, 0, 7); g.fill(); }
-  }, { repeat: [2, 1] });
+    g.lineWidth = 6; for (let k = 0; k < 8; k++) { const y = 30 + k * 60; g.beginPath(); g.moveTo(0, y); g.quadraticCurveTo(w * 0.5, y + 30 * Math.sin(k), w, y); g.stroke(); }
+    g.restore();
+  });
 }
-function peltTex() {
+// a band of gold engraved with diamonds
+function armletTex() {
+  return canvasTex(256, 64, (g, w, h) => {
+    const gr = g.createLinearGradient(0, 0, 0, h); gr.addColorStop(0, '#8a6418'); gr.addColorStop(0.2, '#f2d27a'); gr.addColorStop(0.5, '#c89a3a'); gr.addColorStop(0.8, '#f2d27a'); gr.addColorStop(1, '#8a6418');
+    g.fillStyle = gr; g.fillRect(0, 0, w, h);
+    g.strokeStyle = '#5a3c08'; g.lineWidth = 2.5;
+    for (let x = 0; x < w; x += 32) { g.beginPath(); g.moveTo(x + 16, 12); g.lineTo(x + 28, h / 2); g.lineTo(x + 16, h - 12); g.lineTo(x + 4, h / 2); g.closePath(); g.stroke(); g.fillStyle = '#7a5410'; g.beginPath(); g.arc(x + 16, h / 2, 3, 0, 7); g.fill(); }
+    g.fillStyle = '#5a3c08'; g.fillRect(0, 4, w, 2); g.fillRect(0, h - 6, w, 2);
+  }, { repeat: [3, 1] });
+}
+// a ragged skirt of brown fur: long hair strands and a torn, pointed hem (alpha-cut)
+function furSkirtTex() {
+  return canvasTex(512, 256, (g, w, h) => {
+    g.clearRect(0, 0, w, h);
+    for (let x = 0; x < w; x += 2) {
+      const L = h * (0.68 + 0.3 * Math.abs(Math.sin(x * 0.07) * Math.sin(x * 0.023 + 1))), c = 100 + ((x * 37) % 40);
+      const gr = g.createLinearGradient(0, 0, 0, L); gr.addColorStop(0, `rgb(${c + 20},${c - 22},${c - 70})`); gr.addColorStop(0.7, `rgb(${c + 46},${c + 4},${c - 50})`); gr.addColorStop(1, `rgb(${c - 10},${c - 40},${c - 80})`);
+      g.fillStyle = gr; g.beginPath(); g.moveTo(x, 0); g.lineTo(x + 4, 0); g.lineTo(x + 2 + Math.sin(x) * 3, L); g.closePath(); g.fill();
+    }
+  });
+}
+// white marble with faint grey veins
+function marbleTex() {
   return canvasTex(256, 256, (g, w, h) => {
-    g.fillStyle = '#a8742e'; g.fillRect(0, 0, w, h);
-    for (let i = 0; i < 4000; i++) {
-      const x = Math.random() * w, y = Math.random() * h, l = 4 + Math.random() * 10;
-      g.strokeStyle = Math.random() < 0.5 ? 'rgba(70,40,12,0.35)' : 'rgba(240,200,120,0.3)';
-      g.lineWidth = 1; g.beginPath(); g.moveTo(x, y); g.lineTo(x + (Math.random() - 0.5) * 3, y + l); g.stroke();
-    }
-  }, { repeat: [3, 3] });
+    g.fillStyle = '#f2f2f4'; g.fillRect(0, 0, w, h);
+    g.strokeStyle = 'rgba(120,125,140,0.25)'; g.lineWidth = 1.5;
+    for (let k = 0; k < 9; k++) { g.beginPath(); let x = Math.random() * w, y = 0; g.moveTo(x, y); for (let i = 0; i < 12; i++) { x += (Math.random() - 0.5) * 40; y += h / 12; g.lineTo(x, y); } g.stroke(); }
+  }, { repeat: [2, 2] });
 }
-
 function buildHeracles(T) {
   const M = makeSkeleton('heracles');
   const { j } = M;
   const P = new PartSet();
+  const DS = THREE.DoubleSide;
 
-  const skin = new THREE.MeshPhysicalMaterial({ color: 0xa8683e, roughness: 0.58, sheen: 0.4, sheenColor: new THREE.Color(0xffc8a0), sheenRoughness: 0.5, clearcoat: 0.04, clearcoatRoughness: 0.6 });
-  const hair = new THREE.MeshPhysicalMaterial({ color: 0x3a2414, roughness: 0.55, sheen: 0.8, sheenColor: new THREE.Color(0x9a6a40), sheenRoughness: 0.4 });
-  const pelt = new THREE.MeshPhysicalMaterial({ color: 0xffffff, map: peltTex(), roughness: 0.85, sheen: 1, sheenColor: new THREE.Color(0xffd890), sheenRoughness: 0.5, side: THREE.DoubleSide });
-  const mane = new THREE.MeshPhysicalMaterial({ color: 0x6a3e16, roughness: 0.8, sheen: 1, sheenColor: new THREE.Color(0xe0a050), sheenRoughness: 0.45 });
-  const leather = new THREE.MeshStandardMaterial({ color: 0x5a3820, roughness: 0.7 });
-  const leatherDark = new THREE.MeshStandardMaterial({ color: 0x2e1c10, roughness: 0.75 });
-  const bronze = new THREE.MeshStandardMaterial({ color: 0xd08a3a, metalness: 1, roughness: 0.28, envMapIntensity: 1.3 });
-  const gold = new THREE.MeshStandardMaterial({ color: 0xf0c060, metalness: 1, roughness: 0.2, envMapIntensity: 1.4 });
-  const ivory = new THREE.MeshStandardMaterial({ color: 0xf2e8d0, roughness: 0.35 });
-  const wood = new THREE.MeshStandardMaterial({ color: 0xffffff, map: barkTex(), roughness: 0.85 });
-  const iron = new THREE.MeshStandardMaterial({ color: 0x55504a, metalness: 0.85, roughness: 0.4 });
-  const might = new THREE.MeshStandardMaterial({ color: 0x2a1406, emissive: new THREE.Color(1.8, 0.95, 0.3), emissiveIntensity: 0.6, roughness: 0.3 });
-  const eye = new THREE.MeshBasicMaterial({ color: new THREE.Color(1.6, 1.0, 0.35) });
-  const lionEye = new THREE.MeshBasicMaterial({ color: new THREE.Color(1.6, 0.9, 0.2) });
+  const skin = new THREE.MeshPhysicalMaterial({ color: 0xf2c4a2, roughness: 0.55, sheen: 0.4, sheenColor: new THREE.Color(0xffc8a0), sheenRoughness: 0.5, clearcoat: 0.05, clearcoatRoughness: 0.6 });
+  const inked = skin.clone(); inked.map = tattooTex(true);                 // the right arm, all over
+  const inkedT = skin.clone(); inkedT.map = tattooTex(true, 0.2, 0.47);     // the right flank of chest and belly
+  const vein = new THREE.MeshStandardMaterial({ color: 0xe0b090, roughness: 0.45 });
+  const leather = new THREE.MeshStandardMaterial({ color: 0x4a3226, roughness: 0.5, metalness: 0.1 });
+  const leatherL = new THREE.MeshStandardMaterial({ color: 0x6a4630, roughness: 0.55 });
+  const gold = new THREE.MeshStandardMaterial({ color: 0xe6bc58, metalness: 1, roughness: 0.25 });
+  const armlet = new THREE.MeshStandardMaterial({ color: 0xffffff, map: armletTex(), metalness: 0.9, roughness: 0.28 });
+  const fur = new THREE.MeshStandardMaterial({ color: 0xffffff, map: furSkirtTex(), roughness: 0.9, alphaTest: 0.5, side: DS });
+  const marble = new THREE.MeshStandardMaterial({ color: 0xffffff, map: marbleTex(), roughness: 0.32, metalness: 0.0, envMapIntensity: 1.1 });
+  const marbleDark = new THREE.MeshStandardMaterial({ color: 0x9a9eaa, roughness: 0.4 });
+  const hair = new THREE.MeshPhysicalMaterial({ color: 0xd2562a, roughness: 0.45, sheen: 1, sheenColor: new THREE.Color(0xffa070), sheenRoughness: 0.35 });
+  const eye = new THREE.MeshBasicMaterial({ color: new THREE.Color(0.35, 0.6, 1.0) });
+  const might = new THREE.MeshStandardMaterial({ color: 0x3a1a00, emissive: new THREE.Color(2.2, 1.2, 0.3), emissiveIntensity: 0.6, roughness: 0.3 });
 
-  // ---- hips: leather war-kilt (pteruges) with bronze studs, wide belt with lion buckle ----
-  P.add(j.hips, lathe([[0, -0.18], [0.18, -0.16], [0.27, -0.08], [0.29, 0.02], [0.28, 0.16], [0, 0.18]]), leatherDark, [0, 0, 0], [0, 0, 0], [1, 1, 0.72]);
-  for (let i = 0; i < 16; i++) {
-    const a = (i / 16) * Math.PI * 2, x = Math.sin(a) * 0.3, z = Math.cos(a) * 0.22, len = 0.34;
-    const rot = [-0.2, a, 0, 'YXZ'];
-    P.add(j.hips, new THREE.BoxGeometry(0.1, len, 0.016).translate(0, -len / 2, 0), leather, [x, 0.03, z], rot);
-    P.add(j.hips, new THREE.SphereGeometry(0.012, 6, 4), bronze, [x * 1.05, -0.08, z * 1.05], rot);
-    P.add(j.hips, new THREE.BoxGeometry(0.1, 0.02, 0.02).translate(0, -len + 0.01, 0), bronze, [x, 0.03, z], rot);
+  // ---- hips: the broad belt and its lion medallion ----
+  P.add(j.hips, lathe([[0, -0.18], [0.18, -0.16], [0.27, -0.08], [0.29, 0.02], [0.28, 0.15], [0, 0.17]]), leatherL, [0, 0, 0], [0, 0, 0], [1, 1, 0.7]);
+  P.add(j.hips, lathe([[0.28, 0.02], [0.296, 0.04], [0.298, 0.14], [0.284, 0.16]], 64), leather, [0, 0, 0], [0, 0, 0], [1, 1, 0.74]);
+  {
+    const md = new THREE.Group(); md.position.set(0, 0.09, 0.222); j.hips.add(md);
+    P.add(md, new THREE.CylinderGeometry(0.075, 0.08, 0.025, 36), gold, [0, 0, 0], [Math.PI / 2, 0, 0]);
+    P.add(md, new THREE.TorusGeometry(0.075, 0.008, 8, 36), gold, [0, 0, 0.012]);
+    const ln = new THREE.Group(); ln.position.set(0, 0, 0.018); ln.scale.setScalar(0.62); md.add(ln);
+    lionHead(P, ln, gold, leather);
   }
-  P.add(j.hips, lathe([[0.29, 0.0], [0.305, 0.03], [0.305, 0.13], [0.29, 0.16]], 48), leather, [0, 0, 0], [0, 0, 0], [1, 1, 0.75]);
-  P.add(j.hips, new THREE.CylinderGeometry(0.07, 0.07, 0.03, 20), gold, [0, 0.08, 0.225], [Math.PI / 2, 0, 0]);
-  P.ell(j.hips, might, [0, 0.08, 0.24], [0.035, 0.035, 0.012]);
-
-  // ---- massive torso (bare), Heraclean musculature ----
-  P.add(j.spine, sculptLathe([[0, -0.06], [0.27, -0.05], [0.275, 0.06], [0.285, 0.17], [0.31, 0.27], [0.32, 0.31], [0, 0.32]], MUSCLE.abs(1.15, [0.0, 0.075, 0.15, 0.225], 0.028)), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.7]);
-  P.add(j.chest, sculptLathe([[0, -0.07], [0.31, -0.06], [0.36, 0.04], [0.4, 0.15], [0.395, 0.23], [0.34, 0.3], [0.18, 0.35], [0, 0.36]], MUSCLE.chest(1.3)), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.66]);
-  for (const s of [-1, 1]) {
+  // ---- torso: a fighter's heavy muscle; the ink on the right side of chest and belly ----
+  const abProf = [[0, -0.06], [0.262, -0.05], [0.266, 0.06], [0.276, 0.16], [0.294, 0.26], [0.304, 0.31], [0, 0.32]];
+  const abGeo = sculptLathe(abProf, MUSCLE.abs(1.15, [0.035, 0.11, 0.185], 0.032).concat([-1, 1].map((sd) => ({ a: sd * 1.0, y: 0.1, sa: 0.34, sy: 0.12, h: 0.024 }))));
+  P.add(j.spine, abGeo, inkedT, [0, 0, 0], [0, 0, 0], [1, 1, 0.66]);
+  const chProf = [[0, -0.07], [0.3, -0.06], [0.345, 0.04], [0.378, 0.15], [0.372, 0.23], [0.318, 0.3], [0.17, 0.342], [0, 0.352]];
+  const chGeo = sculptLathe(chProf, MUSCLE.chest(1.45).concat([-1, 1].map((sd) => ({ a: sd * 0.45, y: 0.04, sa: 0.32, sy: 0.022, h: -0.02 }))));
+  P.add(j.chest, chGeo, inkedT, [0, 0, 0], [0, 0, 0], [1, 1, 0.63]);
+  for (const s of [-1, 1]) P.ell(j.chest, skin, [s * 0.15, 0.31, -0.03], [0.15, 0.08, 0.11], [0, 0, -s * 0.45]);
+  addVeins(P, j.chest, chGeo, [[[1.1, 0.2], [1.25, 0.1], [1.1, 0.0]]], vein, 0.63, 0.006);
+  // the strap from the right shoulder across the chest to the left hip, and its brass ring
+  {
+    const sp = (a, y, lift = 0.02) => { const ch = y >= -0.05, geo = ch ? chGeo : abGeo, yl = ch ? Math.min(0.34, y) : y + 0.29, r = surfR(geo, a, yl) + lift; return new V3(Math.sin(a) * r, y, Math.cos(a) * r * (ch ? 0.63 : 0.66)); };
+    const pts = [sp(0.95, -0.24), sp(0.6, -0.12), sp(0.2, 0.0), sp(-0.25, 0.12), sp(-0.6, 0.22, 0.03), new V3(-0.27, 0.36, 0.1), new V3(-0.3, 0.42, -0.02), new V3(-0.27, 0.35, -0.16), sp(-2.3, 0.2, 0.03), sp(-2.8, 0.06), sp(-3.4, -0.08), sp(-4.0, -0.2)];
+    P.add(j.chest, foldBand(pts, 0.065, (p) => new V3(p.x, (p.y - 0.1) * 0.9, p.z / 0.63).normalize(), 1, 0.0, 80, 3), leather);
+    P.add(j.chest, new THREE.TorusGeometry(0.026, 0.006, 8, 20), gold, [-0.23, 0.3, 0.15], [0.3, -0.5, 0]);
   }
-  // leather baldric across the chest with bronze rings
-  P.add(j.chest, new THREE.BoxGeometry(0.07, 0.72, 0.022), leather, [0.02, 0.12, 0.245], [0.12, 0, 0.72]);
-  P.add(j.chest, new THREE.BoxGeometry(0.07, 0.72, 0.022), leather, [0.02, 0.12, -0.245], [-0.12, 0, -0.72]);
-  for (const y of [0.0, 0.18]) P.add(j.chest, new THREE.TorusGeometry(0.03, 0.009, 6, 16), bronze, [0.02 - y * 0.6, y, 0.26]);
-
-  // ---- lion pelt: paws knotted on the chest, hood with the lion's head ----
-  for (const s of [-1, 1]) {
-    P.add(j.chest, new THREE.CapsuleGeometry(0.05, 0.3, 4, 10), pelt, [s * 0.14, 0.28, 0.15], [0.3, 0, s * 1.1]);
-    for (let c = 0; c < 3; c++) P.add(j.chest, new THREE.ConeGeometry(0.01, 0.04, 5), ivory, [s * (0.05 - c * 0.018), 0.21, 0.24], [Math.PI, 0, 0]);
-  }
-  P.ell(j.chest, pelt, [0, 0.24, 0.22], [0.06, 0.05, 0.04]);                  // knot
-  for (let i = 0; i < 14; i++) {                                              // mane over the shoulders
-    const a = (i / 13 - 0.5) * Math.PI * 1.4;
-    P.ell(j.chest, mane, [Math.sin(a) * 0.3, 0.34 + Math.cos(a * 2) * 0.01, -0.05 - Math.cos(a) * 0.16], [0.09, 0.075, 0.085], [hsh(i, 61), a, hsh(i, 62)], true);
-  }
-
-  P.add(j.neck, lathe([[0, -0.04], [0.11, -0.03], [0.1, 0.06], [0.095, 0.15], [0, 0.17]]), skin);
-  P.ell(j.neck, skin, [0, 0.03, -0.04], [0.12, 0.07, 0.09]);
+  // ---- head: the wild crest of red-orange hair, a confident smile ----
+  P.add(j.neck, lathe([[0, -0.04], [0.104, -0.03], [0.096, 0.07], [0.09, 0.14], [0, 0.16]]), skin);
   const H = j.head;
-  const scar = new THREE.MeshStandardMaterial({ color: 0xd89a8a, roughness: 0.6 });
-  animeHead(P, H, { skin, hair, iris: eye, lip: 0xb0644e, browW: 0.0058, browTilt: -0.04,
-    face: { jaw: 1.28, chin: 0.6, len: 0.98, cleft: 0.03, nose: 1.3, noseLen: 0.95, eyeW: 0.95, eyeH: 0.85, browY: -0.03, mouthW: 1.2, smile: 0.3 },
-    marks: [[-0.3, -0.02, -0.62, -0.2, 0.0015, scar], [-0.38, 0.06, -0.48, -0.16, 0.0012, scar]],
-    style: { bangs: 6, bangLen: 0.07, side: 0.07, back: 6, backLen: 0.12 } });
-  // lion head hood: skull over the hero's head, muzzle over the brow, fangs, glowing eyes, ears and a full mane
-  P.ell(H, pelt, [0, 0.19, -0.02], [0.15, 0.1, 0.16]);
-  P.ell(H, pelt, [0, 0.2, 0.12], [0.085, 0.06, 0.09]);
-  P.ell(H, pelt, [0, 0.215, 0.2], [0.06, 0.045, 0.06]);
-  P.ell(H, leatherDark, [0, 0.225, 0.255], [0.028, 0.02, 0.016]);
-  for (const s of [-1, 1]) {
-    P.ell(H, lionEye, [s * 0.065, 0.235, 0.15], [0.016, 0.009, 0.01]);
-    P.ell(H, pelt, [s * 0.075, 0.25, 0.135], [0.03, 0.012, 0.03], [0, 0, s * 0.3]);
-    P.add(H, new THREE.ConeGeometry(0.012, 0.075, 6), ivory, [s * 0.035, 0.148, 0.2], [Math.PI, 0, 0]);
-    P.add(H, new THREE.ConeGeometry(0.035, 0.06, 8), pelt, [s * 0.11, 0.28, 0.02], [0, 0, s * -0.4], [1, 1, 0.5]);
+  const brow = new THREE.MeshStandardMaterial({ color: 0x8a2a14, roughness: 0.7 });
+  animeHead(P, H, { lashes: 1, lipFull: 0.3, contour: 0.18, blush: 0.06,
+    skin, hair, iris: eye, browMat: brow, lip: 0xb0644e, lash: 0x2a1410, browW: 0.0052, browTilt: -0.06, lashW: 1.2,
+    face: { jaw: 1.05, chin: 1.0, len: 1.04, hollow: 0.02, nose: 1.12, noseLen: 1.04, eyeW: 1.02, eyeH: 0.74, eyeTilt: 0.06, lid: 0.32, browY: -0.02, mouthW: 1.05, smile: 0.42, ear: 0 },
+    style: { bangs: 0, side: 0.12, back: 0 } });
+  {
+    const lockMat = hair.clone(); lockMat.map = hairTex();
+    const lk = (pts, r, r1 = 0.08, sq = null) => P.add(H, taperTube(pts, r, r * r1, 14, 7, sq), lockMat);
+    // spikes standing up and back from the crown, a few falling over the brow
+    for (let k = 0; k < 16; k++) {
+      const a = (k / 16 - 0.5) * Math.PI * 1.7, sa = Math.sin(a), ca = Math.cos(a), L = 0.13 + 0.07 * hsh(k, 71), up = 0.6 + 0.4 * hsh(k, 72);
+      lk([[sa * 0.07, 0.24, -0.02 + ca * 0.06], [sa * 0.1, 0.26 + 0.03 * up, -0.03 + ca * 0.06], [sa * (0.12 + L * 0.5), 0.26 + L * up, -0.06 + ca * 0.04 - L * 0.4]], 0.032, 0.05);
+    }
+    for (let k = 0; k < 9; k++) { const ph = (k - 4) * 0.2, pts = []; for (const th of [0.6, 1.05, 1.5]) pts.push([Math.sin(ph) * 0.104 * 1.12, 0.15 + Math.cos(ph) * Math.sin(th) * 0.095 * 1.14, -0.02 + Math.cos(ph) * Math.cos(th) * 0.115 * 1.1]); pts.push([Math.sin(ph) * 0.16, 0.3 + 0.03 * (k % 2), -0.1]); lk(pts, 0.03, 0.06); }
+    for (const [x, yE] of [[-0.06, 0.12], [-0.025, 0.1], [0.02, 0.13], [0.06, 0.15]]) lk([[x * 0.5, 0.25, 0.05], [x, 0.235, 0.11], [x * 1.3, 0.18, 0.13], [x * 1.5 + 0.01, yE, 0.125]], 0.02, 0.1, [1.3, 1, 0.6]);
+    for (const s of [-1, 1]) lk([[s * 0.09, 0.2, 0.04], [s * 0.12, 0.12, 0.05], [s * 0.13, 0.04, 0.04], [s * 0.14, -0.03, 0.02]], 0.022, 0.1);
   }
-  // mane: layered tapered tufts sweeping back and down around the hood
-  for (let i = 0; i < 22; i++) {
-    const a = (i / 21 - 0.5) * Math.PI * 1.5, e = hsh(i, 71), L = 0.16 + e * 0.1;
-    P.add(H, new THREE.ConeGeometry(0.045, L, 7).translate(0, -L / 2, 0), mane, [Math.sin(a) * 0.15, 0.22 + e * 0.04, -0.03 - Math.cos(a) * 0.11], [Math.PI * 0.62 + e * 0.25, a, 0, 'YXZ'], [1, 1, 0.55]);
-  }
-  P.ell(H, mane, [0, 0.17, -0.1], [0.15, 0.12, 0.11]);
-
-  // ---- arms: huge, bronze-studded leather bracers ----
+  // ---- arms: the right inked and armoured at the shoulder; a gold armlet on the left ----
   for (const [s, sg] of [['l', 1], ['r', -1]]) {
     const sh = j[s + 'Sh'], el = j[s + 'El'], wr = j[s + 'Wr'];
-    P.add(sh, sculpt(muscleLimb(0.35, 0.115, 0.085, 0.024, 0.6), MUSCLE.upperArm(1.35)), skin);
-    P.ell(sh, skin, [sg * 0.025, -0.02, 0], [0.15, 0.15, 0.14]);
-    P.add(sh, new THREE.TorusGeometry(0.09, 0.012, 8, 28), bronze, [0, -0.24, 0], [Math.PI / 2, 0, 0]);
-    P.add(el, sculpt(muscleLimb(0.31, 0.098, 0.065, 0.024, 0.72), MUSCLE.forearm(1.3)), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.9]);
-    P.add(el, lathe([[0.075, -0.3], [0.08, -0.26], [0.092, -0.12], [0.096, -0.1]], 28), leather, [0, 0, 0], [0, 0, 0], [1, 1, 0.92]);
-    for (const y of [-0.12, -0.21, -0.29]) P.add(el, new THREE.TorusGeometry(0.09 - (y + 0.12) * 0.08, 0.007, 6, 26), bronze, [0, y, 0], [Math.PI / 2, 0, 0], [1, 0.92, 1]);
-    for (let i = 0; i < 6; i++) { const a = (i / 6) * Math.PI * 2; P.ell(el, gold, [Math.sin(a) * 0.09, -0.17, Math.cos(a) * 0.083], [0.009, 0.009, 0.009]); }
-    // big fists
-    P.ell(wr, skin, [0, -0.055, 0.012], [0.06, 0.066, 0.066]);
-    P.ell(wr, skin, [0, -0.105, 0.03], [0.056, 0.032, 0.048]);
-    P.ell(wr, skin, [sg * -0.045, -0.06, 0.048], [0.022, 0.038, 0.022], [0.4, 0, 0]);
-    // legs: trunk-like, leather greaves
-    const hp = j[s + 'Hip'], kn = j[s + 'Kn'];
-    P.add(hp, sculpt(muscleLimb(0.49, 0.145, 0.088, 0.026, 0.62), MUSCLE.thigh(1.3, sg)), skin);
-    P.add(kn, sculpt(muscleLimb(0.48, 0.088, 0.058, 0.0, 0.7), MUSCLE.calf(1.3)), skin);
-    P.add(kn, lathe([[0.066, -0.44], [0.078, -0.36], [0.088, -0.2], [0.084, -0.08]], 28), leather, [0, 0, 0.008], [0, 0, 0], [1, 1, 0.95]);
-    P.add(kn, new THREE.TorusGeometry(0.086, 0.008, 6, 26), bronze, [0, -0.09, 0.008], [Math.PI / 2, 0, 0]);
+    const sk = s === 'r' ? inked : skin;
+    const ua = sculpt(muscleLimb(0.34, 0.112, 0.082, 0.028, 0.58), MUSCLE.upperArm(1.6));
+    P.add(sh, ua, sk);
+    P.ell(sh, sk, [sg * 0.025, -0.035, 0], [0.132, 0.138, 0.126]);
+    const fa = sculpt(muscleLimb(0.31, 0.096, 0.064, 0.028, 0.74), MUSCLE.forearm(1.7));
+    P.add(el, fa, sk, [0, 0, 0], [0, 0, 0], [1, 1, 0.9]);
+    addVeins(P, el, fa, [[[0.25 * sg, -0.02], [0.4 * sg, -0.1], [0.25 * sg, -0.19], [0.35 * sg, -0.27]], [[1.15 * sg, -0.03], [1.0 * sg, -0.13], [1.2 * sg, -0.24]]], vein, 0.9, 0.006);
+    if (s === 'r') {
+      for (let k = 0; k < 3; k++) P.add(sh, new THREE.SphereGeometry(1, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2.2), leather, [sg * (0.03 + k * 0.02), 0.03 - k * 0.05, 0], [0, 0, sg * -(0.3 + k * 0.2)], [0.16 - k * 0.012, 0.11, 0.155 - k * 0.01]);
+      P.add(sh, new THREE.ConeGeometry(0.03, 0.09, 6), leather, [sg * 0.03, 0.16, 0], [0, 0, sg * -0.3]);
+      P.add(sh, new THREE.TorusGeometry(0.13, 0.006, 6, 32, Math.PI), gold, [sg * 0.03, 0.03, 0], [Math.PI / 2, 0, sg * -0.3]);
+    } else {
+      P.add(sh, bandOn(ua, -0.19, -0.12, 1, 0.006), armlet);
+    }
+    P.ell(wr, skin, [0, -0.06, 0.012], [0.066, 0.072, 0.066]);
+    P.ell(wr, skin, [0, -0.104, 0.032], [0.06, 0.03, 0.046]);
+    // legs: the right crossed with straps; sandals laced up both shins
+    const hp = j[s + 'Hip'], kn = j[s + 'Kn'], an = j[s + 'An'];
+    const th = sculpt(muscleLimb(0.49, 0.16, 0.09, 0.026, 0.6), MUSCLE.thigh(1.4, sg));
+    P.add(hp, th, skin);
+    const cf = sculpt(muscleLimb(0.48, 0.092, 0.058, 0.02, 0.72), MUSCLE.calf(1.6));
+    P.add(kn, cf, skin);
+    if (s === 'r') {
+      P.add(hp, bandOn(th, -0.24, -0.21, 1, 0.004), leather);
+      for (let k = 0; k < 2; k++) { const pts = []; for (let i = 0; i <= 24; i++) { const t = i / 24, a = (k ? Math.PI : 0) + t * Math.PI * 2.5, y = 0.02 - t * 0.32, r = surfR(cf, a, y) + 0.006; pts.push(new V3(Math.sin(a) * r, y, Math.cos(a) * r)); } P.add(kn, new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 80, 0.007, 5), leather); }
+    }
+    for (let k = 0; k < 5; k++) P.add(kn, bandOn(cf, -0.44 + k * 0.05, -0.43 + k * 0.05, 1, 0.003, 32), leather);
+    for (const s2 of [-1, 1]) P.add(kn, new THREE.CylinderGeometry(0.005, 0.005, 0.24, 5), leather, [s2 * 0.055, -0.34, 0.03]);
   }
-  addDetail(P, j, { skin, hair, sole: leatherDark, strap: leather, metal: bronze }, { anime: true, k: 1.08, eye: [0.042, 0.108, 0.108], lip: 0x8a4a3a, curls: true, armored: false });
+  addDetail(P, j, { skin, hair, sole: leather, strap: leather, metal: gold }, { anime: true, k: 1.08, eye: [0.042, 0.108, 0.108], lip: 0xb0644e, curls: false, armored: true });
   P.build();
 
-  // ---- knotted oak club along the hand's +Z ----
+  // ---- the club: a white marble column - a capital at the grip, a fluted shaft swelling into a carved lion ----
   const club = new THREE.Group();
   const CP = new PartSet();
-  const prof = [];
-  for (let i = 0; i <= 24; i++) { const t = i / 24, z = -0.14 + t * 1.12; prof.push([0.036 + Math.pow(t, 1.8) * 0.11 + (t > 0.97 ? -(t - 0.97) * 3 : 0), z]); }
-  prof.push([0.0, 0.99]); prof.unshift([0.0, -0.15]);
-  CP.add(club, lathe(prof, 18), wood, [0, 0, 0], [Math.PI / 2, 0, 0]);
-  for (let i = 0; i < 14; i++) {                                              // knots
-    const t = 0.35 + hsh(i, 81) * 0.6, z = -0.14 + t * 1.12, r = 0.036 + Math.pow(t, 1.8) * 0.11, a = hsh(i, 82) * Math.PI * 2;
-    CP.ell(club, wood, [Math.cos(a) * r * 0.9, Math.sin(a) * r * 0.9, z], [0.035, 0.035, 0.05], [0, 0, a]);
+  {
+    const prof = [[0.0, -0.16], [0.05, -0.155], [0.05, -0.12], [0.04, -0.11], [0.036, 0.0], [0.04, 0.2], [0.05, 0.36], [0.075, 0.48], [0.12, 0.6], [0.165, 0.74], [0.18, 0.86], [0.165, 0.96], [0.12, 1.03], [0.0, 1.06]];
+    const g = lathe(prof, 48), pa = g.attributes.position;
+    for (let i = 0; i < pa.count; i++) {
+      const x = pa.getX(i), y = pa.getY(i), z = pa.getZ(i), a = Math.atan2(x, z);
+      const k = y < 0.42 ? 1 + 0.06 * Math.max(0, Math.cos(a * 16)) * (y > -0.1 ? 1 : 0) : 1 + 0.05 * Math.sin(a * 22 + y * 3) * Math.min(1, (y - 0.42) * 6);   // flutes on the shaft, carved mane on the head
+      pa.setX(i, x * k); pa.setZ(i, z * k);
+    }
+    g.computeVertexNormals();
+    CP.add(club, g, marble, [0, 0, 0], [Math.PI / 2, 0, 0]);
+    // the Ionic capital above the grip: abacus slab and two volutes
+    CP.add(club, new THREE.BoxGeometry(0.13, 0.13, 0.025), marble, [0, 0, -0.172]);
+    for (const s of [-1, 1]) {
+      const vol = []; for (let i = 0; i <= 30; i++) { const t = i / 30, a = t * Math.PI * 3.2, r = 0.035 * (1 - t * 0.75); vol.push(new V3(s * (0.05 + Math.cos(a) * r * 0.4), Math.sin(a) * r, -0.135 - Math.cos(a) * r)); }
+      CP.add(club, new THREE.TubeGeometry(new THREE.CatmullRomCurve3(vol), 60, 0.012, 6), marble);
+    }
+    for (const z of [-0.105, 0.005]) CP.add(club, new THREE.TorusGeometry(0.044, 0.008, 6, 24), marble, [0, 0, z]);
+    // the lion at the swollen end, snarling outward
+    const ln = new THREE.Group(); ln.position.set(0, 0, 1.0); ln.scale.setScalar(1.5); club.add(ln);
+    lionHead(CP, ln, marble, marbleDark);
+    CP.add(club, new THREE.TorusGeometry(0.15, 0.007, 6, 32), might, [0, 0, 0.72]);
   }
-  for (const z of [-0.1, 0.12, 0.42]) { const t = (z + 0.14) / 1.12; CP.add(club, new THREE.TorusGeometry(0.04 + Math.pow(t, 1.8) * 0.11, 0.012, 6, 20), iron, [0, 0, z]); }
-  for (let i = 0; i < 4; i++) CP.add(club, new THREE.TorusGeometry(0.038, 0.006, 5, 14), leatherDark, [0, 0, -0.05 + i * 0.035]);
-  CP.add(club, new THREE.TorusGeometry(0.15, 0.007, 6, 32), might, [0, 0, 0.72]);
   CP.build();
   club.position.set(0, -SKEL.heracles.hand * 0.6, 0);
   j.rWr.add(club);
-  const clubGlow = glowSprite(T.glow, 0xffb860, 1.4);
-  clubGlow.position.set(0, 0, 0.75);
+  const clubGlow = glowSprite(T.glow, 0xffb860, 1.5);
+  clubGlow.position.set(0, 0, 0.8);
   club.add(clubGlow);
 
-  // ---- lion pelt cloak hanging down the back ----
-  const capeGeo = new THREE.PlaneGeometry(0.78, 1.25, 10, 18);
-  capeGeo.translate(0, -0.625, 0);
-  {
-    const pos = capeGeo.attributes.position, cols = [];
-    for (let i = 0; i < pos.count; i++) if (pos.getY(i) > 0) pos.setY(i, 0);
-    for (let i = 0; i < pos.count; i++) {
-      const v = -pos.getY(i) / 1.25, u = Math.abs(pos.getX(i)) / 0.39;
-      const c = new THREE.Color(0xa8742e).lerp(new THREE.Color(0x6a4318), Math.pow(v, 1.2));
-      if (u > 0.85) c.lerp(new THREE.Color(0x4a2a10), 0.5);
-      cols.push(c.r, c.g, c.b);
-    }
-    capeGeo.setAttribute('color', new THREE.Float32BufferAttribute(cols, 3));
-  }
-  const capeBase = capeGeo.attributes.position.array.slice();
-  const cape = new THREE.Mesh(capeGeo, new THREE.MeshStandardMaterial({ vertexColors: true, map: peltTex(), roughness: 0.9, side: THREE.DoubleSide }));
-  cape.castShadow = true;
-  cape.position.set(0, 0.3, -0.26);
-  j.chest.add(cape);
+  // ---- cloth: the ragged fur skirt and the long tail of hair ----
+  makeCloth(M, { joint: j.hips, rows: 8, cols: 27, pin: 2, loop: true, mats: [fur],
+    rest: (v, u) => { const a = Math.PI + u * Math.PI * 2, k = 1 + 0.05 * Math.sin(a * 9) * v; return [Math.sin(a) * (0.3 + 0.12 * v) * k, 0.06 - 0.5 * v, Math.cos(a) * (0.23 + 0.1 * v) * k]; },
+    hold: (v) => 0.18 * (1 - v) * (1 - v) + 0.03 });
+  const hairSheet = new THREE.MeshStandardMaterial({ color: 0xffffff, map: hairSheetTex('#c44a22', '#ff9a60'), roughness: 0.45, alphaTest: 0.5, side: DS });
+  makeCloth(M, { joint: j.head, rows: 10, cols: 4, pin: 2, mats: [hairSheet],
+    rest: (v, u) => [(u - 0.5) * (0.1 + 0.04 * v), 0.12 - 0.85 * v, -0.12 - 0.22 * Math.min(1, v * 2)],
+    hold: (v) => 0.08 * (1 - v) + 0.01 });
+  M.clothR = { pelvis: 0.21, pelvisX: 0.12, torso: 0.27, thigh: 0.165, shin: 0.105, foot: 0.075 };
+  M.clothExtra = [[j.chest, [-0.15, 0.24, -0.04], j.chest, [0.15, 0.24, -0.04], 0.25], [j.chest, [-0.15, 0.06, -0.03], j.chest, [0.15, 0.06, -0.03], 0.27], [j.neck, [0, 0.0, 0], j.neck, [0, 0.12, 0], 0.11]];
 
   M.trident = club; M.triGlow = clubGlow; M.club = club;
-  M.trails = [{ obj: club, a: new V3(0, 0, 0.3), b: new V3(0, 0, 0.98), color: [1.6, 0.9, 0.3], core: [2.6, 1.9, 1.0], spark: 'might' }];
-  M.cape = { mesh: cape, geo: capeGeo, base: capeBase, sway: 0 };
+  M.trails = [{ obj: club, a: new V3(0, 0, 0.35), b: new V3(0, 0, 1.08), color: [1.6, 0.9, 0.3], core: [2.6, 1.9, 1.0], spark: 'might' }];
   M.mats = { skin, gold, gem: might, eye };
   M.color = new THREE.Color(1.6, 1.0, 0.4);
-  enhanceModel(M.root, 0xffc080, 0.5);
+  enhanceModel(M.root, 0xffc080, 0.45);
+  settleCloth(M, 30);
   return M;
 }
-
 
 // ============================================================
 //  HADES  (lord of the underworld in dress uniform: wavy silver hair under a fine circlet with a ruby, half-lidded
@@ -7287,6 +7309,10 @@ function bandOn(geo, y0, y1, sz = 1, off = 0.005, seg = 44) {
     ys.forEach((y, k) => { const rr = r + (k === 1 ? 0.002 : 0); pos.push(Math.sin(a) * rr, y, Math.cos(a) * rr * sz); uv.push(i / seg, k / 2); });
   }
   for (let i = 0; i < seg; i++) for (let k = 0; k < 2; k++) { const a = i * 3 + k, b = a + 3; idx.push(a, a + 1, b, a + 1, b + 1, b); }
+  {   // faces out, whichever way y0 and y1 run
+    const P0 = (i) => new V3(pos[i * 3], pos[i * 3 + 1], pos[i * 3 + 2]), n = new V3().crossVectors(P0(idx[1]).sub(P0(idx[0])), P0(idx[2]).sub(P0(idx[0]))), out = P0(idx[0]); out.y = 0;
+    if (n.dot(out) < 0) for (let i = 0; i < idx.length; i += 3) { const t = idx[i + 1]; idx[i + 1] = idx[i + 2]; idx[i + 2] = t; }
+  }
   const g = new THREE.BufferGeometry();
   g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
   g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
