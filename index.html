@@ -11719,7 +11719,10 @@ let viewOff = { x: 0, y: 0, on: false };
 function viewerFrame() {
   const W = window.innerWidth, H = window.innerHeight, el = $('viewer');
   let tx = 0, ty = 0;
-  if (screen === 'viewer' && !el.classList.contains('ui-off') && document.body.classList.contains('compact')) {
+  if (screen === 'viewer' && !el.classList.contains('ui-off') && !document.body.classList.contains('compact')) {
+    // PC: the move list always sits on the left
+    const pr = el.querySelector('.vpanel').getBoundingClientRect(); tx = pr.right / 2;
+  } else if (screen === 'viewer' && !el.classList.contains('ui-off') && document.body.classList.contains('compact')) {
     let top = 0, bot = H, left = 0;
     const vis = (id) => { const e = $(id); return e && e.offsetParent !== null ? e.getBoundingClientRect() : null; };
     const g = vis('vGod'), inf = vis('vInfo'), bar = vis('vBar'), pan = vis('vChars') ? null : el.classList.contains('list-open') ? el.querySelector('.vpanel').getBoundingClientRect() : null;
@@ -11760,7 +11763,7 @@ function viewerDistance(m) {
   if (m.oracle) return 1.5;
   if (m.meditate) return 4;
   if (m.leap) return 3.0;
-  if (m.reflect) return 1.3;
+  if (m.reflect || m.nullify) return 4.2;
   if (m.hits && m.hits.some((h) => h.grab)) return 0.9;
   if (m.reach) return 3.2;
   if (m.type === 'air') return 1.5;
@@ -11783,11 +11786,14 @@ function viewerPlay() {
   for (const v of views) v.cur = copyPose(v.lib.stance, v.cur);
   // clear any super cinematic left over from the previous move
   hud.cutin.className = 'hide'; document.body.classList.remove('cine'); $('cineTitle').classList.remove('show');
-  viewer.wait = 0; viewer.airT = 0;
+  viewer.wait = 0; viewer.airT = 0; viewer.poke = 0; viewer.wantProj = null;
+  // moves that answer a projectile (reflect / nullify): the dummy fires first, and the move starts as it arrives
+  const pid = (m.reflect || m.nullify) && Object.keys(o.c.moves).find((id) => { const q = o.c.moves[id]; return q.type === 'special' && q.proj && q.proj.vx && !q.proj.atTarget && !q.proj.at; });
+  if (pid) { sim.startMove(o, pid); viewer.wantProj = { R: m.reflect ? 2.0 : 2.6, w0: (m.reflect || m.nullify)[0], t: 0 }; return; }
   if (m.type === 'air') { sim.jump(f, 0); viewer.airT = 0.3; }
   else sim.startMove(f, viewer.id);
-  // a parry / foresight needs something to answer: the dummy throws a jab
-  viewer.poke = m.parry ? 0.1 : m.oracle ? 0.5 : 0;
+  // a counter / parry / foresight needs something to answer: the dummy throws a jab into it
+  viewer.poke = m.counter || m.parry ? 0.08 : m.oracle ? 1 : 0;
 }
 function viewerUpdate(dt) {
   if (!sim || screen !== 'viewer') return;
@@ -11795,7 +11801,18 @@ function viewerUpdate(dt) {
   if (sim.phase !== 'fight') { sim.phase = 'fight'; sim.phaseT = 0; }
   for (const x of sim.fighters) if (x.hp < x.c.hp * 0.4) x.hp = x.c.hp;
   if (viewer.airT > 0) { viewer.airT -= dt; if (viewer.airT <= 0 && f.state === 'jump') sim.startMove(f, viewer.id); return; }
-  if (viewer.poke > 0) { viewer.poke -= dt; if (viewer.poke <= 0 && sim.actionable(o)) { o.facing = Math.sign(f.x - o.x) || o.facing; sim.startMove(o, o.c.routes[0][0]); } }
+  if (viewer.wantProj) {
+    const w = viewer.wantProj, p = sim.projs.find((q) => q.owner === o.side && !q.dead);
+    w.t += dt;
+    if ((p && Math.abs(p.x - f.x) <= w.R - 0.2 + Math.abs(p.vx) * w.w0) || w.t > 2.5) { if (sim.actionable(f)) { viewer.wantProj = null; sim.startMove(f, viewer.id); } }
+    viewer.wait = 0; return;
+  }
+  if (viewer.poke > 0) {
+    // timed on the game clock (not the frame clock) so a slow phone still lands the jab inside the window
+    const m = CHARS[viewer.key].moves[viewer.id];
+    const ready = m.oracle ? f.oracleT > 0 && f.oracleT < m.oracle[1] - 0.3 : f.state === 'attack' && f.moveId === viewer.id && f.mt >= viewer.poke;
+    if (ready && sim.actionable(o)) { viewer.poke = 0; o.facing = Math.sign(f.x - o.x) || o.facing; sim.startMove(o, o.c.routes[0][0]); }
+  }
   const busy = f.state === 'attack' || f.state === 'jump' || sim.freeze > 0 || sim.projs.length || ['hitstun', 'juggle', 'locked', 'down', 'getup', 'blockstun'].includes(o.state);
   if (busy) { viewer.wait = 0; return; }
   viewer.wait += dt;
