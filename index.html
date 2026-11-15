@@ -4698,6 +4698,7 @@ function addDetail(P, j, mt, o) {
     }
     P.add(wr, new THREE.CapsuleGeometry(0.014 * k, 0.04 * k, 4, 10), skin, [sg * -0.05 * k, -0.075 * k, 0.045 * k], [0.9, 0, sg * 0.35]);
     }
+    if (o.boots) continue;
     for (const q of [-1, 1]) P.ell(an, skin, [q * 0.04 * k, 0.0, -0.005], [0.018, 0.02, 0.02]);  // ankle bones
     P.ell(an, skin, [0, -0.02, -0.035], [0.036 * k, 0.04, 0.04]);                                 // heel
     for (let t = 0; t < 5; t++) {
@@ -4705,6 +4706,7 @@ function addDetail(P, j, mt, o) {
       P.add(an, new THREE.CapsuleGeometry(r, 0.018, 4, 8), skin, [x, -0.05, 0.158 * k - t * 0.006], [Math.PI / 2, 0, 0]);
     }
     // sandal: shaped sole, toe strap, instep strap, heel cup
+    if (o.barefoot) continue;
     P.ell(an, sole, [0, -0.074, 0.05], [0.062 * k, 0.012, 0.145 * k]);
     P.add(an, new THREE.TorusGeometry(0.052 * k, 0.006, 6, 20, Math.PI), strap, [0, -0.062, 0.115 * k], [0, 0, 0]);
     P.add(an, new THREE.TorusGeometry(0.056 * k, 0.006, 6, 20, Math.PI), strap, [0, -0.06, 0.06 * k], [-0.25, 0, 0]);
@@ -4756,7 +4758,7 @@ function hairTex() {
 const FACE_CACHE = new Map();
 function paintFace(o, F, skinCol) {
   const hx = (c) => c && c.isColor ? c.getHexString() : c;
-  const fkey = JSON.stringify([F, hx(skinCol), hx(o.iris.color), hx((o.browMat || o.hair).color), o.lip, o.lash, o.glowEyes, o.shadow, o.lashW, o.browTilt, o.browW, o.beard,
+  const fkey = JSON.stringify([F, hx(skinCol), hx(o.iris.color), hx((o.browMat || o.hair).color), o.lip, o.lash, o.glowEyes, o.darkEyes, o.shadow, o.lashW, o.browTilt, o.browW, o.beard,
     (o.marks || []).map((m) => m.slice(0, 5).concat(hx(m[5].color)))]);
   if (!FACE_CACHE.has(fkey)) FACE_CACHE.set(fkey, paintFace0(o, F, skinCol));
   return FACE_CACHE.get(fkey);
@@ -4780,6 +4782,10 @@ function paintFace0(o, F, skinCol) {
       const E = eye(s), c = P2(E.cx - s * 0.008, E.cy + (E.hU - E.hL) * 0.25), rI = 62 * Math.min(1, 0.6 + 0.45 * F.eyeH);
       g.save(); path(g, E.outline); g.closePath(); g.clip();
       if (o.glowEyes) { g.fillStyle = glowOnly ? '#cfe4ff' : '#f4f9ff'; g.fillRect(c[0] - 150, c[1] - 100, 300, 200); g.restore(); continue; }
+      if (o.darkEyes) {   // hollow, shadowed eyes: all dark, with one small glint
+        if (!glowOnly) { const dg = g.createRadialGradient(c[0], c[1], 4, c[0], c[1], 90); dg.addColorStop(0, '#120c0c'); dg.addColorStop(1, '#2a1a18'); g.fillStyle = dg; g.fillRect(c[0] - 150, c[1] - 100, 300, 200); g.fillStyle = '#d8dce4'; g.beginPath(); g.arc(c[0] - s * 6, c[1] - 6, 6, 0, 7); g.fill(); }
+        g.restore(); continue;
+      }
       if (!glowOnly) {
         const wg = g.createLinearGradient(0, c[1] - 55, 0, c[1] + 40); wg.addColorStop(0, '#aaa6bc'); wg.addColorStop(0.45, '#f6f4f2'); wg.addColorStop(1, '#ffffff');
         g.fillStyle = wg; g.fillRect(c[0] - 150, c[1] - 100, 300, 200);
@@ -4927,6 +4933,7 @@ function animeHead(P, H, o) {
     P.add(H, bg, hair, [0, 0.0, 0.06]);
     for (const s of [-1, 1]) lock([[s * 0.004, 0.052, 0.118], [s * 0.03, 0.05, 0.112], [s * 0.055, 0.025, 0.095]], 0.011);
   }
+  if (o.bald) return;
   // ---- hair: skull cap plus tapered, curved locks ----
   P.ell(H, hair, [0, 0.15, -0.02], [0.104, 0.095, 0.115]);
   P.ell(H, hair, [0, 0.125, -0.065], [0.1, 0.1, 0.085]);
@@ -4990,288 +4997,783 @@ function glowSprite(tex, color, size) {
 }
 
 // ============================================================
-//  ZEUS
+//  ZEUS  (the old king of Olympus in his monstrous form: a mountain of veined muscle, bald but for one white tuft,
+//         flaring white brows over sunken eyes, a long moustache and a beard bound in a ring; a white sash over the
+//         left shoulder falling into a bunched waist wrap; barefoot.  The veins flare with lightning when he fights.)
 // ============================================================
+// plain white linen with soft blue-grey folds
+function linenTex() {
+  return canvasTex(512, 512, (g, w, h) => {
+    const bg = g.createLinearGradient(0, 0, 0, h); bg.addColorStop(0, '#e2e7ed'); bg.addColorStop(0.2, '#f1f4f7'); bg.addColorStop(1, '#f6f8fa');
+    g.fillStyle = bg; g.fillRect(0, 0, w, h);
+    for (let i = 0; i < 44; i++) {
+      const x = Math.random() * w, wd = 6 + Math.random() * 26, a = 0.06 + Math.random() * 0.14, sk = (Math.random() - 0.5) * 60;
+      const gr = g.createLinearGradient(x - wd, 0, x + wd, 0); gr.addColorStop(0, 'rgba(80,98,130,0)'); gr.addColorStop(0.5, `rgba(80,98,130,${a})`); gr.addColorStop(1, 'rgba(80,98,130,0)');
+      g.fillStyle = gr; g.beginPath(); g.moveTo(x - wd, 0); g.lineTo(x + wd, 0); g.lineTo(x + wd + sk, h); g.lineTo(x - wd + sk, h); g.closePath(); g.fill();
+    }
+    for (let i = 0; i < 16; i++) { const x = Math.random() * w, wd = 4 + Math.random() * 10; const gr = g.createLinearGradient(x - wd, 0, x + wd, 0); gr.addColorStop(0, 'rgba(255,255,255,0)'); gr.addColorStop(0.5, 'rgba(255,255,255,0.35)'); gr.addColorStop(1, 'rgba(255,255,255,0)'); g.fillStyle = gr; g.fillRect(x - wd, 0, wd * 2, h); }
+  });
+}
+// the radius of a sculpted lathe at (angle, height), read off its nearest vertex
+const SURF = new WeakMap();
+function surfR(geo, a, y) {
+  let c = SURF.get(geo);
+  if (!c) {   // angle, height and radius of every vertex, worked out once per mesh
+    const pa = geo.attributes.position, n = pa.count;
+    c = { n, A: new Float32Array(n), Y: new Float32Array(n), R: new Float32Array(n) };
+    for (let i = 0; i < n; i++) { const x = pa.getX(i), z = pa.getZ(i); c.A[i] = Math.atan2(x, z); c.Y[i] = pa.getY(i); c.R[i] = Math.hypot(x, z); }
+    SURF.set(geo, c);
+  }
+  const TAU = Math.PI * 2;
+  a = ((a + Math.PI) % TAU + TAU) % TAU - Math.PI;
+  let best = 1e9, r = 0.05;
+  for (let i = 0; i < c.n; i++) {
+    const dy = (y - c.Y[i]) * 100;
+    if (dy * dy >= best) continue;
+    let da = Math.abs(a - c.A[i]); if (da > Math.PI) da = TAU - da;
+    const d = da * da * 100 + dy * dy;
+    if (d < best) { best = d; r = c.R[i]; }
+  }
+  return r;
+}
+// raised veins over a sculpted lathe: each path is [[angle, y], ...], lifted onto the surface (sz: the part's z squash)
+function addVeins(P, joint, geo, paths, mat, sz = 1, r0 = 0.0065) {
+  for (const path of paths) {
+    const pts = [];
+    for (let k = 0; k < path.length - 1; k++) for (let t = 0; t < 3; t++) { const u = t / 3; pts.push([path[k][0] + (path[k + 1][0] - path[k][0]) * u, path[k][1] + (path[k + 1][1] - path[k][1]) * u]); }
+    pts.push(path[path.length - 1]);
+    const v3 = pts.map(([a, y]) => { const r = surfR(geo, a, y) + r0 * 0.35; return new V3(Math.sin(a) * r, y, Math.cos(a) * r * sz); });
+    P.add(joint, taperTube(v3, r0, r0 * 0.45, Math.max(10, v3.length * 3), 5), mat);
+  }
+}
+// a cloth band along a curve, corrugated across its width into soft folds
+function foldBand(pts, width, outward, folds = 3, depth = 0.012, segs = 64, across = 9, wf = null) {
+  const curve = new THREE.CatmullRomCurve3(pts);
+  const pos = [], uv = [], idx = [];
+  for (let i = 0; i <= segs; i++) {
+    const t = i / segs, p = curve.getPoint(t), T = curve.getTangent(t), N = outward(p), B = new V3().crossVectors(T, N).normalize();
+    N.crossVectors(B, T).normalize();
+    for (let k = 0; k <= across; k++) {
+      const s = k / across - 0.5, f = Math.sin((s + 0.5) * Math.PI * folds + t * 5) * depth * (0.6 + 0.4 * Math.sin(t * 9));
+      const q = p.clone().addScaledVector(B, s * width * (wf ? wf(t) : 1)).addScaledVector(N, f + depth * 0.6);
+      pos.push(q.x, q.y, q.z); uv.push(k / across, t * 3);
+    }
+  }
+  const W = across + 1;
+  for (let i = 0; i < segs; i++) for (let k = 0; k < across; k++) { const a = i * W + k, b = a + W; idx.push(a, b, a + 1, a + 1, b, b + 1); }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+  g.setIndex(idx); g.computeVertexNormals();
+  return g;
+}
+
 function buildZeus(T) {
   const M = makeSkeleton('zeus');
   const { j } = M;
   const P = new PartSet();
+  // the head sits low and forward between the great trapezius muscles, and is small against the body
+  j.neck.position.set(0, SKEL.zeus.neck - 0.035, 0.125);
+  j.head.scale.setScalar(0.9);
 
-  const skin = new THREE.MeshPhysicalMaterial({ color: 0xc88a5e, roughness: 0.48, metalness: 0.0, sheen: 0.35, sheenColor: new THREE.Color(0xffc9a0), sheenRoughness: 0.5, clearcoat: 0.12, clearcoatRoughness: 0.55 });
-  const gold = new THREE.MeshStandardMaterial({ color: 0xffc95c, metalness: 1, roughness: 0.24, envMapIntensity: 1.3 });
-  const cloth = new THREE.MeshStandardMaterial({ color: 0xffffff, map: clothTex('#f3efe6', '#c99a2e'), roughness: 0.82, side: THREE.DoubleSide });
-  const hair = new THREE.MeshPhysicalMaterial({ color: 0xe9ebf2, roughness: 0.55, sheen: 1, sheenColor: new THREE.Color(0xbfd8ff), sheenRoughness: 0.4 });
-  const leather = new THREE.MeshStandardMaterial({ color: 0x5a3a22, roughness: 0.7 });
-  const eye = new THREE.MeshBasicMaterial({ color: new THREE.Color(2.2, 2.8, 4.0) });
-  const glowMat = new THREE.MeshStandardMaterial({ color: 0x223355, emissive: new THREE.Color(0.5, 0.75, 1.6), emissiveIntensity: 0.6, roughness: 0.3, metalness: 0.4 });
-  const brow = new THREE.MeshStandardMaterial({ color: 0xdfe2ea, roughness: 0.7 });
+  const skin = new THREE.MeshPhysicalMaterial({ color: 0xe0c3a6, roughness: 0.52, sheen: 0.5, sheenColor: new THREE.Color(0xffe2c4), sheenRoughness: 0.45, clearcoat: 0.08, clearcoatRoughness: 0.55 });
+  const vein = new THREE.MeshStandardMaterial({ color: 0xcfae94, roughness: 0.45, emissive: new THREE.Color(0.25, 0.5, 1.3), emissiveIntensity: 0.05 });
+  const linen = new THREE.MeshStandardMaterial({ color: 0xffffff, map: linenTex(), roughness: 0.8 });
+  const linenDS = linen.clone(); linenDS.side = THREE.DoubleSide;
+  const lining = new THREE.MeshStandardMaterial({ color: 0xa6b0c2, roughness: 0.85, side: THREE.BackSide });
+  const gold = new THREE.MeshStandardMaterial({ color: 0xc89a48, metalness: 0.9, roughness: 0.3 });
+  const hair = new THREE.MeshPhysicalMaterial({ color: 0xe6eaf1, roughness: 0.5, sheen: 1, sheenColor: new THREE.Color(0xc8dcff), sheenRoughness: 0.4 });
+  const eye = new THREE.MeshBasicMaterial({ color: new THREE.Color(0.07, 0.07, 0.09) });
+  const brow = new THREE.MeshStandardMaterial({ color: 0xe4e8ef, roughness: 0.7 });
+  const nail = new THREE.MeshStandardMaterial({ color: 0xe8d2c0, roughness: 0.35 });
+  const wrinkle = new THREE.MeshBasicMaterial({ color: 0x7a5a4a });
 
-  // ---- pelvis + skirt ----
-  const pelvisProf = [[0, -0.18], [0.17, -0.16], [0.25, -0.08], [0.275, 0.02], [0.265, 0.15], [0, 0.17]];
-  P.add(j.hips, lathe(pelvisProf), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.68]);
+  // ---- pelvis (under the wrap), waist band of rolled linen with a knot at the right hip ----
+  P.add(j.hips, lathe([[0, -0.19], [0.18, -0.17], [0.27, -0.08], [0.3, 0.02], [0.29, 0.15], [0, 0.17]]), linen, [0, 0, 0], [0, 0, 0], [1, 1, 0.72]);
   {
-    const sk = lathe([[0.29, 0.075], [0.315, -0.05], [0.36, -0.2], [0.41, -0.36], [0.45, -0.46]], 64);
-    const pos = sk.attributes.position;
-    for (let i = 0; i < pos.count; i++) {
-      const x = pos.getX(i), y = pos.getY(i), z = pos.getZ(i);
-      const a = Math.atan2(x, z);
-      const depth = Math.min(1, (0.08 - y) / 0.5);
-      const k = 1 + 0.06 * depth * Math.sin(a * 18) + 0.02 * depth * Math.sin(a * 7 + 1);
-      pos.setXYZ(i, x * k, y - depth * 0.05 * (1 + Math.cos(a)) * 0.5, z * k);
-    }
-    sk.computeVertexNormals();
-    P.add(j.hips, sk, cloth, [0, 0, 0], [0, 0, 0], [1, 1, 0.8]);
-    P.add(j.hips, new THREE.TorusGeometry(0.278, 0.032, 10, 48), gold, [0, 0.07, 0], [Math.PI / 2, 0, 0], [1, 0.69, 1]);
-    P.add(j.hips, new THREE.TorusGeometry(0.278, 0.014, 8, 48), gold, [0, 0.025, 0], [Math.PI / 2, 0, 0], [1.02, 0.7, 1]);
-    P.add(j.hips, boltShape(), glowMat, [0, 0.07, 0.19], [0, 0, 0], [1.6, 1.6, 1.6]);
-    P.ell(j.hips, gold, [0, 0.07, 0.185], [0.075, 0.06, 0.02]);
+    const ring = [];
+    for (let i = 0; i < 64; i++) { const a = (i / 64) * Math.PI * 2; ring.push(new V3(Math.sin(a) * 0.318, 0.135 + 0.012 * Math.sin(a * 3 + 1), Math.cos(a) * 0.318 * 0.76)); }
+    const rc = new THREE.CatmullRomCurve3(ring, true), band = new THREE.TubeGeometry(rc, 128, 0.04, 10, true);
+    { const pa = band.attributes.position, c = new V3(), ctr = new V3(); for (let i = 0; i < pa.count; i++) { const t = Math.floor(i / 11) / 128, k = 1 + 0.18 * Math.sin(t * Math.PI * 2 * 22 + (i % 11) * 0.6); rc.getPointAt(t % 1, ctr); c.set(pa.getX(i), pa.getY(i), pa.getZ(i)); pa.setXYZ(i, ctr.x + (c.x - ctr.x) * k, ctr.y + (c.y - ctr.y) * k, ctr.z + (c.z - ctr.z) * k); } band.computeVertexNormals(); }
+    P.add(j.hips, band, linen);
+    P.ell(j.hips, linen, [-0.2, 0.12, 0.2], [0.075, 0.06, 0.05], [0, -0.6, 0.3]);
+    P.ell(j.hips, linen, [-0.25, 0.09, 0.16], [0.06, 0.07, 0.05], [0, -0.8, -0.4]);
   }
-  // ---- abdomen ----
-  const abProf = [[0, -0.06], [0.245, -0.05], [0.25, 0.05], [0.262, 0.16], [0.28, 0.26], [0.29, 0.31], [0, 0.32]];
-  P.add(j.spine, sculptLathe(abProf, MUSCLE.abs(1.05)), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.66]);
-  // ---- chest ----
-  const chProf = [[0, -0.07], [0.285, -0.06], [0.33, 0.04], [0.37, 0.15], [0.365, 0.23], [0.31, 0.3], [0.17, 0.345], [0, 0.355]];
-  P.add(j.chest, sculptLathe(chProf, MUSCLE.chest(1.1)), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.62]);
+  // ---- abdomen: deep-cut abs and heavy obliques ----
+  const abProf = [[0, -0.06], [0.272, -0.05], [0.276, 0.05], [0.292, 0.16], [0.312, 0.26], [0.326, 0.31], [0, 0.32]];
+  const abGeo = sculptLathe(abProf, MUSCLE.abs(1.2, [0.035, 0.11, 0.185], 0.034).concat([-1, 1].map((sd) => ({ a: sd * 1.0, y: 0.1, sa: 0.38, sy: 0.12, h: 0.03 }))));
+  P.add(j.spine, abGeo, skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.68]);
+  // ---- chest: a barrel of muscle; the traps rise like hills to the ears, the upper back humps behind ----
+  const chProf = [[0, -0.07], [0.322, -0.06], [0.372, 0.04], [0.412, 0.15], [0.402, 0.23], [0.336, 0.3], [0.17, 0.345], [0, 0.355]];
+  const chB = MUSCLE.chest(1.75).concat([-1, 1].map((sd) => ({ a: sd * 0.45, y: 0.04, sa: 0.32, sy: 0.024, h: -0.024 })), [-1, 1].map((sd) => ({ a: sd * 0.72, y: 0.17, sa: 0.22, sy: 0.08, h: 0.02 })));
+  const chGeo = sculptLathe(chProf, chB);
+  P.add(j.chest, chGeo, skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.64]);
   for (const s of [-1, 1]) {
+    P.ell(j.chest, skin, [s * 0.19, 0.33, -0.03], [0.19, 0.12, 0.15], [0.15, 0, s * -0.5]);          // trapezius
+    P.ell(j.chest, skin, [s * 0.1, 0.36, -0.06], [0.11, 0.1, 0.12], [0, 0, s * -0.3]);
+    P.ell(j.chest, skin, [s * 0.2, 0.15, -0.18], [0.2, 0.2, 0.12], [0.2, s * 0.4, 0]);                // upper back
   }
-  // himation sash over left shoulder
-  {
-    const R = (y) => profileR(chProf, y);
-    const path = [[-0.75, -0.12], [-0.25, -0.01], [0.3, 0.11], [0.8, 0.22], [1.45, 0.34], [2.2, 0.26], [2.85, 0.1], [3.5, -0.06], [4.0, -0.12]];
-    const pts = path.map(([a, y]) => {
-      const r = R(Math.min(0.3, y)) * (Math.abs(a - 1.5) < 0.5 ? 1.18 : 1.05) + 0.012;
-      return new V3(Math.sin(a) * r, y, Math.cos(a) * r * 0.66 + 0.012);
-    });
-    const g = ribbon(pts, 0.17, (p) => new V3(p.x, 0.15, p.z / 0.4).normalize(), 60);
-    P.add(j.chest, g, cloth);
-    P.ell(j.chest, gold, [0.29, 0.29, 0.1], [0.04, 0.04, 0.02], [0, 0.6, 0]);     // fibula brooch
-  }
-  // ---- neck & head ----
-  P.add(j.neck, lathe([[0, -0.04], [0.098, -0.03], [0.09, 0.06], [0.085, 0.15], [0, 0.17]]), skin);
-  P.ell(j.neck, skin, [0, 0.03, -0.04], [0.11, 0.07, 0.08]);
+  // ---- neck: thick, corded ----
+  const neckGeo = sculpt(lathe([[0, -0.04], [0.12, -0.03], [0.112, 0.06], [0.1, 0.13], [0, 0.15]]), [-1, 1].map((sd) => ({ a: sd * 0.55, y: 0.05, sa: 0.18, sy: 0.06, h: 0.012 })));
+  P.add(j.neck, neckGeo, skin);
+  // ---- head: bald and wrinkled, sunken dark eyes, flaring white brows, moustache, a beard bound in a ring ----
   const H = j.head;
-  animeHead(P, H, { skin, hair, iris: eye, glowEyes: true, beard: true, browMat: brow, browW: 0.0062, browTilt: -0.08, style: { bangs: 5, bangLen: 0.06, bangSweep: 0.6, side: 0.13, back: 11, backLen: 0.3, backLift: 0.2 } });
-  // laurel wreath
-  P.add(H, new THREE.TorusGeometry(0.128, 0.008, 6, 40), gold, [0, 0.165, -0.01], [Math.PI / 2 - 0.18, 0, 0], [1, 1.08, 1]);
-  for (let i = 0; i < 26; i++) {
-    const a = (i / 26) * Math.PI * 2;
-    if (Math.abs(Math.sin(a / 2 + Math.PI / 2)) > 0.97) continue; // gap at front
-    for (const o of [-1, 1]) {
-      const x = Math.sin(a) * 0.13, z = Math.cos(a) * 0.14 - 0.01;
-      P.ell(H, gold, [x, 0.17 + o * 0.016 - z * 0.18, z], [0.011, 0.028, 0.005], [o * 0.6, a, 0], true);
-    }
+  const W = (x0, y0, x1, y1, w = 0.0045) => [x0, y0, x1, y1, w, wrinkle];
+  const marks = [];
+  for (const [y, wdt] of [[0.47, 0.3], [0.56, 0.36], [0.65, 0.32], [0.74, 0.24]]) for (let k = 0; k < 4; k++) { const x0 = -wdt + (k / 4) * wdt * 2, x1 = x0 + wdt / 2; marks.push(W(x0, y + 0.02 * Math.sin(k * 1.7 + y * 9), x1, y + 0.02 * Math.sin((k + 1) * 1.7 + y * 9), 0.004)); }
+  for (const s of [-1, 1]) {
+    marks.push(W(s * 0.07, 0.36, s * 0.04, 0.44, 0.005), W(s * 0.12, 0.36, s * 0.1, 0.44, 0.004));                       // frown lines
+    marks.push(W(s * 0.6, 0.1, s * 0.74, 0.16), W(s * 0.6, 0.05, s * 0.76, 0.04), W(s * 0.6, 0.0, s * 0.72, -0.08));     // crow's feet
+    marks.push(W(s * 0.22, -0.06, s * 0.5, -0.1, 0.004), W(s * 0.26, -0.12, s * 0.46, -0.15, 0.003));                    // bags under the eyes
+    marks.push(W(s * 0.14, -0.3, s * 0.26, -0.48, 0.006), W(s * 0.26, -0.48, s * 0.3, -0.66, 0.005));                   // nose-to-mouth folds
+    marks.push(W(s * 0.55, -0.3, s * 0.62, -0.5, 0.004));                                                                 // hollow cheek line
   }
-  // ---- arms ----
+  animeHead(P, H, { skin, hair, iris: eye, browMat: brow, shadow: true, darkEyes: true, bald: true, marks, lip: 0x9a6a5a, lash: 0x2a2222, browW: 0.003, browTilt: 0.1, lashW: 0.8,
+    face: { jaw: 1.12, chin: 1.0, len: 1.02, hollow: 0.045, nose: 1.3, noseLen: 1.12, eyeW: 0.86, eyeH: 0.62, eyeTilt: -0.12, eyeY: -0.01, lid: 0.32, browY: 0.0, mouthW: 0.9, smile: -0.16, ear: 0 },
+    style: {} });
+  for (const s of [-1, 1]) P.ell(H, skin, [s * 0.07, 0.17, 0.088], [0.045, 0.02, 0.03], [0, 0, s * -0.15]);          // heavy brow ridge
+  {
+    const lockMat = hair.clone(); lockMat.map = hairTex();
+    const lk = (pts, r, r1 = 0.12, sq = null) => P.add(H, taperTube(pts, r, r * r1, 14, 7, sq), lockMat);
+    // brows: long white tufts sweeping out and up past the temples
+    for (const s of [-1, 1]) for (let k = 0; k < 7; k++) {
+      const x = s * (0.014 + k * 0.01), y = 0.163 + (k % 2) * 0.006, up = k % 3 === 1 ? 0.012 : 0;
+      lk([[x, y, 0.12 - k * 0.004], [s * (0.045 + k * 0.011), y + 0.008 + up * 0.5, 0.116 - k * 0.005], [s * (0.08 + k * 0.01), y + 0.016 + up, 0.098 - k * 0.006], [s * (0.106 + k * 0.009), y + 0.018 + up * 1.6 - (k > 4 ? 0.012 : 0), 0.07 - k * 0.005]], 0.012, 0.14);
+    }
+    // moustache: thick strands from under the nose drooping past the corners of the mouth
+    for (const s of [-1, 1]) for (let k = 0; k < 4; k++) {
+      lk([[s * (0.006 + k * 0.006), 0.036 + k * 0.002, 0.128 - k * 0.003], [s * (0.04 + k * 0.006), 0.026, 0.124 - k * 0.004], [s * (0.068 + k * 0.004), -0.01 - k * 0.006, 0.112], [s * (0.074 + k * 0.006), -0.075 - k * 0.012, 0.11 + k * 0.004]], 0.012, 0.15);
+    }
+    // beard: gathered from the chin into a ring, then a long tail resting forward on the chest
+    for (let k = 0; k < 7; k++) {
+      const x = (k - 3) * 0.013;
+      lk([[x * 1.6, -0.02, 0.1], [x * 1.1, -0.06, 0.13], [x * 0.4, -0.1, 0.152]], 0.016, 0.6);
+      lk([[x * 0.4, -0.1, 0.152], [x * 0.7 + 0.004, -0.15, 0.18], [x * 0.9 - 0.006, -0.2, 0.205], [x * 0.5 + 0.008, -0.25, 0.225]], 0.0095, 0.15);
+    }
+    // the white tuft standing up on the crown
+    for (let k = 0; k < 6; k++) { const x = (k - 2.5) * 0.009, z = 0.035 - (k % 2) * 0.016; lk([[x, 0.228, z], [x * 0.8, 0.268, z - 0.004], [x * 0.4 + 0.004, 0.302, z - 0.016], [0.006 + x * 0.15, 0.33 + (k % 3) * 0.008, -0.02]], 0.017, 0.08); }
+  }
+  // the ring binding the beard (axis along the beard)
+  P.add(H, new THREE.TorusGeometry(0.02, 0.0075, 8, 20), gold, [0, -0.105, 0.155], [1.12, 0, 0]);
+  // ---- arms: boulders of shoulder, bicep and forearm, all corded with veins; huge hands ----
+  const veinsF = (sg) => [
+    [[0.2, -0.02], [0.35, -0.08], [0.22, -0.15], [0.4, -0.22], [0.3, -0.28]], [[1.2, -0.03], [1.0, -0.1], [1.25, -0.18], [1.05, -0.27]],
+    [[-0.9, -0.04], [-1.1, -0.12], [-0.85, -0.2], [-1.0, -0.27]], [[0.35, -0.08], [0.7, -0.12], [0.95, -0.15]], [[0.22, -0.15], [-0.1, -0.19], [-0.35, -0.23]], [[1.25, -0.18], [1.6, -0.21], [1.85, -0.24]],
+  ].map((p) => p.map(([a, y]) => [a * sg, y]));
+  const veinsU = (sg) => [
+    [[0.1, -0.05], [-0.05, -0.12], [0.12, -0.2], [0.02, -0.29]], [[0.8, -0.07], [0.95, -0.16], [0.72, -0.25]], [[-0.05, -0.12], [0.35, -0.15], [0.8, -0.16]],
+    [[-1.6, -0.06], [-1.4, -0.15], [-1.7, -0.25]], [[2.4, -0.1], [2.6, -0.2]],
+  ].map((p) => p.map(([a, y]) => [a * sg, y]));
   for (const [s, sg] of [['l', 1], ['r', -1]]) {
     const sh = j[s + 'Sh'], el = j[s + 'El'], wr = j[s + 'Wr'];
-    P.add(sh, sculpt(muscleLimb(0.33, 0.1, 0.075, 0.018, 0.6), MUSCLE.upperArm(1.1)), skin);
-    P.ell(sh, skin, [sg * 0.015, -0.03, 0], [0.118, 0.13, 0.112]);                     // deltoid
-    P.add(el, sculpt(muscleLimb(0.29, 0.085, 0.056, 0.02, 0.72), MUSCLE.forearm(1.1)), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.88]);
-    // bracer
-    P.add(el, lathe([[0.071, -0.27], [0.073, -0.24], [0.078, -0.13], [0.074, -0.11]], 28), gold, [0, 0, 0], [0, 0, 0], [1, 1, 0.92]);
-    P.add(el, new THREE.TorusGeometry(0.078, 0.006, 6, 30), glowMat, [0, -0.19, 0], [Math.PI / 2, 0, 0], [1, 0.92, 1]);
-    P.add(el, new THREE.TorusGeometry(0.08, 0.008, 6, 30), gold, [0, -0.13, 0], [Math.PI / 2, 0, 0], [1, 0.92, 1]);
-    // fist
-    P.ell(wr, skin, [0, -0.055, 0.012], [0.062, 0.068, 0.068]);
-    P.ell(wr, skin, [0, -0.098, 0.03], [0.055, 0.025, 0.04]);
-    P.ell(wr, skin, [sg * -0.045, -0.06, 0.05], [0.022, 0.035, 0.022], [0.4, 0, 0]);
-    // legs
+    const ua = sculpt(muscleLimb(0.32, 0.13, 0.095, 0.03, 0.55), MUSCLE.upperArm(1.9));
+    P.add(sh, ua, skin);
+    addVeins(P, sh, ua, veinsU(sg), vein, 1, 0.008);
+    P.ell(sh, skin, [sg * 0.035, -0.04, 0], [0.16, 0.17, 0.155]);                                      // deltoid
+    P.ell(sh, skin, [sg * 0.05, -0.1, 0.06], [0.1, 0.12, 0.09], [0.3, 0, sg * 0.2]);                    // front head
+    P.ell(sh, skin, [sg * 0.05, -0.1, -0.06], [0.1, 0.12, 0.09], [-0.3, 0, sg * 0.2]);                  // rear head
+    const fa = sculpt(muscleLimb(0.29, 0.118, 0.072, 0.036, 0.74), MUSCLE.forearm(2.1));
+    P.add(el, fa, skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.9]);
+    addVeins(P, el, fa, veinsF(sg), vein, 0.9, 0.0075);
+    // hand: a broad palm and thick fingers (from addDetail), knuckles like stones
+    P.ell(wr, skin, [0, -0.062, 0.012], [0.074, 0.08, 0.074]);
+    P.ell(wr, skin, [0, -0.106, 0.034], [0.068, 0.03, 0.046]);
+    P.ell(wr, skin, [sg * -0.05, -0.05, 0.03], [0.03, 0.045, 0.034], [0.3, 0, sg * 0.3]);              // thumb pad
+    // legs: thick thighs (mostly under the wrap), great calves, bare feet
     const hp = j[s + 'Hip'], kn = j[s + 'Kn'], an = j[s + 'An'];
-    P.add(hp, sculpt(muscleLimb(0.47, 0.135, 0.078, 0.022, 0.62), MUSCLE.thigh(1.1, sg)), skin);
-    P.add(kn, sculpt(muscleLimb(0.46, 0.078, 0.05, 0.0, 0.7), MUSCLE.calf(1.1)), skin);
-    for (const y of [-0.28, -0.35, -0.42]) P.add(kn, new THREE.TorusGeometry(0.06 - (y + 0.28) * 0.08, 0.008, 6, 24), leather, [0, y, 0], [Math.PI / 2 + 0.12, 0, 0]);
-    P.add(kn, new THREE.TorusGeometry(0.068, 0.012, 6, 24), gold, [0, -0.22, 0], [Math.PI / 2, 0, 0]);
-    P.ell(an, skin, [0, -0.035, 0.05], [0.055, 0.04, 0.12]);
+    P.add(hp, sculpt(muscleLimb(0.47, 0.17, 0.096, 0.03, 0.6), MUSCLE.thigh(1.7, sg)), skin);
+    const cf = sculpt(muscleLimb(0.46, 0.098, 0.058, 0.026, 0.72), MUSCLE.calf(1.9));
+    P.add(kn, cf, skin);
+    addVeins(P, kn, cf, [[[0.6 * sg, -0.05], [0.4 * sg, -0.15], [0.7 * sg, -0.28], [0.5 * sg, -0.38]], [[-0.5 * sg, -0.08], [-0.75 * sg, -0.2], [-0.55 * sg, -0.32]]], vein, 1, 0.0055);
+    P.ell(kn, skin, [0, -0.005, 0.05], [0.055, 0.06, 0.04]);                                             // kneecap
+    P.ell(an, skin, [0, -0.034, 0.05], [0.066, 0.043, 0.132]);
+    P.ell(an, skin, [0, -0.02, 0.1], [0.06, 0.03, 0.06], [-0.2, 0, 0]);                                 // instep
   }
-  addDetail(P, j, { skin, hair, sole: leather, strap: leather, metal: gold }, { anime: true, k: 1, eye: [0.042, 0.112, 0.111], lip: 0x9a5a48, curls: true });
+  addDetail(P, j, { skin, hair, sole: skin, strap: skin, metal: nail }, { anime: true, k: 1.22, eye: [0.042, 0.112, 0.111], lip: 0x9a6a5a, curls: false, armored: true, barefoot: true });
+  // veins over the chest, shoulders and neck
+  addVeins(P, j.chest, chGeo, [
+    [[0.95, 0.2], [1.05, 0.13], [0.88, 0.06], [1.1, -0.02]], [[-0.95, 0.2], [-1.05, 0.13], [-0.88, 0.06], [-1.1, -0.02]],
+    [[1.45, 0.22], [1.6, 0.12], [1.45, 0.02], [1.62, -0.05]], [[-1.45, 0.22], [-1.6, 0.12], [-1.45, 0.02], [-1.62, -0.05]],
+    [[0.62, 0.2], [0.5, 0.14], [0.58, 0.07]], [[-0.62, 0.2], [-0.5, 0.14], [-0.58, 0.07]],
+    [[2.6, 0.25], [2.4, 0.15], [2.55, 0.05]], [[-2.6, 0.25], [-2.4, 0.15], [-2.55, 0.05]],
+  ], vein, 0.64, 0.006);
+  addVeins(P, j.spine, abGeo, [[[1.15, 0.28], [1.25, 0.18], [1.1, 0.08]], [[-1.15, 0.28], [-1.25, 0.18], [-1.1, 0.08]]], vein, 0.68, 0.0055);
+  addVeins(P, j.neck, neckGeo, [[[0.62, -0.02], [0.5, 0.05], [0.66, 0.12]], [[-0.62, -0.02], [-0.5, 0.05], [-0.66, 0.12]]], vein, 1, 0.006);
+  // ---- the sash: over the left shoulder, across chest and back to the right hip ----
+  {
+    const sp = (a, y, lift = 0.022) => { const yy = Math.max(-0.07, Math.min(0.355, y)), geo = y >= -0.05 ? chGeo : abGeo, sz = y >= -0.05 ? 0.64 : 0.68, yl = y >= -0.05 ? yy : y + 0.27; const r = surfR(geo, a, yl) + lift; return new V3(Math.sin(a) * r, y, Math.cos(a) * r * sz); };
+    const pts = [
+      sp(-1.02, -0.3), sp(-0.86, -0.2), sp(-0.55, -0.08), sp(-0.16, 0.04), sp(0.28, 0.15), sp(0.66, 0.26, 0.03),
+      new V3(0.25, 0.4, 0.12), new V3(0.28, 0.452, -0.02), new V3(0.26, 0.4, -0.16),
+      sp(2.35, 0.27, 0.03), sp(2.8, 0.13), sp(3.3, 0.0), sp(3.8, -0.13), sp(4.25, -0.24), sp(4.45, -0.3),
+    ];
+    const out = (p) => new V3(p.x, (p.y - 0.12) * 0.9, p.z / 0.64).normalize();
+    P.add(j.chest, foldBand(pts, 0.26, out, 3, 0.014, 96, 10, (t) => 1 - 0.42 * Math.exp(-(((t - 0.47) / 0.09) ** 2))), linenDS);
+  }
   P.build();
 
-  // fist glow sprites
+  // fist glow sprites (lightning in the hands)
   const glow = {};
   for (const s of ['l', 'r']) {
-    const g = glowSprite(T.glow, 0x9fd0ff, 0.6);
-    g.position.set(0, -0.06, 0.02);
+    const g = glowSprite(T.glow, 0x9fd0ff, 0.7);
+    g.position.set(0, -0.07, 0.02);
     j[s + 'Wr'].add(g);
     glow[s] = g;
   }
-  const eyeGlow = glowSprite(T.glow, 0xbfe0ff, 0.25);
-  eyeGlow.position.set(0, 0.11, 0.12);
-  j.head.add(eyeGlow);
-  eyeGlow.material.opacity = 0.35;
+  // ---- the waist wrap: bunched linen to just above the knees, longer and fuller in front ----
+  makeCloth(M, { joint: j.hips, rows: 10, cols: 27, pin: 2, loop: true, mats: [linen, lining],
+    rest: (v, u) => {
+      const a = Math.PI + u * Math.PI * 2, ca = Math.cos(a), fl = Math.pow(v, 1.1);
+      const k = 1 + (0.055 * Math.sin(a * 7 + 1) + 0.03 * Math.sin(a * 13 + 2)) * Math.min(1, v * 2.5);
+      return [Math.sin(a) * (0.318 + 0.13 * fl) * k, 0.15 - (0.55 + 0.07 * Math.max(0, ca)) * v, ca * (0.242 + 0.12 * fl) * k];
+    },
+    hold: (v) => 0.14 * (1 - v) * (1 - v) + 0.02 });
+  M.clothR = { pelvis: 0.21, pelvisX: 0.12, torso: 0.27, thigh: 0.17, shin: 0.105, foot: 0.07 };
 
   M.glow = glow;
-  M.mats = { skin, gold, glowMat, eye };
+  M.mats = { skin, gold, glowMat: vein, eye };
   M.color = new THREE.Color(0.7, 0.85, 1.6);
   M.trails = [
-    { obj: j.rWr, a: new V3(0, -0.04, 0.02), b: new V3(0, -0.15, 0.05), color: [0.5, 0.9, 2.2], core: [2.0, 2.5, 3.4], spark: 'bolt' },
-    { obj: j.lWr, a: new V3(0, -0.04, 0.02), b: new V3(0, -0.15, 0.05), color: [0.5, 0.9, 2.2], core: [2.0, 2.5, 3.4], spark: 'bolt' },
+    { obj: j.rWr, a: new V3(0, -0.04, 0.02), b: new V3(0, -0.16, 0.05), color: [0.5, 0.9, 2.2], core: [2.0, 2.5, 3.4], spark: 'bolt' },
+    { obj: j.lWr, a: new V3(0, -0.04, 0.02), b: new V3(0, -0.16, 0.05), color: [0.5, 0.9, 2.2], core: [2.0, 2.5, 3.4], spark: 'bolt' },
   ];
-  enhanceModel(M.root, 0x9fc8ff, 0.5);
+  enhanceModel(M.root, 0xbfd4ff, 0.45);
+  settleCloth(M, 30);
   return M;
 }
 
 // ============================================================
-//  POSEIDON
+//  CLOTH  (long skirts and panels: a grid of particles hung from a joint, simulated in the model's root space)
 // ============================================================
+// The top rows ride on the joint; the rest fall under gravity, keep their spacing, drift back toward the rest drape
+// and are pushed out of the body's capsules (pelvis, torso, thighs, shins, feet), so a floor-length robe swings,
+// flares in spins and parts around kicks instead of passing through the legs.
+const _clInv = new THREE.Matrix4(), _clM = new THREE.Matrix4(), _clV = new V3(), _clW = new V3();
+function makeCloth(M, o) {
+  const R = o.rows, C = o.cols, n = R * C;
+  const rest = new Float32Array(n * 3);
+  for (let r = 0; r < R; r++) for (let c = 0; c < C; c++) rest.set(o.rest(r / (R - 1), c / (C - 1)), (r * C + c) * 3);
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(rest.slice(), 3));
+  const uv = new Float32Array(n * 2);
+  for (let r = 0; r < R; r++) for (let c = 0; c < C; c++) { uv[(r * C + c) * 2] = c / (C - 1); uv[(r * C + c) * 2 + 1] = 1 - r / (R - 1); }
+  g.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
+  const idx = [];
+  for (let r = 0; r < R - 1; r++) for (let c = 0; c < C - 1; c++) { const a = r * C + c, b = a + C; idx.push(a, b, a + 1, a + 1, b, b + 1); }
+  {   // front faces point away from the joint's vertical axis
+    const P = (i) => new V3(rest[i * 3], rest[i * 3 + 1], rest[i * 3 + 2]), a = Math.floor(R / 2) * C + Math.floor(C / 2);
+    const nrm = new V3().crossVectors(P(a + C).sub(P(a)), P(a + 1).sub(P(a))), out = P(a); out.y = 0;
+    if (nrm.dot(out) < 0) for (let i = 0; i < idx.length; i += 3) { const t = idx[i + 1]; idx[i + 1] = idx[i + 2]; idx[i + 2] = t; }
+  }
+  g.setIndex(idx); g.computeVertexNormals();
+  const links = [];
+  const L = (i, j, s) => links.push(i, j, Math.hypot(rest[i * 3] - rest[j * 3], rest[i * 3 + 1] - rest[j * 3 + 1], rest[i * 3 + 2] - rest[j * 3 + 2]), s);
+  for (let r = 0; r < R; r++) for (let c = 0; c < C; c++) {
+    const i = r * C + c;
+    if (r + 1 < R) L(i, i + C, 1);
+    if (c + 1 < C) L(i, i + 1, 0.85);
+    if (r + 2 < R) L(i, i + 2 * C, 0.3);
+    if (c + 2 < C) L(i, i + 2, 0.2);
+    if (o.loop && c === 0) L(i, i + C - 1, 1);   // a wrap: the first and last columns are the same seam
+  }
+  const hold = new Float32Array(R);
+  for (let r = 0; r < R; r++) hold[r] = r < o.pin ? 1 : o.hold(r / (R - 1));
+  const meshes = [];
+  for (const mat of o.mats) { const m = new THREE.Mesh(g, mat); m.frustumCulled = false; m.castShadow = true; m.receiveShadow = true; M.root.add(m); meshes.push(m); }
+  const cl = { joint: o.joint, R, C, n, rest, g, meshes, links: new Float32Array(links), hold, p0: o.pin * C, p: new Float32Array(n * 3), q: new Float32Array(n * 3), tgt: new Float32Array(n * 3), ready: false, acc: 0, prev: null };
+  (M.cloths || (M.cloths = [])).push(cl);
+  return cl;
+}
+// the body's collision capsules in root space: [ax, ay, az, bx, by, bz, r] per capsule
+function clothCapsules(M) {
+  const j = M.j, caps = M.clothCaps || (M.clothCaps = []);
+  caps.length = 0;
+  const pt = (jt, x, y, z, out) => out.set(x, y, z).applyMatrix4(_clM.multiplyMatrices(_clInv, jt.matrixWorld));
+  const cap = (ja, a, jb, b, r) => { pt(ja, a[0], a[1], a[2], _clV); pt(jb, b[0], b[1], b[2], _clW); caps.push(_clV.x, _clV.y, _clV.z, _clW.x, _clW.y, _clW.z, r); };
+  const R = M.clothR || { pelvis: 0.17, pelvisX: 0.1, torso: 0.2, thigh: 0.125, shin: 0.09, foot: 0.065 };
+  cap(j.hips, [-R.pelvisX, -0.03, 0], j.hips, [R.pelvisX, -0.03, 0], R.pelvis);
+  cap(j.hips, [0, 0.02, 0], j.chest, [0, 0.18, 0], R.torso);
+  for (const s of ['l', 'r']) {
+    cap(j[s + 'Hip'], [0, 0.03, 0], j[s + 'Kn'], [0, 0, 0], R.thigh);
+    cap(j[s + 'Kn'], [0, 0, 0], j[s + 'An'], [0, 0, 0], R.shin);
+    cap(j[s + 'An'], [0, -0.03, -0.03], j[s + 'An'], [0, -0.04, 0.13], R.foot);
+  }
+  return caps;
+}
+function stepCloth(cl, h, caps, floor) {
+  const { p, q, tgt, hold, links, n, C, p0 } = cl;
+  const gy = 9.8 * h * h, damp = 0.985, P0 = p0 * 3, NL = links.length, NC = caps.length;
+  for (let i = 0; i < P0; i++) { p[i] = tgt[i]; q[i] = tgt[i]; }
+  for (let i = p0; i < n; i++) {
+    const k = i * 3, hk = hold[(i / C) | 0];
+    for (let d = 0; d < 3; d++) { const v = (p[k + d] - q[k + d]) * damp; q[k + d] = p[k + d]; p[k + d] += v + (tgt[k + d] - p[k + d]) * hk; }
+    p[k + 1] -= gy;
+  }
+  for (let it = 0; it < 3; it++) {
+    for (let l = 0; l < NL; l += 4) {
+      const a = links[l] * 3, b = links[l + 1] * 3, wa = a < P0 ? 0 : 1, wb = b < P0 ? 0 : 1, w = wa + wb;
+      if (!w) continue;
+      const dx = p[b] - p[a], dy = p[b + 1] - p[a + 1], dz = p[b + 2] - p[a + 2], d = Math.sqrt(dx * dx + dy * dy + dz * dz) || 1e-6;
+      const f = ((d - links[l + 2]) / d) * links[l + 3] / w;
+      p[a] += dx * f * wa; p[a + 1] += dy * f * wa; p[a + 2] += dz * f * wa;
+      p[b] -= dx * f * wb; p[b + 1] -= dy * f * wb; p[b + 2] -= dz * f * wb;
+    }
+    for (let i = P0; i < n * 3; i += 3) {
+      let x = p[i], y = p[i + 1], z = p[i + 2];
+      for (let c = 0; c < NC; c += 7) {
+        const ax = caps[c], ay = caps[c + 1], az = caps[c + 2], ux = caps[c + 3] - ax, uy = caps[c + 4] - ay, uz = caps[c + 5] - az, r = caps[c + 6];
+        const uu = ux * ux + uy * uy + uz * uz;
+        let t = uu > 1e-9 ? ((x - ax) * ux + (y - ay) * uy + (z - az) * uz) / uu : 0;
+        t = t < 0 ? 0 : t > 1 ? 1 : t;
+        const dx = x - (ax + ux * t), dy = y - (ay + uy * t), dz = z - (az + uz * t), d2 = dx * dx + dy * dy + dz * dz;
+        if (d2 < r * r && d2 > 1e-10) { const k = r / Math.sqrt(d2); x = ax + ux * t + dx * k; y = ay + uy * t + dy * k; z = az + uz * t + dz * k; }
+      }
+      if (y < floor) y = floor;
+      p[i] = x; p[i + 1] = y; p[i + 2] = z;
+    }
+  }
+}
+// advance every cloth of a model by dt; floor is the ground height in the root's space
+function updateCloth(M, dt, floor = 0) {
+  if (!M.cloths) return;
+  M.root.updateMatrixWorld(true);
+  _clInv.copy(M.root.matrixWorld).invert();
+  const caps = clothCapsules(M), rp = M.root.position, yaw = M.root.rotation.y, sc = M.root.scale.x || 1;
+  for (const cl of M.cloths) {
+    // the root moved or turned: carry the particles through the change so the cloth keeps its world-space momentum
+    if (cl.prev && cl.ready) {
+      const [px, py, pz, pyaw] = cl.prev, dx = rp.x - px, dy = rp.y - py, dz = rp.z - pz;
+      if (dx * dx + dy * dy + dz * dz > 4) cl.ready = false;
+      else if (dx || dy || dz || yaw !== pyaw) {
+        const c0 = Math.cos(pyaw), s0 = Math.sin(pyaw), c1 = Math.cos(yaw), s1 = Math.sin(yaw), isc = 1 / sc;
+        for (const A of [cl.p, cl.q]) for (let i = 0; i < A.length; i += 3) {
+          const x = A[i], z = A[i + 2], wx = (c0 * x + s0 * z) * sc - dx, wz = (-s0 * x + c0 * z) * sc - dz;
+          A[i] = (c1 * wx - s1 * wz) * isc; A[i + 1] -= dy * isc; A[i + 2] = (s1 * wx + c1 * wz) * isc;
+        }
+      }
+    }
+    cl.prev = [rp.x, rp.y, rp.z, yaw];
+    _clM.multiplyMatrices(_clInv, cl.joint.matrixWorld);
+    const e = _clM.elements, rest = cl.rest, tgt = cl.tgt;
+    for (let i = 0; i < cl.n * 3; i += 3) {
+      const x = rest[i], y = rest[i + 1], z = rest[i + 2];
+      tgt[i] = e[0] * x + e[4] * y + e[8] * z + e[12]; tgt[i + 1] = e[1] * x + e[5] * y + e[9] * z + e[13]; tgt[i + 2] = e[2] * x + e[6] * y + e[10] * z + e[14];
+    }
+    if (!cl.ready) { cl.p.set(tgt); cl.q.set(tgt); cl.ready = true; cl.acc = 0; }
+    const h = 1 / 120;
+    cl.acc = Math.min(cl.acc + dt, h * 4);
+    while (cl.acc >= h) { stepCloth(cl, h, caps, floor + 0.012); cl.acc -= h; }
+    cl.g.attributes.position.array.set(cl.p);
+    cl.g.attributes.position.needsUpdate = true;
+    cl.g.computeVertexNormals();
+  }
+}
+// let the cloth come to rest on the current pose (statues, menus, and a freshly built model)
+function settleCloth(M, steps = 90) {
+  if (!M.cloths) return;
+  for (const cl of M.cloths) { cl.ready = false; cl.prev = null; }
+  for (let i = 0; i < steps; i++) updateCloth(M, 1 / 60, 0);
+  for (const cl of M.cloths) cl.prev = null;
+}
+
+// ============================================================
+//  POSEIDON  (lord of the seas: wavy gold hair, a royal-blue coat worn open over a bare chest, a gold choker,
+//             olive hand wraps, floating gold sigils at the shoulders, a floor-length white sea-robe worked with gold
+//             coral fronds over a fringed front panel, sea-green slotted greaves, gold knee guards, heeled boots,
+//             and the finned trident with silver tines)
+// ============================================================
+// a stem of gold coral: a curve with paired ticks along it, like the ribs of a fin
+function coralFrond(g, x0, y0, cx, cy, x1, y1, tick, lw, col) {
+  g.strokeStyle = col; g.lineCap = 'round';
+  g.lineWidth = lw; g.beginPath(); g.moveTo(x0, y0); g.quadraticCurveTo(cx, cy, x1, y1); g.stroke();
+  const N = Math.max(5, Math.round(Math.hypot(x1 - x0, y1 - y0) / (tick * 1.5)));
+  for (let i = 1; i < N; i++) {
+    const t = i / N, it = 1 - t;
+    const px = it * it * x0 + 2 * it * t * cx + t * t * x1, py = it * it * y0 + 2 * it * t * cy + t * t * y1;
+    const dx = 2 * it * (cx - x0) + 2 * t * (x1 - cx), dy = 2 * it * (cy - y0) + 2 * t * (y1 - cy), L = Math.hypot(dx, dy) || 1;
+    const nx = -dy / L, ny = dx / L, k = tick * (0.55 + 0.45 * Math.sin(t * Math.PI));
+    g.lineWidth = lw * 0.65; g.beginPath(); g.moveTo(px - nx * k, py - ny * k); g.lineTo(px + nx * k, py + ny * k); g.stroke();
+  }
+}
+// the sea-robe: u runs from the left front edge round the back to the right front edge, v from the belt to the hem
+function seaRobeTex() {
+  return canvasTex(1024, 512, (g, w, h) => {
+    const bg = g.createLinearGradient(0, 0, 0, h); bg.addColorStop(0, '#c9d3df'); bg.addColorStop(0.12, '#eef2f6'); bg.addColorStop(0.8, '#f5f7fa'); bg.addColorStop(1, '#e6ebf1');
+    g.fillStyle = bg; g.fillRect(0, 0, w, h);
+    for (let i = 0; i < 46; i++) {      // long folds
+      const x = Math.random() * w, wd = 8 + Math.random() * 30, a = 0.05 + Math.random() * 0.12;
+      const gr = g.createLinearGradient(x - wd, 0, x + wd, 0); gr.addColorStop(0, 'rgba(70,90,130,0)'); gr.addColorStop(0.5, `rgba(70,90,130,${a})`); gr.addColorStop(1, 'rgba(70,90,130,0)');
+      g.fillStyle = gr; g.fillRect(x - wd, 0, wd * 2, h);
+    }
+    // coral fronds sweeping down from the belt toward the hem, and a few arcs low on the skirt
+    const gold = '#cf9a34';
+    for (let k = 0; k < 6; k++) {
+      const x0 = (k + 0.5) / 6 * w, dir = x0 < w / 2 ? -1 : 1, sp = 50 + 30 * Math.abs(x0 / w - 0.5) * 2;
+      coralFrond(g, x0, 30, x0 + dir * sp * 0.2, h * 0.45, x0 + dir * sp, h - 70, 13, 4.5, gold);
+      coralFrond(g, x0 + dir * 12, h * 0.42, x0 + dir * 70, h * 0.48, x0 + dir * 92, h * 0.68, 9, 3, gold);
+    }
+    for (let k = 0; k < 7; k++) { const cx = (k + 0.5) / 7 * w; g.strokeStyle = gold; g.lineWidth = 4; g.beginPath(); g.arc(cx, h + 10, 64, Math.PI * 1.08, Math.PI * 1.92); g.stroke(); coralFrond(g, cx - 58, h - 20, cx, h - 92, cx + 58, h - 20, 8, 3, gold); }
+    // gold front edges and hem
+    const band = (x, y, bw, bh) => { const gr = g.createLinearGradient(x, y, bw > bh ? x : x + bw, bw > bh ? y + bh : y); gr.addColorStop(0, '#fff0b8'); gr.addColorStop(0.5, '#d9a43c'); gr.addColorStop(1, '#8a5a14'); g.fillStyle = gr; g.fillRect(x, y, bw, bh); };
+    band(0, h - 16, w, 16); band(0, 0, 14, h); band(w - 14, 0, 14, h);
+    g.fillStyle = 'rgba(40,40,80,0.35)'; g.fillRect(0, h - 22, w, 3);
+  });
+}
+// the front panel: white with a gold chevron of fronds, gold border, and a gold-bead fringe (alpha-cut)
+function seaPanelTex() {
+  return canvasTex(256, 512, (g, w, h) => {
+    g.clearRect(0, 0, w, h);
+    const fr = h * 0.84;
+    const bg = g.createLinearGradient(0, 0, 0, fr); bg.addColorStop(0, '#cfd8e2'); bg.addColorStop(0.15, '#f1f4f8'); bg.addColorStop(1, '#f6f8fa');
+    g.fillStyle = bg; g.fillRect(0, 0, w, fr);
+    for (let i = 0; i < 8; i++) { const x = Math.random() * w, wd = 8 + Math.random() * 14; const gr = g.createLinearGradient(x - wd, 0, x + wd, 0); gr.addColorStop(0, 'rgba(70,90,130,0)'); gr.addColorStop(0.5, 'rgba(70,90,130,0.1)'); gr.addColorStop(1, 'rgba(70,90,130,0)'); g.fillStyle = gr; g.fillRect(x - wd, 0, wd * 2, fr); }
+    const gold = '#cf9a34';
+    coralFrond(g, w / 2, 40, w * 0.3, fr * 0.5, 22, fr - 30, 10, 4, gold);
+    coralFrond(g, w / 2, 40, w * 0.7, fr * 0.5, w - 22, fr - 30, 10, 4, gold);
+    coralFrond(g, w / 2, 60, w / 2 + 2, fr * 0.5, w / 2, fr - 20, 9, 4, gold);
+    g.strokeStyle = gold; g.lineWidth = 9; g.strokeRect(5, -10, w - 10, fr + 4);
+    const gr = g.createLinearGradient(0, fr, 0, h); gr.addColorStop(0, '#ffe9a0'); gr.addColorStop(0.6, '#d29a34'); gr.addColorStop(1, '#8a5a14');
+    g.fillStyle = gr; g.fillRect(0, fr - 4, w, 12);
+    for (let x = 4; x < w - 4; x += 13) {
+      const L = (h - fr) * (0.78 + 0.18 * Math.sin(x * 0.7));
+      g.fillStyle = gr; g.fillRect(x, fr, 6, L - 10);
+      g.beginPath(); g.arc(x + 3, fr + L - 8, 6, 0, 7); g.fill();
+    }
+  });
+}
+// sea-green greave: lit toward the shin, rows of black vents down the front
+function greaveTex() {
+  return canvasTex(256, 256, (g, w, h) => {
+    const bg = g.createLinearGradient(0, 0, w, 0); bg.addColorStop(0, '#173f37'); bg.addColorStop(0.5, '#3a8a70'); bg.addColorStop(1, '#173f37');
+    g.fillStyle = bg; g.fillRect(0, 0, w, h);
+    g.fillStyle = 'rgba(0,0,0,0.35)'; g.fillRect(0, h * 0.1, w, 3); g.fillRect(0, h * 0.86, w, 3);
+    g.fillStyle = 'rgba(190,255,220,0.18)'; g.fillRect(0, h * 0.1 + 3, w, 2);
+    for (const c of [-1.5, -0.5, 0.5, 1.5]) for (const [y0, y1] of [[0.18, 0.4], [0.46, 0.66], [0.72, 0.8]]) {
+      const x = w * (0.5 + c * 0.075) - 4, y = h * y0, hh = h * (y1 - y0);
+      g.fillStyle = '#08130f'; g.beginPath(); g.roundRect ? g.roundRect(x, y, 8, hh, 4) : g.rect(x, y, 8, hh); g.fill();
+      g.fillStyle = 'rgba(170,255,220,0.25)'; g.fillRect(x + 1, y + hh, 6, 2);
+    }
+  });
+}
+// a cloth wrap of blue with pink and gold stripes (the trident's bindings)
+function stripeWrapTex() {
+  return canvasTex(128, 128, (g, w, h) => {
+    g.fillStyle = '#26368e'; g.fillRect(0, 0, w, h);
+    for (let k = -2; k < 4; k++) {
+      const o = k * 44;
+      g.fillStyle = '#d9507e'; g.beginPath(); g.moveTo(o, h); g.lineTo(o + 16, h); g.lineTo(o + 16 + h * 0.6, 0); g.lineTo(o + h * 0.6, 0); g.closePath(); g.fill();
+      g.strokeStyle = '#e8c060'; g.lineWidth = 2; g.beginPath(); g.moveTo(o - 4, h); g.lineTo(o - 4 + h * 0.6, 0); g.stroke();
+    }
+    g.fillStyle = 'rgba(0,0,0,0.25)'; for (let y = 0; y < h; y += 16) g.fillRect(0, y, w, 2);
+  }, { repeat: [3, 1] });
+}
+// olive hand wraps and the twisted belt cord
+function bandageTex() {
+  return canvasTex(128, 128, (g, w, h) => {
+    g.fillStyle = '#8c7a3a'; g.fillRect(0, 0, w, h);
+    for (let y = -h; y < h * 2; y += 18) {
+      g.strokeStyle = '#4e4018'; g.lineWidth = 3; g.beginPath(); g.moveTo(0, y); g.lineTo(w, y + 26); g.stroke();
+      g.strokeStyle = 'rgba(230,210,140,0.5)'; g.lineWidth = 1.5; g.beginPath(); g.moveTo(0, y + 4); g.lineTo(w, y + 30); g.stroke();
+    }
+  }, { repeat: [2, 1] });
+}
+function cordTex() {
+  return canvasTex(256, 64, (g, w, h) => {
+    g.fillStyle = '#6e6628'; g.fillRect(0, 0, w, h);
+    for (let x = -h; x < w + h; x += 16) {
+      const gr = g.createLinearGradient(x, 0, x + 14, 0); gr.addColorStop(0, '#5a5220'); gr.addColorStop(0.5, '#b8a654'); gr.addColorStop(1, '#4a4418');
+      g.fillStyle = gr; g.beginPath(); g.moveTo(x, h); g.lineTo(x + 12, h); g.lineTo(x + 12 + h * 0.7, 0); g.lineTo(x + h * 0.7, 0); g.closePath(); g.fill();
+    }
+  }, { repeat: [8, 1] });
+}
+// piecewise-linear lookup in [[y, v], ...]
+function pwl(pts, y) {
+  if (y <= pts[0][0]) return pts[0][1];
+  for (let i = 0; i < pts.length - 1; i++) if (y <= pts[i + 1][0]) { const [y0, v0] = pts[i], [y1, v1] = pts[i + 1]; return v0 + (v1 - v0) * (y - y0) / (y1 - y0); }
+  return pts[pts.length - 1][1];
+}
+// a lathe-like shell whose front is cut open between x = ±edge(y) (after the sx/sz squash); also returns its two edges
+function openShell(prof, edge, rows, cols, sx, sz, bumps) {
+  const y0 = prof[0][1], y1 = prof[prof.length - 1][1], pos = [], uv = [], idx = [];
+  for (let i = 0; i <= rows; i++) {
+    const y = y0 + (y1 - y0) * (i / rows), r = Math.max(0.004, profileR(prof, y));
+    const a0 = Math.asin(Math.min(0.97, edge(y) / (r * sx)));
+    for (let k = 0; k <= cols; k++) { const a = a0 + (Math.PI * 2 - 2 * a0) * (k / cols); pos.push(Math.sin(a) * r, y, Math.cos(a) * r); uv.push(k / cols, i / rows); }
+  }
+  for (let i = 0; i < rows; i++) for (let k = 0; k < cols; k++) { const a = i * (cols + 1) + k, b = a + cols + 1; idx.push(a, a + 1, b, a + 1, b + 1, b); }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+  g.setIndex(idx);
+  if (bumps) sculpt(g, bumps);
+  const pa = g.attributes.position;
+  for (let i = 0; i < pa.count; i++) { pa.setX(i, pa.getX(i) * sx); pa.setZ(i, pa.getZ(i) * sz); }
+  g.computeVertexNormals();
+  const eL = [], eR = [];
+  for (let i = 0; i <= rows; i++) { const a = i * (cols + 1), b = a + cols; eL.push(new V3(pa.getX(a), pa.getY(a), pa.getZ(a))); eR.push(new V3(pa.getX(b), pa.getY(b), pa.getZ(b))); }
+  return { g, eL, eR };
+}
+// a flat plate from a 2D outline in XY, extruded along Z (centred) with a soft bevel
+function plate(pts, depth, bevel = 0.003) {
+  const s = new THREE.Shape();
+  s.moveTo(pts[0][0], pts[0][1]);
+  for (let i = 1; i < pts.length; i++) s.lineTo(pts[i][0], pts[i][1]);
+  s.closePath();
+  const g = new THREE.ExtrudeGeometry(s, { depth, bevelEnabled: bevel > 0, bevelThickness: bevel, bevelSize: bevel * 0.8, bevelSegments: 2, curveSegments: 4 });
+  g.translate(0, 0, -depth / 2);
+  return g;
+}
+// a tube along a curve whose radius tapers from r0 to r1 (hair locks, sigil strokes)
+function taperTube(pts, r0, r1, seg = 16, rad = 6, sq = null) {
+  const curve = new THREE.CatmullRomCurve3(pts.map((q) => (q.isVector3 ? q : new V3(q[0], q[1], q[2]))));
+  const tg = new THREE.TubeGeometry(curve, seg, 1, rad, false);
+  const pa = tg.attributes.position, c = new V3(), ring = rad + 1;
+  for (let i = 0; i < pa.count; i++) {
+    const t = Math.floor(i / ring) / seg, r = r0 + (r1 - r0) * t;
+    curve.getPointAt(Math.min(1, t), c);
+    const kx = sq ? sq[0] : 1, ky = sq ? sq[1] : 1, kz = sq ? sq[2] : 1;
+    pa.setXYZ(i, c.x + (pa.getX(i) - c.x) * r * kx, c.y + (pa.getY(i) - c.y) * r * ky, c.z + (pa.getZ(i) - c.z) * r * kz);
+  }
+  tg.computeVertexNormals();
+  return tg;
+}
+
 function buildPoseidon(T) {
   const M = makeSkeleton('poseidon');
   const { j } = M;
   const P = new PartSet();
+  const DS = THREE.DoubleSide;
 
-  const skin = new THREE.MeshPhysicalMaterial({ color: 0xb8906a, roughness: 0.58, sheen: 0.35, sheenColor: new THREE.Color(0xa8e0ff), sheenRoughness: 0.5, clearcoat: 0.04, clearcoatRoughness: 0.6 });
-  const armor = new THREE.MeshStandardMaterial({ color: 0xffffff, map: scaleTex('#178a8f', '#7ff2e6', '#0a3d4a'), metalness: 0.75, roughness: 0.3, envMapIntensity: 1.2 });
-  const armorPlain = new THREE.MeshStandardMaterial({ color: 0x167f86, metalness: 0.8, roughness: 0.28, envMapIntensity: 1.2 });
-  const gold = new THREE.MeshStandardMaterial({ color: 0xe8b85a, metalness: 1, roughness: 0.22, envMapIntensity: 1.3 });
-  const hair = new THREE.MeshPhysicalMaterial({ color: 0x2a8aa0, roughness: 0.5, sheen: 1, sheenColor: new THREE.Color(0x66ffee), sheenRoughness: 0.35 });
-  const cloth = new THREE.MeshStandardMaterial({ color: 0x0d2c4a, roughness: 0.75, side: THREE.DoubleSide });
-  const leather = new THREE.MeshStandardMaterial({ color: 0x3b2a20, roughness: 0.7 });
-  const eye = new THREE.MeshBasicMaterial({ color: new THREE.Color(0.25, 1.4, 1.5) });
-  const gem = new THREE.MeshPhysicalMaterial({ color: 0x40fff0, emissive: new THREE.Color(0.2, 1.6, 1.5), emissiveIntensity: 0.8, roughness: 0.05, clearcoat: 1 });
-  const pearl = new THREE.MeshPhysicalMaterial({ color: 0xf6f0ff, roughness: 0.15, iridescence: 1, iridescenceIOR: 1.6, clearcoat: 1 });
+  const skin = new THREE.MeshPhysicalMaterial({ color: 0xf0c6a2, roughness: 0.5, sheen: 0.6, sheenColor: new THREE.Color(0xffd8b8), sheenRoughness: 0.4, clearcoat: 0.08, clearcoatRoughness: 0.5 });
+  const coat = new THREE.MeshPhysicalMaterial({ color: 0x3447c4, roughness: 0.42, metalness: 0.05, sheen: 0.8, sheenColor: new THREE.Color(0x8fa0ff), sheenRoughness: 0.35, clearcoat: 0.25, clearcoatRoughness: 0.4 });
+  const coatIn = new THREE.MeshStandardMaterial({ color: 0x1b2466, roughness: 0.6, side: DS });
+  const coatDS = coat.clone(); coatDS.side = DS;
+  const trouser = new THREE.MeshPhysicalMaterial({ color: 0x1f2a74, roughness: 0.5, sheen: 0.6, sheenColor: new THREE.Color(0x6070d0), sheenRoughness: 0.4 });
+  const gold = new THREE.MeshStandardMaterial({ color: 0xeac264, metalness: 1, roughness: 0.22, envMapIntensity: 1.3 });
+  const bronze = new THREE.MeshStandardMaterial({ color: 0x8e8236, metalness: 0.85, roughness: 0.34 });
+  const cord = new THREE.MeshStandardMaterial({ color: 0xffffff, map: cordTex(), metalness: 0.45, roughness: 0.45 });
+  const wrap = new THREE.MeshStandardMaterial({ color: 0xffffff, map: bandageTex(), roughness: 0.75 });
+  const cuff = new THREE.MeshStandardMaterial({ color: 0xeef1f4, roughness: 0.5 });
+  const hair = new THREE.MeshPhysicalMaterial({ color: 0xe8c36c, roughness: 0.42, sheen: 1, sheenColor: new THREE.Color(0xfff2b8), sheenRoughness: 0.3 });
+  const eye = new THREE.MeshBasicMaterial({ color: new THREE.Color(0.42, 0.6, 0.86) });
+  const gem = new THREE.MeshPhysicalMaterial({ color: 0x40fff0, emissive: new THREE.Color(0.2, 1.5, 1.5), emissiveIntensity: 0.8, roughness: 0.05, clearcoat: 1 });
+  const greave = new THREE.MeshStandardMaterial({ color: 0xffffff, map: greaveTex(), metalness: 0.35, roughness: 0.45 });
+  const boot = new THREE.MeshStandardMaterial({ color: 0x86a866, roughness: 0.55, metalness: 0.05 });
+  const sole = new THREE.MeshStandardMaterial({ color: 0x2a2c22, roughness: 0.8 });
+  const finBlue = new THREE.MeshStandardMaterial({ color: 0x2c44b4, metalness: 0.45, roughness: 0.32 });
+  const finTan = new THREE.MeshStandardMaterial({ color: 0xd9b66c, metalness: 0.75, roughness: 0.3 });
+  const pink = new THREE.MeshStandardMaterial({ color: 0xd8487c, metalness: 0.2, roughness: 0.4 });
+  const sigil = new THREE.MeshStandardMaterial({ color: 0xffe08a, emissive: new THREE.Color(1.5, 1.05, 0.35), emissiveIntensity: 1, metalness: 0.5, roughness: 0.3 });
 
-  // ---- pelvis, belt, pteruges ----
-  P.add(j.hips, lathe([[0, -0.17], [0.16, -0.15], [0.23, -0.08], [0.25, 0.02], [0.24, 0.15], [0, 0.17]]), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.68]);
-  P.add(j.hips, lathe([[0.255, 0.05], [0.27, -0.1], [0.3, -0.26], [0.33, -0.38]], 48), cloth, [0, 0, 0], [0, 0, 0], [1, 1, 0.78]);
-  P.add(j.hips, new THREE.TorusGeometry(0.258, 0.034, 10, 48), gold, [0, 0.07, 0], [Math.PI / 2, 0, 0], [1, 0.7, 1]);
-  P.ell(j.hips, gem, [0, 0.07, 0.185], [0.04, 0.04, 0.025]);
-  P.add(j.hips, new THREE.TorusGeometry(0.045, 0.01, 6, 20), gold, [0, 0.07, 0.185]);
-  const strips = 18;
-  for (let i = 0; i < strips; i++) {
-    const a = (i / strips) * Math.PI * 2;
-    const x = Math.sin(a) * 0.275, z = Math.cos(a) * 0.2;
-    const len = 0.3 + (Math.cos(a) > 0.5 ? 0.04 : 0);
-    const stripG = new THREE.BoxGeometry(0.075, len, 0.012).translate(0, -len / 2, 0);
-    const hemG = new THREE.BoxGeometry(0.08, 0.022, 0.018).translate(0, -len + 0.011, 0.002);
-    const rot = [-0.2, a, 0, 'YXZ'];
-    P.add(j.hips, stripG, i % 2 ? armorPlain : armor, [x * 1.03, 0.04, z * 1.03], rot);
-    P.add(j.hips, hemG, gold, [x * 1.03, 0.04, z * 1.03], rot);
+  // ---- pelvis in navy trousers; the twisted cord belt and the sea-beast clasp with its fins ----
+  P.add(j.hips, lathe([[0, -0.17], [0.16, -0.15], [0.23, -0.08], [0.25, 0.02], [0.24, 0.15], [0, 0.17]]), trouser, [0, 0, 0], [0, 0, 0], [1, 1, 0.7]);
+  P.add(j.hips, lathe([[0.262, 0.04], [0.274, 0.055], [0.278, 0.08], [0.274, 0.105], [0.262, 0.122]], 64), cord, [0, 0, 0], [0, 0, 0], [1, 1, 0.76]);
+  for (const y of [0.044, 0.118]) P.add(j.hips, new THREE.TorusGeometry(0.27, 0.0065, 6, 64), gold, [0, y, 0], [Math.PI / 2, 0, 0], [1, 0.76, 1]);
+  {
+    // the clasp is drawn at unit size round its own origin, then scaled up on the belt front
+    const cg = new THREE.Group(); cg.position.set(0, 0.076, 0.206); cg.scale.setScalar(1.32); j.hips.add(cg);
+    const clasp = [[0, 0.062], [0.03, 0.056], [0.05, 0.036], [0.056, 0.004], [0.046, -0.03], [0.024, -0.058], [0, -0.078], [-0.024, -0.058], [-0.046, -0.03], [-0.056, 0.004], [-0.05, 0.036], [-0.03, 0.056]];
+    P.add(cg, plate(clasp.map(([x, y]) => [x * 1.18, y * 1.14]), 0.012, 0.003), gold, [0, 0, 0]);
+    P.add(cg, plate(clasp, 0.02, 0.006), bronze, [0, 0, 0.008]);
+    P.add(cg, new THREE.TorusGeometry(0.027, 0.005, 8, 24), gold, [0, -0.004, 0.024], [0, 0, 0], [1, 1.3, 1]);
+    P.ell(cg, gem, [0, -0.004, 0.026], [0.021, 0.029, 0.011]);
+    P.ell(cg, gem, [0, 0.044, 0.022], [0.008, 0.008, 0.006]);
+    for (const s of [-1, 1]) {
+      P.ell(cg, gold, [s * 0.034, 0.034, 0.016], [0.012, 0.009, 0.008]);   // the beast's eyes
+      for (let k = 0; k < 3; k++) {
+        const L = 0.17 - k * 0.022, leaf = [[0, 0.012], [L * 0.5, 0.015], [L, 0], [L * 0.5, -0.012], [0, -0.01]];
+        const rz = s > 0 ? -(0.2 + 0.42 * k) : Math.PI + (0.2 + 0.42 * k);
+        const pos = [s * 0.042, -0.006 - k * 0.012, 0.004 - k * 0.008], rot = [0, s * 0.5, rz, 'YXZ'];
+        P.add(cg, plate(leaf.map(([x, y]) => [x * 1.08 - 0.004, y * 1.6]), 0.004, 0.0015), gold, [pos[0], pos[1], pos[2] - 0.003], rot);
+        P.add(cg, plate(leaf, 0.007, 0.0015), finBlue, pos, rot);
+      }
+      P.add(cg, plate([[0, 0.01], [0.05, 0.012], [0.1, 0], [0.05, -0.01], [0, -0.008]], 0.006, 0.0015), finBlue, [s * 0.012, -0.046, 0.012], [0, 0, -Math.PI / 2 + s * 0.22]);
+    }
   }
-  // ---- abdomen (bare, lean) ----
+  // ---- torso: lean, cut muscle; the coat hugs the sides and back and stands open from the collar to the belt ----
   const abProf = [[0, -0.06], [0.225, -0.05], [0.228, 0.06], [0.235, 0.16], [0.25, 0.26], [0.26, 0.31], [0, 0.32]];
-  P.add(j.spine, sculptLathe(abProf, MUSCLE.abs(0.95, [0.04, 0.11, 0.18], 0.02)), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.66]);
-  // ---- chest + scale breastplate ----
-  const chProf = [[0, -0.07], [0.25, -0.06], [0.285, 0.04], [0.315, 0.15], [0.31, 0.23], [0.265, 0.3], [0.15, 0.335], [0, 0.345]];
-  P.add(j.chest, lathe(chProf.map(([r, y]) => [r * 1.06, y]), 40), armor, [0, 0, 0], [0, 0, 0], [1, 1, 0.66]);
-  for (const s of [-1, 1]) P.ell(j.chest, armorPlain, [s * 0.105, 0.13, 0.17], [0.125, 0.09, 0.055], [0.15, 0, s * 0.15]);
-  P.add(j.chest, new THREE.TorusGeometry(0.27, 0.016, 8, 48), gold, [0, -0.055, 0], [Math.PI / 2, 0, 0], [1, 0.68, 1]);
-  P.add(j.chest, new THREE.TorusGeometry(0.15, 0.016, 8, 40), gold, [0, 0.325, 0], [Math.PI / 2, 0, 0], [1, 0.8, 1]);
-  P.add(j.chest, new THREE.TorusGeometry(0.06, 0.012, 8, 24), gold, [0, 0.2, 0.215], [0, 0, 0]);
-  P.ell(j.chest, pearl, [0, 0.2, 0.215], [0.04, 0.04, 0.03]);
-  for (const s of [-1, 1]) P.ell(j.chest, skin, [s * 0.12, 0.29, -0.02], [0.11, 0.06, 0.08], [0, 0, -s * 0.45]);
-  // ---- neck/head ----
-  P.add(j.neck, lathe([[0, -0.04], [0.082, -0.03], [0.075, 0.07], [0.072, 0.14], [0, 0.16]]), skin);
-  const H = j.head;
-  const markTeal = new THREE.MeshBasicMaterial({ color: new THREE.Color(0.3, 1.6, 1.6) });
-  animeHead(P, H, { skin, hair, iris: eye, lip: 0xb06a5a, browW: 0.003, browTilt: -0.06,
-    face: { jaw: 0.95, len: 1.07, nose: 1.1, noseLen: 1.15, eyeW: 1.05, eyeH: 0.85, eyeTilt: -0.12, smile: 0.12, ear: 1 },
-    style: { bangs: 7, bangLen: 0.12, side: 0.2, back: 13, backLen: 0.48, backLift: 0.12 } });
-  // crown
-  P.add(H, lathe([[0.122, 0.13], [0.128, 0.16], [0.125, 0.185], [0.118, 0.19]], 36), gold, [0, 0.02, -0.01], [-0.12, 0, 0]);
-  for (let i = 0; i < 9; i++) {
-    const a = ((i - 4) / 4) * 1.3;
-    const h = i === 4 ? 0.14 : 0.06 + 0.05 * (1 - Math.abs(i - 4) / 4);
-    P.add(H, new THREE.ConeGeometry(0.018, h, 6), gold, [Math.sin(a) * 0.125, 0.2 + h / 2 + 0.02 * Math.cos(a), Math.cos(a) * 0.125 - 0.02], [-0.12 + Math.cos(a) * 0.15, 0, -Math.sin(a) * 0.25]);
+  const abB = MUSCLE.abs(0.95, [0.04, 0.115, 0.19], 0.026);
+  P.add(j.spine, sculptLathe(abProf, abB), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.66]);
+  const chProf = [[0, -0.07], [0.246, -0.06], [0.28, 0.04], [0.304, 0.15], [0.3, 0.23], [0.26, 0.3], [0.15, 0.335], [0, 0.345]];
+  const chB = MUSCLE.chest(1.15).concat([-1, 1].map((sd) => ({ a: sd * 0.42, y: 0.045, sa: 0.3, sy: 0.022, h: -0.016 })), [-1, 1].map((sd) => ({ a: sd * 0.4, y: 0.14, sa: 0.3, sy: 0.07, h: 0.014 })), [-1, 1].map((sd) => ({ a: sd * 0.3, y: 0.288, sa: 0.3, sy: 0.011, h: 0.009 })));
+  P.add(j.chest, sculptLathe(chProf, chB), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.64]);
+  // the opening narrows from the chest to the belt; Y is measured up the spine (the chest sits 0.26 above it)
+  const OPEN = [[-0.06, 0.07], [0.06, 0.09], [0.16, 0.118], [0.26, 0.145], [0.33, 0.165], [0.4, 0.182], [0.47, 0.158], [0.53, 0.118], [0.57, 0.088], [0.6, 0.074]];
+  const trimAlong = (joint, pts, sgn) => P.add(joint, new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts.map((p) => new V3(p.x * 1.012 + sgn * 0.002, p.y, p.z * 1.02))), 48, 0.0075, 6), gold);
+  {
+    const ab = openShell([[0.237, -0.06], [0.24, 0.06], [0.247, 0.16], [0.262, 0.26], [0.272, 0.32]], (y) => pwl(OPEN, y), 26, 56, 1, 0.68, abB);
+    P.add(j.spine, ab.g, coat);
+    trimAlong(j.spine, ab.eL, 1); trimAlong(j.spine, ab.eR, -1);
+    const ch = openShell([[0.258, -0.07], [0.292, 0.04], [0.316, 0.15], [0.312, 0.23], [0.272, 0.3], [0.2, 0.33], [0.12, 0.342]], (y) => pwl(OPEN, y + 0.26), 40, 64, 1, 0.66, chB);
+    P.add(j.chest, ch.g, coat);
+    trimAlong(j.chest, ch.eL, 1); trimAlong(j.chest, ch.eR, -1);
+    // stand collar round the back of the neck, lined in navy, edged in gold
+    const th0 = 0.95, thL = Math.PI * 2 - th0 * 2;
+    P.add(j.chest, new THREE.CylinderGeometry(0.1, 0.118, 0.07, 32, 1, true, th0, thL), coatDS, [0, 0.36, -0.012]);
+    const ring = []; for (let i = 0; i <= 24; i++) { const a = th0 + thL * (i / 24); ring.push(new V3(Math.sin(a) * 0.1, 0.395, Math.cos(a) * 0.1 - 0.012)); }
+    P.add(j.chest, new THREE.TubeGeometry(new THREE.CatmullRomCurve3(ring), 40, 0.006, 6), gold);
   }
-  P.ell(H, gem, [0, 0.2, 0.12], [0.022, 0.03, 0.015]);
-  // ---- arms ----
+  // ---- neck with the gold choker and its little ring ----
+  P.add(j.neck, lathe([[0, -0.04], [0.08, -0.03], [0.074, 0.07], [0.07, 0.14], [0, 0.16]]), skin);
+  P.add(j.neck, new THREE.TorusGeometry(0.075, 0.008, 8, 36), gold, [0, 0.085, 0.004], [Math.PI / 2 + 0.12, 0, 0], [1, 0.96, 1]);
+  P.add(j.neck, new THREE.TorusGeometry(0.012, 0.0032, 6, 16), gold, [0, 0.062, 0.08], [0.2, 0, 0]);
+  P.ell(j.neck, gold, [0, 0.078, 0.079], [0.008, 0.008, 0.006]);
+  // ---- head: a cool, half-lidded face under a mane of wavy gold locks ----
+  const H = j.head;
+  const brow = new THREE.MeshStandardMaterial({ color: 0xa8823a, roughness: 0.8 });
+  animeHead(P, H, { skin, hair, iris: eye, browMat: brow, lip: 0xc88a7c, lash: 0x3a2a14, browW: 0.0026, browTilt: 0.03, lashW: 1.05,
+    face: { jaw: 0.9, chin: 0.98, len: 1.06, hollow: 0.01, nose: 1.0, noseLen: 1.1, eyeW: 1.04, eyeH: 0.74, eyeTilt: -0.05, eyeY: -0.005, lid: 0.52, browY: -0.01, mouthW: 0.8, smile: -0.12, ear: 0 },
+    style: { bangs: 0, side: 0.05, back: 0 } });
+  {
+    const lockMat = hair.clone(); lockMat.map = hairTex();
+    const lk = (pts, r, r1 = 0.12, sq = null) => P.add(H, taperTube(pts, r, r * r1, 16, 8, sq), lockMat);
+    // fringe: overlapping locks falling over the brow, one long lock between the eyes, the outer ones past the eye corners
+    const fr = [[-0.098, 0.115, 1], [-0.068, 0.15, -1], [-0.038, 0.158, 1], [-0.012, 0.125, -1], [0.008, 0.085, 1], [0.034, 0.152, 1], [0.064, 0.16, -1], [0.094, 0.12, 1]];
+    for (const [x, yEnd, w] of fr) {
+      const s = Math.sign(x) || 1, zf = 0.124 + (Math.abs(x) < 0.03 ? 0.012 : 0) - Math.abs(x) * 0.1;
+      lk([[x * 0.5, 0.248, 0.0], [x * 0.92, 0.238, 0.068], [x * 1.06 + w * 0.006, 0.208, 0.114], [x * 1.12 - w * 0.006, (0.205 + yEnd) / 2, zf], [x * 1.18 + s * 0.016 + w * 0.006, yEnd, zf - 0.01]], 0.03, 0.14, [1.35, 1, 0.5]);
+    }
+    // side locks over the ears, flicking out at the jaw
+    for (const s of [-1, 1]) for (let k = 0; k < 4; k++) {
+      const z = 0.07 - k * 0.04, yE = -0.005 - k * 0.02 - (k % 2) * 0.01;
+      lk([[s * 0.068, 0.24, z - 0.02], [s * (0.104 + k * 0.006), 0.17, z], [s * (0.118 + k * 0.006), 0.09, z + 0.006], [s * (0.116 + k * 0.008), 0.02, z - 0.004], [s * (0.148 + k * 0.01), yE, z - 0.022]], 0.034, 0.14, [0.55, 1, 1.3]);
+    }
+    // the back: thick waves down to the nape, tips turning outward
+    for (let k = 0; k < 13; k++) {
+      const a = Math.PI * (0.58 + 0.84 * (k / 12)), sa = Math.sin(a), ca = Math.cos(a), w = (k % 2 ? 1 : -1) * 0.009;
+      lk([[sa * 0.07, 0.252, -0.03 + ca * 0.07], [sa * 0.12 + w, 0.17, -0.035 + ca * 0.12], [sa * 0.13 - w, 0.08, -0.04 + ca * 0.124], [sa * 0.124 + w, 0.0, -0.045 + ca * 0.12], [sa * 0.152, -0.045 - (k % 3) * 0.014, -0.05 + ca * 0.152]], 0.038, 0.14);
+    }
+    // crown volume swept back, and the stray lock that will not lie down
+    for (let k = 0; k < 7; k++) { const x = (k - 3) * 0.03; lk([[x * 0.6, 0.244, 0.075], [x, 0.272, 0.005], [x * 1.2, 0.266, -0.07], [x * 1.3, 0.222, -0.135]], 0.036, 0.22); }
+    lk([[0.0, 0.262, 0.02], [0.012, 0.312, 0.01], [0.04, 0.332, 0.05], [0.062, 0.312, 0.082]], 0.013, 0.1);
+  }
+  // ---- arms: the coat's sleeves over hard muscle, white cuffs with a button, olive wraps over the hands ----
   for (const [s, sg] of [['l', 1], ['r', -1]]) {
     const sh = j[s + 'Sh'], el = j[s + 'El'], wr = j[s + 'Wr'];
-    P.add(sh, sculpt(muscleLimb(0.32, 0.082, 0.062, 0.012, 0.6), MUSCLE.upperArm(0.8)), skin);
-    P.ell(sh, skin, [sg * 0.015, -0.02, 0], [0.098, 0.105, 0.098]);
-    // shell pauldron
-    {
-      const prof = [];
-      for (let i = 0; i <= 12; i++) { const a = (i / 12) * Math.PI / 2; prof.push([Math.sin(a) * 0.145, Math.cos(a) * 0.12]); }
-      const shell = lathe(prof, 40);
-      const pos = shell.attributes.position;
-      for (let i = 0; i < pos.count; i++) {
-        const x = pos.getX(i), y = pos.getY(i), z = pos.getZ(i);
-        const a = Math.atan2(x, z);
-        const k = 1 + 0.07 * Math.abs(Math.cos(a * 5));
-        pos.setXYZ(i, x * k, y, z * k);
-      }
-      shell.computeVertexNormals();
-      const sc = s === 'r' ? 1.1 : 0.9;
-      P.add(sh, shell, s === 'r' ? gold : armorPlain, [sg * 0.03, 0.0, 0], [0, 0, sg * -0.5], [sc, sc, sc]);
-    }
-    P.add(el, sculpt(muscleLimb(0.28, 0.07, 0.048, 0.014, 0.72), MUSCLE.forearm(0.8)), skin, [0, 0, 0], [0, 0, 0], [1, 1, 0.88]);
-    P.add(el, lathe([[0.062, -0.26], [0.064, -0.24], [0.072, -0.1], [0.068, -0.085]], 28), armorPlain, [0, 0, 0], [0, 0, 0], [1, 1, 0.92]);
-    P.add(el, new THREE.TorusGeometry(0.072, 0.007, 6, 28), gold, [0, -0.1, 0], [Math.PI / 2, 0, 0], [1, 0.92, 1]);
-    P.add(el, new THREE.TorusGeometry(0.065, 0.007, 6, 28), gold, [0, -0.255, 0], [Math.PI / 2, 0, 0], [1, 0.92, 1]);
-    // hand (open-ish)
-    P.ell(wr, skin, [0, -0.05, 0.008], [0.048, 0.06, 0.055]);
-    P.ell(wr, skin, [0, -0.095, 0.022], [0.045, 0.03, 0.04]);
-    P.ell(wr, skin, [sg * -0.035, -0.055, 0.04], [0.018, 0.032, 0.018], [0.4, 0, 0]);
-    // legs
+    P.add(sh, sculpt(muscleLimb(0.32, 0.086, 0.064, 0.016, 0.6), MUSCLE.upperArm(1.0)), coat);
+    P.ell(sh, coat, [sg * 0.012, -0.03, 0], [0.094, 0.1, 0.091]);
+    P.add(el, sculpt(muscleLimb(0.28, 0.072, 0.05, 0.015, 0.72), MUSCLE.forearm(0.95)), coat, [0, 0, 0], [0, 0, 0], [1, 1, 0.9]);
+    P.add(el, lathe([[0.054, -0.288], [0.06, -0.28], [0.061, -0.235], [0.058, -0.205], [0.052, -0.2]], 28), cuff, [0, 0, 0], [0, 0, 0], [1, 1, 0.92]);
+    for (const y of [-0.226, -0.256]) P.ell(el, gold, [sg * 0.056, y, 0.012], [0.006, 0.006, 0.006]);
+    // hand: the palm wrapped in olive bandage, fingers bare
+    P.add(wr, lathe([[0.046, 0.012], [0.05, -0.01], [0.054, -0.05], [0.052, -0.08], [0.046, -0.095]], 24), wrap, [0, 0, 0.01], [0, 0, 0], [1, 1, 1.12]);
+    for (let k = 0; k < 4; k++) P.add(wr, new THREE.TorusGeometry(0.052, 0.005, 6, 22), wrap, [0, -0.012 - k * 0.024, 0.01], [Math.PI / 2 + (k % 2 ? 0.28 : -0.22), 0, 0], [1, 1.12, 1]);
+    // legs: navy thighs, gold knee guards, sea-green greaves, heeled boots
     const hp = j[s + 'Hip'], kn = j[s + 'Kn'], an = j[s + 'An'];
-    P.add(hp, sculpt(muscleLimb(0.46, 0.115, 0.068, 0.016, 0.62), MUSCLE.thigh(0.85, sg)), skin);
-    P.add(kn, sculpt(muscleLimb(0.45, 0.068, 0.045, 0.0, 0.7), MUSCLE.calf(0.85)), skin);
-    // greave
-    P.add(kn, lathe([[0.058, -0.4], [0.07, -0.33], [0.082, -0.18], [0.078, -0.05], [0.07, -0.02]], 30), armorPlain, [0, 0, 0.008], [0, 0, 0], [1, 1, 0.95]);
-    P.add(kn, new THREE.TorusGeometry(0.072, 0.008, 6, 26), gold, [0, -0.04, 0.008], [Math.PI / 2, 0, 0]);
-    P.ell(kn, gold, [0, -0.01, 0.07], [0.05, 0.05, 0.02]);
-    P.ell(an, skin, [0, -0.032, 0.05], [0.048, 0.036, 0.11]);
-    P.add(an, new THREE.TorusGeometry(0.05, 0.007, 6, 20), gold, [0, -0.02, 0.0], [Math.PI / 2, 0, 0]);
+    P.add(hp, sculpt(muscleLimb(0.46, 0.118, 0.07, 0.016, 0.62), MUSCLE.thigh(0.9, sg)), trouser);
+    P.add(kn, sculpt(muscleLimb(0.45, 0.074, 0.052, 0.006, 0.7), MUSCLE.calf(0.8)), greave);
+    {
+      const dome = new THREE.SphereGeometry(1, 22, 14, 0, Math.PI * 2, 0, Math.PI / 2);
+      P.add(kn, dome, gold, [0, -0.005, 0.03], [Math.PI / 2, 0, 0], [0.072, 0.05, 0.088]);
+      P.add(kn, new THREE.TorusGeometry(0.074, 0.007, 6, 28, Math.PI), gold, [0, -0.005, 0.03], [0, 0, Math.PI], [1, 1.2, 1]);
+      P.ell(kn, gem, [0, -0.005, 0.082], [0.012, 0.016, 0.008]);
+      const fan = [[0, -0.02], [0.06, 0.0], [0.07, 0.06], [0.03, 0.09], [0, 0.1], [-0.03, 0.09], [-0.07, 0.06], [-0.06, 0.0]];
+      P.add(hp, plate(fan, 0.01, 0.004), gold, [0, -0.42, 0.074], [-0.12, 0, 0]);
+      for (const x of [-0.035, 0, 0.035]) P.add(hp, new THREE.CylinderGeometry(0.004, 0.004, 0.08, 5), gold, [x, -0.37, 0.082], [-0.12, 0, x * 3]);
+    }
+    P.add(kn, lathe([[0.064, -0.46], [0.066, -0.4], [0.064, -0.34], [0.068, -0.3]], 28), boot);
+    P.add(kn, new THREE.TorusGeometry(0.069, 0.011, 8, 28), boot, [0, -0.3, 0], [Math.PI / 2, 0, 0]);
+    P.ell(an, boot, [0, -0.03, 0.035], [0.058, 0.05, 0.11]);
+    P.ell(an, boot, [0, -0.047, 0.115], [0.05, 0.034, 0.065]);
+    P.ell(an, boot, [0, -0.01, -0.03], [0.05, 0.05, 0.05]);
+    P.ell(an, sole, [0, -0.074, 0.075], [0.056, 0.009, 0.1]);
+    P.add(an, new THREE.BoxGeometry(0.06, 0.03, 0.055), sole, [0, -0.066, -0.032]);
+    P.add(an, new THREE.TorusGeometry(0.058, 0.0045, 6, 22), gold, [0, -0.012, 0.03], [Math.PI / 2 - 0.35, 0, 0], [1, 1.25, 1]);
   }
-  addDetail(P, j, { skin, hair, sole: leather, strap: gold, metal: gold }, { anime: true, k: 0.86, eye: [0.04, 0.108, 0.107], lip: 0x8f5a50, curls: false, armored: true });
+  addDetail(P, j, { skin, hair, sole, strap: wrap, metal: gold }, { anime: true, k: 0.86, eye: [0.04, 0.108, 0.107], lip: 0xc88a7c, curls: false, armored: true, boots: true });
+  // ---- the floating gold sigils at the shoulders: a spine with tapering cross-strokes, like the bones of a fin ----
+  const orn = [];
+  for (const sg of [1, -1]) {
+    const o = new THREE.Group(); o.position.set(sg * 0.48, 0.1, -0.07); o.rotation.set(0, 0, sg * 0.14); o.scale.setScalar(1.2); j.chest.add(o);
+    o.userData = { y0: o.position.y, ph: sg > 0 ? 0 : 2.1 };
+    for (const d of [1, -1]) P.add(o, new THREE.ConeGeometry(0.008, 0.17, 6), sigil, [0, d * 0.085, 0], [d > 0 ? 0 : Math.PI, 0, 0]);
+    [[0.12, 0.05], [0.06, 0.075], [0.0, 0.085], [-0.06, 0.07], [-0.115, 0.045]].forEach(([y, L], i) => {
+      for (const d of [1, -1]) P.add(o, new THREE.ConeGeometry(0.0065, L, 6), sigil, [d * L / 2, y + d * 0.008, 0], [0, 0, -d * (Math.PI / 2 - 0.1) ]);
+    });
+    const gl = glowSprite(T.glow, 0xffd070, 0.45); gl.material.opacity = 0.5; o.add(gl);
+    orn.push(o);
+  }
   P.build();
 
-  // ---- trident ----
+  // ---- the trident: a long navy staff; at the head a gold knob, a striped binding, two drooping sea-fins round an
+  //      anchor ring, a striped bulb and three silver tines (a barbed centre spear, two hooked side tines);
+  //      a finned, striped butt with a gold spike ----
   const tri = new THREE.Group();
   const TP = new PartSet();
-  const shaftOff = -SKEL.poseidon.hand * 0.6;
-  tri.position.set(0, shaftOff, 0);
-  TP.add(tri, new THREE.CylinderGeometry(0.019, 0.022, 2.05, 12), gold, [0, 0, 0.27], [Math.PI / 2, 0, 0]);
-  for (let i = 0; i < 6; i++) TP.add(tri, new THREE.TorusGeometry(0.025, 0.008, 6, 14), leather, [0, 0, -0.12 + i * 0.05]);
-  for (const z of [-0.25, 0.22, 0.85, 1.12]) TP.add(tri, new THREE.TorusGeometry(0.028, 0.01, 6, 16), gold, [0, 0, z]);
-  TP.add(tri, new THREE.ConeGeometry(0.03, 0.14, 10), gold, [0, 0, -0.84], [-Math.PI / 2, 0, 0]);
-  TP.ell(tri, gold, [0, 0, -0.76], [0.034, 0.034, 0.04]);
-  // head
-  TP.add(tri, new THREE.TorusGeometry(0.145, 0.02, 10, 28, Math.PI), gold, [0, 0, 1.43], [-Math.PI / 2, 0, 0]);
-  TP.ell(tri, gold, [0, 0, 1.3], [0.05, 0.03, 0.06]);
-  // center prong
-  TP.add(tri, new THREE.CylinderGeometry(0.016, 0.02, 0.38, 10), gold, [0, 0, 1.47], [Math.PI / 2, 0, 0]);
-  TP.add(tri, new THREE.ConeGeometry(0.034, 0.17, 4), gold, [0, 0, 1.74], [Math.PI / 2, Math.PI / 4, 0], [1, 1, 0.5]);
+  tri.position.set(0, -SKEL.poseidon.hand * 0.6, 0);
+  const XZ = [Math.PI / 2, 0, 0];   // plates drawn in XY then lie in the trident's face (XZ), thickness along Y
+  const steel = new THREE.MeshStandardMaterial({ color: 0xe4e9f0, metalness: 1, roughness: 0.16, envMapIntensity: 1.4 });
+  const staffM = new THREE.MeshStandardMaterial({ color: 0x29337e, metalness: 0.55, roughness: 0.3 });
+  const stripe = new THREE.MeshStandardMaterial({ color: 0xffffff, map: stripeWrapTex(), metalness: 0.15, roughness: 0.5 });
+  TP.add(tri, new THREE.CylinderGeometry(0.019, 0.021, 1.74, 14), staffM, [0, 0, 0.24], XZ);
+  TP.add(tri, lathe([[0.021, 0.975], [0.034, 0.99], [0.043, 1.015], [0.037, 1.04], [0.024, 1.058]], 24), gold, [0, 0, 0], XZ);
+  TP.add(tri, lathe([[0.022, 1.08], [0.03, 1.09], [0.031, 1.12], [0.026, 1.135]], 20), stripe, [0, 0, 0], XZ);
+  // fins
   for (const s of [-1, 1]) {
-    TP.add(tri, new THREE.CylinderGeometry(0.014, 0.017, 0.24, 10), gold, [s * 0.15, 0, 1.55], [Math.PI / 2, 0, 0]);
-    TP.add(tri, new THREE.ConeGeometry(0.03, 0.15, 4), gold, [s * 0.152, 0, 1.73], [Math.PI / 2, 0, -s * 0.12], [1, 1, 0.5]);
-    TP.add(tri, new THREE.ConeGeometry(0.018, 0.08, 4), gold, [s * 0.18, 0, 1.63], [-Math.PI / 2 + 0.4 * s, 0, s * 0.9], [1, 1, 0.5]);
+    const fin = [[0.03, 1.238], [0.09, 1.258], [0.17, 1.252], [0.25, 1.226], [0.325, 1.178], [0.276, 1.166], [0.256, 1.104], [0.222, 1.146], [0.188, 1.078], [0.152, 1.13], [0.112, 1.068], [0.08, 1.118], [0.05, 1.082], [0.03, 1.13]];
+    TP.add(tri, plate(fin.map(([x, z]) => [s * x, z]), 0.006, 0.002), finBlue, [0, 0, 0], XZ);
+    TP.add(tri, plate(fin.map(([x, z]) => [s * (0.04 + (x - 0.04) * 0.82), 1.18 + (z - 1.18) * 0.74]), 0.0085, 0.0015), finTan, [0, 0, 0], XZ);
+    for (const [x, z] of [[0.325, 1.178], [0.256, 1.104], [0.188, 1.078], [0.112, 1.068], [0.05, 1.082]]) {
+      TP.add(tri, taperTube([[s * 0.035, 0, 1.18], [s * (0.035 + (x - 0.035) * 0.5), 0, (1.18 + z) / 2 + 0.012], [s * x, 0, z]], 0.0058, 0.003, 10, 5), pink);
+    }
+    TP.add(tri, taperTube([[s * 0.035, 0, 1.235], [s * 0.17, 0, 1.256], [s * 0.325, 0, 1.18]], 0.006, 0.004, 14, 5), gold);
   }
-  TP.add(tri, new THREE.IcosahedronGeometry(0.05, 1), gem, [0, 0, 1.33]);
+  TP.add(tri, new THREE.TorusGeometry(0.042, 0.0075, 8, 28), gold, [0, 0, 1.17], XZ);
+  for (const s of [-1, 1]) TP.ell(tri, gem, [0, s * 0.02, 1.17], [0.026, 0.008, 0.026]);
+  TP.add(tri, lathe([[0.024, 1.205], [0.042, 1.225], [0.054, 1.26], [0.05, 1.3], [0.036, 1.326], [0.02, 1.338]], 28), stripe, [0, 0, 0], XZ);
+  TP.add(tri, new THREE.TorusGeometry(0.04, 0.007, 6, 24), gold, [0, 0, 1.316]);
+  TP.add(tri, new THREE.TorusGeometry(0.026, 0.006, 6, 20), gold, [0, 0, 1.208]);
+  // tines
+  const spear = [[-0.013, 1.3], [-0.012, 1.6], [-0.032, 1.614], [-0.074, 1.578], [-0.052, 1.628], [-0.046, 1.672], [-0.022, 1.762], [0, 1.865], [0.022, 1.762], [0.046, 1.672], [0.052, 1.628], [0.074, 1.578], [0.032, 1.614], [0.012, 1.6], [0.013, 1.3]];
+  TP.add(tri, plate(spear, 0.011, 0.004), steel, [0, 0, 0], XZ);
+  TP.add(tri, plate([[-0.004, 1.62], [0, 1.82], [0.004, 1.62]], 0.016, 0.002), staffM, [0, 0, 0], XZ);   // the blood groove
+  for (const s of [-1, 1]) {
+    const cv = new THREE.SplineCurve([[0.04, 1.3], [0.13, 1.345], [0.19, 1.45], [0.2, 1.585], [0.165, 1.725]].map(([x, z]) => new V2(s * x, z)));
+    const Lp = [], Rp = [], N = 26;
+    for (let i = 0; i <= N; i++) {
+      const t = i / N, p = cv.getPoint(t), d = cv.getTangent(t), w = 0.021 * Math.pow(1 - t, 0.55) + 0.0016;
+      Lp.push([p.x - d.y * w, p.y + d.x * w]); Rp.push([p.x + d.y * w, p.y - d.x * w]);
+    }
+    TP.add(tri, plate(Lp.concat(Rp.reverse()), 0.01, 0.0035), steel, [0, 0, 0], XZ);
+    TP.add(tri, plate([[s * 0.19, 1.635], [s * 0.262, 1.566], [s * 0.2, 1.588]], 0.009, 0.003), steel, [0, 0, 0], XZ);      // outer barb
+    TP.add(tri, plate([[s * 0.1, 1.33], [s * 0.15, 1.282], [s * 0.135, 1.35]], 0.008, 0.003), steel, [0, 0, 0], XZ);        // base spur
+  }
+  // butt
+  TP.add(tri, lathe([[0.022, -0.615], [0.036, -0.64], [0.045, -0.69], [0.041, -0.745], [0.024, -0.78]], 24), stripe, [0, 0, 0], XZ);
+  for (const z of [-0.612, -0.782]) TP.add(tri, new THREE.TorusGeometry(0.025, 0.006, 6, 18), gold, [0, 0, z]);
+  TP.add(tri, new THREE.ConeGeometry(0.022, 0.1, 10), gold, [0, 0, -0.835], [-Math.PI / 2, 0, 0]);
+  for (const s of [-1, 1]) {
+    const bf = [[0.03, -0.65], [0.075, -0.672], [0.118, -0.745], [0.084, -0.73], [0.07, -0.79], [0.046, -0.752], [0.03, -0.76]];
+    TP.add(tri, plate(bf.map(([x, z]) => [s * x, z]), 0.006, 0.002), finBlue, [0, 0, 0], XZ);
+    TP.add(tri, plate(bf.map(([x, z]) => [s * (0.035 + (x - 0.035) * 0.7), -0.705 + (z + 0.705) * 0.7]), 0.0085, 0.0015), finTan, [0, 0, 0], XZ);
+  }
   TP.build();
-  const triGlow = glowSprite(T.glow, 0x5ffff0, 0.9);
+  const triGlow = glowSprite(T.glow, 0x7ff6ff, 0.9);
   triGlow.position.set(0, 0, 1.5);
   tri.add(triGlow);
   j.rWr.add(tri);
 
-  // ---- cape ----
-  const capeGeo = new THREE.PlaneGeometry(0.68, 1.3, 10, 18);
-  capeGeo.translate(0, -0.65, 0);
-  {
-    const cols = [];
-    const pos = capeGeo.attributes.position;
-    const cTop = new THREE.Color(0x0a1a3a), cBot = new THREE.Color(0x0f6f8a);
-    for (let i = 0; i < pos.count; i++) {
-      const v = -pos.getY(i) / 1.3;
-      const c = cTop.clone().lerp(cBot, Math.pow(v, 1.6));
-      if (v > 0.93) c.lerp(new THREE.Color(0xe8b85a), 0.8);
-      cols.push(c.r, c.g, c.b);
-    }
-    capeGeo.setAttribute('color', new THREE.Float32BufferAttribute(cols, 3));
-  }
-  const capeBase = capeGeo.attributes.position.array.slice();
-  const capeMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.6, metalness: 0.1, side: THREE.DoubleSide });
-  const cape = new THREE.Mesh(capeGeo, capeMat);
-  cape.castShadow = true;
-  cape.position.set(0, 0.3, -0.225);
-  j.chest.add(cape);
+  // ---- the sea-robe: open at the front, floor-length behind, flaring at the hem; and the fringed front panel ----
+  const robeMat = new THREE.MeshStandardMaterial({ color: 0xffffff, map: seaRobeTex(), roughness: 0.72 });
+  const liningMat = new THREE.MeshStandardMaterial({ color: 0x8796b2, roughness: 0.8, side: THREE.BackSide });
+  const A0 = 0.62;
+  makeCloth(M, { joint: j.hips, rows: 13, cols: 19, pin: 2, mats: [robeMat, liningMat],
+    rest: (v, u) => {
+      const a = A0 + u * (Math.PI * 2 - 2 * A0), L = 0.9 + 0.08 * (1 - Math.cos(a)) / 2, fl = Math.pow(v, 1.25);
+      return [Math.sin(a) * (0.262 + 0.3 * fl), 0.1 - L * v, Math.cos(a) * (0.2 + 0.25 * fl)];
+    },
+    hold: (v) => 0.12 * (1 - v) * (1 - v) + 0.012 });
+  const panelMat = new THREE.MeshStandardMaterial({ color: 0xffffff, map: seaPanelTex(), roughness: 0.72, alphaTest: 0.5, side: DS });
+  makeCloth(M, { joint: j.hips, rows: 9, cols: 4, pin: 1, mats: [panelMat],
+    rest: (v, u) => [(u - 0.5) * 0.17 * (1 + 0.15 * v), 0.06 - 0.56 * v, 0.214 + 0.035 * v],
+    hold: (v) => 0.16 * (1 - v) + 0.03 });
 
-  M.trident = tri; M.triGlow = triGlow;
-  M.cape = { mesh: cape, geo: capeGeo, base: capeBase, sway: 0 };
+  M.trident = tri; M.triGlow = triGlow; M.orn = orn;
   M.mats = { skin, gold, gem, eye };
   M.color = new THREE.Color(0.3, 1.4, 1.4);
   M.trails = [{ obj: tri, a: new V3(0, 0, 0.95), b: new V3(0, 0, 1.78), color: [0.2, 1.1, 1.3], core: [1.2, 2.6, 2.8], spark: 'water' }];
-  enhanceModel(M.root, 0x5ff0e6, 0.55);
+  enhanceModel(M.root, 0x9fd4ff, 0.5);
+  settleCloth(M, 30);
   return M;
 }
 
@@ -7030,7 +7532,7 @@ function buildApollo(T) {
 }
 
 
-return { canvasTex, enhanceModel, buildZeus, buildPoseidon, updateCape, buildAnubis, buildThor, buildSusanoo, buildHeracles, buildHades, buildOdin, buildShiva, buildAphrodite, buildShaka, buildApollo, SPH };
+return { canvasTex, enhanceModel, buildZeus, buildPoseidon, updateCape, updateCloth, settleCloth, buildAnubis, buildThor, buildSusanoo, buildHeracles, buildHades, buildOdin, buildShiva, buildAphrodite, buildShaka, buildApollo, SPH };
 })();
 
 // ======== fx.js ========
@@ -7300,7 +7802,7 @@ return { makeFxTextures, Particles, Bolts, waterMaterial, Timed };
 const __game = (() => {
 const { Sim, DT, STAGE, CHARS, HUMAN, AUTO, SUPER_K } = __sim;
 const { SKEL, POSES, JOINTS, sampleAnim, blend, copyPose, cyclePose } = __poses;
-const { canvasTex, buildZeus, buildPoseidon, buildAnubis, buildThor, buildSusanoo, buildHeracles, buildHades, buildOdin, buildShiva, buildAphrodite, buildShaka, buildApollo, updateCape } = __models;
+const { canvasTex, buildZeus, buildPoseidon, buildAnubis, buildThor, buildSusanoo, buildHeracles, buildHades, buildOdin, buildShiva, buildAphrodite, buildShaka, buildApollo, updateCape, updateCloth, settleCloth } = __models;
 const { makeFxTextures, Particles, Bolts, waterMaterial, Timed } = __fx;
 // ============================================================
 //  GAME : renderer, stage, fighters' visuals, camera, HUD, audio
@@ -7715,6 +8217,7 @@ function buildStage() {
     scene.add(ped);
     scene.add(M.root);
     if (M.cape) updateCape(M, 0, 0, 0);
+    if (M.cloths) settleCloth(M);
   }
 }
 
@@ -9743,6 +10246,7 @@ class FighterView {
     this.prevState = '';
     this.trails = (model.trails || []).map((d) => new SwordTrail(d));
     if (model.ribbon) this.ribbon = new Ribbon(model.ribbon);
+    if (model.cloths) for (const c of model.cloths) { c.ready = false; c.prev = null; }
     scene.add(model.root);
     model.root.traverse((o) => { if (o.isMesh) o.castShadow = true; });
   }
@@ -9970,7 +10474,7 @@ class FighterView {
       const both = m && (m.glow === 'both' || m.type === 'super') || f.state === 'win' || f.state === 'intro';
       M.glow.r.material.opacity = this.glow * flick;
       M.glow.l.material.opacity = (both ? this.glow : 0) * flick;
-      M.mats.glowMat.emissiveIntensity = 0.6 + this.glow * 3 * flick;
+      M.mats.glowMat.emissiveIntensity = 0.04 + this.glow * 1.8 * flick;
       if (this.glow > 0.3 && Math.random() < 0.5 * this.glow) {
         const hand = (Math.random() < 0.6 || !both) ? M.j.rWr : M.j.lWr;
         const p = new V3(0, -0.06, 0.02); hand.localToWorld(p);
@@ -10037,7 +10541,9 @@ class FighterView {
         addP.burst(1, p.x, p.y, p.z, 0.8, { life: [0.2, 0.4], size: [0.08, 0.15], color: COL.water, drag: 1 });
       }
       updateCape(M, t, f.vx * f.facing + (f.state === 'dash' ? 6 : 0), f.state === 'attack' ? 1 : 0.3);
+      if (M.orn) for (const o of M.orn) { o.position.y = o.userData.y0 + Math.sin(t * 1.7 + o.userData.ph) * 0.018; o.rotation.y = Math.sin(t * 0.8 + o.userData.ph) * 0.35; }
     }
+    if (M.cloths) updateCloth(M, dt, -M.root.position.y / (M.root.scale.x || 1));
     // whirlwind trail
     if (this.spinDirect && f.key === 'poseidon' && f.mt > 0.08 && f.mt < 0.42) {
       for (let i = 0; i < 2; i++) {
@@ -12334,6 +12840,7 @@ function buildTitleBackdrop() {
       for (const jn of JOINTS) { const sg = jn.charCodeAt(0) === 114 ? -1 : 1; M.j[jn].rotation.set(p[jn][0], sg * p[jn][1], sg * p[jn][2]); }
       M.body.position.y = SKEL[k].hipH;
       if (M.cape) updateCape(M, 0, 0, 0);
+      if (M.cloths) settleCloth(M);
       M.root.scale.setScalar(5.4);
       M.root.position.set(x, y, z);
       M.root.rotation.y = -u * 0.5;
