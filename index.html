@@ -434,6 +434,47 @@ body.compact .vctrl{left:8px;right:8px;bottom:max(8px,env(safe-area-inset-bottom
 body.compact .vctrl .sub{padding:8px 10px;font-size:12px}
 body.compact.landscape .vpanel{top:56px;bottom:56px;height:auto;right:auto;width:min(300px,40vw)}
 body.compact.landscape .vinfo{top:auto;bottom:52px}
+/* viewer: god switcher, move bar, god grid and hide-UI (phones use these instead of the emblem strip) */
+.vgod,.vbar,.vonly-c,#vShowUI{display:none}
+#viewer.ui-off>*:not(#vShowUI):not(.vgrid){display:none!important}
+#viewer.ui-off #vShowUI{display:block;position:absolute;left:max(8px,env(safe-area-inset-left));top:max(8px,env(safe-area-inset-top));opacity:.85}
+.vgrid{position:absolute;inset:0;z-index:20;background:rgba(4,2,10,.82);display:flex;align-items:center;justify-content:center;padding:max(10px,env(safe-area-inset-top)) 10px max(10px,env(safe-area-inset-bottom))}
+.vgrid.hidden{display:none}
+.vgrid-in{width:min(560px,100%);max-height:100%;display:flex;flex-direction:column;gap:10px;background:rgba(10,6,18,.95);border:1px solid rgba(232,192,106,.5);padding:12px}
+.vgrid-h{display:flex;align-items:center;justify-content:space-between}
+.vgrid-h b{color:var(--gold2);letter-spacing:.3em;font-size:16px}
+.vgrid-list{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;overflow:auto}
+.vgrid-list .pick{flex-direction:column;gap:2px;padding:8px 4px;opacity:.85}
+.vgrid-list .pick .emb{width:30px;height:30px}
+#vGridList .pick span{display:block!important;font-size:15px;letter-spacing:.1em;white-space:nowrap}
+.vgrid-list .pick small{font-size:9px;color:rgba(255,255,255,.6);font-weight:400;letter-spacing:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.vgrid-list .pick.on{opacity:1}
+body.landscape .vgrid-list{grid-template-columns:repeat(4,1fr)}
+body.compact .vchars{display:none}
+body.compact .vname{display:none}
+body.compact .vgod{display:flex;position:absolute;left:50%;transform:translateX(-50%);top:calc(max(8px,env(safe-area-inset-top)) + 46px);gap:6px;align-items:stretch}
+body.compact.landscape .vgod{top:max(8px,env(safe-area-inset-top))}
+.varrow{width:40px;font-size:24px;line-height:1;color:var(--gold2);background:rgba(8,5,16,.8);border:1px solid rgba(232,192,106,.45);cursor:pointer}
+.vgodbtn{display:flex;align-items:center;gap:8px;padding:5px 12px;white-space:nowrap;background:rgba(8,5,16,.84);border:1px solid var(--gold);cursor:pointer;font-family:var(--jp);font-weight:800;color:#fff;font-size:17px;letter-spacing:.1em;min-width:min(230px,58vw);justify-content:center}
+.vgodbtn .emb{width:26px;height:26px;flex:none}
+.vgodbtn span{white-space:nowrap}.vgodbtn small{white-space:nowrap;font-size:10px;color:var(--gold2);letter-spacing:.05em;font-weight:400}
+.vgodbtn i{font-style:normal;color:var(--gold2);font-size:11px;margin-left:2px}
+body.compact .vbar{display:flex;position:absolute;left:8px;right:8px;bottom:calc(max(8px,env(safe-area-inset-bottom)) + 44px);align-items:center;gap:8px;padding:7px 10px;background:rgba(8,5,16,.86);border:1px solid rgba(232,192,106,.5);color:#fff;font-family:var(--jp);cursor:pointer;text-align:left}
+.vbar .k{font-size:10px;color:var(--gold);letter-spacing:.15em;white-space:nowrap}
+.vbar b{font-size:14px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vbar small{font-size:11px;color:var(--gold2);white-space:nowrap}
+.vbar em{font-style:normal;font-size:11px;font-weight:800;color:#1a1206;background:var(--gold2);padding:3px 8px;white-space:nowrap}
+body.compact .vonly-c{display:inline-block}
+body.compact #viewer:not(.list-open) .vpanel{display:none}
+body.compact #viewer:not(.info-open) .vinfo{display:none}
+body.compact #viewer.list-open .vpanel{bottom:calc(max(8px,env(safe-area-inset-bottom)) + 92px);height:auto;max-height:52vh;top:auto}
+body.compact.landscape #viewer.list-open .vpanel{top:52px;bottom:calc(max(8px,env(safe-area-inset-bottom)) + 46px);max-height:none;right:auto;width:min(320px,44vw)}
+body.compact.landscape .vbar{right:auto;width:min(400px,calc(42vw - 12px));bottom:max(8px,env(safe-area-inset-bottom))}
+body.compact #viewer.info-open .vinfo{top:calc(max(8px,env(safe-area-inset-top)) + 92px)}
+body.compact.landscape #viewer.info-open .vinfo{top:52px;bottom:auto}
+body.compact .vctrl{gap:5px}
+body.compact .vctrl .sub{flex:1;padding:8px 2px;font-size:11px;white-space:nowrap;letter-spacing:.02em}
+body.compact.landscape .vctrl{left:auto;width:min(480px,56vw)}
 body:not(.compact) .cards{flex-wrap:nowrap;max-width:1240px;gap:clamp(10px,1.4vw,20px)}
 body:not(.compact) .card{width:clamp(168px,17.6vw,232px);min-height:clamp(260px,42vh,340px);padding:24px 16px 18px}
 body:not(.compact) .card span{font-size:12px;line-height:1.7}
@@ -648,9 +689,13 @@ body.compact.landscape .vsmark{display:none}
 
 <div class="overlay hidden" id="viewer">
   <div class="vhead"><button class="sub" id="vBack">◀ 戻る</button><div class="vt"><small>MOVE LIST</small><b>技確認</b></div></div>
+  <div class="vgod" id="vGod"><button class="varrow" id="vPrev" aria-label="前の神">‹</button><button class="vgodbtn" id="vGodBtn"></button><button class="varrow" id="vNext" aria-label="次の神">›</button></div>
   <div class="vpanel"><div class="vchars" id="vChars"></div><div class="vname" id="vName"></div><div class="vlist" id="vList"></div></div>
   <div class="vinfo" id="vInfo"></div>
-  <div class="vctrl"><button class="sub" id="vReplay">▶ もう一度</button><button class="sub" id="vRepeat">リピート:ON</button><button class="sub" id="vGuard">木人:立ち</button></div>
+  <button class="vbar" id="vBar"></button>
+  <div class="vctrl"><button class="sub" id="vReplay">▶ もう一度</button><button class="sub" id="vRepeat">リピート:ON</button><button class="sub" id="vGuard">木人:立ち</button><button class="sub vonly-c" id="vInfoBtn">詳細</button><button class="sub" id="vHide">UIを隠す</button></div>
+  <button class="sub" id="vShowUI">UIを表示</button>
+  <div class="vgrid hidden" id="vGrid"><div class="vgrid-in"><div class="vgrid-h"><b>神を選ぶ</b><button class="sub" id="vGridClose">閉じる</button></div><div class="vgrid-list" id="vGridList"></div></div></div>
 </div>
 
 <div class="overlay hidden" id="moves">
@@ -11361,6 +11406,7 @@ function frame(now) {
     let steps = 0;
     while (acc >= DT && steps < 8) { sim.step(DT); acc -= DT; steps++; if (screen === 'match' || screen === 'viewer') handleEvents(); else sim.events.length = 0; }
     if (screen === 'viewer') viewerUpdate(vdt);
+    if (screen === 'viewer' || viewOff.on) viewerFrame();
   }
   // dim during supers
   const superOn = sim.freeze > 0 || sim.fighters.some((f) => f.state === 'attack' && f.move && f.move.type === 'super');
@@ -11657,8 +11703,34 @@ function renderViewer() {
     return `<h4>${label}</h4>` + ids.map((id) => `<button data-id="${id}" class="${id === viewer.id ? 'on' : ''}"><span>${c.moves[id].name}</span><small>${moveCommand(key, id)}</small></button>`).join('');
   }).join('');
   $('vChars').querySelectorAll('.pick').forEach((b) => b.addEventListener('click', () => openViewer(b.dataset.key)));
-  $('vList').querySelectorAll('button').forEach((b) => b.addEventListener('click', () => { viewer.id = b.dataset.id; renderViewer(); viewerPlay(); }));
+  $('vList').querySelectorAll('button').forEach((b) => b.addEventListener('click', () => { viewer.id = b.dataset.id; $('viewer').classList.remove('list-open'); renderViewer(); viewerPlay(); }));
+  // phones: the god switcher, the grid of all gods with their names, and the bar naming the move being shown
+  $('vGodBtn').innerHTML = `${G.emb}<span style="color:${G.acc}">${c.name}</span><small>${c.title}</small><i>▼</i>`;
+  $('vGodBtn').className = 'vgodbtn ' + key;
+  $('vGridList').innerHTML = MENU_KEYS.map((k) => `<button class="pick ${k} ${k === key ? 'on' : ''}" data-key="${k}">${GOD[k].emb}<span>${CHARS[k].name}</span><small>${CHARS[k].title}</small></button>`).join('');
+  $('vGridList').querySelectorAll('.pick').forEach((b) => b.addEventListener('click', () => { $('vGrid').classList.add('hidden'); openViewer(b.dataset.key); }));
+  const m = viewer.id && c.moves[viewer.id], open = $('viewer').classList.contains('list-open');
+  $('vBar').innerHTML = m ? `<span class="k">${{ super: '超必殺技', special: '必殺技', normal: '通常技', air: '空中技' }[m.type]}</span><b>${m.name}</b><small>${moveCommand(key, viewer.id)}</small><em>${open ? '閉じる ▼' : '技一覧 ▲'}</em>` : `<b>技を選んでください</b><em>技一覧 ▲</em>`;
   renderViewerInfo();
+}
+function stepViewerGod(d) { const i = MENU_KEYS.indexOf(viewer.key); openViewer(MENU_KEYS[(i + d + MENU_KEYS.length) % MENU_KEYS.length]); }
+// keep the fighters centred in the part of the screen the viewer's panels leave free
+let viewOff = { x: 0, y: 0, on: false };
+function viewerFrame() {
+  const W = window.innerWidth, H = window.innerHeight, el = $('viewer');
+  let tx = 0, ty = 0;
+  if (screen === 'viewer' && !el.classList.contains('ui-off') && document.body.classList.contains('compact')) {
+    let top = 0, bot = H, left = 0;
+    const vis = (id) => { const e = $(id); return e && e.offsetParent !== null ? e.getBoundingClientRect() : null; };
+    const g = vis('vGod'), inf = vis('vInfo'), bar = vis('vBar'), pan = vis('vChars') ? null : el.classList.contains('list-open') ? el.querySelector('.vpanel').getBoundingClientRect() : null;
+    if (g) top = Math.max(top, g.bottom); if (inf && inf.width < W * 0.7) { if (document.body.classList.contains('portrait')) top = Math.max(top, inf.bottom); }
+    if (bar) bot = Math.min(bot, bar.top);
+    if (pan) { if (document.body.classList.contains('landscape')) left = pan.right; else bot = Math.min(bot, pan.top); }
+    tx = left / 2; ty = (top - (H - bot)) / 2;
+  }
+  viewOff.x += (tx - viewOff.x) * 0.15; viewOff.y += (ty - viewOff.y) * 0.15;
+  if (Math.abs(viewOff.x) < 0.5 && Math.abs(viewOff.y) < 0.5 && !tx && !ty) { if (viewOff.on) { camera.clearViewOffset(); viewOff.on = false; } return; }
+  camera.setViewOffset(W, H, -viewOff.x, -viewOff.y, W, H); viewOff.on = true;
 }
 function renderViewerInfo() {
   const key = viewer.key, id = viewer.id;
@@ -11941,7 +12013,7 @@ window.addEventListener('keydown', (e) => {
     e.preventDefault(); return;
   }
   if (screen === 'viewer') {
-    if (e.code === 'Escape') $('vBack').click();
+    if (e.code === 'Escape') { if (!$('vGrid').classList.contains('hidden')) $('vGrid').classList.add('hidden'); else if ($('viewer').classList.contains('ui-off')) $('vShowUI').click(); else $('vBack').click(); }
     else if (e.code === 'Enter' || e.code === 'Space') { e.preventDefault(); $('vReplay').click(); }
     return;
   }
@@ -12962,6 +13034,15 @@ async function boot() {
   $('vReplay').addEventListener('click', () => viewerPlay());
   $('vRepeat').addEventListener('click', () => { viewer.repeat = !viewer.repeat; $('vRepeat').textContent = 'リピート:' + (viewer.repeat ? 'ON' : 'OFF'); });
   $('vGuard').addEventListener('click', () => { viewer.guard = !viewer.guard; $('vGuard').textContent = '木人:' + (viewer.guard ? 'ガード' : '立ち'); viewerPlay(); });
+  $('vPrev').addEventListener('click', () => stepViewerGod(-1));
+  $('vNext').addEventListener('click', () => stepViewerGod(1));
+  $('vGodBtn').addEventListener('click', () => { $('viewer').classList.remove('list-open'); $('vGrid').classList.remove('hidden'); });
+  $('vGridClose').addEventListener('click', () => $('vGrid').classList.add('hidden'));
+  $('vGrid').addEventListener('click', (e) => { if (e.target === $('vGrid')) $('vGrid').classList.add('hidden'); });
+  $('vBar').addEventListener('click', () => { const v = $('viewer'); v.classList.toggle('list-open'); v.classList.remove('info-open'); renderViewer(); if (v.classList.contains('list-open')) { const on = $('vList').querySelector('.on'); if (on) on.scrollIntoView({ block: 'center' }); } });
+  $('vInfoBtn').addEventListener('click', () => { const v = $('viewer'); v.classList.toggle('info-open'); v.classList.remove('list-open'); $('vInfoBtn').textContent = v.classList.contains('info-open') ? '詳細を閉じる' : '詳細'; renderViewer(); });
+  $('vHide').addEventListener('click', () => $('viewer').classList.add('ui-off'));
+  $('vShowUI').addEventListener('click', () => $('viewer').classList.remove('ui-off'));
   const rematch = () => { setupMatch(cfg); showScreen('match'); };
   $('btnRematch').addEventListener('click', rematch);
   // in-match controls
