@@ -8431,7 +8431,7 @@ function applyQuality() {
   const pr = basePR() * resScale;
   renderer.setPixelRatio(pr);
   bloom.enabled = quality === 'high';
-  renderer.shadowMap.type = quality === 'high' ? THREE.PCFSoftShadowMap : THREE.PCFShadowMap;
+  renderer.shadowMap.type = isMobile ? THREE.PCFShadowMap : THREE.PCFSoftShadowMap;   // fixed: changing it recompiles every material
   const ms = quality === 'high' ? (isMobile ? 1024 : 1536) : 1024;
   if (key.shadow.mapSize.x !== ms) {
     key.shadow.mapSize.set(ms, ms);
@@ -11507,7 +11507,7 @@ const bgm = {
     const lim = c.createDynamicsCompressor(); lim.threshold.value = -2; lim.ratio.value = 20; lim.attack.value = 0.002; lim.release.value = 0.1;
     this.bus.connect(lo); lo.connect(mud); mud.connect(hi); hi.connect(comp); comp.connect(lim); lim.connect(c.destination);
     // wide stereo hall (decorrelated channels, darkened tail)
-    const len = Math.floor(c.sampleRate * (isMobile ? 1.6 : 3.0)), ir = c.createBuffer(2, len, c.sampleRate);
+    const len = Math.floor(c.sampleRate * (isMobile ? 1.0 : 3.0)), ir = c.createBuffer(2, len, c.sampleRate);
     for (let ch = 0; ch < 2; ch++) { const d = ir.getChannelData(ch); let lp = 0; for (let k = 0; k < len; k++) { const kk = k / len; lp += (Math.random() * 2 - 1 - lp) * (0.6 - 0.45 * kk); d[k] = lp * Math.pow(1 - kk, 2.4) * (k < 800 ? k / 800 : 1); } }
     this.verb = c.createConvolver(); this.verb.buffer = ir;
     const vg = c.createGain(); vg.gain.value = 0.5;
@@ -11927,7 +11927,7 @@ const sfx = {
     if (this.ctx) return;
     try {
       const AC = window.AudioContext || window.webkitAudioContext;
-      this.ctx = new AC();
+      this.ctx = isMobile ? (() => { try { return new AC({ latencyHint: 'balanced' }); } catch (e) { return new AC(); } })() : new AC();
       const c = this.ctx;
       // master: gentle glue compression + a soft limiter so stacked hits stay punchy instead of clipping
       const comp = c.createDynamicsCompressor();
@@ -11939,7 +11939,7 @@ const sfx = {
       // every effect goes through a bus with a short hall reverb for weight and space
       this.bus = c.createGain();
       this.bus.connect(this.master);
-      const verb = c.createConvolver(); verb.buffer = this.makeIR(1.5, 2.6);
+      const verb = c.createConvolver(); verb.buffer = this.makeIR(isMobile ? 0.8 : 1.5, 2.6);
       const wet = c.createGain(); wet.gain.value = 0.22;
       const verbHP = c.createBiquadFilter(); verbHP.type = 'highpass'; verbHP.frequency.value = 180;
       this.bus.connect(verbHP); verbHP.connect(verb); verb.connect(wet); wet.connect(this.master);
@@ -12497,7 +12497,10 @@ function frame(now) {
   updateHUD(paused ? 0 : rdt);
   if (screen === 'match' && cfg.story && sim.phase === 'matchEnd' && sim.phaseT > 2.6) storyAfterMatch();
   else if (screen === 'match' && !cfg.attract && !cfg.story && sim.phase === 'matchEnd' && sim.phaseT > 1.6) $('endpanel').classList.remove('hidden');
-  if (quality === 'high') composer.render(); else renderer.render(scene, camera);
+  updateLampSlots();
+  // always through the composer (low quality only turns bloom off): shader programs built for an offscreen target differ
+  // from those built for the screen, so one path keeps a quality change from recompiling every material
+  composer.render();
 }
 
 // ---------------- screens & match setup ----------------
@@ -13164,6 +13167,37 @@ const MENU_COL = { zeus: 0xffd77a, poseidon: 0x5ff0e6, anubis: 0xf0c46a, thor: 0
 const menuBG = { title: null, select: null, arena: null, t: 0, flash: 0, boltT: 2 };
 
 // collect everything a builder adds to the scene into one group so whole backdrops can be toggled
+// ---- point lights from a fixed pool ----
+// three.js rebuilds every shader program whenever the number of visible point lights changes. The stages and menu
+// backdrops each carry their own lamps, so moving between screens (title, select, a match on another stage) used to
+// stall for seconds on phones while every material recompiled. Their lamps are kept only as markers; a fixed pool of
+// real lights takes on, each frame, the strongest of the lamps that would be visible.
+const LAMP_SLOTS = isMobile ? 6 : 12;
+const lampSrc = [], lampSlots = [], _lampP = new V3();
+function installLampRig() {
+  if (lampSlots.length) return;
+  scene.traverse((o) => { if (o.isPointLight && o !== fxLight) lampSrc.push(o); });
+  for (const l of lampSrc) l.visible = false;
+  for (let i = 0; i < LAMP_SLOTS; i++) { const l = new THREE.PointLight(0xffffff, 0, 10, 1.6); scene.add(l); lampSlots.push(l); }
+}
+function updateLampSlots() {
+  if (!lampSlots.length) return;
+  const act = [];
+  for (const l of lampSrc) {
+    if (l.intensity <= 0) continue;
+    let o = l.parent, on = false;
+    while (o) { if (!o.visible) break; if (o === scene) { on = true; break; } o = o.parent; }
+    if (!on) continue;
+    l.getWorldPosition(_lampP);
+    act.push({ l, x: _lampP.x, y: _lampP.y, z: _lampP.z, w: l.intensity / (1 + _lampP.distanceTo(camera.position) / 12) });
+  }
+  if (act.length > lampSlots.length) act.sort((a, b) => b.w - a.w);
+  for (let i = 0; i < lampSlots.length; i++) {
+    const s = lampSlots[i], a = act[i];
+    if (!a) { s.intensity = 0; continue; }
+    s.position.set(a.x, a.y, a.z); s.color.copy(a.l.color); s.intensity = a.l.intensity; s.distance = a.l.distance; s.decay = a.l.decay;
+  }
+}
 function sceneGroup(build) {
   const before = new Set(scene.children);
   build();
@@ -14030,8 +14064,24 @@ function warmObj(root) {
     const ms = Array.isArray(o.material) ? o.material : o.material ? [o.material] : [];
     for (const m of ms) for (const k of ['map', 'emissiveMap', 'normalMap', 'roughnessMap', 'metalnessMap', 'alphaMap', 'bumpMap']) if (m[k] && m[k].isTexture) renderer.initTexture(m[k]);
   });
+  renderer.setRenderTarget(composer.renderTarget1);   // compile the programs for the target the game really draws into
   try { renderer.compile(root, camera, scene); } catch (e) { /* older drivers: textures are still uploaded */ }
+  renderer.setRenderTarget(null);
   if (loose) scene.remove(root); root.visible = vis;
+}
+// one render with every stage, both menu backdrops and every god shown at once: compiles whatever the per-object
+// warm-up cannot reach (shadow-pass variants, backdrop materials), so no screen compiles shaders on first entry
+function warmAll() {
+  const vis = [];
+  for (const g of STAGE_IDS.map((id) => STAGES[id].group).concat([menuBG.title, menuBG.select])) if (g) { vis.push([g, g.visible]); g.visible = true; }
+  const added = [];
+  for (const id in modelCache) { const r = modelCache[id].root; if (!r.parent) { scene.add(r); added.push(r); } }
+  updateLampSlots();
+  renderer.setRenderTarget(composer.renderTarget1);
+  try { renderer.render(scene, camera); } catch (e) { /* a failed warm render only costs the stall it would have saved */ }
+  renderer.setRenderTarget(null);
+  for (const r of added) scene.remove(r);
+  for (const [g, v] of vis) g.visible = v;
 }
 function setLoad(msg, k) {
   const l = $('loading'); l.classList.remove('pending');
@@ -14049,8 +14099,10 @@ async function boot() {
   steps.push(['ステージを構築中…', () => buildStages(arena, [])]);
   for (const id of STAGE_IDS) if (STAGES[id].build) steps.push([`ステージ「${STAGES[id].name}」を構築中…`, () => buildStages(arena, [id])]);
   steps.push(['対戦を準備中…', () => { setupMatch(ATTRACT); applyQuality(); }]);
+  steps.push(['ライトを準備中…', () => installLampRig()]);
   for (const k of MENU_KEYS) steps.push([`${CHARS[k].name}を召喚中…`, () => { warmObj(modelFor(0, k).root); warmObj(modelFor(1, k).root); }]);
   steps.push(['ステージを描画準備中…', () => { for (const id of STAGE_IDS) if (STAGES[id].group) warmObj(STAGES[id].group); }]);
+  steps.push(['描画を最終準備中…', () => warmAll()]);
   for (let i = 0; i < steps.length; i++) {
     setLoad(steps[i][0], i / steps.length);
     await nextPaint();
@@ -14162,7 +14214,7 @@ function buildMoveList() {
   $('movesBody').innerHTML = html.join('');
 }
 
-window.__game = { get sim() { return sim; }, get views() { return views; }, get sfx() { return sfx; }, get bgm() { return bgm; }, get speed() { return speed; }, set speed(v) { speed = v; } };
+window.__game = { get renderer() { return renderer; }, get sim() { return sim; }, get views() { return views; }, get sfx() { return sfx; }, get bgm() { return bgm; }, get speed() { return speed; }, set speed(v) { speed = v; } };
 boot().catch((err) => showError(err));
 
 function showError(err) {
