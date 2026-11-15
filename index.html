@@ -554,6 +554,42 @@ html.mob #pauseMenu{background:rgba(4,2,10,.8)}
 .volpanel label{display:grid;grid-template-columns:4em 1fr 3em;align-items:center;gap:8px}
 .volpanel input{width:min(260px,58vw);accent-color:var(--gold)}
 .volpanel output{text-align:right;font-family:var(--en)}
+
+/* ================= story: pre-fight talk on the stage ================= */
+#talk{position:fixed;inset:0;z-index:17;cursor:pointer;-webkit-user-select:none;user-select:none}
+body.talking #hud,body.talking .meter,body.talking #ctrl,body.talking .keyhelp,body.talking .combo,body.talking #touchpad,body.talking #announce,body.talking .callout,body.talking #endpanel{opacity:0!important;pointer-events:none!important}
+body.talking .lb{height:8vh}
+.tk-card{position:absolute;left:0;right:0;top:44%;transform:translateY(-50%);text-align:center;opacity:0;pointer-events:none;transition:opacity .45s,transform .45s}
+.tk-card.show{opacity:1;animation:tkCard .5s cubic-bezier(.2,.8,.2,1)}
+.tk-card.out{opacity:0;transform:translateY(-50%) scale(1.05)}
+@keyframes tkCard{from{opacity:0;transform:translateY(-50%) scale(1.25);filter:blur(8px)}to{opacity:1;transform:translateY(-50%) scale(1);filter:none}}
+.tk-card small{display:block;font-family:var(--en);font-weight:700;letter-spacing:.5em;padding-left:.5em;color:var(--gold);font-size:clamp(9px,1.2vw,13px);text-shadow:0 2px 6px #000}
+.tk-card b{display:block;margin-top:6px;font-size:clamp(28px,5.4vw,66px);font-weight:800;letter-spacing:.2em;padding-left:.2em;line-height:1.2;background:linear-gradient(#fffbe6 20%,#ffd25a 60%,#9a5a08);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 3px 0 #2a1600) drop-shadow(0 0 22px rgba(255,190,60,.5))}
+.tk-card .tk-vs{display:flex;justify-content:center;align-items:center;gap:clamp(12px,3vw,34px);margin-top:12px;font-weight:800;font-size:clamp(16px,2.6vw,30px);letter-spacing:.14em;text-shadow:0 2px 8px #000,0 0 18px currentColor}
+.tk-card .tk-vs em{font-family:var(--en);font-style:normal;color:#fff;font-size:.8em;text-shadow:0 0 16px rgba(255,190,60,.9)}
+.tk-card .tk-vs .emb{width:1.4em;height:1.4em;vertical-align:middle;margin:0 .3em;filter:drop-shadow(0 0 8px currentColor)}
+.tk-box{--tc:#e8c06a;position:absolute;left:50%;bottom:calc(8vh + 12px);transform:translateX(-50%);width:min(880px,94vw);min-height:clamp(78px,14vh,118px);padding:clamp(16px,2.2vh,22px) clamp(16px,2.4vw,26px) 16px;background:linear-gradient(180deg,rgba(14,9,26,.9),rgba(5,3,10,.95));border:1px solid rgba(232,192,106,.45);border-top:2px solid var(--tc);box-shadow:0 12px 34px rgba(0,0,0,.7),0 -2px 22px -6px var(--tc);opacity:0;transition:opacity .25s;pointer-events:none}
+.tk-box.show{opacity:1}
+.tk-box.pop{animation:tkPop .32s cubic-bezier(.2,.9,.3,1)}
+@keyframes tkPop{from{transform:translateX(-50%) translateY(10px);opacity:.2}}
+.tk-name{position:absolute;top:-17px;left:16px;display:flex;align-items:center;gap:8px;padding:3px 16px 3px 10px;background:linear-gradient(90deg,var(--tc),rgba(20,12,30,.95) 92%);clip-path:polygon(0 0,100% 0,calc(100% - 10px) 100%,0 100%);color:#fff;text-shadow:0 1px 3px #000;white-space:nowrap}
+.tk-box.right .tk-name{left:auto;right:16px;flex-direction:row-reverse;padding:3px 10px 3px 16px;background:linear-gradient(270deg,var(--tc),rgba(20,12,30,.95) 92%);clip-path:polygon(0 0,100% 0,100% 100%,10px 100%)}
+.tk-name .emb{width:22px;height:22px;color:#fff;filter:drop-shadow(0 0 4px #000)}
+.tk-name b{font-size:clamp(14px,1.7vw,18px);font-weight:800;letter-spacing:.14em}
+.tk-name small{font-size:10px;letter-spacing:.2em;opacity:.85}
+.tk-box.right .tk-text{text-align:left}
+.tk-text{font-size:clamp(14px,2vw,20px);line-height:1.8;letter-spacing:.04em;text-shadow:0 1px 3px #000;min-height:1.8em}
+.tk-box.narr{border-top-color:rgba(232,192,106,.6);background:linear-gradient(180deg,rgba(6,4,12,.72),rgba(4,2,8,.86))}
+.tk-box.narr .tk-name{display:none}
+.tk-box.narr .tk-text{text-align:center;color:var(--gold2);letter-spacing:.12em}
+.tk-next{position:absolute;right:14px;bottom:6px;font-style:normal;font-size:12px;color:var(--tc);opacity:0}
+.tk-box.done .tk-next{opacity:1;animation:tkBob .7s ease-in-out infinite alternate}
+@keyframes tkBob{to{transform:translateY(3px)}}
+.tk-skip{position:absolute;top:calc(8vh + 10px);right:12px;padding:7px 14px!important;font-size:12px!important;cursor:pointer}
+body.compact .tk-box{padding:14px 14px 12px;min-height:72px}
+body.compact .tk-text{font-size:14px;line-height:1.7}
+body.compact .tk-name b{font-size:13px}
+body.compact .tk-name small{display:none}
 </style>
 <script type="importmap">
 { "imports": {
@@ -687,6 +723,7 @@ html.mob #pauseMenu{background:rgba(4,2,10,.8)}
 </div>
 <div class="keyhelp hidden" id="keyhelp">A/D 移動 ・ W ジャンプ ・ S しゃがみ ・ 後ろ入力でガード ・ J 弱(連打で簡易コンボ) ・ K 強 ・ L 必殺 ・ O 超必殺 ・ ダブルタップでダッシュ</div>
 
+<div class="hidden" id="talk"><div class="tk-card" id="tkCard"></div><div class="tk-box" id="tkBox"><div class="tk-name" id="tkName"></div><div class="tk-text" id="tkText"></div><i class="tk-next">▼</i></div><button class="sub tk-skip" id="tkSkip">スキップ ▶▶</button></div>
 <div class="overlay hidden" id="story">
   <div class="vig"></div>
   <div class="sbox"><div class="schap" id="sChap"></div><div class="svs" id="sVs"></div><div class="stext" id="sText"></div><div class="sbtns" id="sBtns"></div></div>
@@ -11703,6 +11740,8 @@ function backstepPose(v, out) {
   return out;
 }
 
+// story talk on the stage (see talkStart): the fight waits while the gods speak
+const talk = { on: false, lines: [], i: -1, shown: 0, n: -1, lineT: 0, phase: 'off', cardT: 0, done: null, speaker: -1, cut: false };
 class FighterView {
   constructor(f, model) {
     this.f = f; this.m = model;
@@ -11731,6 +11770,7 @@ class FighterView {
   }
   targetPose(dt, t) {
     const f = this.f, L = this.lib, out = this.tgt;
+    if (talk.on && screen === 'match' && f.state !== 'ko' && f.state !== 'down') { talkPose(this, dt, t); this.lastX = f.x; return 8; }
     let rate = 16;
     this.flip = 0;
     this.spinDirect = false;
@@ -12399,7 +12439,9 @@ function updateCamera(dt, t) {
   let rate = 4.5;
   const owner = sim.freezeOwner;
   const superF = sim.fighters.find((f) => f.state === 'attack' && f.move && f.move.type === 'super');
-  if (sim.freeze > 0 && owner) {
+  if (talk.on && screen === 'match') {
+    const sh = talkShot(portrait); pos = sh.pos; look = sh.look; fov = sh.fov; rate = sh.rate;
+  } else if (sim.freeze > 0 && owner) {
     const ox = owner.x, oy = owner.y;
     const k = 1 - sim.freeze / 0.95;
     pos = new V3(ox + owner.facing * (2.0 - k * 0.4), oy + 1.7 + k * 0.3, 2.9 - k * 0.5);
@@ -12473,16 +12515,18 @@ function updateCamera(dt, t) {
 const bgm = {
   track: null, want: null, bus: null, next: 0, step: 0, timer: null, intense: 0,
   mf(n) { return 440 * Math.pow(2, (n - 69) / 12); },
-  // The music is synthesised note by note, but never live: each track's loop is rendered once in an
-  // OfflineAudioContext (off the main thread) and then played as one looping buffer. Live synthesis kept 120-160
-  // oscillators/filters running at once and built ~120 nodes a second on the main thread, which made phones crackle
-  // and stutter. Battle tracks are rendered twice (calm / intense) and crossfaded by `intense`.
-  c: null, cache: new Map(), queue: [], rendering: null, src: null, out0: null, gLo: null, gHi: null, playing: null,
+  // The music is synthesised note by note, but never live: each track is rendered in an OfflineAudioContext (off the
+  // main thread) and played back from buffers. Live synthesis kept 120-160 oscillators/filters running at once and
+  // built ~120 nodes a second on the main thread, which made phones crackle and stutter.
+  // A track is rendered in segments - the first bar alone, then the second, then two bars, then the rest - each with
+  // its ringing tail; segments are scheduled back to back and their tails overlap, so the music starts as soon as
+  // the first bar exists. Battle tracks also get an intense render of each segment, crossfaded by `intense`.
+  c: null, cache: new Map(), jobs: [], rendering: null, out0: null, gLo: null, gHi: null, gSolo: null, playing: null, live: [],
   init() {
     const c = sfx.ctx; if (!c || this.out0) return;
     this.out0 = c.createGain(); this.out0.gain.value = 0.0001; this.out0.connect(c.destination);
-    this.gLo = c.createGain(); this.gHi = c.createGain(); this.gHi.gain.value = 0;
-    this.gLo.connect(this.out0); this.gHi.connect(this.out0);
+    this.gLo = c.createGain(); this.gHi = c.createGain(); this.gSolo = c.createGain(); this.gHi.gain.value = 0;
+    for (const g of [this.gLo, this.gHi, this.gSolo]) g.connect(this.out0);
     this.timer = setInterval(() => this.tick(), 100);
   },
   // the mixing chain (EQ, glue compression, limiter, hall, ping-pong delay) built inside a rendering context
@@ -12510,48 +12554,63 @@ const bgm = {
     this.dry = c.createGain(); this.dry.connect(this.bus); this.dry.connect(vhp); vhp.connect(this.verb);
   },
   dyn(name) { const T = this.TRACKS[name]; return name === 'battle' || !!T.style; },
-  // render one loop of a track at a fixed intensity; notes ringing past the loop's end are folded onto its start
-  async renderLoop(name, I) {
-    const T = this.TRACKS[name], s16 = 60 / T.bpm / 4, steps = T.bars * 16, sr = isMobile ? 32000 : sfx.ctx.sampleRate;   // phones: a lighter render, still well above what their speakers reproduce
-    const L = Math.round(steps * s16 * sr), tail = Math.round(3.5 * sr);
+  TAIL: 3.6,
+  // the segments of a track, in bars: [0,1), [1,2), [2,4), [4,bars)
+  segsOf(T) { const b = T.bars, out = []; for (const [x, y] of [[0, 1], [1, 2], [2, 4], [4, b]]) if (x < b) out.push([x, Math.min(y, b)]); return out; },
+  // render bars [b0, b1) of a track at a fixed intensity, plus the tail that rings on after them
+  async renderSeg(name, I, b0, b1) {
+    const T = this.TRACKS[name], s16 = 60 / T.bpm / 4, sr = isMobile ? 32000 : sfx.ctx.sampleRate;   // phones: a lighter render, still well above what their speakers reproduce
+    const st0 = b0 * 16, st1 = b1 * 16, L = Math.round((st1 - st0) * s16 * sr), tail = Math.round(this.TAIL * sr);
     const OAC = window.OfflineAudioContext || window.webkitOfflineAudioContext, off = new OAC(2, L + tail, sr);
     const keep = [this.c, this.intense, this.track];
     try {
       this.c = off; this.intense = I; this.track = name; this.chain(off);
       const mine = { c: off, intense: I, track: name, bus: this.bus, dry: this.dry, dly: this.dly, verb: this.verb };
-      for (let st = 0; st < steps; st++) {
-        this.play16(T, st, st * s16, s16);
+      for (let st = st0; st < st1; st++) {
+        this.play16(T, st, (st - st0) * s16, s16);
         // build the notes a bar at a time so the main thread never stalls for long
-        if (st % 16 === 15) { this.c = keep[0]; this.intense = keep[1]; this.track = keep[2]; await new Promise((r) => setTimeout(r, 0)); Object.assign(this, mine); }
+        if (st % 16 === 15 && st + 1 < st1) { this.c = keep[0]; this.intense = keep[1]; this.track = keep[2]; await new Promise((r) => setTimeout(r, 0)); Object.assign(this, mine); }
       }
     } finally { this.c = keep[0]; this.intense = keep[1]; this.track = keep[2]; }
     const buf = await new Promise((res, rej) => { off.oncomplete = (ev) => res(ev.renderedBuffer); const p = off.startRendering(); if (p && p.catch) p.catch(rej); });
-    const out = sfx.ctx.createBuffer(2, L, sr);
-    for (let ch = 0; ch < 2; ch++) {
-      const d = buf.getChannelData(ch), o = out.getChannelData(ch);
-      o.set(d.subarray(0, L));
-      for (let k = 0; k < tail; k++) o[k % L] += d[L + k];
-    }
-    return out;
+    // the very end of the tail fades out, so a note still ringing there is not cut with a click
+    const fade = Math.round(0.4 * sr);
+    for (let ch = 0; ch < 2; ch++) { const d = buf.getChannelData(ch); for (let k = 0; k < fade; k++) d[d.length - 1 - k] *= k / fade; }
+    return { buf, dur: (st1 - st0) * s16 };
   },
-  // render tracks one at a time, in the order they are asked for
+  entry(name) {
+    let e = this.cache.get(name);
+    if (!e) {
+      const T = this.TRACKS[name], segs = this.segsOf(T);
+      e = { segs, lo: segs.map(() => null), hi: segs.map(() => null), dur: segs.map(([x, y]) => (y - x) * 16 * 60 / T.bpm / 4), dyn: this.dyn(name), failed: false };
+      this.cache.set(name, e);
+    }
+    return e;
+  },
+  // queue a track's segments for rendering (calm ones first, then the intense ones); `first` puts it ahead of the rest
   need(name, first = false) {
-    if (!name || !this.TRACKS[name] || this.cache.has(name) || this.rendering === name) return;
-    const i = this.queue.indexOf(name);
-    if (i >= 0) { if (first && i > 0) { this.queue.splice(i, 1); this.queue.unshift(name); } return; }
-    if (first) this.queue.unshift(name); else this.queue.push(name);
+    if (!name || !this.TRACKS[name]) return;
+    const e = this.entry(name);
+    const mine = [];
+    e.segs.forEach((_, k) => { if (!e.lo[k]) mine.push({ name, I: 0, k }); });
+    if (e.dyn) e.segs.forEach((_, k) => { if (!e.hi[k]) mine.push({ name, I: 1, k }); });
+    const same = (j) => j.name === name;
+    if (first) this.jobs = mine.filter((j) => !(this.rendering && this.rendering.name === j.name && this.rendering.I === j.I && this.rendering.k === j.k)).concat(this.jobs.filter((j) => !same(j)));
+    else for (const j of mine) if (!this.jobs.some((q) => same(q) && q.I === j.I && q.k === j.k) && !(this.rendering && this.rendering.name === j.name && this.rendering.I === j.I && this.rendering.k === j.k)) this.jobs.push(j);
     this.pump();
   },
   async pump() {
-    if (this.rendering || !this.queue.length || !sfx.ctx) return;
-    const name = this.rendering = this.queue.shift();
-    try {
-      const lo = await this.renderLoop(name, 0);
-      const e = { lo, hi: null }; this.cache.set(name, e);
-      if (this.dyn(name)) e.hi = await this.renderLoop(name, 1);
-    } catch (err) { console.warn('bgm render failed', name, err); this.cache.set(name, { lo: null, hi: null }); }
-    // keep memory bounded: drop the least recently used loops that are not playing or wanted
-    while (this.cache.size > 4) { const k = [...this.cache.keys()].find((k) => k !== this.playing && k !== this.want); if (!k) break; this.cache.delete(k); }
+    if (this.rendering || !this.jobs.length || !sfx.ctx) return;
+    const j = this.rendering = this.jobs.shift(), e = this.cache.get(j.name);
+    if (e && !e.failed) {
+      try { const [x, y] = e.segs[j.k], r = await this.renderSeg(j.name, j.I, x, y); (j.I ? e.hi : e.lo)[j.k] = r.buf; }
+      catch (err) { console.warn('bgm render failed', j.name, err); e.failed = true; this.jobs = this.jobs.filter((q) => q.name !== j.name); }
+    }
+    // keep memory bounded: drop the least recently used tracks that are neither playing nor wanted
+    while (this.cache.size > 4) {
+      const k = [...this.cache.keys()].find((n) => n !== this.playing && n !== this.want); if (!k) break;
+      this.cache.delete(k); this.jobs = this.jobs.filter((q) => q.name !== k);
+    }
     this.rendering = null; this.pump();
   },
   // render the music that the next screen will want while this one is still up
@@ -12852,36 +12911,45 @@ const bgm = {
   },
   tick() {
     const c = sfx.ctx; if (!c || c.state !== 'running' || !this.out0) return;
-    this.need(this.want, true); this.pump();
-    const target = sfx.muted ? 0.0001 : this.want ? Math.max(0.0001, 0.36 * vol.bgm) : 0.0001;
+    // the wanted track renders before anything prefetched
+    const w = this.want && this.cache.get(this.want);
+    if (this.want && (!w || (this.jobs.length && this.jobs[0].name !== this.want && (w.lo.some((b) => !b) || (w.dyn && w.hi.some((b) => !b)))))) this.need(this.want, true);
+    this.pump();
+    const now = c.currentTime, target = sfx.muted ? 0.0001 : this.want ? Math.max(0.0001, 0.36 * vol.bgm) : 0.0001;
     if (this.want !== this.playing) {
-      // fade the old loop out, then start the new one as soon as it has been rendered
-      if (!this.fadeT) this.fadeT = c.currentTime;
-      this.out0.gain.setTargetAtTime(0.0001, c.currentTime, 0.15);
-      if (this.playing && c.currentTime - this.fadeT < 0.6) return;
+      // fade the old track out, then start the new one as soon as its first bar has been rendered
+      if (!this.fadeT) this.fadeT = now;
+      this.out0.gain.setTargetAtTime(0.0001, now, 0.15);
+      if (this.playing && now - this.fadeT < 0.6) return;
       const e = this.want && this.cache.get(this.want);
-      if (this.want && !(e && e.lo)) { if (e && !e.lo) this.want = null; return; }   // still rendering (or failed)
+      if (this.want && e && e.failed) this.want = null;
+      if (this.want && !(e && e.lo[0])) { this.stopSrc(); this.playing = null; return; }   // first bar still rendering
       this.stopSrc(); this.playing = this.want; this.fadeT = 0;
-      if (e) {
-        const t = c.currentTime + 0.05;
-        const mk = (b, g) => { const s = c.createBufferSource(); s.buffer = b; s.loop = true; s.connect(g); s.start(t); return s; };
-        this.src = [mk(e.lo, this.gLo)]; this.srcHi = false;
-        this.loopStart = t; this.cur = e;
+      this.seg = 0; this.nextT = now + 0.06;
+    }
+    this.out0.gain.setTargetAtTime(target, now, 0.25);
+    const e = this.playing && this.cache.get(this.playing);
+    if (e) {
+      // keep about a second of music scheduled ahead; if the next segment is not rendered yet, the track goes
+      // back to its first bar (the opening bars loop) and carries on past them once the rest exists
+      while (this.nextT < now + 1.0) {
+        if (!e.lo[this.seg]) { if (!e.lo[0]) break; this.seg = 0; }
+        const k = this.seg, t = Math.max(this.nextT, now + 0.02), hi = e.hi[k];
+        this.startBuf(e.lo[k], hi ? this.gLo : this.gSolo, t);
+        if (hi) this.startBuf(hi, this.gHi, t);
+        this.nextT = t + e.dur[k];
+        this.seg = (k + 1) % e.segs.length;
       }
     }
-    this.out0.gain.setTargetAtTime(target, c.currentTime, 0.25);
-    // calm <-> intense crossfade; the intense loop joins in sync once it has been rendered
-    const e = this.cur;
-    if (e && this.src && e.hi && !this.srcHi) {
-      const s = c.createBufferSource(); s.buffer = e.hi; s.loop = true; s.connect(this.gHi);
-      const dur = e.lo.duration, now = c.currentTime + 0.05; s.start(now, ((now - this.loopStart) % dur + dur) % dur);
-      this.src.push(s); this.srcHi = true;
-    }
-    const I = this.srcHi ? this.intense : 0;
-    this.gLo.gain.setTargetAtTime(Math.max(0.0001, 1 - I), c.currentTime, 0.3);
-    this.gHi.gain.setTargetAtTime(Math.max(0.0001, I), c.currentTime, 0.3);
+    // calm <-> intense crossfade (segments without an intense render play through gSolo, unaffected)
+    this.gLo.gain.setTargetAtTime(Math.max(0.0001, 1 - this.intense), now, 0.3);
+    this.gHi.gain.setTargetAtTime(Math.max(0.0001, this.intense), now, 0.3);
   },
-  stopSrc() { if (this.src) for (const s of this.src) { try { s.stop(); } catch (e) { } s.disconnect(); } this.src = null; this.cur = null; this.srcHi = false; },
+  startBuf(b, g, t) {
+    const c = sfx.ctx, s = c.createBufferSource(); s.buffer = b; s.connect(g); s.start(t);
+    this.live.push(s); s.onended = () => { const i = this.live.indexOf(s); if (i >= 0) this.live.splice(i, 1); s.disconnect(); };
+  },
+  stopSrc() { for (const s of this.live) { try { s.stop(); } catch (e) { } s.disconnect(); } this.live = []; },
   play16(T, st, t, s16) {
     const bar = Math.floor(st / 16) % T.bars, b16 = st % 16, beat = b16 / 4;
     const ch = T.chords[bar], root = ch[0] - 12, I = this.intense;
@@ -13518,6 +13586,7 @@ function frame(now) {
   const ts = koBySuper ? cineSlow() : sim.timeScale() * cineSlow();
   const vdt = paused ? 0 : rdt * speed * ts;
   if (screen !== 'match' && screen !== 'viewer') menuUpdate(rdt, clock);
+  else if (started && !paused && talk.on) talkUpdate(rdt);
   else if (started && !paused) {
     acc += vdt;
     let steps = 0;
@@ -13592,6 +13661,7 @@ function addOutline(root) {
 }
 
 function setupMatch(c) {
+  if (talk.on) { talk.done = null; talkEnd(); }
   cfg = c;
   curStage = c.stage || 'olympus';
   bgm.prefetch(c.mode === 'practice' ? 'practice' : STAGES[curStage].bgm, 'victory', c.mode === 'player' ? 'defeat' : '');
@@ -13620,6 +13690,7 @@ function setPause(open) {
 }
 function showScreen(name) {
   screen = name;
+  if (name !== 'match' && talk.on) { talk.done = null; talkEnd(); }
   if (name !== 'match' && pauseOpen) { pauseOpen = false; $('pauseMenu').classList.add('hidden'); $('volPanel').classList.add('hidden'); }
   bgm.play(name === 'match' ? (cfg.mode === 'practice' ? 'practice' : STAGES[curStage].bgm) : name === 'viewer' ? 'practice' : name === 'story' ? 'mode' : name);
   if (name === 'title') bgm.prefetch('mode', 'select'); else if (name === 'mode') bgm.prefetch('select');
@@ -14064,11 +14135,134 @@ const STORY = {
     'anubis>heracles': [['o', '犬頭の神か。冥府の番犬なら、前に一匹連れ出したことがあるぜ。'], ['p', '汝の傲りは、秤の上で重さを増すばかりだ。']],
   },
 };
+// pre-fight talk: how each stage greets the challenger, each god's last word before the bell, and what a winner says
+Object.assign(STORY, {
+  arrive: {
+    olympus: '――オリュンポス闘技場。白亜の円柱が見下ろす戦場で、{b}が待っていた。',
+    sea: '――海神の神殿。打ち寄せる潮騒の中、{b}が三叉の槍を構える。',
+    duat: '――冥界の審判の間。黄金の秤の前に、{b}が静かに立っていた。',
+    asgard: '――アースガルズ。虹の橋の果て、雷雲の下で{b}が笑う。',
+    izumo: '――出雲。八重垣の向こうから、嵐とともに{b}が現れた。',
+    nemea: '――ネメアの谷。獅子の咆哮が残る岩場で、{b}が棍棒を担ぐ。',
+    tartarus: '――冥府の底、タルタロス。燐光の揺れる闇から、{b}の声が響いた。',
+    kailash: '――カイラス山。万年雪の頂で、{b}が舞の構えを取る。',
+    cythera: '――キュテラ島。薔薇の香る白い浜辺で、{b}が微笑んでいた。',
+    bodhgaya: '――菩提樹の聖地。深い静寂の中、{b}がゆっくりと目を開いた。',
+    delphi: '――デルポイの神殿。神託の煙が立ちのぼる聖域で、{b}が弓を携えて待つ。',
+  },
+  cry: {
+    zeus: 'ひれ伏せ――雷霆の名のもとに！', poseidon: '海の怒り、その身で知れ！', anubis: '秤は掲げられた。始めよう。',
+    thor: 'さあ、派手にいこうぜ！', susanoo: '嵐よ、吹き荒れろ！', heracles: '十三番目の試練だ――いくぞ！',
+    hades: '聞こえるか。冥府の門が開く音が。', shiva: '踊れ。そして、灰となれ。', aphrodite: 'さあ、わたくしに見惚れなさい。',
+    shaka: '――参ろう。', apollo: '太陽よ、僕の矢に光を。', odin: '来るがよい。グングニルは的を外さぬ。',
+  },
+  win: {
+    zeus: '天に逆らう者の末路だ。覚えておけ。', poseidon: '潮は満ちた。大人しく退くがよい。', anubis: '量り終えた。汝の心臓は、羽より重い。',
+    thor: 'ハハッ、いい戦いだったぜ！ またやろうな！', susanoo: 'どうだ、嵐の味は！ 目が覚めたか？', heracles: '試練、またひとつ越えたぞ……！',
+    hades: '冥府で待っていろ。いずれ、また会う。', shiva: '終わりは美しい。……次の始まりもまた。', aphrodite: 'ふふっ。これであなたも、わたくしの虜ね。',
+    shaka: '怒りは鎮まったか。……それでよい。', apollo: '神託どおりだ。……少しだけ、ほっとしたけどね。', odin: '未だ足りぬ。九つの世界を背負うには、な。',
+  },
+});
+Object.assign(STORY.vs, {
+  'zeus>susanoo': [['o', '天の王様が直々にお出ましか。高天原の連中より偉そうだな。'], ['p', '異国の嵐の神よ。その荒ぶり、天の秩序の前では小風にすぎぬ。'], ['o', '秩序だぁ？ 俺はそういうのが一番嫌いなんだよ！'], ['p', 'ならば教えてやろう。天に逆らう者が、どこへ堕ちるかをな。']],
+  'anubis>thor': [['o', 'おっ、犬の頭の神様か！ 冥府の番人ってのは強ぇのか？'], ['p', '雷神よ。汝の魂は騒がしい。秤に載せる前に、静めねばなるまい。'], ['o', 'ハハッ、静かにしろってのは無理な相談だ！'], ['p', 'ならば力ずくで量るまで。']],
+  'anubis>susanoo': [['o', '冥府の神か。俺の母上も黄泉にいるんでな、死者の国の連中には借りがある。'], ['p', '黄泉の女神の子よ。母を慕う心は、秤の上でも軽くはない。'], ['o', '……ふん、分かったような口を利くな。'], ['p', 'だが、その荒ぶる罪もまた量られる。剣を抜け、嵐の神。']],
+  'thor>heracles': [['o', 'あんたが北の雷神か！ 力比べなら負けねぇぞ！'], ['p', 'ハハッ、いい筋肉してるじゃねえか！ 世界蛇を釣り上げたこの腕と勝負だ！'], ['o', 'ネメアの獅子を素手で絞め落としたこの腕もな！'], ['p', '気に入った！ 小細工抜きで、真っ向からぶつかろうぜ！']],
+  'thor>poseidon': [['o', '北の雷神よ。ここは海の神殿だ。雷が落ちれば、海が呑む。'], ['p', '海なら北にもでっけぇのがある。世界蛇が巻きついてるやつがな！'], ['o', '蛇ごときと我が海を一緒にするな。'], ['p', 'だったら確かめさせてもらうぜ。ミョルニルが沈むかどうか！']],
+  'susanoo>hades': [['o', '異国の荒神か。……黄泉の国の匂いがする。'], ['p', '母上のいる黄泉へ行こうとして、高天原を追われたんだ。死者の国の王なら話が早ぇ。'], ['o', '冥府に入りたいなら、望みどおり送ってやろう。'], ['p', '冗談じゃねえ。俺は勝って、真っ正面から行くんだよ！']],
+  'heracles>thor': [['o', 'おう、あんたが噂の半神か！ 人間上がりにしちゃ、いい面構えだ！'], ['p', '北の雷神……十二の試練にも、雷はなかった。'], ['o', 'じゃあ十三番目の試練ってことだな！ 遠慮はいらねえぞ！'], ['p', '望むところだ！']],
+  'heracles>anubis': [['o', 'ゼウスの子、半神ヘラクレス。汝の魂は、神と人のどちらの重さか。'], ['p', '量りたきゃ量ればいい。俺は試練を越えるだけだ。'], ['o', '汝が奪った命の数もまた、秤に載る。'], ['p', '……分かってる。それも背負って、俺は前に進む！']],
+});
 const story = { key: null, level: 3, idx: 0, active: false, handled: false };
 function storyLines(a, b) {
   const sp = STORY.vs[`${a}>${b}`];
   if (sp) return sp;
   return [['o', STORY.gods[b].reply.replace('神座を狙うか。', '神座を狙うか。')], ['p', STORY.gods[a].challenge]];
+}
+// ---- the talk: lines are { side: 0 | 1 | -1 (narration), key, text }; a title card may open it ----
+function talkStart({ card, lines, done }) {
+  Object.assign(talk, { on: true, lines: lines.filter(Boolean), i: -1, shown: 0, n: -1, lineT: 0, cardT: 0, done, speaker: -1, cut: true, phase: card ? 'card' : 'line' });
+  document.body.classList.add('talking');
+  $('talk').classList.remove('hidden');
+  const c = $('tkCard'); c.className = 'tk-card'; c.innerHTML = card || '';
+  if (card) { void c.offsetWidth; c.classList.add('show'); }
+  $('tkBox').className = 'tk-box';
+  if (!card) talkNext();
+}
+function talkNext() {
+  talk.i++;
+  if (talk.i >= talk.lines.length) { talkEnd(); return; }
+  const L = talk.lines[talk.i], box = $('tkBox');
+  Object.assign(talk, { phase: 'line', shown: 0, n: -1, lineT: 0, cut: true, speaker: L.side });
+  if ($('tkCard').classList.contains('show')) $('tkCard').className = 'tk-card show out';
+  box.className = 'tk-box' + (L.side < 0 ? ' narr' : L.side === 1 ? ' right' : '');
+  void box.offsetWidth; box.classList.add('show', 'pop');
+  box.style.setProperty('--tc', L.side < 0 ? '#e8c06a' : GOD[L.key].acc);
+  $('tkName').innerHTML = L.side < 0 ? '' : `${GOD[L.key].emb}<b>${CHARS[L.key].name}</b><small>${CHARS[L.key].title}</small>`;
+  $('tkText').textContent = '';
+  if (L.side >= 0) {
+    const f = sim.fighters[L.side];
+    glowPuff(f.x, f.y + 1.2, 0.3, new THREE.Color(GOD[L.key].acc).getHex(), 2.2, 0.6);
+    addP.burst(14, f.x, f.y + 1.0, 0.2, 1.2, { life: [0.4, 0.8], size: [0.04, 0.08], color: AIRCOL[L.key] || COL.spark, drag: 2, up: 1 });
+    sfx.ring([523 + L.side * 130, 784 + L.side * 196], 0.25, 0.025);
+  } else sfx.ring([392, 588], 0.4, 0.02);
+}
+function talkAdvance() {
+  if (!talk.on) return;
+  if (talk.phase === 'card') { talkNext(); return; }
+  const L = talk.lines[talk.i];
+  if (L && talk.shown < L.text.length) { talk.shown = L.text.length; $('tkText').textContent = L.text; $('tkBox').classList.add('done'); return; }
+  talkNext();
+}
+function talkEnd() {
+  if (!talk.on) return;
+  talk.on = false; talk.phase = 'off'; talk.speaker = -1;
+  document.body.classList.remove('talking');
+  $('talk').classList.add('hidden');
+  acc = 0;
+  const d = talk.done; talk.done = null;
+  if (d) d();
+}
+function talkUpdate(dt) {
+  if (talk.phase === 'card') { talk.cardT += dt; if (talk.cardT > 2.9) talkNext(); return; }
+  talk.lineT += dt;
+  const L = talk.lines[talk.i];
+  if (!L || talk.shown >= L.text.length) return;
+  talk.shown = Math.min(L.text.length, talk.shown + dt * (L.side < 0 ? 22 : 30));
+  const n = Math.floor(talk.shown);
+  if (n !== talk.n) { talk.n = n; $('tkText').textContent = L.text.slice(0, n); }
+  if (talk.shown >= L.text.length) $('tkBox').classList.add('done');
+}
+// the camera of a talk: an establishing sweep under the title card and for narration; a close shot on whoever
+// speaks, every third line over the listener's shoulder instead; a cut on each new line, then a slow push in
+function talkShot(portrait) {
+  const [a, b] = sim.fighters, mid = (a.x + b.x) / 2, zf = portrait ? 1.7 : 1;
+  const cut = talk.cut; talk.cut = false;
+  if (talk.phase === 'card' || talk.speaker < 0) {
+    const k = talk.phase === 'card' ? talk.cardT : talk.lineT + 3;
+    return { pos: new V3(mid + Math.sin(k * 0.16 + 0.5) * 3.2, 3.4 - Math.min(k, 4) * 0.3, (12.5 - Math.min(k, 6) * 0.45) * zf), look: new V3(mid, 1.6, 0), fov: portrait ? 50 : 36, rate: cut ? 100 : 1.6 };
+  }
+  const sp = sim.fighters[talk.speaker], li = sim.fighters[1 - talk.speaker], dir = Math.sign(li.x - sp.x) || 1, k = talk.lineT;
+  const down = sp.state === 'ko' || sp.state === 'down', ly = down ? 0.45 : 1.55;
+  if (talk.i % 3 === 2 && !down) {
+    const pos = new V3(li.x + dir * 0.9 - dir * k * 0.05, 1.95, 2.3 * zf + 0.4), look = new V3(sp.x, ly, 0);
+    return { pos, look, fov: portrait ? 46 : 32, rate: cut ? 100 : 1.2 };
+  }
+  const pos = new V3(sp.x + dir * (2.3 - k * 0.06) * (portrait ? 0.8 : 1), (down ? 1.2 : 1.75) - k * 0.02, (3.5 - k * 0.1) * zf);
+  return { pos, look: new V3(sp.x + dir * 0.25, ly, 0), fov: portrait ? 46 : 32, rate: cut ? 100 : 1.2 };
+}
+// a speaking god stands taller into their entrance pose and nods with the words; the listener waits in stance
+function talkPose(v, dt, t) {
+  const f = v.f, L = v.lib, out = v.tgt;
+  const speaking = talk.phase === 'line' && talk.speaker === f.side;
+  v.talkW = damp(v.talkW || 0, speaking ? 1 : 0, 3, dt);
+  copyPose(L.stance, out);
+  const g = L.intro || L.win;
+  if (g && v.talkW > 0.001) blend(out, g, v.talkW * 0.55, out);
+  const br = Math.sin(t * 2.2 + f.side * 1.7);
+  out.chest[0] += br * 0.02; out.spine[0] += br * 0.012; out.lSh[0] += br * 0.03; out.rSh[0] -= br * 0.025;
+  const Ln = talk.lines[talk.i];
+  if (speaking && Ln && talk.shown < Ln.text.length) { out.head[0] += Math.sin(t * 9) * 0.04; out.chest[1] += Math.sin(t * 3.1) * 0.03; }
 }
 function storyScene({ chap, vs, lines, buttons, bgmName }) {
   $('sChap').innerHTML = chap || '';
@@ -14091,42 +14285,54 @@ function startStory() {
 }
 const ORD = ['一', '二', '三', '四'];
 const storyFoe = () => (story.idx >= 4 ? STORY.boss.key : STORY.gods[story.key].path[story.idx]);
+// a line of the talk, from a rivalry entry (['p' | 'o', text])
+const tline = (side, key, text) => ({ side, key, text });
+const narr = (text) => ({ side: -1, text });
 function storyPreFight() {
   const a = story.key, b = storyFoe(), st = STAGE_IDS.find((id) => STAGES[id].owner === b) || 'olympus', boss = story.idx >= 4;
-  const lines = boss ? (STORY.vs[`${a}>${b}`] || STORY.boss.intro).map(([who, t]) => say(who === 'p' ? a : b, t)) : storyLines(a, b).map(([who, t]) => say(who === 'p' ? a : b, t));
-  if (boss && !STORY.vs[`${a}>${b}`]) lines.push(say(a, STORY.gods[a].challenge));
+  const ex = boss ? (STORY.vs[`${a}>${b}`] || STORY.boss.intro) : storyLines(a, b);
+  const lines = [
+    ...(boss ? STORY.boss.arrive.map(narr) : [STORY.arrive[st] && narr(STORY.arrive[st].replace('{b}', CHARS[b].name))]),
+    ...ex.map(([who, t]) => (who === 'p' ? tline(0, a, t) : tline(1, b, t))),
+  ];
+  if (boss && !STORY.vs[`${a}>${b}`]) lines.push(tline(0, a, STORY.gods[a].challenge));
+  // the last word before the bell: the one waiting, then the challenger
+  lines.push(tline(1, b, STORY.cry[b]), tline(0, a, STORY.cry[a]));
   // the Allfather fights one level above the chosen strength
   const lv = boss ? Math.min(5, story.level + 1) : story.level;
-  storyScene({ chap: boss ? `<small>FINAL BATTLE ・ ${STAGES[st].en}</small>最終戦　${STAGES[st].name}` : `<small>BATTLE ${story.idx + 1} / 5 ・ ${STAGES[st].en}</small>第${ORD[story.idx]}戦　${STAGES[st].name}`,
-    vs: `${godTag(a)}<em>VS</em>${godTag(b)}`, lines, bgmName: boss ? 'st_valhalla' : undefined,
-    buttons: [[boss ? '神座を賭けて戦う' : '戦う', () => { story.handled = false; setupMatch({ mode: 'player', keys: [a, b], level: lv, stage: st, story: true }); showScreen('match'); }]] });
+  const vsTag = (k) => `<span style="color:${GOD[k].acc}">${GOD[k].emb}${CHARS[k].name}</span>`;
+  const card = `<small>${boss ? 'FINAL BATTLE' : `BATTLE ${story.idx + 1} / 5`} ・ ${STAGES[st].en}</small><b>${boss ? '最終戦' : `第${ORD[story.idx]}戦`}　${STAGES[st].name}</b><div class="tk-vs">${vsTag(a)}<em>VS</em>${vsTag(b)}</div>`;
+  // the match is set up first: the gods stand on the stage while they talk, and the entrances follow
+  story.handled = false;
+  setupMatch({ mode: 'player', keys: [a, b], level: lv, stage: st, story: true });
+  showScreen('match');
+  talkStart({ card, lines });
 }
-function storyBossArrive() {
-  storyScene({ chap: '<small>THE THRONE OF THE GODS</small>神座', vs: godTag(STORY.boss.key),
-    lines: STORY.boss.arrive, bgmName: 'st_valhalla',
-    buttons: [['玉座へ進む', storyPreFight]] });
-}
+function storyBossArrive() { storyPreFight(); }
 function storyAfterMatch() {
   if (story.handled) return; story.handled = true;
-  const a = story.key, b = storyFoe();
+  const a = story.key, b = storyFoe(), bossFoe = b === STORY.boss.key;
   if (sim.matchWinner === 0) {
     story.idx++;
+    // on the stage: the beaten god's word, then the winner's
+    const lines = [tline(1, b, bossFoe ? STORY.boss.lose : STORY.gods[b].lose), tline(0, a, STORY.win[a])];
     if (story.idx === 4) {
-      storyScene({ chap: '<small>VICTORY</small>第四戦　勝利', vs: godTag(a),
-        lines: [say(b, STORY.gods[b].lose), `四柱の神を下した。だが神座には、まだ主が座している――。`],
-        buttons: [['神座へ', storyBossArrive]] });
+      talkStart({ lines, done: () => storyScene({ chap: '<small>VICTORY</small>第四戦　勝利', vs: godTag(a),
+        lines: [`四柱の神を下した。だが神座には、まだ主が座している――。`],
+        buttons: [['神座へ', storyBossArrive]] }) });
     } else if (story.idx >= 5) {
       const G = STORY.gods[a];
-      storyScene({ chap: '<small>ENDING</small>神座の主', vs: godTag(a), lines: [say(b, STORY.boss.lose), ...G.ending, '<span class="sfin">― 神座決戦　完 ―</span>'], bgmName: 'victory',
-        buttons: [['タイトルへ', () => { story.active = false; $('btnToTitle').click(); }], ['もう一度', () => startStory(), 'sub']] });
+      talkStart({ lines, done: () => storyScene({ chap: '<small>ENDING</small>神座の主', vs: godTag(a), lines: [...G.ending, '<span class="sfin">― 神座決戦　完 ―</span>'], bgmName: 'victory',
+        buttons: [['タイトルへ', () => { story.active = false; $('btnToTitle').click(); }], ['もう一度', () => startStory(), 'sub']] }) });
     } else {
-      storyScene({ chap: `<small>VICTORY</small>第${ORD[story.idx - 1]}戦　勝利`, vs: godTag(a),
-        lines: [say(b, STORY.gods[b].lose), `${CHARS[b].name}を下した。神座まで、残る神はあと${5 - story.idx}柱――。`],
-        buttons: [[`第${ORD[story.idx]}戦へ`, storyPreFight]] });
+      talkStart({ lines, done: () => storyScene({ chap: `<small>VICTORY</small>第${ORD[story.idx - 1]}戦　勝利`, vs: godTag(a),
+        lines: [`${CHARS[b].name}を下した。神座まで、残る神はあと${5 - story.idx}柱――。`],
+        buttons: [[`第${ORD[story.idx]}戦へ`, storyPreFight]] }) });
     }
   } else {
-    storyScene({ chap: '<small>DEFEAT</small>敗北', vs: godTag(b), lines: [say(b, b === STORY.boss.key ? STORY.boss.win : STORY.gods[b].challenge.replace('――退け。', '')), `${CHARS[a].name}は膝をついた……。`], bgmName: 'defeat',
-      buttons: [['再挑戦', storyPreFight], ['タイトルへ', () => { story.active = false; $('btnToTitle').click(); }, 'sub']] });
+    talkStart({ lines: [tline(1, b, STORY.win[b] || STORY.boss.win), narr(`${CHARS[a].name}は膝をついた……。`)],
+      done: () => storyScene({ chap: '<small>DEFEAT</small>敗北', vs: godTag(b), lines: [`まだ終わりではない。立ち上がれ、${CHARS[a].name}。`], bgmName: 'defeat',
+        buttons: [['再挑戦', storyPreFight], ['タイトルへ', () => { story.active = false; $('btnToTitle').click(); }, 'sub']] }) });
   }
 }
 
@@ -14147,6 +14353,10 @@ function syncCmd(f) {
   f.cmd.up = held.up; f.cmd.down = held.down;
 }
 window.addEventListener('keydown', (e) => {
+  if (talk.on && screen === 'match' && !pauseOpen) {
+    if (['Enter', 'Space', 'KeyJ', 'KeyK', 'KeyL', 'KeyZ', 'KeyX'].includes(e.code)) { e.preventDefault(); if (!e.repeat) talkAdvance(); return; }
+    if (e.code !== 'Escape') return;
+  }
   // Esc during a match opens the pause menu (and closes it again); the match is frozen while it is open
   if (e.code === 'Escape' && screen === 'match' && $('endpanel').classList.contains('hidden')) { e.preventDefault(); setPause(!pauseOpen); return; }
   if (screen === 'title' && (e.code === 'Enter' || e.code === 'Space')) { e.preventDefault(); $('btnStart').click(); return; }
@@ -15305,6 +15515,8 @@ async function boot() {
   $('btnVol').addEventListener('click', toggleVol);
   $('btnVolG').addEventListener('click', toggleVol);
   $('btnMoves').addEventListener('click', () => $('moves').classList.toggle('hidden'));
+  $('talk').addEventListener('pointerdown', (e) => { if (e.target.closest('#tkSkip')) return; e.preventDefault(); sfx.init(); talkAdvance(); });
+  $('tkSkip').addEventListener('click', (e) => { e.stopPropagation(); talkEnd(); });
   $('moves').addEventListener('click', (e) => { if (e.target.id === 'moves' || e.target.classList.contains('close')) $('moves').classList.add('hidden'); });
   buildMoveList();
   $('roster').innerHTML = MENU_KEYS.map((k, i) => `<span style="color:${GOD[k].acc};animation-delay:${0.3 + i * 0.08}s">${GOD[k].emb}<b>${CHARS[k].name}</b></span>`).join('');
