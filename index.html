@@ -4982,7 +4982,7 @@ function animeHead(P, H, o) {
     }
     return new V3(x * sx * r * R.x, py * r * R.y, z * sz * r * R.z).add(C);
   };
-  const g = new THREE.SphereGeometry(1, 112, 88);
+  const g = TEX_CAP < 1024 ? new THREE.SphereGeometry(1, 84, 66) : new THREE.SphereGeometry(1, 112, 88);
   const DIRS0 = [];
   { const pa = g.attributes.position; for (let i = 0; i < pa.count; i++) { const d = new V3(pa.getX(i), pa.getY(i), pa.getZ(i)).normalize(); DIRS0.push(d); const q = shape(d); pa.setXYZ(i, q.x, q.y, q.z); } g.computeVertexNormals(); }
   // face-on UVs: the front hemisphere is projected flat so the painted face texture is sharp
@@ -5364,6 +5364,8 @@ function buildZeus(T) {
 // and are pushed out of the body's capsules (pelvis, torso, thighs, shins, feet), so a floor-length robe swings,
 // flares in spins and parts around kicks instead of passing through the legs.
 const _clInv = new THREE.Matrix4(), _clM = new THREE.Matrix4(), _clV = new V3(), _clW = new V3();
+// phones step the cloth at 60 Hz with fewer passes; desktops at 120 Hz
+const CLOTH_Q = TEX_CAP < 1024 ? { h: 1 / 60, sub: 2, iters: 2 } : { h: 1 / 120, sub: 4, iters: 3 };
 function makeCloth(M, o) {
   const R = o.rows, C = o.cols, n = R * C;
   const rest = new Float32Array(n * 3);
@@ -5418,14 +5420,14 @@ function clothCapsules(M) {
 }
 function stepCloth(cl, h, caps, floor) {
   const { p, q, tgt, hold, links, n, C, p0 } = cl;
-  const gy = 9.8 * h * h, damp = 0.985, P0 = p0 * 3, NL = links.length, NC = caps.length;
+  const gy = 9.8 * h * h, k120 = h * 120, damp = Math.pow(0.985, k120), P0 = p0 * 3, NL = links.length, NC = caps.length;
   for (let i = 0; i < P0; i++) { p[i] = tgt[i]; q[i] = tgt[i]; }
   for (let i = p0; i < n; i++) {
-    const k = i * 3, hk = hold[(i / C) | 0];
+    const k = i * 3, hk = k120 === 1 ? hold[(i / C) | 0] : 1 - Math.pow(1 - hold[(i / C) | 0], k120);
     for (let d = 0; d < 3; d++) { const v = (p[k + d] - q[k + d]) * damp; q[k + d] = p[k + d]; p[k + d] += v + (tgt[k + d] - p[k + d]) * hk; }
     p[k + 1] -= gy;
   }
-  for (let it = 0; it < 3; it++) {
+  for (let it = 0; it < CLOTH_Q.iters; it++) {
     for (let l = 0; l < NL; l += 4) {
       const a = links[l] * 3, b = links[l + 1] * 3, wa = a < P0 ? 0 : 1, wb = b < P0 ? 0 : 1, w = wa + wb;
       if (!w) continue;
@@ -5457,7 +5459,7 @@ function updateCloth(M, dt, floor = 0) {
   const caps = clothCapsules(M), rp = M.root.position, yaw = M.root.rotation.y, sc = M.root.scale.x || 1;
   for (const cl of M.cloths) {
     // the root moved or turned: carry the particles through the change so the cloth keeps its world-space momentum
-    if (cl.prev && cl.ready) {
+    if (cl.prev && cl.ready && !cl.fresh) {
       const [px, py, pz, pyaw] = cl.prev, dx = rp.x - px, dy = rp.y - py, dz = rp.z - pz;
       if (dx * dx + dy * dy + dz * dz > 4) cl.ready = false;
       else if (dx || dy || dz || yaw !== pyaw) {
@@ -5468,7 +5470,8 @@ function updateCloth(M, dt, floor = 0) {
         }
       }
     }
-    cl.prev = [rp.x, rp.y, rp.z, yaw];
+    if (!cl.prev) cl.prev = [0, 0, 0, 0];
+    cl.prev[0] = rp.x; cl.prev[1] = rp.y; cl.prev[2] = rp.z; cl.prev[3] = yaw;
     _clM.multiplyMatrices(_clInv, cl.joint.matrixWorld);
     const e = _clM.elements, rest = cl.rest, tgt = cl.tgt;
     for (let i = 0; i < cl.n * 3; i += 3) {
@@ -5476,8 +5479,9 @@ function updateCloth(M, dt, floor = 0) {
       tgt[i] = e[0] * x + e[4] * y + e[8] * z + e[12]; tgt[i + 1] = e[1] * x + e[5] * y + e[9] * z + e[13]; tgt[i + 2] = e[2] * x + e[6] * y + e[10] * z + e[14];
     }
     if (!cl.ready) { cl.p.set(tgt); cl.q.set(tgt); cl.ready = true; cl.acc = 0; }
-    const h = 1 / 120;
-    cl.acc = Math.min(cl.acc + dt, h * 4);
+    cl.fresh = false;
+    const h = CLOTH_Q.h;
+    cl.acc = Math.min(cl.acc + dt, h * CLOTH_Q.sub);
     while (cl.acc >= h) { stepCloth(cl, h, caps, floor + 0.012); cl.acc -= h; }
     cl.g.attributes.position.array.set(cl.p);
     cl.g.attributes.position.needsUpdate = true;
@@ -6259,7 +6263,9 @@ function buildThor(T) {
   const gold = new THREE.MeshStandardMaterial({ color: 0xe0b25a, metalness: 1, roughness: 0.25, envMapIntensity: 1.3 });
   const armor = new THREE.MeshStandardMaterial({ color: 0xd2b06a, metalness: 0.85, roughness: 0.3, envMapIntensity: 1.3 });
   const armorDark = new THREE.MeshStandardMaterial({ color: 0x8a6a34, metalness: 0.8, roughness: 0.4 });
-  const stone = new THREE.MeshStandardMaterial({ color: 0x3c3e45, metalness: 0.55, roughness: 0.42, envMapIntensity: 1.1 });
+  const stone = new THREE.MeshStandardMaterial({ color: 0x65676d, metalness: 0.2, roughness: 0.62, envMapIntensity: 1.0 });
+  const haftM = new THREE.MeshStandardMaterial({ color: 0x2c2d31, metalness: 0.3, roughness: 0.55 });
+  const wrapM = new THREE.MeshStandardMaterial({ color: 0x45464c, roughness: 0.65 });
   const ironDark = new THREE.MeshStandardMaterial({ color: 0x26282e, metalness: 0.8, roughness: 0.45 });
   const rune = new THREE.MeshStandardMaterial({ color: 0xffffff, map: knotTex(), emissive: new THREE.Color(0.55, 0.35, 1.3), emissiveMap: knotTex(), emissiveIntensity: 0.6, metalness: 0.8, roughness: 0.35 });
   const eye = new THREE.MeshBasicMaterial({ color: new THREE.Color(0.55, 0.62, 0.8) });
@@ -6342,10 +6348,10 @@ function buildThor(T) {
   const ham = new THREE.Group();
   const HP = new PartSet();
   ham.position.set(0, -0.065, 0.0);
-  HP.add(ham, new THREE.CylinderGeometry(0.044, 0.05, 0.72, 16), leatherDark, [0, 0, 0.2], [Math.PI / 2, 0, 0]);
-  for (let i = 0; i < 10; i++) HP.add(ham, new THREE.TorusGeometry(0.05, 0.008, 6, 18), leather, [0, 0, -0.1 + i * 0.05], [0.25, 0, 0]);
-  HP.ell(ham, ironDark, [0, 0, -0.17], [0.064, 0.064, 0.05]);
-  HP.add(ham, new THREE.TorusGeometry(0.06, 0.012, 6, 18), leather, [0, -0.085, -0.2], [0, Math.PI / 2, 0]);
+  HP.add(ham, new THREE.CylinderGeometry(0.044, 0.05, 0.72, 16), haftM, [0, 0, 0.2], [Math.PI / 2, 0, 0]);
+  for (let i = 0; i < 10; i++) HP.add(ham, new THREE.TorusGeometry(0.05, 0.008, 6, 18), wrapM, [0, 0, -0.1 + i * 0.05], [0.25, 0, 0]);
+  HP.ell(ham, haftM, [0, 0, -0.17], [0.064, 0.064, 0.05]);
+  HP.add(ham, new THREE.TorusGeometry(0.06, 0.012, 6, 18), wrapM, [0, -0.085, -0.2], [0, Math.PI / 2, 0]);
   {
     // a great block of a head - outline in (along-the-strike, along-the-haft): flat face at -Y, a rounded crown at +Y
     const R = 0.27, s = new THREE.Shape();
@@ -6354,8 +6360,7 @@ function buildThor(T) {
     hg.translate(0, 0, -0.18);
     hg.applyMatrix4(new THREE.Matrix4().set(0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1));   // shape x -> Y, shape y -> Z, depth -> X
     HP.add(ham, hg, stone, [0, 0, 0.82]);
-    for (const sx of [-1, 1]) HP.add(ham, new THREE.PlaneGeometry(0.34, 0.27), rune, [sx * 0.217, -0.08, 0.82], [0, sx * Math.PI / 2, 0], [1, 1, 1], false);
-    HP.add(ham, new THREE.CylinderGeometry(0.075, 0.09, 0.07, 14), ironDark, [0, 0, 0.53], [Math.PI / 2, 0, 0]);
+    HP.add(ham, new THREE.CylinderGeometry(0.075, 0.09, 0.07, 14), haftM, [0, 0, 0.53], [Math.PI / 2, 0, 0]);
   }
   HP.build();
   j.rWr.add(ham);
@@ -11502,7 +11507,7 @@ const bgm = {
     const lim = c.createDynamicsCompressor(); lim.threshold.value = -2; lim.ratio.value = 20; lim.attack.value = 0.002; lim.release.value = 0.1;
     this.bus.connect(lo); lo.connect(mud); mud.connect(hi); hi.connect(comp); comp.connect(lim); lim.connect(c.destination);
     // wide stereo hall (decorrelated channels, darkened tail)
-    const len = c.sampleRate * 3.0, ir = c.createBuffer(2, len, c.sampleRate);
+    const len = Math.floor(c.sampleRate * (isMobile ? 1.6 : 3.0)), ir = c.createBuffer(2, len, c.sampleRate);
     for (let ch = 0; ch < 2; ch++) { const d = ir.getChannelData(ch); let lp = 0; for (let k = 0; k < len; k++) { const kk = k / len; lp += (Math.random() * 2 - 1 - lp) * (0.6 - 0.45 * kk); d[k] = lp * Math.pow(1 - kk, 2.4) * (k < 800 ? k / 800 : 1); } }
     this.verb = c.createConvolver(); this.verb.buffer = ir;
     const vg = c.createGain(); vg.gain.value = 0.5;
@@ -11515,7 +11520,7 @@ const bgm = {
     this.dly.connect(dl); dl.connect(dlp); dlp.connect(dr); dr.connect(fb); fb.connect(dl);
     dl.connect(mg, 0, 0); dr.connect(mg, 0, 1); mg.connect(dg); dg.connect(this.bus); dg.connect(this.verb);
     this.dry = c.createGain(); this.dry.connect(this.bus); this.dry.connect(vhp); vhp.connect(this.verb);
-    this.timer = setInterval(() => this.tick(), 40);
+    this.timer = setInterval(() => this.tick(), isMobile ? 60 : 40);
   },
   play(name) { this.want = name; },
   out(node, pan = 0, delay = false) {
@@ -11529,7 +11534,7 @@ const bgm = {
   },
   choir(notes, t, dur, vol) {
     const c = sfx.ctx;
-    for (const n of notes) for (const det of [-11, -3, 4, 10]) {
+    for (const n of notes) for (const det of isMobile ? [-7, 7] : [-11, -3, 4, 10]) {
       const o = c.createOscillator(); o.type = 'sawtooth'; o.frequency.value = this.mf(n); o.detune.value = det;
       const f1 = c.createBiquadFilter(); f1.type = 'bandpass'; f1.frequency.value = 720; f1.Q.value = 3;
       const f2 = c.createBiquadFilter(); f2.type = 'bandpass'; f2.frequency.value = 1150; f2.Q.value = 4;
@@ -11547,7 +11552,7 @@ const bgm = {
     f.frequency.setValueAtTime(long ? 700 : top * 0.7, t); f.frequency.linearRampToValueAtTime(top, t + (long ? dur * 0.4 : 0.03));
     const g = c.createGain(); this.env(g, t, long ? Math.min(0.25, dur * 0.3) : 0.006, vol, 0.08, long ? 0.85 : 0.45, long ? 0.35 : 0.08, t + dur);
     f.connect(g); this.out(g, (n % 7 - 3) * 0.08);
-    for (const det of [-9, 0, 8]) {
+    for (const det of isMobile ? [-6, 6] : [-9, 0, 8]) {
       const o = c.createOscillator(); o.type = 'sawtooth'; o.frequency.value = this.mf(n); o.detune.value = det;
       if (long) { const l = c.createOscillator(), lg = c.createGain(); l.frequency.value = 5 + Math.random() * 0.6; lg.gain.setValueAtTime(0, t); lg.gain.linearRampToValueAtTime(9, t + dur * 0.5); l.connect(lg); lg.connect(o.detune); l.start(t); l.stop(t + dur + 0.5); }
       o.connect(f); o.start(t); o.stop(t + dur + 0.5);
@@ -11822,7 +11827,8 @@ const bgm = {
     }
     if (!this.track || sfx.muted) { this.next = c.currentTime + 0.1; return; }
     const T = this.TRACKS[this.track], spb = 60 / T.bpm, s16 = spb / 4;
-    while (this.next < c.currentTime + 0.2) { this.play16(T, this.step, this.next, s16); this.step++; this.next += s16; }
+    // phones look further ahead, so a stall on the main thread does not leave a gap in the music
+    while (this.next < c.currentTime + (isMobile ? 0.6 : 0.2)) { this.play16(T, this.step, this.next, s16); this.step++; this.next += s16; }
   },
   play16(T, st, t, s16) {
     const bar = Math.floor(st / 16) % T.bars, b16 = st % 16, beat = b16 / 4;
