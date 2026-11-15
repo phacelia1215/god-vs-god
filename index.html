@@ -2522,6 +2522,13 @@ class Sim {
       case 'locked':
         physics = false;
         f.vx = 0; f.vy = 0;
+        // held only while the super that caught them is still playing: if it was cut short, let go at once
+        // (otherwise the victim would hang there for good, unhittable and unable to act)
+        if (!(o.state === 'attack' && o.move && o.move.type === 'super')) {
+          f.lockedBy = null; f.invuln = Math.max(f.invuln, 0.3);
+          if (f.y > 0.05) { f.state = 'juggle'; f.st = 0; f.vy = 1.5; f.vx = 0; physics = true; }
+          else this.setState(f, 'idle');
+        }
         break;
       case 'ko':
         f.vx *= Math.exp(-5 * dt);
@@ -2624,6 +2631,8 @@ class Sim {
 
   applyHit(f, o, h, hitY, opts = {}) {
     if (o.invuln > 0 || o.state === 'down' || o.state === 'getup' || o.state === 'ko' || o.state === 'locked') return false;
+    // a super that has caught its foe plays out to the end: nothing in flight can cut it short
+    if (o.state === 'attack' && o.move && o.move.type === 'super' && o.sup && (o.sup.lock || o.sup.hadLock)) return false;
     if (o.inCombo && o.comboCap && !opts.superHit && !opts.lock) return false;
     // counter stance (Zeus): a melee hit during the window is cancelled and answered at once
     if (!opts.superHit && !opts.lock && !h.proj && o.state === 'attack' && o.move && o.move.counter && o.mt >= o.move.counter[0] && o.mt <= o.move.counter[1]) {
