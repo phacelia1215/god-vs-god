@@ -2921,7 +2921,7 @@ class Sim {
       // the push: the foe is driven back through the open gate
       if (t >= 1.62 && t < 1.86) {
         once('push', () => { s.px0 = o.x; this.emit('gatePush', { side: f.side, x: s.gx }); });
-        if (locked) { const k = easeIn((t - 1.62) / 0.24); o.x = lerp(s.px0, s.gx, k); o.y = 0.2 + k * 0.5; }
+        if (locked) { const k = easeIn((t - 1.62) / 0.24); o.x = lerp(s.px0, s.gx + s.dir * 0.5, k); o.y = 0.2 + k * 0.5; }
       }
       if (t >= 1.86) once('final', () => {
         this.emit('superImpact', { side: f.side, x: s.gx ?? o.x, kind: 'gateShut' });
@@ -9814,13 +9814,22 @@ function hadesGate(e) {
   });
   pm.userData.own = true;
   const portal = new THREE.Mesh(new THREE.PlaneGeometry(3.3, 5.0), pm); portal.position.y = 2.5; g.add(portal);
-  g.position.set(e.x, -6, -0.7);
+  // the gate stands right behind the foe with its mouth turned toward them (and Hades), so the push drives them
+  // straight into the vortex
+  const dir = e.dir || 1;
+  g.rotation.y = -dir * Math.PI / 2;
+  g.position.set(e.x, -6, 0);
   timed.add(g, SUPER_LIFE(1.25), (o, k, dt, t) => {
     const rise = Math.min(1, t / 0.4);
     o.position.y = -6 + easeOutC(rise) * 6;
     pm.uniforms.uTime.value = t; pm.uniforms.uOp.value = k > 0.85 ? (1 - (k - 0.85) / 0.15) : Math.min(1, t / 0.5);
     if (k > 0.85) o.position.y = -(k - 0.85) / 0.15 * 6;
-    if (Math.random() < 0.7) addP.burst(2, e.x + rand(-1.5, 1.5), rand(0.3, 4.6), -0.5, 1, { life: [0.3, 0.7], size: [0.08, 0.16], color: COL.hell, drag: 1, up: 1 });
+    if (Math.random() < 0.7) addP.burst(2, e.x, rand(0.3, 4.6), rand(-1.5, 1.5), 1, { life: [0.3, 0.7], size: [0.08, 0.16], color: COL.hell, drag: 1, up: 1 });
+    // once open, the vortex drinks in the air in front of it: embers stream into its centre
+    if (rise >= 1 && k < 0.85) for (let i = 0; i < 3; i++) {
+      const a = rand(0, Math.PI * 2), r = rand(1.2, 2.4), py = 2.5 + Math.sin(a) * r * 0.9, pz = Math.cos(a) * r, px = e.x - dir * rand(0.8, 2.6);
+      addP.burst(1, px, py, pz, 7, { life: [0.18, 0.3], size: [0.05, 0.12], color: COL.hell, drag: 0.5, dir: [dir * 1.0, (2.5 - py) * 0.45, -pz * 0.45], cone: 0.08 });
+    }
   });
   dust(e.x, 40, 2.4); ring(e.x, 0.05, 0, 0xff4a70, 6, 0.6); shake = Math.max(shake, 0.4);
   sfx.boom(1.2); sfx.tone(48, 30, 1.4, 'sawtooth', 0.1);
@@ -11795,6 +11804,16 @@ function cineShot(f, o, t, portrait) {
       if (t < 1.8) return shot('h3', new V3(fx - s * 1.6, 0.6, 3.2), new V3(fx + s * 1.2, 3.4, -3), 56 * fw, -0.08, 3);
       const k = Math.min(1, (t - 1.8) / 0.6), R = Math.max(fitD(54 * fw) * 1.1, 6.5);
       return shot('h4', new V3(ox + sideX(s * (1.0 + k * 1.6)), 0.6 + k * 1.2, R + k * 2.5), new V3(ox, Math.max(1.6, lookY) + k, 0), 54 * fw, 0.06, 3);
+    }
+    if (f.key === 'hades' && f.sup && f.sup.gx !== undefined) {
+      const t2 = t / SUPER_K;   // the super's script runs on authored time
+      // the gate: over Hades' shoulder at its open mouth, low behind the foe as it is dragged into the vortex,
+      // then back for the gate slamming shut
+      const gx = f.sup.gx, dir = f.sup.dir || s;
+      if (t2 < 1.62) { const k = clamp((t2 - 1.24) / 0.38, 0, 1); return shot('d0', new V3(gx - dir * (7.0 - k * 0.8), 1.9 + k * 0.3, 3.4), new V3(gx, 3.0, 0), 58 * fw, 0.04 * dir, 3); }
+      if (t2 < 1.92) { const k = (t2 - 1.62) / 0.3; return shot('d1', new V3(gx - dir * (5.4 - k * 1.2), 1.2, 3.1), new V3(gx, 2.3 + k * 0.4, 0), 54 * fw, -0.05 * dir, 6); }
+      const k = Math.min(1, (t2 - 1.92) / 0.6);
+      return shot('d2', new V3(gx - dir * (4.6 + k * 1.6), 1.5 + k * 1.0, 4.2 + k * 3), new V3(gx - dir * 0.8, 2.3, 0), 54 * fw, 0, 3);
     }
     if (t < 0.36) return shot('t0', new V3(mx - s * 0.8, lookY * 0.7, Math.max(fitD(42 * fw), 3.4)), new V3(mx, lookY, 0), 42 * fw, 0.08, 3);
     if (t < 1.16) {
