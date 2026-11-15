@@ -5707,10 +5707,12 @@ function makeCloth(M, o) {
 }
 // the body's collision capsules in root space: [ax, ay, az, bx, by, bz, r] per capsule
 function clothCapsules(M) {
-  const j = M.j, caps = M.clothCaps || (M.clothCaps = []);
-  caps.length = 0;
+  // a flat typed array (re-filled every frame) keeps the capsule data out of the garbage collector's way
+  const j = M.j, n0 = 10 + (M.clothExtra ? M.clothExtra.length : 0);
+  if (!M.clothCapBuf || M.clothCapBuf.length < n0 * 7) M.clothCapBuf = new Float64Array(n0 * 7);
+  const buf = M.clothCapBuf; let w = 0;
   const pt = (jt, x, y, z, out) => out.set(x, y, z).applyMatrix4(_clM.multiplyMatrices(_clInv, jt.matrixWorld));
-  const cap = (ja, a, jb, b, r) => { pt(ja, a[0], a[1], a[2], _clV); pt(jb, b[0], b[1], b[2], _clW); caps.push(_clV.x, _clV.y, _clV.z, _clW.x, _clW.y, _clW.z, r); };
+  const cap = (ja, a, jb, b, r) => { pt(ja, a[0], a[1], a[2], _clV); pt(jb, b[0], b[1], b[2], _clW); buf[w++] = _clV.x; buf[w++] = _clV.y; buf[w++] = _clV.z; buf[w++] = _clW.x; buf[w++] = _clW.y; buf[w++] = _clW.z; buf[w++] = r; };
   const R = M.clothR || { pelvis: 0.17, pelvisX: 0.1, torso: 0.2, thigh: 0.125, shin: 0.09, foot: 0.065 };
   cap(j.hips, [-R.pelvisX, -0.03, 0], j.hips, [R.pelvisX, -0.03, 0], R.pelvis);
   cap(j.hips, [0, 0.02, 0], j.chest, [0, 0.18, 0], R.torso);
@@ -5720,11 +5722,12 @@ function clothCapsules(M) {
     cap(j[s + 'An'], [0, -0.03, -0.03], j[s + 'An'], [0, -0.04, 0.13], R.foot);
   }
   for (const [ja, pa, jb, pb, r] of M.clothExtra || []) cap(ja, pa, jb, pb, r);
-  return caps;
+  M.clothCapN = w;
+  return buf;
 }
-function stepCloth(cl, h, caps, floor) {
+function stepCloth(cl, h, caps, floor, NC) {
   const { p, q, tgt, hold, links, n, C, p0 } = cl;
-  const gy = 9.8 * h * h, k120 = h * 120, damp = Math.pow(0.985, k120), P0 = p0 * 3, NL = links.length, NC = caps.length;
+  const gy = 9.8 * h * h, k120 = h * 120, damp = Math.pow(0.985, k120), P0 = p0 * 3, NL = links.length;
   for (let i = 0; i < P0; i++) { p[i] = tgt[i]; q[i] = tgt[i]; }
   for (let i = p0; i < n; i++) {
     const k = i * 3, hk = k120 === 1 ? hold[(i / C) | 0] : 1 - Math.pow(1 - hold[(i / C) | 0], k120);
@@ -5786,11 +5789,31 @@ function updateCloth(M, dt, floor = 0) {
     cl.fresh = false;
     const h = CLOTH_Q.h;
     cl.acc = Math.min(cl.acc + dt, h * CLOTH_Q.sub);
-    while (cl.acc >= h) { stepCloth(cl, h, caps, floor + 0.012); cl.acc -= h; }
+    while (cl.acc >= h) { stepCloth(cl, h, caps, floor + 0.012, M.clothCapN); cl.acc -= h; }
     cl.g.attributes.position.array.set(cl.p);
     cl.g.attributes.position.needsUpdate = true;
-    cl.g.computeVertexNormals();
+    clothNormals(cl.g);
   }
+}
+// the same smooth normals as computeVertexNormals, straight on the typed arrays (it runs for every cloth, every frame,
+// and the generic version's vector temporaries were a large share of the per-frame garbage on phones)
+function clothNormals(g) {
+  const na = g.attributes.normal;
+  if (!na || !g.index) { g.computeVertexNormals(); return; }
+  const P = g.attributes.position.array, N = na.array, I = g.index.array;
+  N.fill(0);
+  for (let i = 0; i < I.length; i += 3) {
+    const a = I[i] * 3, b = I[i + 1] * 3, c = I[i + 2] * 3;
+    const cbx = P[c] - P[b], cby = P[c + 1] - P[b + 1], cbz = P[c + 2] - P[b + 2];
+    const abx = P[a] - P[b], aby = P[a + 1] - P[b + 1], abz = P[a + 2] - P[b + 2];
+    const nx = cby * abz - cbz * aby, ny = cbz * abx - cbx * abz, nz = cbx * aby - cby * abx;
+    N[a] += nx; N[a + 1] += ny; N[a + 2] += nz; N[b] += nx; N[b + 1] += ny; N[b + 2] += nz; N[c] += nx; N[c + 1] += ny; N[c + 2] += nz;
+  }
+  for (let i = 0; i < N.length; i += 3) {
+    const l = Math.sqrt(N[i] * N[i] + N[i + 1] * N[i + 1] + N[i + 2] * N[i + 2]) || 1;
+    N[i] /= l; N[i + 1] /= l; N[i + 2] /= l;
+  }
+  na.needsUpdate = true;
 }
 // let the cloth come to rest on the current pose (statues, menus, and a freshly built model)
 function settleCloth(M, steps = 90) {
@@ -8536,6 +8559,45 @@ function jagged(a, b, segs, jag) {
   return pts;
 }
 
+// A lightning bolt re-jags every few hundredths of a second. Building fresh TubeGeometries each time (six per bolt)
+// was a large share of the per-frame garbage and buffer uploads on phones; instead each path is a pooled tube mesh
+// whose vertices are rewritten in place.
+const TUBE_POOL = new Map();
+function tubeGeo(n, rad) {
+  const key = n * 16 + rad, pool = TUBE_POOL.get(key);
+  if (pool && pool.length) return pool.pop();
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(n * rad * 3), 3));
+  const idx = [];
+  for (let i = 0; i < n - 1; i++) for (let j = 0; j < rad; j++) {
+    const a = i * rad + j, b = i * rad + ((j + 1) % rad), c = a + rad, d = b + rad;
+    idx.push(a, b, c, b, d, c);
+  }
+  g.setIndex(idx);
+  g.userData.poolKey = key;
+  return g;
+}
+function freeTubeGeo(g) { const key = g.userData.poolKey; if (!TUBE_POOL.has(key)) TUBE_POOL.set(key, []); TUBE_POOL.get(key).push(g); }
+// rings of `rad` vertices around each point of the polyline, thinning at its ends
+function writeTube(g, pts, r, rad) {
+  const P = g.attributes.position.array, n = pts.length;
+  for (let i = 0; i < n; i++) {
+    const a = pts[i > 0 ? i - 1 : 0], b = pts[i < n - 1 ? i + 1 : n - 1];
+    let tx = b.x - a.x, ty = b.y - a.y, tz = b.z - a.z;
+    const tl = Math.sqrt(tx * tx + ty * ty + tz * tz) || 1; tx /= tl; ty /= tl; tz /= tl;
+    const rx = Math.abs(tz) > 0.9 ? 1 : 0, rz = 1 - rx;
+    let nx = ty * rz, ny = tz * rx - tx * rz, nz = -ty * rx;
+    const nl = Math.sqrt(nx * nx + ny * ny + nz * nz) || 1; nx /= nl; ny /= nl; nz /= nl;
+    const bx = ty * nz - tz * ny, by = tz * nx - tx * nz, bz = tx * ny - ty * nx;
+    const p = pts[i], rr = r * (i === 0 || i === n - 1 ? 0.45 : 1);
+    for (let j = 0; j < rad; j++) {
+      const ang = (j / rad) * Math.PI * 2, c = Math.cos(ang) * rr, s = Math.sin(ang) * rr, k = (i * rad + j) * 3;
+      P[k] = p.x + nx * c + bx * s; P[k + 1] = p.y + ny * c + by * s; P[k + 2] = p.z + nz * c + bz * s;
+    }
+  }
+  g.attributes.position.needsUpdate = true;
+}
+
 class Bolts {
   constructor(scene) {
     this.scene = scene;
@@ -8548,35 +8610,29 @@ class Bolts {
     const grp = new THREE.Group();
     this.scene.add(grp);
     const bolt = { grp, a: a.clone(), b: b.clone(), o, t: 0, regenT: 0, meshes: [] };
-    if (o.color) {
-      bolt.core = this.coreMat.clone(); bolt.glow = this.glowMat.clone();
-      bolt.glow.color.copy(o.color);
-    } else { bolt.core = this.coreMat.clone(); bolt.glow = this.glowMat.clone(); }
+    bolt.core = this.coreMat.clone(); bolt.glow = this.glowMat.clone();
+    if (o.color) bolt.glow.color.copy(o.color);
+    // one core + one glow tube for the main path and for each branch, kept for the bolt's whole life
+    const paths = [o.segs + 1].concat(Array(o.branches).fill(7));
+    for (const n of paths) {
+      const m1 = new THREE.Mesh(tubeGeo(n, 5), bolt.core), m2 = new THREE.Mesh(tubeGeo(n, 6), bolt.glow);
+      for (const m of [m1, m2]) { m.renderOrder = 6; m.frustumCulled = false; bolt.grp.add(m); bolt.meshes.push(m); }
+    }
     this.build(bolt);
     this.list.push(bolt);
     return bolt;
   }
   build(bolt) {
-    for (const m of bolt.meshes) { m.geometry.dispose(); bolt.grp.remove(m); }
-    bolt.meshes = [];
-    const o = bolt.o;
-    const addPath = (pts, r) => {
-      const curve = new PolyCurve(pts);
-      const g1 = new THREE.TubeGeometry(curve, pts.length * 2, r, 5, false);
-      const g2 = new THREE.TubeGeometry(curve, pts.length, r * 3.5, 6, false);
-      const m1 = new THREE.Mesh(g1, bolt.core), m2 = new THREE.Mesh(g2, bolt.glow);
-      m1.renderOrder = 6; m2.renderOrder = 6;
-      bolt.grp.add(m1, m2);
-      bolt.meshes.push(m1, m2);
-    };
+    const o = bolt.o, M = bolt.meshes;
     const main = jagged(bolt.a, bolt.b, o.segs, o.jag);
-    addPath(main, o.r);
+    writeTube(M[0].geometry, main, o.r, 5); writeTube(M[1].geometry, main, o.r * 3.5, 6);
+    const len = bolt.a.distanceTo(bolt.b);
     for (let i = 0; i < o.branches; i++) {
-      const idx = Math.floor(rand(0.2, 0.75) * main.length);
-      const s = main[idx];
-      const dir = new V3().subVectors(bolt.b, bolt.a).normalize();
-      const e = s.clone().addScaledVector(dir, bolt.a.distanceTo(bolt.b) * rand(0.15, 0.35)).add(new V3(rand(-1, 1), rand(-0.5, 0.5), rand(-0.5, 0.5)).multiplyScalar(bolt.a.distanceTo(bolt.b) * 0.18));
-      addPath(jagged(s, e, 6, 1.2), o.r * 0.5);
+      const s = main[Math.floor(rand(0.2, 0.75) * main.length)];
+      const e = s.clone().addScaledVector(_boltDir.subVectors(bolt.b, bolt.a).normalize(), len * rand(0.15, 0.35));
+      e.x += rand(-1, 1) * len * 0.18; e.y += rand(-0.5, 0.5) * len * 0.18; e.z += rand(-0.5, 0.5) * len * 0.18;
+      const br = jagged(s, e, 6, 1.2);
+      writeTube(M[2 + i * 2].geometry, br, o.r * 0.5, 5); writeTube(M[3 + i * 2].geometry, br, o.r * 1.75, 6);
     }
   }
   update(dt) {
@@ -8590,13 +8646,14 @@ class Bolts {
       b.glow.opacity = Math.max(0, k) * 0.4 * flick;
     }
     for (const b of this.list) if (b.t >= b.o.life) {
-      for (const m of b.meshes) m.geometry.dispose();
+      for (const m of b.meshes) freeTubeGeo(m.geometry);
       b.core.dispose(); b.glow.dispose();
       this.scene.remove(b.grp);
     }
     this.list = this.list.filter((b) => b.t < b.o.life);
   }
 }
+const _boltDir = new V3();
 
 // ---------------- water shader ----------------
 function waterMaterial(c1, c2, opacity = 0.8, speed = 1) {
@@ -8690,6 +8747,7 @@ renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 0.72;
 renderer.shadowMap.enabled = true;
+renderer.shadowMap.autoUpdate = !isMobile;   // phones redraw it every other frame (see frame())
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 const scene = new THREE.Scene();
@@ -8705,6 +8763,8 @@ const composer = new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene, camera));
 const bloom = new UnrealBloomPass(new THREE.Vector2(512, 512), 0.28, 0.4, 1.05);
 composer.addPass(bloom);
+// phones: the glow is soft anyway, so its blur chain runs at half the screen's resolution (a quarter of the pixels)
+if (isMobile) { const setBloom = bloom.setSize.bind(bloom); bloom.setSize = (w, h) => setBloom(Math.max(2, Math.round(w * 0.5)), Math.max(2, Math.round(h * 0.5))); }
 composer.addPass(new OutputPass());
 
 // lights
@@ -9051,6 +9111,8 @@ function buildStage() {
 
   // giant statues of the two gods (marble)
   const statueMat = new THREE.MeshStandardMaterial({ map: marbleTex, color: 0xd9d2c8, roughness: 0.55 });
+  // the welded statue has no meaningful texture coordinates: plain polished marble
+  const statueMatCoarse = new THREE.MeshStandardMaterial({ color: 0xd4cdc3, roughness: 0.5, flatShading: true });
   for (const [key2, sx] of [['zeus', -1], ['poseidon', 1]]) {
     const M = key2 === 'zeus' ? buildZeus(FT) : buildPoseidon(FT);
     M.root.traverse((o) => {
@@ -9070,7 +9132,48 @@ function buildStage() {
     scene.add(M.root);
     if (M.cape) updateCape(M, 0, 0, 0);
     if (M.cloths) settleCloth(M);
+    // a distant marble statue needs none of the fighter's fine detail: weld it into one coarse mesh
+    const coarse = coarseMesh(M.root, 0.022, statueMatCoarse);
+    coarse.position.copy(M.root.position); coarse.rotation.copy(M.root.rotation); coarse.scale.copy(M.root.scale);
+    scene.remove(M.root); scene.add(coarse);
   }
+}
+// Vertex clustering: every vertex of a (posed) model snaps to a grid cell of size `cell`, cells average their vertices,
+// and triangles that collapse are dropped. Crude, but fast enough for load time and plenty for far-away scenery.
+function coarseMesh(root, cell, material) {
+  root.updateMatrixWorld(true);
+  const inv = root.matrixWorld.clone().invert(), m = new THREE.Matrix4(), v = new V3();
+  const cellOf = new Map(), sums = [], tris = [];
+  root.traverse((o) => {
+    if (!o.isMesh || !o.visible || !o.geometry) return;
+    const g = o.geometry, P = g.attributes.position, ids = new Int32Array(P.count);
+    m.multiplyMatrices(inv, o.matrixWorld);
+    for (let i = 0; i < P.count; i++) {
+      v.fromBufferAttribute(P, i).applyMatrix4(m);
+      const key = Math.round(v.x / cell) * 73856093 ^ Math.round(v.y / cell) * 19349663 ^ Math.round(v.z / cell) * 83492791;
+      let id = cellOf.get(key);
+      if (id === undefined) { id = sums.length / 4; cellOf.set(key, id); sums.push(0, 0, 0, 0); }
+      sums[id * 4] += v.x; sums[id * 4 + 1] += v.y; sums[id * 4 + 2] += v.z; sums[id * 4 + 3]++;
+      ids[i] = id;
+    }
+    const n = g.index ? g.index.count : P.count;
+    for (let i = 0; i + 2 < n; i += 3) {
+      const a = ids[g.index ? g.index.getX(i) : i], b = ids[g.index ? g.index.getX(i + 1) : i + 1], c = ids[g.index ? g.index.getX(i + 2) : i + 2];
+      if (a !== b && b !== c && a !== c) tris.push(a, b, c);
+    }
+  });
+  const nv = sums.length / 4, pos = new Float32Array(nv * 3), uv = new Float32Array(nv * 2);
+  for (let i = 0; i < nv; i++) {
+    const k = sums[i * 4 + 3];
+    pos[i * 3] = sums[i * 4] / k; pos[i * 3 + 1] = sums[i * 4 + 1] / k; pos[i * 3 + 2] = sums[i * 4 + 2] / k;
+    uv[i * 2] = (pos[i * 3] + pos[i * 3 + 2]) * 0.6; uv[i * 2 + 1] = pos[i * 3 + 1] * 0.6;
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  geo.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
+  geo.setIndex(nv > 65535 ? new THREE.BufferAttribute(new Uint32Array(tris), 1) : new THREE.BufferAttribute(new Uint16Array(tris), 1));
+  geo.computeVertexNormals();
+  return new THREE.Mesh(geo, material);
 }
 
 // ============================================================
@@ -11314,7 +11417,13 @@ class FighterView {
     if (model.ribbon) this.ribbon = new Ribbon(model.ribbon);
     if (model.cloths) for (const c of model.cloths) { c.ready = false; c.prev = null; }
     scene.add(model.root);
-    model.root.traverse((o) => { if (o.isMesh) o.castShadow = true; });
+    // phones: the small parts (fingers, jewellery, face details) cast no shadow - nobody sees theirs, and the
+    // shadow pass draws every caster a second time
+    model.root.traverse((o) => {
+      if (!o.isMesh) return;
+      if (isMobile && o.geometry) { if (!o.geometry.boundingSphere) o.geometry.computeBoundingSphere(); o.castShadow = o.geometry.boundingSphere.radius > 0.13; }
+      else o.castShadow = true;
+    });
   }
   targetPose(dt, t) {
     const f = this.f, L = this.lib, out = this.tgt;
@@ -13067,8 +13176,13 @@ function frame(now) {
   updateLampSlots();
   // always through the composer (low quality only turns bloom off): shader programs built for an offscreen target differ
   // from those built for the screen, so one path keeps a quality change from recompiling every material
+  // hidden stages and menu backdrops (over a thousand objects) skip the per-frame matrix pass entirely
+  for (const ch of scene.children) ch.matrixWorldAutoUpdate = ch.visible;
+  // phones: the shadow map (every fighter drawn a second time) is redrawn every other frame
+  if (isMobile) renderer.shadowMap.needsUpdate = (shadowTick ^= 1) === 1 || cineFlag;
   composer.render();
 }
+let shadowTick = 0;
 
 // ---------------- screens & match setup ----------------
 const ATTRACT = { mode: 'auto', keys: ['zeus', 'poseidon'], attract: true };
@@ -13741,7 +13855,7 @@ const menuBG = { title: null, select: null, arena: null, t: 0, flash: 0, boltT: 
 // backdrops each carry their own lamps, so moving between screens (title, select, a match on another stage) used to
 // stall for seconds on phones while every material recompiled. Their lamps are kept only as markers; a fixed pool of
 // real lights takes on, each frame, the strongest of the lamps that would be visible.
-const LAMP_SLOTS = isMobile ? 6 : 12;
+const LAMP_SLOTS = isMobile ? 4 : 12;   // every lit pixel loops over all of them: phones keep the four strongest
 const lampSrc = [], lampSlots = [], _lampP = new V3();
 function installLampRig() {
   if (lampSlots.length) return;
@@ -14641,6 +14755,7 @@ function warmObj(root) {
 // one render with every stage, both menu backdrops and every god shown at once: compiles whatever the per-object
 // warm-up cannot reach (shadow-pass variants, backdrop materials), so no screen compiles shaders on first entry
 function warmAll() {
+  renderer.shadowMap.needsUpdate = true;
   const vis = [];
   for (const g of STAGE_IDS.map((id) => STAGES[id].group).concat([menuBG.title, menuBG.select])) if (g) { vis.push([g, g.visible]); g.visible = true; }
   const added = [];
@@ -14687,6 +14802,7 @@ function warmFx() {
     sim.events = [];
     renderer.setRenderTarget(composer.renderTarget1);
     // compile reaches what is still hidden (trails, ribbons, effects that fade in); the render adds the shadow passes
+    renderer.shadowMap.needsUpdate = true;
     try { renderer.compile(scene, camera); renderer.render(scene, camera); } catch (e) { /* only the warm-up is lost */ }
     renderer.setRenderTarget(null);
     pinPrograms();   // before the effects are cleared away, so their shaders outlive them
