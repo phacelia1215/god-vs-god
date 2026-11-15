@@ -1571,11 +1571,152 @@ function stretchTail(m, from, newDur) {
   m.anim = m.anim.map(([t, n]) => [t > from ? +(from + (t - from) * k).toFixed(3) : t, n]);
   m.dur = +newDur.toFixed(3);
 }
+// ============================================================
+//  Jump heavy (強) and jump special (必殺): every god has their own. Jump light (弱) is the original air move.
+//  Extra air-move keys: airVel [[t, vx, vy]] (a burst of speed, e.g. a dive), hover [t0, t1] (hang in the air),
+//  land: 'id' (a hidden ground move that starts on touchdown - an impact), projs: [...] (several shots).
+// ============================================================
+const AF = (t, k) => [t, 'airFx', { k }];
+Object.assign(ZEUS_MOVES, {
+  // 雷槌墜とし: both fists locked together and brought down like a hammer, lightning crawling over them
+  z_airH: { name: '雷槌墜とし', type: 'air', dur: 0.6, airTier: 'heavy', fxAt: [AF(0.14, 'zeusH')],
+    anim: [[0, 'jhWind'], [0.14, 'jh'], [0.6, 'jh']],
+    hits: [H({ t0: 0.15, t1: 0.32, dmg: 78, range: [-0.1, 1.45], y: [-0.9, 1.4], hs: 0.52, kb: 2.6, stop: 0.1, fx: 'thunder' })] },
+  // 天雷投げ: he stops in the air, gathers a bolt and hurls it down at the foe
+  z_airS: { name: '天雷投げ', type: 'air', dur: 0.62, airTier: 'heavy', hover: [0.04, 0.4], fxAt: [AF(0.06, 'zeusS')],
+    anim: [[0, 'jsWind'], [0.24, 'js'], [0.62, 'js']],
+    proj: { t: 0.25, kind: 'bolt', vx: 12, vy: -9, y: 1.4, dmg: 66, hits: 1, hs: 0.5, kb: 3, w: 0.45, h: 0.45, fx: 'bolt', kd: true } },
+});
+Object.assign(POSEIDON_MOVES, {
+  // 渦潮旋槍: the trident whirled around him in mid-air, a ring of sea water following the blade
+  p_airH: { name: '渦潮旋槍', type: 'air', dur: 0.6, airTier: 'heavy', fxAt: [AF(0.1, 'poseidonH')],
+    anim: [[0, 'jhWind'], [0.12, 'jh'], [0.22, 'jh2'], [0.34, 'jh3'], [0.6, 'jh3']],
+    hits: [H({ t0: 0.12, t1: 0.2, dmg: 40, range: [-1.3, 1.6], y: [-0.8, 1.6], hs: 0.4, kb: 1.0, stop: 0.06, fx: 'water' }),
+      H({ t0: 0.26, t1: 0.36, dmg: 42, range: [-1.3, 1.7], y: [-0.8, 1.6], hs: 0.5, kb: 2.4, stop: 0.08, fx: 'water' })] },
+  // 海神墜槍: he plunges trident-first into the floor and a geyser bursts up where it lands
+  p_airS: { name: '海神墜槍', type: 'air', dur: 1.2, airTier: 'heavy', airVel: [[0.14, 7, -15]], land: 'p_airSL', fxAt: [AF(0.12, 'poseidonS')],
+    anim: [[0, 'jsWind'], [0.14, 'js'], [1.2, 'js']],
+    hits: [H({ t0: 0.14, t1: 1.2, dmg: 52, range: [0.0, 1.4], y: [-1.2, 1.0], hs: 0.46, kb: 1.6, stop: 0.08, fx: 'water' })] },
+  p_airSL: { name: '海神墜槍・噴流', type: 'normal', hidden: true, dur: 0.46, fxAt: [[0, 'geyser'], AF(0, 'poseidonL')],
+    anim: [[0, 'jsLand'], [0.3, 'jsLand'], [0.46, 'stance']],
+    hits: [H({ t0: 0.02, t1: 0.14, dmg: 40, range: [-1.4, 2.0], y: [0.0, 2.6], hs: 0.5, kb: 1.2, launch: 8.5, stop: 0.08, fx: 'water' })] },
+});
+Object.assign(ANUBIS_MOVES, {
+  // 双冥翼: both khopesh blades opened like the wings of a falcon, two golden crescents
+  a_airH: { name: '双冥翼', type: 'air', dur: 0.56, airTier: 'heavy', fxAt: [AF(0.1, 'anubisH'), AF(0.24, 'anubisH')],
+    anim: [[0, 'jhWind'], [0.1, 'jh'], [0.24, 'jh2'], [0.56, 'jh2']],
+    hits: [H({ t0: 0.1, t1: 0.17, dmg: 36, range: [-0.1, 1.5], y: [-0.8, 1.5], hs: 0.4, kb: 1.0, stop: 0.06, fx: 'soulCut' }),
+      H({ t0: 0.24, t1: 0.32, dmg: 40, range: [-0.1, 1.6], y: [-0.9, 1.4], hs: 0.5, kb: 2.4, stop: 0.08, fx: 'soulCut' })] },
+  // 冥魂墜: he hangs over the foe and casts a judged soul down at them
+  a_airS: { name: '冥魂墜', type: 'air', dur: 0.56, airTier: 'heavy', hover: [0.04, 0.34], fxAt: [AF(0.05, 'anubisS')],
+    anim: [[0, 'jsWind'], [0.2, 'js'], [0.56, 'js']],
+    proj: { t: 0.2, kind: 'soul', vx: 11, vy: -8, y: 1.3, dmg: 52, hits: 1, hs: 0.46, kb: 2.4, w: 0.4, h: 0.4, fx: 'soul' } },
+});
+Object.assign(THOR_MOVES, {
+  // 雷鎚大旋: Mjolnir swung in a full arc in mid-air, violet lightning streaming off the head
+  t_airH: { name: '雷鎚大旋', type: 'air', dur: 0.62, airTier: 'heavy', fxAt: [AF(0.16, 'thorH')],
+    anim: [[0, 'jhWind'], [0.16, 'jh'], [0.62, 'jh']],
+    hits: [H({ t0: 0.16, t1: 0.3, dmg: 84, range: [-0.3, 1.7], y: [-0.8, 1.6], hs: 0.54, kb: 3.0, stop: 0.12, fx: 'thunder' })] },
+  // 雷神墜撃: he drops like a thunderbolt hammer-first; the floor erupts in violet lightning on both sides
+  t_airS: { name: '雷神墜撃', type: 'air', dur: 1.2, airTier: 'heavy', airVel: [[0.16, 3, -18]], land: 't_airSL', fxAt: [AF(0.05, 'thorS')],
+    anim: [[0, 'jsWind'], [0.16, 'js'], [1.2, 'js']],
+    hits: [H({ t0: 0.16, t1: 1.2, dmg: 48, range: [-0.2, 1.3], y: [-1.3, 0.9], hs: 0.46, kb: 1.2, stop: 0.08, fx: 'thunder' })] },
+  t_airSL: { name: '雷神墜撃・落雷', type: 'normal', hidden: true, dur: 0.5, fxAt: [[0, 'thorLand'], AF(0, 'thorL')],
+    anim: [[0, 'jsLand'], [0.34, 'jsLand'], [0.5, 'stance']],
+    hits: [H({ t0: 0.02, t1: 0.14, dmg: 46, range: [-2.2, 2.2], y: [0.0, 1.2], hs: 0.5, kb: 2.5, kd: true, stop: 0.1, fx: 'thunder', lv: 'low' })] },
+});
+Object.assign(SUSANOO_MOVES, {
+  // 天断ち: the sword raised overhead and brought down in one diagonal cut, a green gale along the edge
+  s_airH: { name: '天断ち', type: 'air', dur: 0.58, airTier: 'heavy', fxAt: [AF(0.14, 'susanooH')],
+    anim: [[0, 'jhWind'], [0.14, 'jh'], [0.58, 'jh']],
+    hits: [H({ t0: 0.14, t1: 0.26, dmg: 80, range: [-0.1, 1.8], y: [-0.9, 1.6], hs: 0.52, kb: 2.8, stop: 0.1, fx: 'gale' })] },
+  // 空蝉居合: he stops in the air, sheathes - and is suddenly past, the storm cut along his path
+  s_airS: { name: '空蝉居合', type: 'air', dur: 0.62, airTier: 'heavy', hover: [0.0, 0.44], airVel: [[0.18, 13, 0], [0.34, 1.5, 0]], fxAt: [AF(0.18, 'susanooS')],
+    anim: [[0, 'jsWind'], [0.18, 'js'], [0.62, 'js']],
+    hits: [H({ t0: 0.18, t1: 0.34, dmg: 70, range: [-0.6, 1.5], y: [-0.6, 1.8], hs: 0.5, kb: 2.6, stop: 0.1, fx: 'storm' })] },
+});
+Object.assign(HERACLES_MOVES, {
+  // 剛棍落とし: the club lifted over his head with both hands and brought down with all his weight
+  h_airH: { name: '剛棍落とし', type: 'air', dur: 0.66, airTier: 'heavy', fxAt: [AF(0.18, 'heraclesH')],
+    anim: [[0, 'jhWind'], [0.18, 'jh'], [0.66, 'jh']],
+    hits: [H({ t0: 0.18, t1: 0.32, dmg: 90, range: [-0.2, 1.6], y: [-1.0, 1.5], hs: 0.56, kb: 3.0, stop: 0.13, fx: 'heavy' })] },
+  // 天墜巨岩: he tears a boulder out of thin air and slams it down at the foe
+  h_airS: { name: '天墜巨岩', type: 'air', dur: 0.7, airTier: 'heavy', hover: [0.04, 0.44], fxAt: [AF(0.06, 'heraclesS')],
+    anim: [[0, 'jsWind'], [0.3, 'js'], [0.7, 'js']],
+    proj: { t: 0.3, kind: 'rock', vx: 7, vy: 1.5, grav: 22, y: 2.2, dmg: 80, hits: 1, hs: 0.5, kb: 4, w: 0.6, h: 0.6, fx: 'might', kd: true } },
+});
+Object.assign(HADES_MOVES, {
+  // 冥鎌薙ぎ: the bident swept low in a crimson crescent
+  hd_airH: { name: '冥鎌薙ぎ', type: 'air', dur: 0.6, airTier: 'heavy', fxAt: [AF(0.14, 'hadesH')],
+    anim: [[0, 'jhWind'], [0.14, 'jh'], [0.6, 'jh']],
+    hits: [H({ t0: 0.14, t1: 0.28, dmg: 78, range: [-0.2, 1.9], y: [-1.0, 1.3], hs: 0.52, kb: 2.6, stop: 0.1, fx: 'hell' })] },
+  // 冥影墜: he melts into shadow in mid-air, appears over the foe's back and drops on them; the dead rise where he lands
+  hd_airS: { name: '冥影墜', type: 'air', dur: 1.2, airTier: 'heavy', hover: [0.0, 0.26], teleport: { t: 0.12, d: 0.7 }, airVel: [[0.26, 1.5, -16]], land: 'hd_airSL', fxAt: [AF(0.02, 'hadesS')],
+    anim: [[0, 'jsWind'], [0.26, 'js'], [1.2, 'js']],
+    hits: [H({ t0: 0.26, t1: 1.2, dmg: 46, range: [-0.6, 1.2], y: [-1.3, 0.9], hs: 0.46, kb: 1.4, stop: 0.08, fx: 'hell' })] },
+  hd_airSL: { name: '冥影墜・亡者', type: 'normal', hidden: true, dur: 0.5, fxAt: [AF(0, 'hadesL')],
+    anim: [[0, 'jsLand'], [0.34, 'jsLand'], [0.5, 'stance']],
+    hits: [H({ t0: 0.04, t1: 0.16, dmg: 40, range: [-1.7, 1.7], y: [0.0, 2.0], hs: 0.5, kb: 1.0, launch: 7.5, stop: 0.08, fx: 'hell' })] },
+});
+Object.assign(ODIN_MOVES, {
+  // 神槍旋撃: Gungnir drawn back over the shoulder and whipped down, runes flaring along the shaft
+  o_airH: { name: '神槍旋撃', type: 'air', dur: 0.62, airTier: 'heavy', fxAt: [AF(0.16, 'odinH')],
+    anim: [[0, 'jhWind'], [0.16, 'jh'], [0.62, 'jh']],
+    hits: [H({ t0: 0.16, t1: 0.3, dmg: 80, range: [-0.1, 2.1], y: [-1.0, 1.4], hs: 0.52, kb: 2.8, stop: 0.1, fx: 'rune' })] },
+  // 双鴉降下: hanging in the air he sends Huginn and Muninn diving at the foe
+  o_airS: { name: '双鴉降下', type: 'air', dur: 0.6, airTier: 'heavy', hover: [0.04, 0.38], fxAt: [AF(0.06, 'odinS')],
+    anim: [[0, 'jsWind'], [0.22, 'js'], [0.6, 'js']],
+    projs: [{ t: 0.22, kind: 'raven', vx: 10, vy: -5, y: 1.6, dmg: 26, hits: 1, hs: 0.42, kb: 1.6, w: 0.55, h: 0.55, fx: 'rune' },
+      { t: 0.3, kind: 'raven', vx: 9, vy: -8, y: 1.2, dmg: 26, hits: 1, hs: 0.46, kb: 2.2, w: 0.55, h: 0.55, fx: 'rune' }] },
+});
+Object.assign(SHIVA_MOVES, {
+  // 天降踵: a dancer's split in the air and the heel dropped like an axe, a trail of the cosmos behind it
+  sv_airH: { name: '天降踵', type: 'air', weap: 'fist', dur: 0.58, airTier: 'heavy', fxAt: [AF(0.14, 'shivaH')],
+    anim: [[0, 'jhWind'], [0.14, 'jh'], [0.58, 'jh']],
+    hits: [H({ t0: 0.14, t1: 0.28, dmg: 76, range: [-0.1, 1.5], y: [-1.2, 1.3], hs: 0.52, kb: 2.6, stop: 0.1, fx: 'cosmic' })] },
+  // 天眼光: still in the air he opens the third eye and a beam of destruction strikes down at a steep angle
+  sv_airS: { name: '天眼光', type: 'air', weap: 'fist', dur: 0.62, airTier: 'heavy', hover: [0.04, 0.42], fxAt: [AF(0.06, 'shivaS')],
+    anim: [[0, 'jsWind'], [0.24, 'js'], [0.62, 'js']],
+    proj: { t: 0.24, kind: 'eyebeam', vx: 12, vy: -11, y: 1.9, dmg: 58, hits: 1, hs: 0.48, kb: 2.6, w: 0.5, h: 0.4, fx: 'pralaya' } },
+});
+Object.assign(APHRODITE_MOVES, {
+  // 薔薇鞭落とし: the ribbon-whip cracked down from above in a long arc of rose petals
+  ap_airH: { name: '薔薇鞭落とし', type: 'air', dur: 0.6, airTier: 'heavy', fxAt: [AF(0.14, 'aphH')],
+    anim: [[0, 'jhWind'], [0.14, 'jh'], [0.6, 'jh']],
+    hits: [H({ t0: 0.15, t1: 0.28, dmg: 70, range: [0.2, 2.4], y: [-1.0, 1.3], hs: 0.5, kb: 2.4, stop: 0.09, fx: 'love' })] },
+  // 天の口づけ: a kiss blown down from mid-air - a heart that charms whoever it touches
+  ap_airS: { name: '天の口づけ', type: 'air', dur: 0.6, airTier: 'heavy', hover: [0.04, 0.4], fxAt: [AF(0.06, 'aphS')],
+    anim: [[0, 'jsWind'], [0.22, 'js'], [0.6, 'js']],
+    proj: { t: 0.22, kind: 'heart', vx: 8, vy: -5.5, y: 1.5, dmg: 24, hits: 1, hs: 1.0, kb: 0, w: 0.45, h: 0.45, fx: 'love', charm: 1.0 } },
+});
+Object.assign(SHAKA_MOVES, {
+  // 天掌: a palm pressed down from the sky, a golden handprint the size of a man
+  sk_airH: { name: '天掌', type: 'air', weap: 'fist', dur: 0.6, airTier: 'heavy', fxAt: [AF(0.15, 'shakaH')],
+    anim: [[0, 'jhWind'], [0.15, 'jh'], [0.6, 'jh']],
+    hits: [H({ t0: 0.15, t1: 0.3, dmg: 76, range: [-0.3, 1.6], y: [-1.5, 0.9], hs: 0.52, kb: 2.4, stop: 0.1, fx: 'dharma' })] },
+  // 法輪天降: floating in meditation he turns the Wheel of the Law and sends it rolling down at the foe
+  sk_airS: { name: '法輪天降', type: 'air', weap: 'fist', dur: 0.66, airTier: 'heavy', hover: [0.04, 0.5], fxAt: [AF(0.06, 'shakaS')],
+    anim: [[0, 'jsWind'], [0.26, 'js'], [0.66, 'js']],
+    proj: { t: 0.26, kind: 'dharmaWheel', vx: 7.5, vy: -7, y: 1.1, dmg: 24, hits: 2, hs: 0.44, kb: 1.8, w: 0.5, h: 0.5, fx: 'dharma', life: 2.0 } },
+});
+Object.assign(APOLLO_MOVES, {
+  // 月桂天薙ぎ: the bow swept down from above, laurel leaves scattering from its limbs
+  apo_airH: { name: '月桂天薙ぎ', type: 'air', dur: 0.58, airTier: 'heavy', fxAt: [AF(0.13, 'apolloH')],
+    anim: [[0, 'jhWind'], [0.13, 'jh'], [0.58, 'jh']],
+    hits: [H({ t0: 0.13, t1: 0.26, dmg: 72, range: [-0.1, 1.8], y: [-0.9, 1.5], hs: 0.5, kb: 2.6, stop: 0.09, fx: 'sun' })] },
+  // 三連天弓: hanging at the top of the jump he looses three arrows of light in a downward fan
+  apo_airS: { name: '三連天弓', type: 'air', dur: 0.62, airTier: 'heavy', hover: [0.04, 0.46], fxAt: [AF(0.06, 'apolloS')],
+    anim: [[0, 'jsWind'], [0.2, 'js'], [0.62, 'js']],
+    projs: [{ t: 0.2, kind: 'sunArrow', vx: 17, vy: -4, y: 1.35, dmg: 24, hits: 1, hs: 0.4, kb: 1.6, w: 0.42, h: 0.3, fx: 'sun' },
+      { t: 0.25, kind: 'sunArrow', vx: 14, vy: -8, y: 1.3, dmg: 24, hits: 1, hs: 0.42, kb: 1.8, w: 0.42, h: 0.3, fx: 'sun' },
+      { t: 0.3, kind: 'sunArrow', vx: 10, vy: -11, y: 1.25, dmg: 24, hits: 1, hs: 0.44, kb: 2.2, w: 0.42, h: 0.3, fx: 'sun' }] },
+});
+const AIR2 = { zeus: 'z', poseidon: 'p', anubis: 'a', thor: 't', susanoo: 's', heracles: 'h', hades: 'hd', odin: 'o', shiva: 'sv', aphrodite: 'ap', shaka: 'sk', apollo: 'apo' };
 (function frameData() {
   const PROJ_REC = { kind: { rock: 34 / 60, hammer: 34 / 60, soul: 28 / 60, sunArrow: 26 / 60 }, def: 30 / 60 };
   for (const T of [ZEUS_MOVES, POSEIDON_MOVES, ANUBIS_MOVES, THOR_MOVES, SUSANOO_MOVES, HERACLES_MOVES, HADES_MOVES, ODIN_MOVES, SHIVA_MOVES, APHRODITE_MOVES, SHAKA_MOVES, APOLLO_MOVES]) {
     for (const m of Object.values(T)) {
-      if (m.type === 'air') m.tier = 'medium';
+      if (m.type === 'air') m.tier = m.airTier || 'medium';
       if (m.type === 'super' || m.type === 'air') continue;
       if (m.proj) {
         const want = m.proj.t + (PROJ_REC.kind[m.proj.kind] || PROJ_REC.def);
@@ -1826,6 +1967,7 @@ class Fighter {
 // ------------------------------------------------------------
 // Human input mapping: button -> direction class -> move id.
 // dir: n=neutral, f=forward, b=back, d=down, u=up (relative to opponent)
+for (const k in AIR2) { CHARS[k].airH = AIR2[k] + '_airH'; CHARS[k].airS = AIR2[k] + '_airS'; }
 const HUMAN = {
   zeus: {
     J: { n: 'z_jab', f: 'z_straight', b: 'z_body', d: 'z_knee', u: 'z_upper' },
@@ -1982,7 +2124,7 @@ function aiKnow(key) {
     const I = info(id, m);
     K.all[id] = I;
     if (m.hidden) continue;
-    if (m.type === 'air') { if (id === C.air) K.air = I; continue; }
+    if (m.type === 'air') { if (id === C.air) K.air = I; else if (id === C.airH) K.airH = I; else if (id === C.airS) K.airS = I; continue; }
     if (m.hits) K.hitters.push(I);
     if (m.proj && !m.hits && !I.escape) K.projs.push(I);
     if (I.counter || I.parry || I.reflect || I.nullify || I.tele || I.oracle || I.meditate || I.escape) K.tools.push(I);
@@ -2169,7 +2311,7 @@ class Sim {
     f.state = 'attack'; f.st = 0;
     f.move = m; f.moveId = id; f.mt = 0;
     f.hitDone = m.hits ? m.hits.map(() => false) : [];
-    f.contact = false; f.projFired = false; f.armorUsed = false; f.tpDone = false; f.passFlipped = false; f.fxDone = {}; f.oracleOn = false;
+    f.contact = false; f.projFired = false; f.armorUsed = false; f.tpDone = false; f.passFlipped = false; f.fxDone = {}; f.oracleOn = false; f.avDone = {}; f.projDone = {}; f.hovering = false;
     if (m.invuln) f.invuln = Math.max(f.invuln, m.invuln);
     f.serial++;
     if (m.type !== 'air') f.vx = 0;
@@ -2187,7 +2329,7 @@ class Sim {
     f.dashJump = dj;
     if (dj) this.emit('dashJump', { side: f.side, x: f.x });
     f.jumpDir = dir;
-    f.ai.airUsed = false;
+    f.ai.airUsed = false; f.ai.airPick = null;
     this.emit('jump', { side: f.side });
   }
 
@@ -2279,7 +2421,12 @@ class Sim {
             if (t >= L2.t0 && t < L2.t1) { const u = (t - L2.t0) / (L2.t1 - L2.t0); f.y = 4 * L2.h * u * (1 - u); f.vy = 0; f.vx = L2.vx * f.facing; physics = 'x'; }
             else if (t >= L2.t1 && f.y > 0) { f.y = 0; }
           }
-          if (m.fxAt) m.fxAt.forEach(([tt, name], k) => { if (t >= tt && !f.fxDone[k]) { f.fxDone[k] = true; this.emit(name, { side: f.side, x: f.x + f.facing * 0.9, y: f.y }); } });
+          if (m.fxAt) m.fxAt.forEach(([tt, name, extra], k) => { if (t >= tt && !f.fxDone[k]) { f.fxDone[k] = true; this.emit(name, Object.assign({ side: f.side, x: f.x + f.facing * 0.9, y: f.y, id: f.moveId }, extra)); } });
+          // air moves: bursts of speed (dives, dashes), hanging still, several shots
+          if (m.airVel) m.airVel.forEach(([tt, vx, vy], k) => { if (t >= tt && !f.avDone[k]) { f.avDone[k] = true; f.vx = vx * f.facing; f.vy = vy; } });
+          f.hovering = !!(m.hover && t >= m.hover[0] && t < m.hover[1]);
+          if (f.hovering) f.vy = 0;
+          if (m.projs) m.projs.forEach((p, k) => { if (t >= p.t && !f.projDone[k]) { f.projDone[k] = true; this.spawnProj(f, p); } });
           if (m.proj && !f.projFired && t >= m.proj.t) { f.projFired = true; this.spawnProj(f, m.proj); }
           // Shaka's zazen: the gauge fills while he sits undisturbed
           if (m.meditate && t >= m.meditate[0] && t <= m.meditate[1]) f.meter = Math.min(100, f.meter + m.meditate[2] / (m.meditate[1] - m.meditate[0]) * dt);
@@ -2350,7 +2497,7 @@ class Sim {
 
     if (physics) {
       if (physics !== 'x' && (f.y > 0 || f.vy > 0)) {
-        const g = f.state === 'juggle' ? GRAV * 0.86 : (f.state === 'jump' || (f.state === 'attack' && f.move && f.move.type === 'air')) ? JUMP_GRAV * (f.c.jumpGrav || 1) : GRAV;
+        const g = f.state === 'juggle' ? GRAV * 0.86 : (f.state === 'jump' || (f.state === 'attack' && f.move && f.move.type === 'air')) ? (f.hovering && f.state === 'attack' ? 0 : JUMP_GRAV * (f.c.jumpGrav || 1)) : GRAV;
         f.vy -= g * dt;
         f.y += f.vy * dt;
         if (f.y <= 0) { f.y = 0; this.land(f, o); }
@@ -2367,10 +2514,12 @@ class Sim {
     f.vy = 0;
     f.airborneT = 0;
     if (f.state === 'jump' || (f.state === 'attack' && f.move && f.move.type === 'air')) {
-      f.vx = 0; f.plan = [];
+      const follow = f.state === 'attack' && f.move.land;
+      f.vx = 0; f.plan = []; f.hovering = false;
       this.setState(f, 'idle');
       this.face(f, o);
-      this.emit('land', { side: f.side, x: f.x, heavy: false });
+      this.emit('land', { side: f.side, x: f.x, heavy: !!follow });
+      if (follow) this.startMove(f, follow);   // a dive ends in an impact on the floor
     } else if (f.state === 'juggle') {
       f.vx *= 0.35;
       if (f.hp <= 0) { this.setState(f, 'ko'); }
@@ -3451,13 +3600,28 @@ class Sim {
   aiAir(f, o, d, K) {
     const ai = f.ai;
     if (ai.airUsed || !K.air) return;
-    const A = K.air, ahead = (o.x - f.x) * f.facing;
+    // which of the three jump attacks this jump is for is decided on the way up (then timed on the way down)
+    if (!ai.airPick) {
+      const opts = [[f.c.air, K.air, 1], [f.c.airH, K.airH, 0.9], [f.c.airS, K.airS, 0.7]].filter((x) => x[1]);
+      let r = R() * opts.reduce((a, x) => a + x[2], 0); ai.airPick = opts[0][0];
+      for (const x of opts) { r -= x[2]; if (r <= 0) { ai.airPick = x[0]; break; } }
+    }
+    const id = ai.airPick, M = f.c.moves[id], A = K.all[id] || K.air, ahead = (o.x - f.x) * f.facing;
+    const go = () => { ai.airUsed = true; this.startMove(f, id); ai.jumpAtk = !!M.hits; };
+    if (M.teleport) { if (f.y > 1.2 && Math.abs(o.x - f.x) < 6 && f.vy < 5) go(); return; }
     if (ahead < -0.2) return;
-    if (A.proj) { if (f.y > 0.8 && ahead > 1 && ahead < 6.5) { ai.airUsed = true; this.startMove(f, f.c.air); } return; }
+    if (M.proj || M.projs) { if (f.y > 0.8 && ahead > 1 && ahead < 6.5) go(); return; }
+    if (M.airVel) {
+      // a dive: start it from high enough that it lands on the foe
+      const [, vx, vy] = M.airVel[0], tt = Math.max(0.05, f.y / Math.max(1, -vy)), land = Math.abs(vx) * (tt + 0.1) + (M.airVel[0][0] * Math.abs(f.vx));
+      if (vy < -4) { if (f.y > 0.9 && Math.abs(ahead - land) < 1.0) go(); return; }
+      if (f.y > 0.9 && ahead > 0.4 && ahead < vx * 0.18 + 1.6) go();
+      return;
+    }
     const tall = o.y + o.c.height * 0.9, low = o.y;
     const yOk = f.y + A.top >= low + 0.2 && f.y + A.bot <= tall;
     const close = ahead <= A.reach + (f.vy < 0 ? 0.1 : -0.2) && ahead >= A.rmin - 0.6;
-    if (f.y > 0.35 && yOk && close && (f.vy < 3 || o.y > 0.5)) { ai.airUsed = true; this.startMove(f, f.c.air); ai.jumpAtk = true; }
+    if (f.y > 0.35 && yOk && close && (f.vy < 3 || o.y > 0.5)) go();
   }
 
   // ---- what the CPU sees and answers this instant
@@ -3857,7 +4021,8 @@ class Sim {
     const map = HUMAN[f.key];
 
     if (f.state === 'jump') {
-      if (take('J') || take('K')) { if (!f.ai.airUsed) { f.ai.airUsed = true; this.startMove(f, c.air); } }
+      const id = take('L') ? c.airS || c.air : take('K') ? c.airH || c.air : take('J') ? c.air : null;
+      if (id && !f.ai.airUsed) { f.ai.airUsed = true; this.startMove(f, id); }
       return;
     }
     if (f.state === 'attack') {
@@ -4614,6 +4779,36 @@ AOP.backstep = mk(AOP.stance, { spine: [-0.12, -0.1, 0], lHip: [-0.2, 0, 0.08], 
 AOP.jump = mk(AOP.airDraw, { air: true, rx: 0, lSh: [-0.8, 0, 0.3], lEl: [-0.5, 0, 0], rSh: [-0.6, 0, 0.5], rEl: [-0.9, 0, 0] });
 AOP.crouch = mk(AOP.stance, Object.assign({ y: -0.42, z: 0.03, spine: [0.26, -0.1, 0], chest: [0.06, -0.1, 0], head: [-0.2, 0.3, 0] }, aoSquat));
 AOP.crouchBlock = mk(AOP.block, Object.assign({ y: -0.42, z: 0.02, spine: [0.32, -0.1, 0], head: [-0.15, 0.5, 0] }, aoSquat));
+// jump heavy / jump special poses: each god's own ground attack, taken into the air (legs tucked, body pitched)
+(function airAttackPoses() {
+  const LEGS = ['lHip', 'lKn', 'lAn', 'rHip', 'rKn', 'rAn'];
+  const DIVE = { lHip: [0.25, 0, 0.12], lKn: [0.5, 0, 0], lAn: [0.4, 0, 0], rHip: [0.4, 0, 0.12], rKn: [0.8, 0, 0], rAn: [0.4, 0, 0] };
+  const A = (L, src, o = {}, legs = 'tuck') => {
+    const b = L[src] || L.stance, t = {}, tuck = L.airWind || L.airDraw || L.jump || L.stance;
+    if (legs === 'tuck') for (const j of LEGS) t[j] = tuck[j];
+    else if (legs === 'dive') Object.assign(t, DIVE);
+    return mk(b, Object.assign({ air: true, y: 0, z: 0 }, t, o));
+  };
+  // the impact after a dive: crouched on landing, arms as they struck
+  const Land = (L, src) => { const c = L.crouch || L.stance, a = L[src] || L.stance, o = { y: Math.min(-0.3, c.y || 0) }; for (const j of LEGS) o[j] = c[j]; return mk(a, Object.assign(o, { spine: [0.4, 0, 0] })); };
+  const set = (L, o) => Object.assign(L, o);
+  set(ZP, { jhWind: A(ZP, 'hammerWind', { rx: -0.15 }), jh: A(ZP, 'hammer', { rx: 0.45 }), jsWind: A(ZP, 'throwWind', { rx: -0.1 }), js: A(ZP, 'throw', { rx: 0.35 }) });
+  set(PP, { jhWind: A(PP, 'spinA'), jh: A(PP, 'spinB', { rx: 0.2 }), jh2: A(PP, 'spinC', { rx: 0.2 }), jh3: A(PP, 'spinD', { rx: 0.1 }),
+    jsWind: A(PP, 'superThrustA', { rx: -0.25 }), js: A(PP, 'dashThrust', { rx: 0.95 }, 'dive') });
+  PP.jsLand = Land(PP, 'dashThrust');
+  set(AP, { jhWind: A(AP, 'slashWind'), jh: A(AP, 'twinA', { rx: 0.25 }), jh2: A(AP, 'twinB', { rx: 0.35 }), jsWind: A(AP, 'castWind', { rx: -0.1 }), js: A(AP, 'cast', { rx: 0.4 }) });
+  set(TP, { jhWind: A(TP, 'swingWind', { rx: -0.1 }), jh: A(TP, 'swing', { rx: 0.3 }), jsWind: A(TP, 'slamWind', { rx: -0.25 }), js: A(TP, 'slam', { rx: 0.85 }, 'dive') });
+  TP.jsLand = Land(TP, 'slam');
+  set(SUP, { jhWind: A(SUP, 'jodan', { rx: -0.15 }), jh: A(SUP, 'kesaEnd', { rx: 0.35 }), jsWind: A(SUP, 'iaiWind'), js: A(SUP, 'iaiEnd', { rx: 0.15 }) });
+  set(HEP, { jhWind: A(HEP, 'smashWind', { rx: -0.2 }), jh: A(HEP, 'smashEnd', { rx: 0.5 }), jsWind: A(HEP, 'rockWind', { rx: -0.15 }), js: A(HEP, 'rockThrow', { rx: 0.35 }) });
+  set(HDP, { jhWind: A(HDP, 'slashWind'), jh: A(HDP, 'slashEnd', { rx: 0.3 }), jsWind: A(HDP, 'shadeWind'), js: A(HDP, 'palm', { rx: 0.85 }, 'dive') });
+  HDP.jsLand = Land(HDP, 'palm');
+  set(ODP, { jhWind: mk(ODP.skyWind, {}), jh: mk(ODP.skyHurl, {}), jsWind: A(ODP, 'throwWind', { rx: -0.1 }), js: A(ODP, 'throw', { rx: 0.3 }) });
+  set(SVP, { jhWind: A(SVP, 'heelWind', { rx: -0.1 }, 'own'), jh: A(SVP, 'heelDrop', { rx: 0.25 }, 'own'), jsWind: A(SVP, 'eyeWind'), js: A(SVP, 'eyeOpen', { rx: 0.35 }) });
+  set(APP, { jhWind: A(APP, 'lashWind', { rx: -0.1 }), jh: A(APP, 'lash', { rx: 0.4 }), jsWind: A(APP, 'kissWind'), js: A(APP, 'kiss', { rx: 0.25 }) });
+  set(SKP, { jhWind: A(SKP, 'palmWind' in SKP ? 'palmWind' : 'skyWind', { rx: -0.1 }), jh: A(SKP, 'palm', { rx: 0.75 }), jsWind: A(SKP, 'wheelWind'), js: A(SKP, 'wheelRoll', { rx: 0.35 }) });
+  set(AOP, { jhWind: A(AOP, 'sweepWind', { rx: -0.1 }), jh: A(AOP, 'sweep', { rx: 0.4 }), jsWind: mk(AOP.airDraw, { rx: 0.55 }), js: mk(AOP.airLoose, { rx: 0.65 }) });
+})();
 const POSES = { zeus: ZP, poseidon: PP, anubis: AP, thor: TP, susanoo: SUP, heracles: HEP, hades: HDP, odin: ODP, shiva: SVP, aphrodite: APP, shaka: SKP, apollo: AOP };
 
 // ------------------------------------------------------------
@@ -9276,6 +9471,98 @@ function glowPuff(x, y, z, color, size, life) {
   s.renderOrder = 8;
   timed.add(s, life, (o, k) => { const sc = size * (0.6 + k * 0.8); o.scale.set(sc, sc, sc); o.material.opacity = (1 - k) * (1 - k); });
 }
+// jump heavy / jump special: each god's own flash in the air (and the impact where a dive lands)
+const AIRCOL = { zeus: COL.zeus, poseidon: COL.water, anubis: COL.gold, thor: COL.thor, susanoo: COL.storm, heracles: COL.might, hades: COL.hell, odin: COL.odin, shiva: COL.cosmic, aphrodite: COL.love, shaka: COL.dharma, apollo: COL.sun };
+function airMoveFx(e) {
+  const v = views[e.side]; if (!v) return;
+  const f = v.f, d = f.facing, h = handOf(v, 'r'), c = chestOf(v), x = f.x, y = f.y;
+  const arc = (col, hex, n, r, a0, a1, cy = c.y) => {   // a crescent of sparks in front of him
+    for (let i = 0; i < n; i++) { const a = a0 + (a1 - a0) * (i / (n - 1)); addP.spawn(x + d * Math.cos(a) * r, cy + Math.sin(a) * r, 0.15, d * Math.cos(a) * 1.5, Math.sin(a) * 1.5, 0, 0.3, 0.12, 0.02, col[0], col[1], col[2], 1, 3, 0); }
+    ring(x + d * r * 0.6, cy - 0.2, 0.2, hex, r * 2.2, 0.25, true, 0.7);
+  };
+  switch (e.k) {
+    case 'zeusH':
+      for (let i = 0; i < 4; i++) bolts.spawn(h, new V3(h.x + d * rand(0.4, 1.4), h.y - rand(0.4, 1.4), rand(-0.3, 0.3)), { color: new THREE.Color(0.75, 0.9, 1.8), r: 0.025, life: 0.18, segs: 8, jag: 0.5 });
+      glowPuff(h.x, h.y, h.z, 0xa8d0ff, 2.4, 0.25); arc(COL.zeus, 0xbfe0ff, 14, 1.2, 1.2, -0.9); sfx.bolt(false); break;
+    case 'zeusS':
+      glowPuff(h.x, h.y, h.z, 0xa8d0ff, 1.6, 0.4); addP.burst(26, h.x, h.y, h.z, 2.5, { life: [0.15, 0.35], size: [0.03, 0.08], color: COL.zeus, drag: 4 });
+      lightFlash(h.x, h.y, 0x9fc8ff, 40); sfx.ring([880, 1320], 0.3, 0.05); break;
+    case 'poseidonH':
+      ring(x, c.y, 0.1, 0x7ff0ff, 4.2, 0.35); ring(x, c.y, 0.1, 0xffffff, 2.6, 0.25);
+      normP.burst(40, x, c.y, 0, 4.5, { life: [0.3, 0.6], size: [0.05, 0.12], color: [0.8, 1, 1], alpha: 0.85, drag: 1.5, grav: 6, spread: [1, 0.25, 1] });
+      sfx.water(0.7); break;
+    case 'poseidonS':
+      glowPuff(h.x, h.y, h.z, 0x7ff0ff, 2, 0.3); normP.burst(24, x, y + 1, 0, 2, { life: [0.3, 0.6], size: [0.06, 0.14], color: [0.8, 1, 1], alpha: 0.8, drag: 2, up: 2 }); sfx.whoosh(1.6); break;
+    case 'poseidonL':
+      ring(x, 0.06, 0, 0x7ff0ff, 6, 0.5); shake = Math.max(shake, 0.25); sfx.water(1.2); sfx.boom(0.5); break;
+    case 'anubisH':
+      arc(COL.gold, 0xffe0a0, 12, 1.15, 1.0, -1.0); glowPuff(h.x, h.y, h.z, 0x9ff3ff, 1.4, 0.2); sfx.whoosh(1.2); break;
+    case 'anubisS':
+      glowPuff(h.x, h.y, h.z, 0x9ff3ff, 1.8, 0.4); addP.burst(20, h.x, h.y, h.z, 2, { life: [0.3, 0.6], size: [0.04, 0.1], color: COL.soul, drag: 3, up: 0.6 });
+      ring(x, c.y + 0.6, 0.1, 0xffe0a0, 2.2, 0.35, true); sfx.ring([523, 784], 0.4, 0.05); break;
+    case 'thorH':
+      for (let i = 0; i < 5; i++) violetBolt(h, new V3(h.x + d * rand(0.2, 1.6), h.y + rand(-1.2, 0.6), rand(-0.4, 0.4)), { r: 0.03, life: 0.2, segs: 8, jag: 0.6 });
+      glowPuff(h.x, h.y, h.z, 0xc8a8ff, 2.8, 0.3); arc(COL.thor, 0xd8c4ff, 14, 1.4, 1.3, -1.1); sfx.bolt(false); break;
+    case 'thorS':
+      glowPuff(h.x, h.y, h.z, 0xc8a8ff, 2, 0.4); for (let i = 0; i < 3; i++) violetBolt(h, new V3(h.x + rand(-1, 1), h.y + rand(0.3, 1.2), 0), { r: 0.02, life: 0.15, segs: 6 });
+      sfx.thunder ? sfx.thunder() : sfx.bolt(false); break;
+    case 'thorL':
+      skyBolt(x + d * 0.3, true, e.side); shake = Math.max(shake, 0.35); sfx.boom(0.9); break;
+    case 'susanooH':
+      arc(COL.storm, 0xb8ffe0, 16, 1.5, 1.4, -1.1); tornado(x + d * 0.8, 1.6, 20, 0.4); sfx.whoosh(1.8); break;
+    case 'susanooS': {
+      const x0 = x - d * 0.3;
+      for (let i = 0; i < 30; i++) { const k = i / 29; addP.spawn(x0 + d * k * 2.8, c.y + rand(-0.1, 0.1), rand(-0.1, 0.2), d * 6, 0, 0, rand(0.15, 0.35), 0.1, 0.02, COL.storm[0], COL.storm[1], COL.storm[2], 1, 3, 0); }
+      stormBolt(new V3(x0, c.y, 0.1), new V3(x0 + d * 3, c.y, 0.1), { r: 0.03, life: 0.22, segs: 12, jag: 0.25 });
+      glowPuff(x0 + d * 1.5, c.y, 0.1, 0xb8ffe0, 3, 0.25); sfx.whoosh(2.2); break;
+    }
+    case 'heraclesH':
+      arc(COL.might, 0xffc060, 14, 1.3, 1.4, -1.2); glowPuff(h.x, h.y, h.z, 0xffb040, 2.4, 0.25); shake = Math.max(shake, 0.12); sfx.whoosh(2); break;
+    case 'heraclesS':
+      normP.burst(26, h.x, h.y + 0.4, 0, 2.5, { life: [0.4, 0.8], size: [0.12, 0.3], size1: 2, color: [0.75, 0.65, 0.55], alpha: 0.45, drag: 2 });
+      glowPuff(h.x, h.y + 0.4, h.z, 0xffc060, 2.2, 0.35); sfx.boom(0.35); break;
+    case 'hadesH':
+      arc(COL.hell, 0xff4070, 16, 1.6, 0.9, -1.2); normP.burst(16, x + d * 1, c.y - 0.4, 0, 1.5, { life: [0.5, 0.9], size: [0.2, 0.4], size1: 1.8, color: [0.1, 0.04, 0.08], alpha: 0.5, drag: 2, up: 0.5 }); sfx.whoosh(1.6); break;
+    case 'hadesS':
+      ghostOf(v, [1.0, 0.3, 0.5]); normP.burst(20, x, c.y, 0, 2, { life: [0.4, 0.8], size: [0.2, 0.45], size1: 2, color: [0.1, 0.04, 0.08], alpha: 0.6, drag: 2 }); sfx.whoosh(1.4); break;
+    case 'hadesL':
+      ring(x, 0.06, 0, 0xff4070, 5, 0.45); addP.burst(40, x, 0.3, 0, 4, { life: [0.4, 0.9], size: [0.05, 0.12], color: COL.hell, drag: 2, up: 4, spread: [1.2, 0.2, 0.6] });
+      normP.burst(24, x, 0.2, 0, 2, { life: [0.6, 1.1], size: [0.25, 0.5], size1: 2, color: [0.1, 0.04, 0.08], alpha: 0.6, drag: 2, up: 2 }); shake = Math.max(shake, 0.25); sfx.boom(0.6); break;
+    case 'odinH':
+      runeRing(x + d * 0.9, c.y, 0.2, 1.8, 0.4, true); arc(COL.rune, 0xffd890, 14, 1.7, 1.2, -1.1); sfx.ring([440, 660], 0.3, 0.05); sfx.whoosh(1.6); break;
+    case 'odinS':
+      runeRing(x, c.y + 0.4, 0.2, 2.2, 0.5, true); normP.burst(18, x, c.y + 0.4, 0, 2.5, { life: [0.5, 1.0], size: [0.08, 0.16], color: [0.08, 0.08, 0.12], alpha: 0.9, drag: 1.5, grav: 2 }); break;
+    case 'shivaH':
+      arc(COL.cosmic, 0xb0a0ff, 16, 1.3, 1.5, -1.3, c.y + 0.2); addP.burst(24, x + d * 0.6, c.y + 0.6, 0, 2, { life: [0.4, 0.8], size: [0.04, 0.09], color: COL.flame, drag: 2 }); sfx.whoosh(1.6); break;
+    case 'shivaS': {
+      const p = new V3(); v.m.j.head.getWorldPosition(p);
+      glowPuff(p.x + d * 0.1, p.y + 0.1, p.z + 0.1, 0xff8040, 1.8, 0.4); ring(p.x, p.y + 0.1, 0.2, 0xffa060, 1.6, 0.35, true); lightFlash(p.x, p.y, 0xff8040, 50); sfx.ring([330, 495, 660], 0.5, 0.05); break;
+    }
+    case 'aphH':
+      for (let i = 0; i < 16; i++) { const k = i / 15; normP.spawn(x + d * (0.4 + k * 2.2), c.y + 0.6 - k * 1.4, 0.1, rand(-0.5, 0.5), rand(-0.5, 0.5), rand(-0.3, 0.3), rand(0.5, 0.9), 0.1, 0.05, 1, 0.45, 0.65, 0.9, 1, 1.5); }
+      sfx.whoosh(1.4); break;
+    case 'aphS':
+      glowPuff(h.x, h.y, h.z, 0xff80c0, 1.8, 0.35); addP.burst(20, h.x, h.y, h.z, 1.5, { life: [0.4, 0.8], size: [0.04, 0.09], color: COL.love, drag: 2, up: 0.4 }); sfx.ring([988, 1319], 0.35, 0.04); break;
+    case 'shakaH': {
+      const px = x + d * 0.9, py = Math.max(0.6, y + 0.2);
+      glowPuff(px, py, 0.2, 0xffd890, 3.4, 0.35); ring(px, py, 0.2, 0xffe0a0, 3, 0.35, true); ring(px, 0.06, 0, 0xffd070, 3, 0.4);
+      addP.burst(20, px, py, 0.2, 3, { life: [0.3, 0.6], size: [0.04, 0.09], color: COL.dharma, drag: 3 }); sfx.ring([392, 588], 0.5, 0.06); break;
+    }
+    case 'shakaS':
+      runeRing(x, c.y, 0.25, 2.6, 0.6, true, [2.2, 1.6, 0.6]); glowPuff(x, c.y, 0.1, 0xffd890, 3, 0.5); sfx.ring([262, 392, 523], 0.8, 0.05); break;
+    case 'apolloH':
+      arc(COL.sun, 0xffe080, 14, 1.4, 1.2, -1.1); for (let i = 0; i < 10; i++) laurelLeaf(x + d * rand(0.3, 1.5), c.y + rand(-0.8, 0.6), rand(-0.3, 0.3), 0.8, d * rand(0.5, 2), rand(-0.5, 1), rand(-0.5, 0.5)); sfx.whoosh(1.3); break;
+    case 'apolloS':
+      glowPuff(h.x, h.y, h.z, 0xffd060, 2.2, 0.4); ring(x, c.y, 0.2, 0xfff0b0, 2.6, 0.35, true); lightFlash(x, c.y, 0xffd070, 50); sfx.ring([784, 1175, 1568], 0.4, 0.04); break;
+  }
+}
+// a diving god leaves a streak of their own colour; a hanging one glows faintly
+function airTrail(f) {
+  if (!f || f.state !== 'attack' || !f.move || f.move.type !== 'air' || (!f.move.airVel && !f.move.hover)) return;
+  const col = AIRCOL[f.key] || COL.spark;
+  if (f.hovering) { if (Math.random() < 0.4) addP.burst(1, f.x + rand(-0.4, 0.4), f.y + rand(0.4, 1.6), rand(-0.2, 0.2), 0.5, { life: [0.3, 0.5], size: [0.04, 0.08], color: col, drag: 2, up: 0.4 }); return; }
+  if (Math.hypot(f.vx, f.vy) > 6) for (let i = 0; i < 3; i++) addP.spawn(f.x + rand(-0.25, 0.25), f.y + rand(0.3, 1.8), rand(-0.15, 0.15), -f.vx * 0.15, -f.vy * 0.15, 0, rand(0.15, 0.3), 0.12, 0.02, col[0], col[1], col[2], 1, 3, 0);
+}
 // each god's backstep leaves its own trace where it pushed off
 function backstepFx(f) {
   const x = f.x, d = -f.facing;
@@ -13015,6 +13302,7 @@ function handleEvents() {
         hud.cutin.className = 'hide';
         break;
       case 'bolt': skyBolt(e.x, e.big, e.side); break;
+      case 'airFx': airMoveFx(e); break;
       case 'geyser': geyser(e.x); break;
       case 'crush': callout(e.side, e.lv === 'low' ? '下段！' : '中段！', false); break;
       case 'superDash': case 'superDive': sfx.whoosh(2.5); break;
@@ -13258,6 +13546,7 @@ function frame(now) {
   const edt = paused ? 0 : rdt * speed * (ts < 1 ? 0.45 : 1);
   if (!paused) ambient(edt);
   for (const v of views) v.update(!started ? rdt : paused ? 0 : edt, clock);
+  if (!paused) for (const v of views) airTrail(v.f);
   updateProjViews(edt);
   addP.update(edt); normP.update(edt);
   bolts.update(edt); timed.update(edt);
@@ -13488,7 +13777,7 @@ const BTN = { J: '弱(J)', K: '強(K)', L: '必殺(L)' };
 function moveCommand(key, id) {
   const c = CHARS[key], m = c.moves[id];
   if (m.type === 'super') return '超必殺(O)　※神威ゲージMAX';
-  if (m.type === 'air') return 'ジャンプ中に 弱(J) / 強(K)';
+  if (m.type === 'air') return id === c.airS ? 'ジャンプ中に 必殺(L)' : id === c.airH ? 'ジャンプ中に 強(K)' : 'ジャンプ中に 弱(J)';
   const map = HUMAN[key], found = [];
   for (const b of ['J', 'K', 'L']) for (const d of ['n', 'f', 'b', 'd', 'u']) if (map[b][d] === id) found.push(DIRS[d] + BTN[b]);
   if (!found.length) { const i = AUTO[key].indexOf(id); return i > 0 ? `弱(J)連打の${i + 1}段目` : 'コンボ中のみ'; }
