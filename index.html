@@ -1888,22 +1888,16 @@ const HUMAN = {
   },
 };
 
-// CPU strength, 1 (weakest) .. 5 (strongest). Scales how often the AI guards, reads
-// attack heights, punishes whiffs, uses supers, drops combos, and how fast it reacts.
-// CPU strength, 1 (weakest) .. 5 (strongest). Absolute values per level:
-//  guard: chance to guard a seen attack (scaled by the god's own guard trait)   react: think-delay multiplier
-//  aggro: chance to start a combo when in range        punish: chance to punish a whiffed attack
-//  read: chance to guard at the right height (low/mid) drop: chance to drop each link of a combo
-//  maxCombo: longest route the CPU will follow         superRoute: chance a route ends in a super when the meter is full
-//  super: neutral super usage                          jumpOver: chance to jump a projectile
-//  whiff: chance to attack from out of range (mistake) grab: chance a grappler grabs a guarding foe
+// CPU strength, 1 (weakest) .. 5 (strongest): combo execution here; its reaction time, learning and judgement are in
+// AI_HUMAN (below).  drop: chance to fumble each link of a combo   maxCombo: longest route it can follow
+// superRoute: chance a route ends in a super when the gauge is full
 const AI_LEVELS = [
   null,
-  { guard: 0.22, react: 2.0, aggro: 0.6, punish: 0.12, read: 0.35, drop: 0.38, maxCombo: 2, superRoute: 0.0, super: 0.3, jumpOver: 0.25, whiff: 0.28, grab: 0.12 },
-  { guard: 0.42, react: 1.45, aggro: 0.8, punish: 0.35, read: 0.5, drop: 0.2, maxCombo: 3, superRoute: 0.3, super: 0.6, jumpOver: 0.45, whiff: 0.14, grab: 0.28 },
-  { guard: 0.56, react: 1.1, aggro: 0.95, punish: 0.55, read: 0.62, drop: 0.1, maxCombo: 4, superRoute: 0.55, super: 1.0, jumpOver: 0.7, whiff: 0.05, grab: 0.45 },
-  { guard: 0.68, react: 0.88, aggro: 1.05, punish: 0.72, read: 0.74, drop: 0.05, maxCombo: 5, superRoute: 0.75, super: 1.3, jumpOver: 0.85, whiff: 0.02, grab: 0.62 },
-  { guard: 0.86, react: 0.6, aggro: 1.15, punish: 0.92, read: 0.9, drop: 0.0, maxCombo: 99, superRoute: 1.0, super: 1.7, jumpOver: 1.05, whiff: 0.0, grab: 0.85 },
+  { drop: 0.38, maxCombo: 2, superRoute: 0.0 },
+  { drop: 0.2, maxCombo: 3, superRoute: 0.3 },
+  { drop: 0.1, maxCombo: 4, superRoute: 0.55 },
+  { drop: 0.05, maxCombo: 5, superRoute: 0.75 },
+  { drop: 0.0, maxCombo: 99, superRoute: 1.0 },
 ];
 const AI_LEVEL_DEFAULT = 3;
 
@@ -1923,12 +1917,92 @@ const AUTO = {
 };
 
 // does the opponent have a projectile in flight toward f?
-function sim0HasProj(sim, f) { return sim.projs.some((q) => q.owner !== f.side && !q.dead && Math.abs(q.x - f.x) < 5); }
 
 // supers play a little slower than authored so every cinematic has room to breathe
 const SUPER_K = 1.3;
 // stretch every super's duration and keyframes by SUPER_K (scripts run on mt / SUPER_K)
 (function () { for (const c of Object.values(CHARS)) { const m = c.moves[c.super]; m.dur = +(m.dur * SUPER_K).toFixed(3); m.anim = m.anim.map(([tt, n]) => [+(tt * SUPER_K).toFixed(3), n]); } })();
+
+// ---- the CPU's human limits per level: reaction time (s) and its spread, how fast it learns the foe's habits,
+// how loose its choices are, how well it knows punishes, how reliably it stops a blocked chain, anti-air timing,
+// and the pause between neutral decisions
+const AI_HUMAN = [
+  null,
+  { react: 0.36, jit: 0.07, learn: 0.07, temp: 0.95, know: 0.35, confirm: 0.2, aaSkill: 0.35, gap: 0.3 },
+  { react: 0.3, jit: 0.06, learn: 0.12, temp: 0.65, know: 0.55, confirm: 0.45, aaSkill: 0.5, gap: 0.24 },
+  { react: 0.25, jit: 0.05, learn: 0.18, temp: 0.45, know: 0.75, confirm: 0.7, aaSkill: 0.65, gap: 0.18 },
+  { react: 0.21, jit: 0.04, learn: 0.24, temp: 0.3, know: 0.9, confirm: 0.85, aaSkill: 0.8, gap: 0.14 },
+  { react: 0.17, jit: 0.03, learn: 0.3, temp: 0.2, know: 1.0, confirm: 0.95, aaSkill: 0.92, gap: 0.11 },
+];
+// how far each super reaches and how long after its flash it takes hold (measured from the scripts)
+const AI_SUPER = { zeus: [2.3, 0.45], poseidon: [2.3, 0.4], anubis: [2.3, 0.32], thor: [9, 0.37], susanoo: [9, 0.37], heracles: [9, 0.4], hades: [9, 0.42], shiva: [9, 0.4], aphrodite: [5.6, 0.58], shaka: [5.6, 0.4], apollo: [5.6, 0.42], odin: [5.6, 0.4] };
+// each god's preferred fighting distance and temperament
+// (react: extra reaction time, focus: looseness of choices - a temperament, not a level)
+const AI_STYLE = {
+  zeus: { range: 1.3, aggr: 1.1, react: -0.02, focus: 0.85 }, poseidon: { range: 1.9, aggr: 1.0, react: 0.03, focus: 1.3 }, anubis: { range: 1.3, aggr: 1.25, react: 0.08, focus: 2.2 },
+  thor: { range: 1.9, aggr: 1.0 }, susanoo: { range: 1.8, aggr: 1.1, react: 0.05, focus: 1.6 }, heracles: { range: 1.4, aggr: 1.15, react: 0.08, focus: 2.2 },
+  hades: { range: 2.3, aggr: 0.95 }, shiva: { range: 1.5, aggr: 1.05, react: -0.05, focus: 0.55 }, aphrodite: { range: 2.0, aggr: 0.95, react: -0.04, focus: 0.6 },
+  shaka: { range: 3.6, aggr: 0.85, react: -0.06, focus: 0.45 }, apollo: { range: 4.6, aggr: 0.8, react: -0.06, focus: 0.45 }, odin: { range: 3.0, aggr: 0.9, react: 0.04, focus: 1.4 },
+};
+
+// ---- what a CPU knows about a god's moves (start-up, reach, safety, tools), worked out once from the move tables
+const AIK = {};
+function aiKnow(key) {
+  if (AIK[key]) return AIK[key];
+  const C = CHARS[key], K = { all: {}, hitters: [], aa: [], projs: [], tools: [], rev: [], air: null, pokeReach: 1.4 };
+  const info = (id, m) => {
+    const travel = (t) => {
+      let x = 0;
+      if (m.motion) for (const s of m.motion) x += s.vx * clamp(t - s.t0, 0, s.t1 - s.t0);
+      if (m.leap) x += m.leap.vx * clamp(t - m.leap.t0, 0, m.leap.t1 - m.leap.t0);
+      return x;
+    };
+    const I = { id, m, dur: m.dur, type: m.type, inv: m.invuln || 0, armor: m.armor, counter: m.counter, parry: m.parry, reflect: m.reflect, nullify: m.nullify, tele: !!m.teleport, oracle: !!m.oracle, meditate: !!m.meditate, escape: !!(m.leap && m.leap.vx < 0) };
+    if (m.hits) {
+      I.su = m.hits[0].t0; I.act = Math.max(...m.hits.map((h) => h.t1));
+      I.reach = I.tele ? 99 : Math.max(...m.hits.map((h) => h.range[1] + Math.max(travel(h.t0), travel(h.t1))));
+      I.rmin = I.tele ? 0 : Math.min(...m.hits.map((h) => h.range[0] + travel(h.t0)));
+      I.top = Math.max(...m.hits.map((h) => h.y[1])); I.bot = Math.min(...m.hits.map((h) => h.y[0]));
+      I.lv = m.hits.some((h) => h.lv === 'low') ? 'low' : m.hits.some((h) => h.lv === 'mid') ? 'mid' : null;
+      I.dmg = m.hits.reduce((a, h) => a + h.dmg, 0);
+      I.kd = m.hits.some((h) => h.kd || h.launch); I.grab = m.hits.some((h) => h.grab);
+      const hl = m.hits[m.hits.length - 1];
+      I.adv = (hl.bs || 0.2) - (m.dur - hl.t0);   // advantage once blocked (s): negative leaves the attacker open
+      I.rec = m.dur - I.act;
+    } else if (m.proj) {
+      I.proj = m.proj; I.su = m.proj.t; I.act = m.proj.t; I.dmg = m.proj.dmg * (m.proj.hits || 1); I.rec = m.dur - m.proj.t;
+      I.reach = m.proj.atTarget || 99; I.rmin = 0; I.lv = m.proj.lv || null; I.adv = -0.3; I.top = 9; I.bot = 0;
+    } else { I.su = (m.counter || m.parry || [0.05])[0]; I.act = I.su; I.dmg = 0; I.rec = 0; I.reach = 0; I.rmin = 0; I.adv = 0; }
+    return I;
+  };
+  for (const id in C.moves) {
+    const m = C.moves[id];
+    if (m.type === 'super') continue;
+    const I = info(id, m);
+    K.all[id] = I;
+    if (m.hidden) continue;
+    if (m.type === 'air') { if (id === C.air) K.air = I; continue; }
+    if (m.hits) K.hitters.push(I);
+    if (m.proj && !m.hits && !I.escape) K.projs.push(I);
+    if (I.counter || I.parry || I.reflect || I.nullify || I.tele || I.oracle || I.meditate || I.escape) K.tools.push(I);
+    if (m.hits && I.inv >= 0.1) K.rev.push(I);
+    if (m.hits && !I.grab && !I.tele && I.top >= 2.3 && I.su <= 0.22) K.aa.push(I);
+  }
+  K.hitters.sort((a, b) => a.su - b.su);
+  // the damage a move opens: its best route (routes are what this CPU knows how to combo)
+  const md = (x) => (C.moves[x] && C.moves[x].hits ? C.moves[x].hits.reduce((a, h) => a + h.dmg, 0) : 0);
+  for (const I of K.hitters) {
+    let best = I.dmg;
+    for (const r of C.routes) if (r[0] === I.id) best = Math.max(best, r.reduce((a, x) => a + (x === 'SUPER' ? 0 : md(x)), 0) * 0.8);
+    I.routeDmg = best;
+  }
+  const pokes = K.hitters.filter((I) => I.su <= 0.16 && !I.grab && !I.tele && I.reach <= 2.6);   // not the long rushes
+  K.pokeReach = pokes.length ? Math.max(...pokes.map((I) => I.reach)) : 1.4;
+  // what this god takes off a foe left open (its fast punishes), and whether it can swing through a hit
+  K.punishDmg = Math.max(60, ...K.hitters.filter((I) => I.su <= 0.12 && !I.grab).map((I) => I.routeDmg));
+  K.armor = K.hitters.some((I) => I.armor);
+  return (AIK[key] = K);
+}
 
 class Sim {
   constructor(opts = {}) {
@@ -2413,6 +2487,7 @@ class Sim {
       if (Math.abs(o.x) > STAGE - 0.4) f.push = -dir * (h.bkb ?? h.kb * 0.9);
       this.hitstop = hitStop(h, 1) * 0.6;
       this.stats.blocks++;
+      this.aiContact(f, o, true);
       this.emit('block', { side: f.side, x: o.x - dir * 0.3, y: hitY, fx: h.fx, power: h.dmg, chip, proj: !!h.proj });
       return true;
     }
@@ -2456,6 +2531,7 @@ class Sim {
     if (Math.abs(o.x) > STAGE - 0.4 && !airborne) f.push = -dir * h.kb * 0.8;
     this.hitstop = Math.max(this.hitstop, hitStop(h, f.combo));
     this.stats.hits++;
+    this.aiContact(f, o, false);
     this.emit('hit', { side: f.side, x: o.x - dir * 0.25, y: hitY, fx: h.fx, dmg, power: h.dmg, combo: f.combo, dir, proj: !!h.proj });
     if (o.hp <= 0) {
       o.hp = 0;
@@ -3158,346 +3234,582 @@ class Sim {
   }
 
   // --------------------------------------------------------
-  //  AI
+  //  AI : a CPU that plays like a person
   // --------------------------------------------------------
-  threatTo(f, o) {
-    if (o.state === 'attack' && o.move && o.move.hits && o.move.type !== 'super') {
-      const m = o.move;
-      const d = Math.abs(o.x - f.x);
-      for (let i = 0; i < m.hits.length; i++) {
-        if (o.hitDone[i]) continue;
-        const h = m.hits[i];
-        if (o.mt > h.t1) continue;
-        const reach = h.range[1] + (m.reach ? m.reach : 0) + 0.7;
-        if (d < reach && (o.x - f.x) * o.facing < 0) return { serial: 'm' + o.serial, kind: 'melee', d };
-      }
-    }
-    for (const p of this.projs) {
-      if (p.owner === f.side) continue;
-      const dx = f.x - p.x;
-      if (Math.sign(dx) === Math.sign(p.vx) && Math.abs(dx) < 4.2) return { serial: 'p' + p.id, kind: 'proj', d: Math.abs(dx) };
-    }
-    return null;
+  // It sees its foe a reaction time late (a short history of snapshots), so it can answer only what is slow enough
+  // to see: a heavy swing, a jump, a projectile, a super's flash, a whiffed or blocked move with a long recovery.
+  // Everything faster has to be read: it keeps a running model of the foe's habits (how often and from how far they
+  // attack, low or overhead, jump-ins, what they do after blocking and when getting up, whether they anti-air or jump
+  // projectiles) and guards, spaces, baits and mixes up on that model. Choices are scored and picked with a little
+  // human noise; the level sets the reaction time, how fast it learns, how sharp its choices are and how well it
+  // knows punishes and confirms combos.
+
+  // the level's human limits, shaded by the god's temperament (a reckless brawler decides looser, a careful
+  // zoner sharper) - which also keeps CPU-vs-CPU bouts between very different gods from being foregone
+  aiLevel(f) {
+    if (f.aiH && f.aiH.lv === f.level) return f.aiH;
+    const B = AI_HUMAN[f.level] || AI_HUMAN[AI_LEVEL_DEFAULT], st = AI_STYLE[f.key] || {};
+    return (f.aiH = Object.assign({}, B, { lv: f.level, react: B.react + (st.react || 0), temp: B.temp * (st.focus || 1) }));
   }
 
-  pastActive(o) {
-    if (!o.move || !o.move.hits) return o.move && o.move.proj ? o.projFired : false;
-    const last = o.move.hits[o.move.hits.length - 1];
-    return o.mt > last.t1;
+  // what the CPU believes about its foe, kept for the whole match (running averages)
+  aiMind(f) {
+    if (!f.mind) {
+      f.mind = {
+        atk: [0.3, 0.22, 0.12],      // chance the foe starts an attack in a 0.25 s window, close / mid / far
+        jump: [0.04, 0.07, 0.04],    // chance the foe jumps in, per window
+        low: 0.4,                    // share of the foe's height-specific attacks that hit low
+        guard: 0.45,                 // how often the foe is guarding when the CPU swings in neutral
+        crouch: 0.55,                // how often the foe guards crouching
+        after: { atk: 0.35, jump: 0.1, back: 0.15, wait: 0.4 },   // the foe's first act after its blockstun
+        wake: { atk: 0.3, jump: 0.08, back: 0.12, wait: 0.5 },    // the foe's first act after getting up
+        oki: { atk: 0.55, wait: 0.3, grab: 0.15 },                // what the foe does when the CPU gets up
+        aa: 0.3,                     // how often the CPU's jump-ins get anti-aired
+        projJump: 0.2,               // how often the foe jumps over the CPU's projectiles
+        string: 0.5,                 // how often the foe chains another move after a blocked one
+        trait: { aggr: 0.85 + R() * 0.3, patience: 0.8 + R() * 0.4 },
+      };
+    }
+    return f.mind;
+  }
+  learn(f, obj, key, x) { const k = this.aiLevel(f).learn; obj[key] += (x - obj[key]) * k; }
+  learnPick(f, dist, pick) { const k = this.aiLevel(f).learn; for (const n in dist) dist[n] += ((n === pick ? 1 : 0) - dist[n]) * k; }
+
+  // perception: the foe as it was a reaction time ago
+  aiSee(f, o) {
+    const ai = f.ai, H = this.aiLevel(f), now = this.time;
+    const hist = ai.hist || (ai.hist = []);
+    hist.push({ t: now, state: o.state, st: o.st, serial: o.serial, id: o.moveId, mt: o.mt, x: o.x, y: o.y, vx: o.vx, vy: o.vy, crouchG: !!o.crouchG, guard: this.canBlock(o), contact: o.contact });
+    while (hist.length > 2 && hist[1].t <= now - 0.8) hist.shift();
+    const lag = H.react + (ai.jit || 0);
+    let s = hist[0];
+    for (const q of hist) { if (q.t <= now - lag) s = q; else break; }
+    ai.prevSeen = ai.seen || s; ai.seen = s; ai.lag = lag;
+    return s;
+  }
+
+  // the habits model, updated from what the CPU perceives
+  aiObserve(f, o, s, p, d) {
+    const ai = f.ai, M = this.aiMind(f), H = this.aiLevel(f), now = this.time;
+    const newMove = s.state === 'attack' && (p.state !== 'attack' || p.serial !== s.serial);
+    const newJump = s.state === 'jump' && p.state !== 'jump';
+    if (newMove || newJump || (s.state !== p.state)) ai.jit = (R() * 2 - 1) * H.jit;   // each new sight takes its own time to register
+    const om = newMove && o.c.moves[s.id];
+    if (om && om.hits) {
+      const lv = om.hits.some((h) => h.lv === 'low') ? 'low' : om.hits.some((h) => h.lv === 'mid') ? 'mid' : null;
+      if (lv) this.learn(f, M, 'low', lv === 'low' ? 1 : 0);
+    }
+    // neutral windows: how often the foe attacks / jumps in from each distance
+    const neutral = (st) => st === 'idle' || st === 'walk' || st === 'crouch' || st === 'block' || st === 'dash';
+    if (!ai.win || now - ai.win.t0 >= 0.25) {
+      if (ai.win && ai.win.ok) {
+        const b = ai.win.b;
+        M.atk[b] += ((ai.win.atk ? 1 : 0) - M.atk[b]) * H.learn * 0.6;
+        M.jump[b] += ((ai.win.jump ? 1 : 0) - M.jump[b]) * H.learn * 0.6;
+      }
+      ai.win = { t0: now, b: d < 1.7 ? 0 : d < 3.2 ? 1 : 2, ok: neutral(s.state) && this.actionable(f), atk: false, jump: false };
+    }
+    if (newMove && om && om.type !== 'super') ai.win.atk = true;
+    if (newJump && Math.sign(s.vx || 0) === Math.sign(f.x - s.x)) ai.win.jump = true;
+    // after the foe's blockstun and after its getup: the first thing it does
+    for (const [from, key] of [['blockstun', 'after'], ['getup', 'wake']]) {
+      if (p.state === from && s.state !== from) ai['watch' + key] = { t: now, pick: null };
+      const w = ai['watch' + key];
+      if (w && !w.pick) {
+        const pick = newMove ? 'atk' : newJump ? 'jump' : s.state === 'dash' && Math.sign(s.vx) !== Math.sign(f.x - s.x) ? 'back' : null;
+        if (pick || now - w.t > 0.45) { w.pick = pick || 'wait'; this.learnPick(f, M[key], w.pick); }
+      }
+    }
+    // the foe chaining after a blocked move
+    if (ai.strWatch && newMove) { this.learn(f, M, 'string', 1); ai.strWatch = null; }
+    if (ai.strWatch && now - ai.strWatch > 0.35) { this.learn(f, M, 'string', 0); ai.strWatch = null; }
+    // what the foe does while the CPU gets up
+    if (ai.okiWatch && !ai.okiWatch.pick) {
+      const om2 = newMove && o.c.moves[s.id];
+      const pick = om2 ? (om2.hits && om2.hits.some((h) => h.grab) ? 'grab' : 'atk') : null;
+      if (pick || now - ai.okiWatch.t > 0.5) { ai.okiWatch.pick = pick || 'wait'; this.learnPick(f, M.oki, ai.okiWatch.pick); }
+    }
+    // does the foe jump the CPU's projectiles?
+    if (ai.projWatch && newJump) { this.learn(f, M, 'projJump', 1); ai.projWatch = null; }
+    if (ai.projWatch && now - ai.projWatch > 0.7) { this.learn(f, M, 'projJump', 0); ai.projWatch = null; }
+  }
+
+  // the CPU's own swing just touched the foe: was it guarded, and how?
+  aiContact(f, o, blocked) {
+    if (f.ctl !== 'ai') return;
+    const M = this.aiMind(f), ai = f.ai;
+    if (ai.neutralSwing === f.serial) { this.learn(f, M, 'guard', blocked ? 1 : 0); ai.neutralSwing = -1; }
+    if (blocked) this.learn(f, M, 'crouch', o.crouchG ? 1 : 0);
+  }
+
+  // hold guard (down-back or back): it blocks whatever arrives at that height until released
+  aiGuard(f, crouch, t) {
+    const ai = f.ai;
+    f.guarding = true; f.crouchG = !!crouch; f.guardVx = 0;
+    if (crouch) { if (f.state !== 'crouch') { this.setState(f, 'crouch'); f.vx = 0; } f.crouchT = t; }
+    else { if (f.state !== 'block') this.setState(f, 'block'); f.guardT = Math.max(f.guardT || 0, t); }
+    ai.guardUntil = this.time + t; ai.t = Math.max(ai.t, t * 0.6);
+  }
+
+  // pick by score with a person's imprecision (higher temperature = looser choices)
+  aiChoose(f, opts) {
+    const H = this.aiLevel(f), o = this.fighters[1 - f.side];
+    const lead = f.hp / f.c.hp - o.hp / o.c.hp;
+    const T = H.temp * 12 * (lead > 0.25 ? 1 + (lead - 0.25) * 2 : lead < -0.25 ? Math.max(0.6, 1 + (lead + 0.25)) : 1);
+    let best = null, sum = 0;
+    const ws = opts.filter((o) => o && isFinite(o.v)).map((o) => { const w = Math.exp((o.v - 40) / T); sum += w; return [o, w]; });
+    let r = R() * sum;
+    for (const [o, w] of ws) { r -= w; best = o; if (r <= 0) break; }
+    return best;
+  }
+
+  // the best way to start damage when the foe is open for `win` seconds at distance d
+  aiPunish(f, o, d, win, K) {
+    const toward = Math.sign(o.x - f.x) || f.facing;
+    const SR = AI_SUPER[f.key];
+    if (f.meter >= 100 && SR && d <= SR[0] && win >= SR[1] + 0.03 && o.invuln <= 0) { this.startMove(f, f.c.super); return true; }
+    let best = null, bv = -1;
+    for (const I of K.hitters) {
+      if (I.grab && o.y > 0.01) continue;
+      const gap = Math.max(0, d - I.reach + 0.15);
+      const tReach = gap > 0 ? gap / f.c.dash + 0.06 : 0;
+      if (I.su + tReach > win - 0.02) continue;
+      if (gap > 0 && gap > 4) continue;
+      if (d < I.rmin - 0.3) continue;
+      const v = I.routeDmg - tReach * 30;
+      if (v > bv) { bv = v; best = I; }
+    }
+    if (!best) return false;
+    if (d > best.reach - 0.15) {
+      // too far to swing at once: dash in and swing when in reach
+      this.dash(f, toward, 0.5);
+      f.ai.pending = { id: best.id, reach: best.reach - 0.15, until: this.time + win };
+      return true;
+    }
+    this.aiRoute(f, o, best.id);
+    return true;
+  }
+
+  // start a combo route beginning with `first` (or any route when first is null)
+  aiRoute(f, o, first) {
+    const routes = f.c.routes, L = AI_LEVELS[f.level] || AI_LEVELS[AI_LEVEL_DEFAULT];
+    let pool = routes.filter((r) => !first || r[0] === first);
+    const sup = pool.filter((r) => r[r.length - 1] === 'SUPER'), plain = pool.filter((r) => r[r.length - 1] !== 'SUPER');
+    pool = f.meter >= 100 && sup.length && R() < L.superRoute ? sup : plain.length ? plain : sup;
+    let route = pool.length ? pool[Math.floor(R() * pool.length)].slice() : [first];
+    if (route.length > L.maxCombo) route = route.slice(0, L.maxCombo);
+    const id = route.shift();
+    f.plan = route;
+    this.startMove(f, id);
   }
 
   think(f, o, dt) {
-    const ai = f.ai;
-    const c = f.c;
-    ai.t -= dt;
-    const dx = o.x - f.x;
-    const d = Math.abs(dx);
+    const ai = f.ai, c = f.c, H = this.aiLevel(f), M = this.aiMind(f), now = this.time;
+    const K = aiKnow(f.key), OK = aiKnow(o.key);
+    const s = this.aiSee(f, o), p = ai.prevSeen;
+    const dx = o.x - f.x, d = Math.abs(dx);
     const toward = Math.sign(dx) || f.facing;
-    const L = AI_LEVELS[f.level] || AI_LEVELS[AI_LEVEL_DEFAULT];
+    this.aiObserve(f, o, s, p, d);
+    ai.t -= dt;
+    // guard is held only as long as the CPU means to hold it
+    if (now > (ai.guardUntil || 0) && !ai.backGuard) f.guarding = false;
+    if (ai.backGuard && !(f.state === 'walk' && f.walkDir !== toward)) { ai.backGuard = false; f.guarding = false; }
 
-    if (f.state === 'blockstun') ai.blockedSerial = o.serial;
-    // air attacks
-    if (f.state === 'jump') {
-      if (!ai.airUsed && f.vy < 3.5 && d < (f.key === 'zeus' || f.key === 'thor' || f.key === 'heracles' ? 1.9 : f.key === 'anubis' ? 1.8 : f.key === 'apollo' ? 5.2 : 2.3) && f.y > 0.5) {
-        ai.airUsed = true;
-        if (R() < 0.85) this.startMove(f, c.air);
-      }
-      return;
+    if (f.state === 'blockstun') { if (ai.blockedSerial !== o.serial) { ai.blockedSerial = o.serial; ai.strWatch = null; } }
+    if (o.state !== 'down' && o.state !== 'getup') ai.okiNew = false;
+    // a jump-in that came down: was it swatted?
+    if (ai.jumpIn && f.y <= 0.001 && f.state !== 'jump' && !(f.state === 'attack' && f.move && f.move.type === 'air')) {
+      this.learn(f, M, 'aa', f.state === 'down' || f.state === 'hitstun' || f.state === 'juggle' ? 1 : 0); ai.jumpIn = null;
     }
-    if (!this.actionable(f)) return;
-    if (o.state === 'ko') return;
-    // punish an unsafe move we just blocked (heavy normals, specials)
-    if (ai.blockedSerial === o.serial && ai.bpSerial !== o.serial && o.state === 'attack' && o.move && o.move.type !== 'super' && this.pastActive(o)) {
-      ai.bpSerial = o.serial;
-      const left = o.move.dur - o.mt;
-      if (left > 0.1 && d < 2.0 && R() < L.punish) { this.startRoute(f, o); return; }
-    }
-    if (f.state === 'dash' && f.dashDir === f.facing && d > 2.2 && d < 4.2 && R() < 0.05) { this.jump(f, toward); return; }
-
-    // ---- defence
-    const threat = this.threatTo(f, o);
-    if (threat) {
-      if (ai.threatSerial !== threat.serial) {
-        ai.threatSerial = threat.serial;
-        ai.threatRoll = R();
-        ai.threatReact = ai.threatRoll < Math.min(0.97, L.guard * c.guard / 0.58);
-      }
-      if (ai.threatReact) {
-        if (threat.kind === 'proj' && f.state !== 'block') {
-          // jump over projectiles sometimes
-          if (ai.threatRoll < c.guard * 0.4 * L.jumpOver && threat.d > 1.8 && threat.d < 3.6) { this.jump(f, toward); return; }
-        }
-        if (f.key === 'zeus' && threat.kind !== 'proj' && ai.counterSerial !== threat.serial) { ai.counterSerial = threat.serial; if (R() < 0.3 * L.read && this.actionable(f)) { this.startMove(f, 'z_counter'); return; } }
-        if (f.key === 'susanoo' && threat.kind === 'proj' && this.actionable(f) && threat.d < 3 && R() < 0.5 * L.read) { this.startMove(f, 's_wind'); return; }
-        if (f.key === 'shaka' && ai.mudraSerial !== threat.serial) { ai.mudraSerial = threat.serial; if (R() < (threat.kind === 'proj' ? 0.35 : 0.17) * L.read && this.actionable(f) && (threat.kind !== 'proj' || threat.d < 1.6)) { this.startMove(f, 'sk_mudra'); return; } }
-        if (f.key === 'apollo' && f.oracleT <= 0 && ai.oracleSerial !== threat.serial) { ai.oracleSerial = threat.serial; if (R() < 0.2 * L.read && this.actionable(f)) { this.startMove(f, 'apo_oracle'); return; } }
-        if (f.state !== 'block') this.setState(f, 'block');
-        f.guardT = 0.22;
-        // read the attack height (not always correctly)
-        const lv = o.move && o.move.lv;
-        if (ai.lvSerial !== threat.serial) { ai.lvSerial = threat.serial; f.crouchG = R() < L.read ? lv === 'low' : R() < 0.5; }
-        return;
-      }
-    }
-
-    // ---- punish whiffs
-    if (o.state === 'attack' && o.move && o.move.type !== 'super' && !o.contact && this.pastActive(o) && d < 3.3) {
-      if (ai.punishSerial !== o.serial) {
-        ai.punishSerial = o.serial;
-        if (R() > L.punish) return;
-        const r = R();
-        if (f.meter >= 100 && r < 0.45) { this.startMove(f, c.super); return; }
-        if (r < 0.55) {
-          if (f.key === 'zeus') this.startMove(f, d < 1.4 ? 'z_upper' : 'z_straight');
-          else if (f.key === 'anubis') this.startMove(f, d < 1.4 ? 'a_rise' : 'a_blink');
-          else if (f.key === 'thor') this.startMove(f, d < 1.5 ? 't_upper' : 't_leap');
-          else if (f.key === 'susanoo') this.startMove(f, d < 1.7 ? 's_rise' : 's_dash');
-          else if (f.key === 'heracles') this.startMove(f, d < 1.4 ? 'h_upper' : 'h_club');
-          else if (f.key === 'hades') this.startMove(f, d < 1.6 ? 'hd_rise' : 'hd_shade');
-          else if (f.key === 'odin') this.startMove(f, d < 1.6 ? 'o_rise' : 'o_slash');
-          else if (f.key === 'shiva') this.startMove(f, d < 1.4 ? 'sv_rise' : 'sv_tandava');
-          else if (f.key === 'aphrodite') this.startMove(f, d < 1.7 ? 'ap_rise' : 'ap_lash');
-          else if (f.key === 'shaka') this.startMove(f, d < 2.0 ? 'sk_lotus' : d < 2.6 ? 'sk_recline' : 'sk_palmsky');
-          else if (f.key === 'apollo') this.startMove(f, d < 1.6 ? 'apo_rise' : 'apo_point');
-          else this.startMove(f, d < 1.8 ? 'p_rise' : 'p_slash');
-          if (d < 1.8) f.plan = f.key === 'zeus' ? ['z_hammer'] : f.key === 'anubis' ? ['a_blink'] : f.key === 'thor' ? ['t_slam'] : f.key === 'susanoo' ? ['s_dash'] : f.key === 'heracles' ? ['h_smash'] : f.key === 'hades' || f.key === 'odin' ? [] : f.key === 'shiva' ? ['sv_heel'] : f.key === 'aphrodite' ? ['ap_petal'] : f.key === 'shaka' ? [] : f.key === 'apollo' ? ['apo_sun'] : ['p_slash'];
-          return;
-        }
-      }
-    }
-
-    if (f.state === 'block' && f.guardT > 0) return;
-    if (ai.t > 0 && f.state !== 'idle') return;
+    if (f.state === 'getup') { this.aiPlanWake(f, o, d, K); return; }
+    if (f.state === 'jump') { this.aiAir(f, o, d, K); return; }
+    if (f.state === 'attack' || !this.actionable(f)) return;
+    if (o.state === 'ko' || this.phase !== 'fight') return;
+    if (this.aiReact(f, o, s, d, toward, K, OK, H, M)) return;
     if (ai.t > 0) return;
+    this.aiNeutral(f, o, s, d, toward, K, OK, H, M);
+  }
 
-    // opponent on the floor -> reposition
-    if (o.state === 'down' || o.state === 'getup' || o.state === 'locked') {
-      const want = f.key === 'zeus' ? 1.5 : f.key === 'thor' ? 1.6 : f.key === 'anubis' ? 1.3 : f.key === 'susanoo' ? 1.8 : f.key === 'heracles' ? 1.4 : f.key === 'hades' || f.key === 'odin' ? 2.0 : f.key === 'shiva' ? 1.4 : f.key === 'aphrodite' ? 1.9 : f.key === 'shaka' ? 1.6 : f.key === 'apollo' ? 2.8 : 2.2;
-      if (d > want + 0.6) this.walk(f, toward, 0.25);
-      else if (d < want - 0.6) this.walk(f, -toward, 0.2);
-      else this.idle(f, 0.15);
-      return;
+  // ---- in the air: time the jump attack for the way down (or meet a foe who also jumped)
+  aiAir(f, o, d, K) {
+    const ai = f.ai;
+    if (ai.airUsed || !K.air) return;
+    const A = K.air, ahead = (o.x - f.x) * f.facing;
+    if (ahead < -0.2) return;
+    if (A.proj) { if (f.y > 0.8 && ahead > 1 && ahead < 6.5) { ai.airUsed = true; this.startMove(f, f.c.air); } return; }
+    const tall = o.y + o.c.height * 0.9, low = o.y;
+    const yOk = f.y + A.top >= low + 0.2 && f.y + A.bot <= tall;
+    const close = ahead <= A.reach + (f.vy < 0 ? 0.1 : -0.2) && ahead >= A.rmin - 0.6;
+    if (f.y > 0.35 && yOk && close && (f.vy < 3 || o.y > 0.5)) { ai.airUsed = true; this.startMove(f, f.c.air); ai.jumpAtk = true; }
+  }
+
+  // ---- what the CPU sees and answers this instant
+  aiReact(f, o, s, d, toward, K, OK, H, M) {
+    const ai = f.ai, now = this.time, c = f.c, p = ai.prevSeen;
+    const sees = (q) => s.serial === o.serial && s.state === 'attack' && o.state === 'attack' && o.move;
+    const cornered = Math.abs(f.x) > STAGE - 1.0 && Math.sign(f.x) === -toward;
+
+    // a dash-in that was meant to end in a punish swing
+    if (ai.pending) {
+      const P = ai.pending;
+      if (now > P.until) ai.pending = null;
+      else if (d <= P.reach) { ai.pending = null; this.aiRoute(f, o, P.id); return true; }
+      else if (f.state === 'dash') return true;
+      else ai.pending = null;
     }
 
-    const r = R();
-    if (f.meter >= 100 && d < 7 && r < 0.08 * L.super && o.state !== 'jump') { this.startMove(f, c.super); return; }
-    // weaker CPUs misjudge range and swing at air
-    if (d > 2.3 && d < 3.6 && r > 0.97 - L.whiff * 0.25) { this.startRoute(f, o); return; }
+    // a super's flash is unmistakable: guard (a super only takes a foe that is not guarding)
+    if (o.state === 'attack' && o.move && o.move.type === 'super') { this.aiGuard(f, false, 0.4); return true; }
 
-    if (f.key === 'zeus') {
-      if (d > 4.8) {
-        if (r < 0.3) this.startMove(f, 'z_bolt');
-        else if (r < 0.62) this.dash(f, toward, 0.42);
-        else this.walk(f, toward, 0.45);
-      } else if (d > 1.6) {
-        if (r < 0.2) this.dash(f, toward, 0.3);
-        else if (r < 0.33) this.jump(f, toward);
-        else if (r < 0.42 && d > 3) this.startMove(f, 'z_bolt');
-        else if (r < 0.5) this.dash(f, toward, 0.22);
-        else this.walk(f, toward, 0.25);
-      } else {
-        if (r < c.aggro * L.aggro) this.startRoute(f, o);
-        else if (r < 0.93) this.walk(f, -toward, 0.3);
-        else this.idle(f, 0.2);
-      }
-    } else if (f.key === 'thor') {
-      const canThrow = !this.weaponOut(f);
-      if (d > 4.8) {
-        if (r < 0.32 && canThrow) this.startMove(f, 't_throw');
-        else if (r < 0.62) this.dash(f, toward, 0.42);
-        else this.walk(f, toward, 0.45);
-      } else if (d > 1.7) {
-        if (r < 0.2) this.startMove(f, 't_leap');
-        else if (r < 0.3) this.jump(f, toward);
-        else if (r < 0.4 && d > 3 && canThrow) this.startMove(f, 't_throw');
-        else if (r < 0.5) this.dash(f, toward, 0.22);
-        else this.walk(f, toward, 0.25);
-      } else {
-        if (r < c.aggro * L.aggro) this.startRoute(f, o);
-        else if (r < 0.92) this.walk(f, -toward, 0.3);
-        else this.idle(f, 0.2);
-      }
-    } else if (f.key === 'anubis') {
-      if (d > 4.4) {
-        if (r < 0.28) this.startMove(f, 'a_soul');
-        else if (r < 0.72) this.dash(f, toward, 0.34);
-        else this.walk(f, toward, 0.35);
-      } else if (d > 1.5) {
-        if (r < 0.2) this.startMove(f, 'a_blink');
-        else if (r < 0.3 && d > 3) this.startMove(f, 'a_soul');
-        else if (r < 0.42) this.jump(f, toward);
-        else if (r < 0.7) this.dash(f, toward, 0.22);
-        else this.walk(f, toward, 0.2);
-      } else {
-        if (r < c.aggro * L.aggro) this.startRoute(f, o);
-        else if (r < 0.94) this.dash(f, -toward, 0.22);
-        else this.idle(f, 0.15);
-      }
-    } else if (f.key === 'shiva') {
-      // the drum answers projectiles; the eye covers mid range and the air; otherwise he dances in
-      if (sim0HasProj(this, f) && d < 3 && r < 0.5 * L.read) this.startMove(f, 'sv_damaru');
-      else if (d > 5.6) {
-        if (r < 0.45) this.dash(f, toward, 0.3);
-        else this.walk(f, toward, 0.35);
-      } else if (d > 1.8) {
-        if ((o.y > 0.6 || r < 0.2) && r < 0.7) this.startMove(f, 'sv_eye');
-        else if (r < 0.27 && d < 3.2) this.startMove(f, 'sv_tandava');
-        else if (r < 0.35) this.jump(f, toward);
-        else if (r < 0.66) this.dash(f, toward, 0.22);
-        else this.walk(f, toward, 0.25);
-      } else {
-        if (r < 0.07) this.startMove(f, 'sv_damaru');
-        else if (r < c.aggro * L.aggro) this.startRoute(f, o);
-        else if (r < 0.94) this.walk(f, -toward, 0.25);
-        else this.idle(f, 0.15);
-      }
-    } else if (f.key === 'aphrodite') {
-      // a charmed foe is a free combo: walk up and take it
-      if (o.charmT > 0.25) { if (d > 2.0) this.dash(f, toward, 0.16); else this.startRoute(f, o); }
-      else if (d > 4.2) {
-        if (r < 0.34) this.startMove(f, 'ap_heart');
-        else if (r < 0.6) this.walk(f, toward, 0.35);
-        else this.dash(f, toward, 0.3);
-      } else if (d > 2.1) {
-        if (r < 0.2) this.startMove(f, 'ap_heart');
-        else if (r < 0.3) this.jump(f, toward);
-        else if (r < 0.52) this.dash(f, toward, 0.2);
-        else this.walk(f, toward, 0.25);
-      } else {
-        if (r < 0.07 && Math.abs(f.x) < STAGE - 2.5) this.startMove(f, 'ap_foam');
-        else if (r < c.aggro * L.aggro) this.startRoute(f, o);
-        else if (r < 0.92) this.walk(f, -toward, 0.3);
-        else this.idle(f, 0.2);
-      }
-    } else if (f.key === 'shaka') {
-      // unhurried: sits in meditation when the foe is far, rolls the wheel low, drops the palm on an approach
-      if (d > 5.2) {
-        if (r < 0.24 && f.meter < 100 && !sim0HasProj(this, f) && o.state !== 'dash') this.startMove(f, 'sk_zazen');
-        else if (r < 0.5) this.startMove(f, 'sk_wheel');
-        else if (r < 0.78) this.walk(f, toward, 0.4);
-        else this.dash(f, toward, 0.3);
-      } else if (d > 1.9) {
-        if (r < 0.17) this.startMove(f, 'sk_palmsky');
-        else if (r < 0.3) this.startMove(f, 'sk_wheel');
-        else if (r < 0.37) this.jump(f, toward);
-        else if (r < 0.52) this.dash(f, toward, 0.22);
-        else this.walk(f, toward, 0.25);
-      } else {
-        if (r < c.aggro * L.aggro) this.startRoute(f, o);
-        else if (r < 0.9) this.walk(f, -toward, 0.3);
-        else this.idle(f, 0.2);
-      }
-    } else if (f.key === 'apollo') {
-      // keeps the foe at bow range: arrows from afar (rain on a croucher), the sun on a jumper, a backstep when pressed
-      const crouching = o.state === 'crouch' || (o.state === 'block' && o.crouchG);
-      if (o.y > 0.7 && d < 2.6 && r < 0.55) this.startMove(f, 'apo_sun');
-      else if (d > 4.2) {
-        if (r < 0.4) this.startMove(f, crouching ? 'apo_rain' : 'apo_arrow');
-        else if (r < 0.56) this.startMove(f, 'apo_rain');
-        else if (r < 0.63 && f.oracleT <= 0) this.startMove(f, 'apo_oracle');
-        else if (r < 0.7) this.jump(f, toward);
-        else if (r < 0.86) this.walk(f, toward, 0.3);
-        else this.idle(f, 0.25);
-      } else if (d > 1.9) {
-        if (r < 0.26) this.startMove(f, crouching ? 'apo_rain' : 'apo_arrow');
-        else if (r < 0.36) this.startMove(f, 'apo_rain');
-        else if (r < 0.5 && Math.abs(f.x - toward * 2) < STAGE - 0.5) this.dash(f, -toward, 0.3);
-        else if (r < 0.58) this.jump(f, -toward);
-        else if (r < 0.7) this.dash(f, toward, 0.2);
-        else this.walk(f, toward, 0.2);
-      } else {
-        if (r < c.aggro * L.aggro) this.startRoute(f, o);
-        else if (r < 0.86 && Math.abs(f.x - toward * 2) < STAGE - 0.5) this.dash(f, -toward, 0.28);
-        else this.idle(f, 0.15);
-      }
-    } else if (f.key === 'odin') {
-      if (d > 4.6) {
-        if (r < 0.22 && !this.weaponOut(f)) this.startMove(f, 'o_spear');
-        else if (r < 0.38) this.startMove(f, 'o_ravens');
-        else if (r < 0.62) this.walk(f, toward, 0.4);
-        else this.dash(f, toward, 0.34);
-      } else if (d > 1.9) {
-        if (r < 0.14 && d < 5.5) this.startMove(f, 'o_rune');
-        else if (r < 0.24 && !this.weaponOut(f)) this.startMove(f, 'o_spear');
-        else if (r < 0.32) this.jump(f, toward);
-        else if (r < 0.5) this.dash(f, toward, 0.22);
-        else this.walk(f, toward, 0.25);
-      } else {
-        if (r < c.aggro * L.aggro) this.startRoute(f, o);
-        else if (r < 0.92) this.walk(f, -toward, 0.3);
-        else this.idle(f, 0.2);
-      }
-    } else if (f.key === 'hades') {
-      if (d > 4.6) {
-        if (r < 0.24) this.startMove(f, 'hd_dog');
-        else if (r < 0.42 && d < 6.5) this.startMove(f, 'hd_hands');
-        else if (r < 0.66) this.walk(f, toward, 0.4);
-        else this.dash(f, toward, 0.34);
-      } else if (d > 1.8) {
-        if (r < 0.14) this.startMove(f, 'hd_shade');
-        else if (r < 0.26) this.startMove(f, 'hd_hands');
-        else if (r < 0.34) this.jump(f, toward);
-        else if (r < 0.5) this.dash(f, toward, 0.22);
-        else this.walk(f, toward, 0.25);
-      } else {
-        if (r < c.aggro * L.aggro) this.startRoute(f, o);
-        else if (r < 0.92) this.walk(f, -toward, 0.3);
-        else this.idle(f, 0.2);
-      }
-    } else if (f.key === 'heracles') {
-      if (d > 4.6) {
-        if (r < 0.3) this.startMove(f, 'h_rock');
-        else if (r < 0.55) this.dash(f, toward, 0.36);
-        else this.walk(f, toward, 0.45);
-      } else if (d > 1.6) {
-        if (r < 0.18 && d > 2.5) this.startMove(f, 'h_quake');
-        else if (r < 0.26) this.jump(f, toward);
-        else if (r < 0.36 && d > 3) this.startMove(f, 'h_rock');
-        else if (r < 0.5) this.dash(f, toward, 0.22);
-        else this.walk(f, toward, 0.3);
-      } else {
-        // a guarding foe gets thrown; otherwise brawl
-        if ((o.state === 'block' || o.guarding) && d < 1.15 && r < L.grab) this.startMove(f, 'h_grab');
-        else if (r < c.aggro * L.aggro) this.startRoute(f, o);
-        else if (r < 0.92) this.walk(f, -toward, 0.3);
-        else this.idle(f, 0.2);
-      }
-    } else if (f.key === 'susanoo') {
-      if (d > 4.6) {
-        if (r < 0.3) this.dash(f, toward, 0.4);
-        else if (r < 0.62) this.dash(f, toward, 0.38);
-        else this.walk(f, toward, 0.4);
-      } else if (d > 1.8) {
-        if (r < 0.2) this.startMove(f, 's_dash');
-        else if (r < 0.3) this.jump(f, toward);
-        else if (r < 0.4 && sim0HasProj(this, f)) this.startMove(f, 's_wind');
-        else if (r < 0.55) this.dash(f, toward, 0.22);
-        else this.walk(f, toward, 0.25);
-      } else {
-        if (r < c.aggro * L.aggro) this.startRoute(f, o);
-        else if (r < 0.92) this.walk(f, -toward, 0.3);
-        else this.idle(f, 0.2);
-      }
-    } else {
-      if (d > 4.6) {
-        if (r < 0.34) this.startMove(f, 'p_wave');
-        else if (r < 0.6) this.dash(f, toward, 0.36);
-        else this.walk(f, toward, 0.4);
-      } else if (d > 2.3) {
-        if (r < 0.22) this.startMove(f, 'p_wave');
-        else if (r < 0.38 && d < 3.6) this.startMove(f, 'p_vortex');
-        else if (r < 0.5) this.jump(f, toward);
-        else this.walk(f, toward, 0.22);
-      } else if (d > 0.95) {
-        if (r < c.aggro * L.aggro) this.startRoute(f, o);
-        else if (r < 0.85) this.dash(f, -toward, 0.26);
-        else this.walk(f, -toward, 0.25);
-      } else {
-        if (r < 0.4) this.dash(f, -toward, 0.26);
-        else this.startRoute(f, o, true);
+    // the CPU's own wake-up plan
+    if (ai.wakePlan) { const w = ai.wakePlan; ai.wakePlan = null; if (this.aiDoWake(f, o, d, toward, K, w)) return true; }
+
+    // follow up a hit that landed (a jump-in, a projectile, a stray poke): combo while the foe still reels
+    if ((s.state === 'hitstun' || s.state === 'juggle') && (o.state === 'hitstun' || o.state === 'juggle') && !o.comboCap) {
+      const left = o.state === 'hitstun' ? o.stunT - o.st : 0.35;
+      for (const I of K.hitters) {
+        if (I.grab || I.tele || I.su + 0.02 >= left || d > I.reach - 0.1 || d < I.rmin - 0.3) continue;
+        if (o.state === 'juggle' && f.y + I.top < o.y + 0.4) continue;
+        this.aiRoute(f, o, I.id); return true;
       }
     }
-    ai.t = (0.12 + R() * 0.22) * L.react;
+
+    // projectiles coming at the CPU
+    for (const q of this.projs) {
+      if (q.owner === f.side || q.dead || q.spent || q.t < ai.lag) continue;
+      if ((ai.projDone || (ai.projDone = {}))[q.id]) continue;
+      const pdx = f.x - q.x;
+      const coming = q.vx ? Math.sign(pdx) === Math.sign(q.vx) : Math.abs(pdx) < q.w + c.width + 0.35;
+      if (!coming) continue;
+      const gapX = Math.max(0, Math.abs(pdx) - c.width - q.w);
+      const T = q.vx ? gapX / Math.abs(q.vx) : Math.max(0, q.cd);
+      if (T > 0.75) continue;
+      ai.projDone[q.id] = true;
+      if (this.aiAnswerProj(f, o, q, T, d, toward, K, M, cornered)) return true;
+    }
+
+    // the foe's swing, once it is seen
+    if (sees() && o.move.hits && o.move.type !== 'super' && o.move.type !== 'air' && ai.answered !== o.serial) {
+      const I = OK.all[o.moveId];
+      if (I && o.mt <= I.act) {
+        const tHit = I.su - o.mt;
+        const reach = I.tele ? 99 : I.reach + c.width + 0.25;
+        if (d <= reach) { ai.answered = o.serial; if (this.aiAnswerSwing(f, o, I, tHit, d, toward, K, M, cornered)) return true; }
+      }
+    }
+
+    // the foe in the air, coming in: anti-air (or guard high)
+    const airborne = (st) => st === 'jump' || (st === 'attack' && o.move && o.move.type === 'air');
+    if (airborne(s.state) && airborne(o.state) && o.y > 0.1) {
+      if (!airborne(p.state)) ai.jumpSeen = (ai.jumpSeen || 0) + 1;
+      const key = 'j' + ai.jumpSeen;
+      if (ai.aaFor !== key) {
+        ai.aaFor = key;
+        const land = this.aiLanding(o);
+        // nobody can guard in the air: a super that takes hold before the jump comes down is a sure thing
+        const SR = AI_SUPER[f.key];
+        if (f.meter >= 100 && SR && d <= SR[0] && land.t >= SR[1] + 0.06 && o.invuln <= 0 && R() < H.know) { ai.aaPlan = 'done'; this.startMove(f, f.c.super); return true; }
+        const comingIn = Math.abs(land.x - f.x) < 3.2;
+        ai.aaPlan = !comingIn ? 'none' : this.aiChoose(f, [
+          { v: 40 + (K.aa.length ? 10 : -99) + (H.aaSkill - 0.5) * 20, k: 'aa' },
+          { v: 34, k: 'guard' },
+          { v: 26 + (cornered ? -20 : 0), k: 'away' },
+        ]).k;
+      }
+      if (ai.aaPlan === 'aa') {
+        for (const A of K.aa) if (this.aiWouldHit(f, o, A, H)) { this.startMove(f, A.id); ai.aaPlan = 'done'; return true; }
+        // too early yet: hold ground (a step back if they will land right on top)
+        return true;
+      }
+      if (ai.aaPlan === 'guard') { if (d < 3) { this.aiGuard(f, false, 0.25); return true; } return true; }
+      if (ai.aaPlan === 'away') { if (f.state !== 'walk' || f.walkDir === toward) { this.walk(f, -toward, 0.3); ai.backGuard = true; f.guarding = true; f.crouchG = false; } return true; }
+    }
+
+    // a whiff the CPU saw: punish the recovery
+    if (sees() && o.move.type !== 'super' && !o.contact && ai.punished !== o.serial) {
+      const I = OK.all[o.moveId];
+      const done = I && (I.proj ? o.projFired : s.mt > I.act + 0.02);
+      if (done) {
+        ai.punished = o.serial;
+        const win = o.move.dur - o.mt;
+        if (win > 0.1 && R() < H.know && this.aiPunish(f, o, d, win, K)) return true;
+      }
+    }
+
+    // the CPU blocked it: punish what is unsafe (unless the foe likes to keep the string going)
+    if (ai.blockedSerial === o.serial && ai.bpSerial !== o.serial && f.state !== 'blockstun' && o.state === 'attack' && o.move && o.move.type !== 'super') {
+      const I = OK.all[o.moveId];
+      if (I && o.mt > (I.act || 0)) {
+        ai.bpSerial = o.serial; ai.strWatch = now;
+        const win = o.move.dur - o.mt;
+        const chainy = o.move.cancel && o.mt < o.move.cancel[1] && M.string > 0.55 && win < 0.25;
+        if (!chainy && win > 0.08 && R() < H.know && this.aiPunish(f, o, d, win, K)) return true;
+      }
+    }
+
+    // the foe knocked down: set up the wake-up
+    if ((o.state === 'down' || o.state === 'getup') && (s.state === 'down' || s.state === 'getup')) return this.aiOki(f, o, d, toward, K, M);
+    return false;
+  }
+
+  // where (and when) an airborne foe comes down
+  aiLanding(o) {
+    const g = (o.state === 'jump' || (o.move && o.move.type === 'air')) ? JUMP_GRAV * (o.c.jumpGrav || 1) : GRAV;
+    const t = (o.vy + Math.sqrt(Math.max(0, o.vy * o.vy + 2 * g * o.y))) / g;
+    return { t, x: clamp(o.x + o.vx * t, -STAGE, STAGE), g };
+  }
+
+  // would starting move A now hit the airborne foe during its active frames? (the foe's arc is extrapolated)
+  aiWouldHit(f, o, A, H) {
+    const g = JUMP_GRAV * (o.c.jumpGrav || 1);
+    const err = (1 - H.aaSkill) * 0.06;
+    for (const h of A.m.hits) {
+      for (let tt = h.t0; tt <= h.t1; tt += 1 / 60) {
+        const t = tt + err;
+        const oy = o.y + o.vy * t - 0.5 * g * t * t;
+        if (oy < 0.15) return false;
+        const ox = o.x + o.vx * t;
+        const x0 = f.x + f.facing * h.range[0], x1 = f.x + f.facing * h.range[1];
+        const lo = Math.min(x0, x1), hi = Math.max(x0, x1);
+        if (ox + o.c.width >= lo && ox - o.c.width <= hi && f.y + h.y[1] >= oy && f.y + h.y[0] <= oy + o.c.height * 0.9) return t >= h.t0 && tt <= h.t0 + 0.08 + (h.t1 - h.t0) * 0.5;
+      }
+    }
+    return false;
+  }
+
+  // a projectile is coming: guard, jump it, reflect / cancel / absorb it, answer with one's own, or step out
+  aiAnswerProj(f, o, q, T, d, toward, K, M, cornered) {
+    const c = f.c, opts = [];
+    const lowHit = q.y - q.h < f.c.height * 0.55 - 0.05;         // would still hit a crouch
+    const duck = !lowHit && q.lv !== 'low';
+    opts.push({ v: 38, k: 'guard' });
+    // jump over it (only low enough projectiles): air time puts the hurtbox above it when it arrives
+    const jv = c.jumpV * JUMP_VK, g = JUMP_GRAV * (c.jumpGrav || 1);
+    const yAt = jv * (T + 0.03) - 0.5 * g * (T + 0.03) * (T + 0.03);
+    if (q.vx && q.y + q.h < yAt + 0.5 && T > 0.08) opts.push({ v: 38 + (d < 4.5 ? 8 : 0) + (o.state === 'attack' ? 4 : 0), k: 'jump' });
+    for (const I of K.tools) {
+      if (I.reflect && Math.abs(q.x - f.x) < 2.6 && T >= I.reflect[0] + 0.02 && T <= I.reflect[1] - 0.05) opts.push({ v: 46, k: 'move', id: I.id });
+      if (I.nullify && T >= I.nullify[0] && T <= I.nullify[1] - 0.04) opts.push({ v: 46, k: 'move', id: I.id });
+      if (I.parry && T >= I.parry[0] + 0.02 && T <= I.parry[1] - 0.05) opts.push({ v: 42, k: 'move', id: I.id });
+      if (I.tele && o.state === 'attack' && o.move.dur - o.mt > 0.35) opts.push({ v: 46, k: 'move', id: I.id });
+    }
+    // an own projectile meets it head-on
+    for (const P of K.projs) if (P.su < T - 0.04 && !P.proj.atTarget && P.proj.vx && Math.abs((P.proj.y || 1) - q.y) < q.h + 0.4 && q.vx) opts.push({ v: 36, k: 'move', id: P.id });
+    if (!q.vx && T > 0.18) opts.push({ v: 40 + (cornered ? -15 : 0), k: 'step' });
+    if (duck) opts.push({ v: 44, k: 'duck' });
+    const pick = this.aiChoose(f, opts);
+    const guardFor = Math.min(0.8, T + 0.22);
+    switch (pick.k) {
+      case 'jump': this.jump(f, d < 4.6 ? toward : 0); return true;
+      case 'move': if (this.startMove(f, pick.id)) return true; break;
+      case 'step': this.walk(f, Math.sign(f.x - q.x) || -toward, 0.3); return true;
+      case 'duck': this.aiGuard(f, true, guardFor); return true;
+    }
+    this.aiGuard(f, q.lv === 'low', guardFor);
+    return true;
+  }
+
+  // the foe's swing is seen coming: counter, parry, beat it with invincibility or speed, step out, jump it, or guard
+  aiAnswerSwing(f, o, I, tHit, d, toward, K, M, cornered) {
+    const H = this.aiLevel(f), opts = [];
+    const canSee = tHit >= 0.02;                    // still time to move the guard to the right height
+    const crouch = canSee ? I.lv === 'low' || (!I.lv && M.low > 0.5) : (M.low > 0.5);
+    if (!I.grab) opts.push({ v: 40, k: 'guard', crouch: I.lv === 'mid' && canSee ? false : crouch });
+    // invincible, teleporting or armoured through its start-up: nothing meets it head-on
+    const slippery = I.inv > 0.05 || I.tele || (I.armor && I.armor[0] <= I.su);
+    for (const T of K.tools) {
+      if (slippery) break;
+      if (T.counter && !I.proj && tHit >= T.counter[0] + 0.02 && tHit <= T.counter[1] - 0.04) opts.push({ v: 44 + (I.dmg > 50 ? 4 : 0), k: 'move', id: T.id });
+      if (T.parry && tHit >= T.parry[0] + 0.02 && tHit <= T.parry[1] - 0.04 && !I.grab) opts.push({ v: 42, k: 'move', id: T.id });
+    }
+    for (const R2 of K.rev) if (R2.inv >= tHit + 0.04 && (R2.tele || d <= R2.reach)) opts.push({ v: 41 + (R2.tele ? 3 : 0), k: 'move', id: R2.id });
+    // beat it with something faster (it is still in its start-up)
+    if (!slippery) for (const P of K.hitters) if (!P.proj && !P.grab && P.su + 0.03 < tHit && d <= P.reach && d >= P.rmin - 0.3) { opts.push({ v: 38 + Math.min(10, P.dmg * 0.1), k: 'move', id: P.id }); break; }
+    // a slow swing at the edge of its reach: step back and let it whiff
+    if (tHit > 0.12 && d > I.reach - 0.5 && !cornered && !I.tele) opts.push({ v: 40 + (I.rec > 0.3 ? 4 : 0), k: 'back' });
+    if (tHit > 0.12 && (I.lv === 'low' || I.grab) && d < 3) opts.push({ v: 41 + (I.grab ? 10 : 0), k: 'jump' });
+    if (I.grab && tHit > 0.05 && !cornered) opts.push({ v: 44, k: 'back' });
+    const pick = this.aiChoose(f, opts);
+    if (!pick) return false;
+    switch (pick.k) {
+      case 'guard': this.aiGuard(f, pick.crouch, Math.max(0.2, I.act - o.mt + 0.18)); return true;
+      case 'move': if (this.startMove(f, pick.id)) return true; this.aiGuard(f, crouch, 0.3); return true;
+      case 'back': this.dash(f, -toward, 0.26); return true;
+      case 'jump': this.jump(f, toward); return true;
+    }
+    return false;
+  }
+
+  // the foe is down: walk to the right spot and time a swing for the moment it can be hit again - or bait a reversal
+  aiOki(f, o, d, toward, K, M) {
+    const ai = f.ai, now = this.time, OK = aiKnow(o.key);
+    const tV = (o.state === 'down' ? 0.5 - o.st + 0.46 : 0.46 - o.st);
+    if (!ai.okiNew) {
+      ai.okiNew = true;
+      const opts = [];
+      const W = M.wake;
+      for (const I of K.hitters) {
+        if (I.proj || I.su > 0.3 || I.tele) continue;
+        const mix = I.lv === 'mid' ? M.crouch : I.lv === 'low' ? 1 - M.crouch : 0.4;
+        // a foe that guards on waking punishes an unsafe meaty: weigh what it would cost
+        const risk = (W.wait + 0.2) * clamp((-I.adv - 0.06) / 0.25, 0, 1.6) * OK.punishDmg * 0.09;
+        opts.push({ v: 34 + I.dmg * 0.08 + W.wait * 10 * mix + W.atk * 8 - W.jump * 6 + (I.grab ? W.wait * 14 : 0) - risk, k: 'meaty', I });
+      }
+      opts.push({ v: 30 + W.atk * 22, k: 'bait' });
+      if (K.projs.length && (AI_STYLE[f.key] || {}).range > 3) opts.push({ v: 40, k: 'zone' });
+      ai.oki = this.aiChoose(f, opts);
+    }
+    const P = ai.oki;
+    if (!P) return false;
+    if (P.k === 'meaty') {
+      const I = P.I, want = clamp((I.rmin + I.reach) * 0.5, 0.9, I.reach - 0.25);
+      if (tV - I.su <= 0.03 && tV - I.su > -0.08) {
+        if (d <= I.reach - 0.05) { ai.oki = null; ai.neutralSwing = -1; this.startMove(f, I.id); return true; }
+      }
+      if (Math.abs(d - want) > 0.25 && tV > I.su + 0.12) { this.walk(f, d > want ? toward : -toward, 0.08); return true; }
+      if (f.state === 'walk') this.idle(f, 0.02);
+      return true;
+    }
+    if (P.k === 'bait') {
+      if (tV > 0.2) { if (d < 1.6) this.walk(f, -toward, 0.08); else if (d > 2.4) this.walk(f, toward, 0.08); return true; }
+      this.aiGuard(f, M.low > 0.5, 0.35); ai.oki = null; return true;
+    }
+    if (P.k === 'zone') {
+      if (d < 3.5 && tV > 0.25 && Math.abs(f.x) < STAGE - 1) { this.walk(f, -toward, 0.08); return true; }
+      if (tV < 0.3) { const Q = K.projs[0]; ai.oki = null; this.startMove(f, Q.id); return true; }
+      return true;
+    }
+    return false;
+  }
+
+  // getting up: decide from what the foe usually does to a rising CPU
+  aiPlanWake(f, o, d, K) {
+    const ai = f.ai, M = this.aiMind(f);
+    if (ai.wakeFor === f.serial + ':' + Math.round(this.time - f.st)) return;
+    ai.wakeFor = f.serial + ':' + Math.round(this.time - f.st);
+    const O = M.oki, opts = [{ v: 40 + O.atk * 6, k: 'guard' }];
+    if (d < 2.6) {
+      for (const R2 of K.rev) opts.push({ v: 30 + O.atk * 22 - O.wait * 16, k: 'rev', id: R2.id });
+      const SR = AI_SUPER[f.key];
+      if (f.meter >= 100 && SR && d < SR[0]) opts.push({ v: 30 + O.atk * 26 - O.wait * 20, k: 'super' });
+      opts.push({ v: 26 + O.grab * 30 + (Math.abs(f.x) > STAGE - 1.2 ? -20 : 0), k: 'back' });
+      opts.push({ v: 22 + O.grab * 30, k: 'jump' });
+      const fast = K.hitters.find((I) => !I.proj && I.su <= 0.08);
+      if (fast) opts.push({ v: 26 + O.grab * 24 + O.wait * 6 - O.atk * 10, k: 'move', id: fast.id });
+    }
+    ai.wakePlan = this.aiChoose(f, opts);
+    ai.okiWatch = { t: this.time + Math.max(0, 0.38 - f.st), pick: null };
+  }
+  aiDoWake(f, o, d, toward, K, w) {
+    const M = this.aiMind(f);
+    switch (w.k) {
+      case 'guard': this.aiGuard(f, M.low > 0.5, 0.35); return true;
+      case 'rev': case 'move': return this.startMove(f, w.id);
+      case 'super': return this.startMove(f, f.c.super);
+      case 'back': this.dash(f, -toward, 0.26); return true;
+      case 'jump': this.jump(f, -toward); return true;
+    }
+    return false;
+  }
+
+  // ---- neutral: spacing, pokes, approaches, zoning, baits - each scored against the foe model
+  aiNeutral(f, o, s, d, toward, K, OK, H, M) {
+    const ai = f.ai, c = f.c, now = this.time;
+    const st = AI_STYLE[f.key] || { range: 1.8, aggr: 1 };
+    const aggr = st.aggr * M.trait.aggr;
+    const b = d < 1.7 ? 0 : d < 3.2 ? 1 : 2;
+    const theirReach = OK.pokeReach + 0.25;
+    const inTheirs = d < theirReach + 0.3;
+    const danger = inTheirs ? M.atk[b] : M.atk[b] * 0.3;
+    const cornered = Math.abs(f.x) > STAGE - 1.0 && Math.sign(f.x) === -toward;
+    // how close the wall behind is (backing into it closes off the retreat)
+    const wall = Math.sign(f.x) === -toward ? clamp((Math.abs(f.x) - (STAGE - 3.2)) / 2.4, 0, 1) : 0;
+    const lead = f.hp / c.hp - o.hp / o.c.hp;
+    const late = this.timer < 25 && !this.practice;
+    const cautious = (late && lead > 0.05 ? 8 : 0) + (lead > 0.3 ? 3 : 0);
+    const pushy = (late && lead < -0.05 ? 8 : 0) + (lead < -0.3 ? 3 : 0);
+    const coming = s.state === 'walk' && Math.sign(s.vx) === -toward || s.state === 'dash' && Math.sign(s.vx) === -toward;
+    const myProj = this.projs.some((q) => q.owner === f.side && !q.dead);
+    const theirProjNear = this.projs.some((q) => q.owner !== f.side && !q.dead && Math.abs(q.x - f.x) < 5);
+    const opts = [];
+
+    // pokes and specials that reach from here (not into a foe still down or rising: it cannot be hit yet)
+    const rising = s.state === 'down' || s.state === 'getup' || o.state === 'down' || o.state === 'getup' || o.invuln > 0.05;
+    for (const I of K.hitters) {
+      if (I.proj || I.counter || I.parry || rising) continue;
+      const reachNow = I.reach + (coming ? 0.35 : 0);
+      if (d > reachNow || d < I.rmin - 0.25) continue;
+      if (I.su > 0.32 && !I.tele) continue;
+      const pG = M.guard * (s.guard ? 1.25 : 1);
+      const hitV = (1 - Math.min(0.95, pG)) * (I.routeDmg * 0.22 + (I.kd ? 5 : 0));
+      const mix = I.lv === 'mid' ? M.crouch : I.lv === 'low' ? 1 - M.crouch : 0.5;
+      // guarded, an unsafe swing hands the foe its punish; slow start-ups lose to a foe who is pressing (or armoured)
+      const risk = Math.min(0.95, pG) * clamp((-I.adv - 0.06) / 0.25, 0, 1.6) * OK.punishDmg * 0.1;
+      const trade = M.atk[b] * (clamp((I.su - 0.06) / 0.15, 0, 1.5) * 14 + (OK.armor ? 12 : 0));
+      const grabV = I.grab ? (s.guard || s.state === 'block' || s.state === 'crouch' ? 18 : 2) * M.guard - 4 : 0;
+      let v = 24 + hitV + mix * 6 - risk - trade + grabV + (coming ? 6 : 0) - (d > I.reach - 0.2 ? 3 : 0);
+      if (I.tele) v -= 6;
+      if (I.reach > 3 && d > 2.2) v -= 6;      // a long rush from afar is better saved for a whiff
+      if (I.su > 0.2) v -= (I.su - 0.2) * 40;
+      opts.push({ v: v * aggr + pushy - cautious, k: 'move', id: I.id, poke: true });
+    }
+    // projectiles
+    if (!myProj) for (const P of K.projs) {
+      if (d < 2.4 && !P.proj.atTarget) continue;
+      if (P.proj.atTarget && d > P.proj.atTarget + 0.5) continue;
+      const jumpRisk = M.projJump * (d < 4.6 ? 22 : 6);
+      opts.push({ v: 26 + (d > 4 ? 8 : 0) + (st.range > 3 ? 10 : 0) - jumpRisk + Math.min(6, P.dmg * 0.06) + (s.state === 'crouch' && P.lv === 'mid' ? 4 : 0), k: 'move', id: P.id, proj: true });
+    }
+    // movement
+    const want = st.range;
+    opts.push({ v: 30 + 10 * clamp((d - want) / 1.5, -1.5, 1.5) - danger * 16 * (inTheirs ? 1 : 0.4) + (aggr - 1) * 10 + pushy - cautious, k: 'fwd' });
+    opts.push({ v: 26 + 9 * clamp((want - d) / 1.2, -1.5, 1.2) + danger * 12 - wall * 34 + cautious, k: 'back' });
+    // pinned near the wall: get out over the top
+    if (wall > 0.5 && d < 2.8 && s.state !== 'jump') opts.push({ v: 24 + wall * 16 + danger * 8, k: 'jump' });
+    if (d > want + 1.6) opts.push({ v: 30 + 6 * clamp((d - want - 1.6) / 2, 0, 1.5) - (theirProjNear ? 10 : 0) + (aggr - 1) * 10 + pushy, k: 'dash' });
+    if (inTheirs) opts.push({ v: 27 + danger * 26 + cautious + (coming ? 6 : 0), k: 'guard' });
+    opts.push({ v: 25 + (d > theirReach && d < theirReach + 0.9 ? M.atk[b] * 14 : 0) + cautious * 0.5 - pushy, k: 'wait' });
+    if (d > 1.9 && d < 3.7) opts.push({ v: 22 + (1 - M.aa) * 16 - (st.range > 3 ? 8 : 0) + (s.state === 'crouch' ? 4 : 0) + pushy * 0.5, k: 'jump' });
+    if (d < 1.6 && danger > 0.25 && !cornered) opts.push({ v: 22 + danger * 18, k: 'backdash' });
+    // the gods' own tools
+    for (const T of K.tools) {
+      if (T.meditate && d > 4.6 && f.meter < 100 && !theirProjNear && s.state !== 'dash') opts.push({ v: 34 + (d - 4.6) * 5, k: 'move', id: T.id });
+      if (T.oracle && f.oracleT <= 0 && d < 3.6) opts.push({ v: 24 + danger * 18, k: 'move', id: T.id });
+      if (T.counter && inTheirs && d < 2.2) opts.push({ v: 18 + M.atk[b] * 26, k: 'move', id: T.id });
+      if (T.parry && inTheirs) opts.push({ v: 18 + M.atk[b] * 24, k: 'move', id: T.id });
+      if (T.escape && cornered && danger > 0.2) opts.push({ v: 26 + danger * 14, k: 'move', id: T.id });
+    }
+    const pick = this.aiChoose(f, opts);
+    if (!pick) { this.idle(f, H.gap); return; }
+    const jitter = () => 0.6 + R() * 0.8;
+    switch (pick.k) {
+      case 'move':
+        if (this.startMove(f, pick.id)) {
+          if (pick.poke) { ai.neutralSwing = f.serial; f.plan = this.aiPlanAfter(f, o, pick.id); }
+          if (pick.proj) ai.projWatch = this.time;
+          ai.t = H.gap * 0.5;
+        } else this.idle(f, H.gap);
+        return;
+      case 'fwd': this.walk(f, toward, 0.16 * jitter() * M.trait.patience + 0.05); return;
+      case 'back': this.walk(f, -toward, 0.18 * jitter() + 0.05); ai.backGuard = true; f.guarding = true; f.crouchG = false; return;
+      case 'dash': this.dash(f, toward, 0.2 + 0.12 * R()); return;
+      case 'backdash': this.dash(f, -toward, 0.26); return;
+      case 'guard': this.aiGuard(f, M.low > 0.5, 0.18 * jitter() + 0.08); return;
+      case 'wait': this.idle(f, H.gap * jitter()); return;
+      case 'jump': this.jump(f, toward); ai.jumpIn = { t: this.time, hit: false }; return;
+    }
+  }
+
+  // a neutral swing gets a short follow-up plan that only continues if it hits (hit-confirm)
+  aiPlanAfter(f, o, id) {
+    const L = AI_LEVELS[f.level] || AI_LEVELS[AI_LEVEL_DEFAULT];
+    const routes = f.c.routes.filter((r) => r[0] === id && r.length > 1);
+    if (!routes.length) return [];
+    let pool = routes.filter((r) => r[r.length - 1] !== 'SUPER');
+    if (f.meter >= 100 && R() < L.superRoute) { const sp = routes.filter((r) => r[r.length - 1] === 'SUPER'); if (sp.length) pool = sp; }
+    if (!pool.length) pool = routes;
+    const r = pool[Math.floor(R() * pool.length)].slice(1);
+    return r.slice(0, Math.max(0, L.maxCombo - 1));
   }
 
   control(f, o, dt) {
@@ -3575,25 +3887,12 @@ class Sim {
   idle(f, t) { this.setState(f, 'idle'); f.ai.t = t; }
   dash(f, dir, t) { f.state = 'dash'; f.st = 0; f.dashDir = dir; f.dashT = t; f.ai.t = t; this.emit('dash', { side: f.side, dir }); }
 
-  startRoute(f, o, close) {
-    const routes = f.c.routes;
-    let pool = routes;
-    const L = f.ctl === 'ai' ? (AI_LEVELS[f.level] || AI_LEVELS[AI_LEVEL_DEFAULT]) : null;
-    if (f.meter >= 100 && R() < (L ? L.superRoute : 0.6)) pool = routes.filter((r) => r[r.length - 1] === 'SUPER');
-    else pool = routes.filter((r) => r[r.length - 1] !== 'SUPER');
-    if (close && f.key === 'poseidon') pool = pool.filter((r) => r[0] === 'p_spin' || r[0] === 'p_slash' || r[0] === 'p_thrust');
-    if (!pool.length) pool = routes.filter((r) => r[r.length - 1] !== 'SUPER');
-    let route = pool[Math.floor(R() * pool.length)].slice();
-    if (L && route.length > L.maxCombo) route = route.slice(0, L.maxCombo);
-    const first = route.shift();
-    f.plan = route;
-    this.startMove(f, first);
-  }
-
   nextInPlan(f, o) {
     if (!f.plan.length) return false;
     const drop = f.ctl === 'ai' ? (AI_LEVELS[f.level] || AI_LEVELS[AI_LEVEL_DEFAULT]).drop : 0.05;
     if (R() < drop) { f.plan = []; return false; } // human-like drop
+    // hit-confirm: a CPU that sees its chain guarded stops it there rather than finish an unsafe string
+    if (f.ctl === 'ai' && (o.state === 'blockstun' || o.state === 'block') && R() < this.aiLevel(f).confirm) { f.plan = []; return false; }
     const id = f.plan.shift();
     if (id === 'SUPER') {
       if (f.meter >= 100) { this.startMove(f, f.c.super); return true; }
