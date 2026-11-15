@@ -8857,6 +8857,26 @@ function glowPuff(x, y, z, color, size, life) {
   s.renderOrder = 8;
   timed.add(s, life, (o, k) => { const sc = size * (0.6 + k * 0.8); o.scale.set(sc, sc, sc); o.material.opacity = (1 - k) * (1 - k); });
 }
+// each god's backstep leaves its own trace where it pushed off
+function backstepFx(f) {
+  const x = f.x, d = -f.facing;
+  switch (f.key) {
+    case 'zeus': addP.burst(10, x, 1.2, 0.2, 4, { life: [0.1, 0.25], size: [0.03, 0.08], color: COL.zeus, drag: 4 }); break;
+    case 'poseidon': normP.burst(12, x, 0.15, 0.1, 4, { life: [0.3, 0.6], size: [0.05, 0.11], color: [0.85, 1, 0.95], alpha: 0.75, drag: 2.5, grav: 6, up: 2.5, spread: [1, 0.3, 0.6] }); break;
+    case 'anubis': normP.burst(10, x, 0.08, 0, 3, { life: [0.4, 0.8], size: [0.15, 0.3], size1: 2, color: [0.85, 0.7, 0.4], alpha: 0.4, drag: 3, up: 0.4, spread: [1, 0.2, 0.6] }); break;
+    case 'thor': addP.burst(12, x, 0.2, 0.1, 4, { life: [0.1, 0.25], size: [0.03, 0.07], color: COL.thor, drag: 4, spread: [1, 0.4, 0.6] }); break;
+    case 'susanoo': addP.burst(10, x, 1.0, 0.2, 6, { life: [0.15, 0.3], size: [0.04, 0.09], color: COL.storm, drag: 3, dir: [d, 0.1, 0], cone: 0.3 }); break;
+    case 'heracles': dust(x, 8, 0.9); break;
+    case 'hades':
+      normP.burst(14, x, 0.9, 0, 1.5, { life: [0.5, 0.9], size: [0.2, 0.4], size1: 1.8, color: [0.1, 0.04, 0.08], alpha: 0.55, drag: 2, up: 0.8, spread: [0.6, 1, 0.5] });
+      addP.burst(8, x, 0.9, 0.1, 2, { life: [0.3, 0.6], size: [0.04, 0.08], color: COL.hell, drag: 2, up: 1 }); break;
+    case 'shiva': addP.burst(12, x, 1.1, 0.1, 3, { life: [0.3, 0.6], size: [0.04, 0.09], color: COL.cosmic, drag: 3, up: 0.5 }); break;
+    case 'aphrodite': addP.burst(12, x, 1.0, 0.1, 2.5, { life: [0.4, 0.8], size: [0.05, 0.1], color: COL.love, drag: 2, grav: 1.5, up: 0.5 }); break;
+    case 'shaka': glowPuff(x, 1.0, 0.1, 0xffd890, 1.6, 0.4); addP.burst(10, x, 0.3, 0.1, 1.5, { life: [0.4, 0.8], size: [0.04, 0.08], color: COL.dharma, drag: 2, up: 1.2 }); break;
+    case 'apollo': addP.burst(10, x, 1.1, 0.1, 3, { life: [0.2, 0.45], size: [0.04, 0.09], color: COL.sun, drag: 3 }); break;
+    case 'odin': addP.burst(10, x, 0.6, 0.1, 2.5, { life: [0.3, 0.6], size: [0.04, 0.08], color: COL.odin, drag: 3, up: 1 }); break;
+  }
+}
 function dust(x, n = 14, power = 1) {
   normP.burst(n, x, 0.05, 0, 2.5 * power, { life: [0.4, 0.9], size: [0.25, 0.5], size1: 2.2, color: [0.75, 0.65, 0.58], alpha: 0.35, drag: 3, up: 0.6, spread: [1, 0.2, 0.6] });
 }
@@ -10784,6 +10804,190 @@ INTRO.odin = {
   fx: [[0.05, (f) => { for (let i = 0; i < 2; i++) odinRaven({ i: i + 1, tx: f.x + (i ? 0.6 : -0.6), ty: 2.6 }); addP.burst(40, f.x, 1.2, 0, 3, { life: [0.6, 1.2], size: [0.06, 0.14], color: COL.odin, up: 2, drag: 1 }); }],
     [1.15, (f) => { runeRing(f.x, 0.05, 0, 4.5, 1.4); const b = lightBeam(0x9fd4ff, 0.9, 1.4, 9, 0.6); b.position.set(f.x, 0, 0); b.material.userData.own = true; const op = b.material.uniforms.uOp; timed.add(b, 1.0, (o, k) => { o.scale.set(1, Math.min(1, k * 4), 1); op.value = 0.6 * (1 - k); }); bolts.spawn(new V3(f.x + 1, 14, -1), new V3(f.x, 0.1, 0), { r: 0.06, life: 0.4, segs: 20, branches: 2, color: new THREE.Color(1.4, 1.9, 2.8) }); dust(f.x, 30, 2); shake = Math.max(shake, 0.3); sfx.boom(0.9); sfx.ring([330, 495, 660], 1.0, 0.07); }]],
 };
+// ============================================================
+//  LOCOMOTION : per-god walk and run cycles with planted feet, and per-god backsteps
+// ============================================================
+// Each foot follows a step path around its own place in the god's fighting stance. While planted it slides back
+// relative to the hips exactly as far as the body moves, so it stays put on the ground; in the air it swings forward
+// on an arc with a toe-off and a heel strike. A two-joint leg solve turns each foot target into hip, knee and ankle
+// angles, so every god walks in its own stance, and the ground contact in FighterView turns the leg geometry into a
+// natural rise and fall of the hips. Per-god settings give each one its own stride, lift, bounce, sway and arm work.
+const sm01 = (k) => (k <= 0 ? 0 : k >= 1 ? 1 : k * k * (3 - 2 * k));
+// a leg's ankle relative to its hip joint, in the hips frame's up/forward plane, from hip pitch h, hip roll a, knee k
+function legFK(S, h, a, k) {
+  const ca = Math.cos(a), y0 = -ca * (S.thigh + S.shin * Math.cos(k)), z0 = -S.shin * Math.sin(k);
+  const ch = Math.cos(h), sh = Math.sin(h);
+  return [y0 * ch - z0 * sh, y0 * sh + z0 * ch];
+}
+// the inverse: hip pitch and knee bend that put the ankle at (Y, Z); out of reach, the leg straightens toward it
+function legIK(S, a, Y, Z) {
+  const T = S.thigh, L = S.shin, c = Math.cos(a);
+  const reach = c * (T + L) * 0.998;
+  let d2 = Y * Y + Z * Z;
+  if (d2 > reach * reach) d2 = reach * reach;
+  // c²(T + L·u)² + L²(1 − u²) = d², u = cos(knee): the root that meets the plain law of cosines when c = 1
+  const A = L * L * (c * c - 1), B = 2 * c * c * T * L, C = c * c * T * T + L * L - d2;
+  const u = clamp(-2 * C / (B + Math.sqrt(Math.max(0, B * B - 4 * A * C))), -1, 1);
+  const k = Math.acos(u);
+  const h = Math.atan2(Z, Y) - Math.atan2(-L * Math.sin(k), -c * (T + L * u));
+  return [Math.atan2(Math.sin(h), Math.cos(h)), k];
+}
+// cyc / cycB: body travel per full cycle (two steps) walking forward / back; duty: share of a cycle a foot is planted;
+// lift: swing height; bob: rise at mid-stance; roll / yaw: pelvis sway and twist (the chest counters the twist);
+// lean: torso pitch into the walk; gather: how far the feet draw in under the hips from the stance split; toe: toe-off
+// and heel-strike ankle play; sink: knee room taken by lowering the hips; cross: feet drawn toward the midline;
+// armL / armR: arm swing (a weapon arm swings little); run*: the same for the forward dash; fx: the god's own flourish
+const GAIT_BASE = { cyc: 1.3, cycB: 1.1, duty: 0.6, lift: 0.12, bob: 0.025, roll: 0.03, yaw: 0.08, lean: 0.05, gather: 0.35, toe: 0.3, sink: 0.03, cross: 0, armL: 0.2, armR: 0.2, runCyc: 2.6, runDuty: 0.36, runLift: 0.26, runGather: 0.75, runArm: 0.55 };
+const GAIT = {
+  // a mountain of muscle: heavy, deliberate stomps, shoulders rolling over every step, fists pumping in the guard
+  zeus: { cyc: 1.1, cycB: 0.9, duty: 0.62, lift: 0.16, bob: 0.04, roll: 0.05, yaw: 0.15, lean: 0.06, gather: 0.4, toe: 0.22, sink: 0.04, armL: 0.16, armR: 0.16, runCyc: 2.4, runArm: 0.45,
+    fx: (o, P) => { o.chest[0] += 0.05 * Math.abs(P.rs) * P.w; o.lEl[0] -= 0.12 * Math.max(0, -P.nr) * P.w; o.rEl[0] -= 0.12 * Math.max(0, -P.nl) * P.w; o.neck[0] -= 0.04 * Math.abs(P.rs) * P.w; } },
+  // light and springy, up on the balls of the feet, the trident held steady while the free arm swings
+  poseidon: { cyc: 1.45, cycB: 1.25, duty: 0.54, lift: 0.15, bob: 0.05, roll: 0.03, yaw: 0.1, lean: 0.05, gather: 0.35, toe: 0.42, sink: 0.03, armL: 0.3, armR: 0.07, runCyc: 2.9,
+    fx: (o, P) => { o.rWr[2] += 0.08 * P.rs * P.w; o.head[0] -= 0.03 * Math.abs(P.rs) * P.w; } },
+  // a jackal on the prowl: low, quick, nearly level steps, head held still on the prey, blades turning in the hands
+  anubis: { cyc: 1.35, cycB: 1.2, duty: 0.55, lift: 0.12, bob: 0.014, roll: 0.02, yaw: 0.06, lean: 0.1, gather: 0.45, toe: 0.35, sink: 0.0, armL: 0.1, armR: 0.08, runCyc: 3.0, runArm: 0.35,
+    fx: (o, P) => { o.lWr[2] += 0.18 * P.rs * P.w; o.rWr[2] -= 0.18 * P.rs * P.w; o.neck[1] -= 0.05 * (P.nl - P.nr) * P.w; } },
+  // an armoured march: heavy steps, the hammer arm swinging its weight in time, the free fist pumping
+  thor: { cyc: 1.15, cycB: 0.95, duty: 0.62, lift: 0.15, bob: 0.03, roll: 0.045, yaw: 0.14, lean: 0.05, gather: 0.35, toe: 0.25, sink: 0.04, armL: 0.26, armR: 0.1, runCyc: 2.4, runArm: 0.4,
+    fx: (o, P) => { o.rSh[0] += 0.07 * P.rs * P.w; o.rWr[0] += 0.08 * P.rs * P.w; } },
+  // a swordsman stalking in: deliberate, level steps with the blade kept on the centre line, never wavering
+  susanoo: { cyc: 1.35, cycB: 1.15, duty: 0.58, lift: 0.12, bob: 0.018, roll: 0.02, yaw: 0.05, lean: 0.04, gather: 0.35, toe: 0.3, sink: 0.04, armL: 0.03, armR: 0.03, runCyc: 2.8, runArm: 0.12,
+    fx: (o, P) => { o.chest[1] -= 0.04 * (P.nl - P.nr) * P.w; } },
+  // a lumbering giant: wide, rolling, ground-shaking steps, the club riding on the shoulder, the free arm swinging big
+  heracles: { cyc: 1.1, cycB: 0.9, duty: 0.64, lift: 0.14, bob: 0.045, roll: 0.085, yaw: 0.16, lean: 0.08, gather: 0.35, toe: 0.2, sink: 0.05, armL: 0.24, armR: 0.08, runCyc: 2.3, runArm: 0.4,
+    fx: (o, P) => { o.chest[2] -= 0.05 * P.rs * P.w; o.spine[1] += 0.04 * P.rs * P.w; o.lEl[0] -= 0.1 * Math.max(0, -P.nr) * P.w; } },
+  // the underworld's king: long, smooth, unhurried strides, upright and level, the open hand drifting at his side
+  hades: { cyc: 1.25, cycB: 1.05, duty: 0.64, lift: 0.08, bob: 0.01, roll: 0.02, yaw: 0.05, lean: -0.02, gather: 0.25, toe: 0.16, sink: 0.07, armL: 0.1, armR: 0.04, runCyc: 2.8, runLift: 0.2, runArm: 0.25,
+    fx: (o, P) => { o.lWr[0] += 0.12 * P.rs * P.w; o.lSh[2] += 0.05 * Math.abs(P.rs) * P.w; o.head[0] -= 0.03 * P.w; } },
+  // dance steps: turned-out knees lifted high in rhythm, hips swaying, the neck sliding side to side, wrists rolling
+  shiva: { cyc: 1.3, cycB: 1.15, duty: 0.55, lift: 0.18, bob: 0.04, roll: 0.07, yaw: 0.1, lean: 0, gather: 0.35, toe: 0.46, sink: 0.04, armL: 0.14, armR: 0.14, runCyc: 2.7,
+    fx: (o, P) => { const s2 = Math.sin(P.ph * Math.PI * 4); o.lHip[2] += 0.08 * (1 - P.nl * P.nl) * P.w; o.rHip[2] += 0.08 * (1 - P.nr * P.nr) * P.w; o.neck[2] += 0.07 * s2 * P.w; o.head[2] -= 0.04 * s2 * P.w; o.lWr[2] += 0.35 * P.rs * P.w; o.rWr[2] -= 0.35 * P.rs * P.w; o.lWr[0] += 0.15 * s2 * P.w; } },
+  // a goddess on the catwalk: steps crossing onto the midline, hips swaying wide, up on the toes, hands flowing
+  aphrodite: { cyc: 1.2, cycB: 1.15, duty: 0.6, lift: 0.1, bob: 0.02, roll: 0.11, yaw: 0.12, lean: -0.03, gather: 0.3, toe: 0.45, sink: 0.05, cross: 0.1, armL: 0.18, armR: 0.25, runCyc: 2.6,
+    fx: (o, P) => { o.rWr[2] += 0.25 * P.rs * P.w; o.lWr[2] -= 0.15 * P.rs * P.w; o.rEl[0] -= 0.12 * Math.max(0, P.rs) * P.w; o.neck[2] += 0.05 * P.rs * P.w; o.head[2] += 0.04 * P.rs * P.w; } },
+  // the awakened one: calm, measured, soundless steps; the hands never leave their mudra and the head never bobs
+  shaka: { cyc: 1.15, cycB: 1.0, duty: 0.66, lift: 0.08, bob: 0.01, roll: 0.015, yaw: 0.03, lean: 0, gather: 0.3, toe: 0.15, sink: 0.05, armL: 0.02, armR: 0.02, runCyc: 2.5, runLift: 0.18, runArm: 0.08,
+    fx: (o, P) => { o.neck[0] -= 0.02 * Math.abs(P.rs) * P.w; } },
+  // a light-footed archer: springy, athletic steps, the bow arm held steady forward, the free arm swinging easily
+  apollo: { cyc: 1.3, cycB: 1.3, duty: 0.56, lift: 0.14, bob: 0.035, roll: 0.04, yaw: 0.1, lean: 0.03, gather: 0.3, toe: 0.4, sink: 0.05, armL: 0.08, armR: 0.3, runCyc: 2.9,
+    fx: (o, P) => { o.head[0] -= 0.03 * Math.abs(P.rs) * P.w; } },
+  // the all-father: stately, measured strides, the spear arm planting its rhythm like a staff, the cape arm swinging
+  odin: { cyc: 1.35, cycB: 1.15, duty: 0.6, lift: 0.1, bob: 0.02, roll: 0.03, yaw: 0.06, lean: 0.02, gather: 0.2, toe: 0.2, sink: 0.08, armL: 0.2, armR: 0.06, runCyc: 2.7, runArm: 0.3,
+    fx: (o, P) => { o.rSh[0] -= 0.08 * Math.max(0, P.rs) * P.w; o.rEl[0] += 0.08 * Math.max(0, P.rs) * P.w; } },
+};
+for (const k in GAIT) GAIT[k] = Object.assign({}, GAIT_BASE, GAIT[k]);
+const gaitP = { nl: 0, nr: 0, rs: 0, w: 0, dir: 1, ph: 0 };
+// one frame of a god's walk (or, with run, its forward dash) on top of base, the stance (or run) pose
+function gaitPose(v, base, G, out, run) {
+  const f = v.f, S = v.S, w = v.walkW, ph = v.gPh, dir = v.gDir;
+  copyPose(base, out);
+  // the pelvis is turned in a side-on stance: a step along the walking line is longer along the hips' own forward axis
+  const cosT = Math.max(0.6, Math.abs(Math.cos(base.ry + base.hips[1] + (f.facing > 0 ? -0.12 : 0.12))));
+  const cyc = run ? G.runCyc : dir > 0 ? G.cyc : G.cycB, beta = run ? G.runDuty : G.duty;
+  const half = (beta * cyc) / 2 / cosT, gather = run ? G.runGather : G.gather, lift = run ? G.runLift : G.lift;
+  const P = gaitP;
+  for (let side = 0; side < 2; side++) {
+    const s = side ? 'r' : 'l', H = out[s + 'Hip'], K = out[s + 'Kn'], An = out[s + 'An'];
+    const a0 = H[2], a = a0 - G.cross * w;
+    const [Y0, Z0] = legFK(S, H[0], a0, K[0]);
+    const footAng0 = H[0] + K[0] + An[0];
+    let u = (ph + (side ? 0.5 : 0)) % 1; if (u < 0) u += 1;
+    let n, y = 0, ang = 0;
+    if (u < beta) { n = 1 - (2 * u) / beta; y = -G.bob * (1 - n * n) * (run ? 0.3 : 1); }   // planted: slides back under the moving body
+    else {                                                                                   // swing: forward on an arc
+      const q = (u - beta) / (1 - beta);
+      n = -1 + 2 * sm01(q);
+      y = lift * Math.pow(Math.sin(Math.PI * q), 0.85);
+      // forward: toe-off then heel strike; backing up: the foot leaves and lands on its toes
+      ang = dir > 0 ? G.toe * (q < 0.5 ? Math.sin(Math.PI * q * 2) : -0.45 * Math.sin(Math.PI * (q - 0.5) * 2)) : G.toe * 0.7 * Math.sin(Math.PI * q);
+    }
+    // a fighting stance often rides the rear heel up: walking sets the foot flat, lifting the heel only as it trails
+    const footAng = footAng0 * (1 - 0.75 * w) + w * (run ? 0.45 : 0.3) * Math.max(0, -n);
+    const Yt = Y0 + w * (y + G.sink), Zt = Z0 + w * (half * n - gather * Z0);
+    const [h, k] = legIK(S, a, Yt, Zt);
+    H[0] = h; H[2] = a; K[0] = k; An[0] = footAng - h - k + w * ang;
+    if (side) { P.nr = n; } else { P.nl = n; P.rs = Math.cos(2 * Math.PI * (u - beta / 2)); }
+  }
+  P.w = w; P.dir = dir; P.ph = ph;
+  // arms swing against the legs; the pelvis sways over the planted foot and twists toward the leading leg
+  const arm = run ? G.runArm : 1;
+  out.lSh[0] += (run ? arm : G.armL) * P.nl * w; out.rSh[0] += (run ? arm : G.armR) * P.nr * w;
+  out.lEl[0] += (run ? arm : G.armL) * 0.5 * Math.min(0, P.nl) * w; out.rEl[0] += (run ? arm : G.armR) * 0.5 * Math.min(0, P.nr) * w;
+  const tw = G.yaw * (P.nl - P.nr) * 0.5 * w * (run ? 1.3 : 1);
+  out.hips[1] -= tw; out.spine[1] += tw * 0.9; out.chest[1] += tw; out.neck[1] -= tw * 0.9;
+  const rl = G.roll * P.rs * w;
+  out.hips[2] += rl; out.spine[2] -= rl * 0.7; out.chest[2] -= rl * 0.2; out.neck[2] -= rl * 0.1;
+  out.lHip[2] -= rl; out.rHip[2] += rl;   // the legs stay upright under the tilting pelvis
+  out.spine[0] += G.lean * dir * w * (run ? 1.6 : 1);
+  if (G.fx) G.fx(out, P);
+  return out;
+}
+
+// ---- backsteps: every god leaves in its own way (pose deltas on the stance; u runs 0..1 over the backstep) ----
+// A: the push-off, B: the airborne middle, C: reaching for the ground; land: how deep the landing sinks; spin: turns
+// of the body (toward the camera); flip: a backward arch at the top
+const BS_GENERIC = {
+  A: { spine: [-0.08, 0, 0], lHip: [0.25, 0, 0], lKn: [-0.3, 0, 0], lAn: [0.05, 0, 0], rHip: [0.15, 0, 0], rKn: [0.1, 0, 0] },
+  B: { air: true, spine: [-0.1, 0, 0], lHip: [-0.35, 0, 0], lKn: [0.55, 0, 0], lAn: [-0.2, 0, 0], rHip: [0.05, 0, 0], rKn: [0.6, 0, 0], rAn: [-0.25, 0, 0] },
+  C: { air: true, spine: [0.04, 0, 0], lHip: [-0.1, 0, 0], lKn: [0.3, 0, 0], rHip: [0.2, 0, 0], rKn: [0.15, 0, 0], rAn: [-0.15, 0, 0] },
+};
+const BACKSTEP = {
+  // a heavy hop that keeps the fists up at the chin, then a hard, low landing
+  zeus: { A: { y: -0.04 }, B: { lSh: [-0.15, 0, 0], rSh: [-0.12, 0, 0], lEl: [-0.15, 0, 0], rEl: [-0.15, 0, 0], neck: [0.06, 0, 0] }, C: { spine: [0.1, 0, 0] }, land: 1.3 },
+  // a back-spring: arched back and both knees tucked, the trident swept behind and the free arm thrown forward
+  poseidon: { A: { spine: [-0.1, 0, 0], rSh: [0.2, 0, 0] }, B: { y: 0.1, spine: [-0.22, 0, 0], chest: [-0.12, 0, 0], head: [-0.15, 0, 0], lHip: [-0.4, 0, 0], lKn: [0.5, 0, 0], rHip: [-0.4, 0, 0], rKn: [0.5, 0, 0], rSh: [0.55, 0, 0.1], lSh: [-0.45, 0, 0.1] }, C: { lHip: [-0.1, 0, 0], lKn: [0.1, 0, 0], rSh: [0.2, 0, 0] }, flip: -0.55, land: 0.9 },
+  // a feral hop that stays low and hunched, blades flung wide like a jackal's forelegs
+  anubis: { A: { y: -0.06, spine: [0.22, 0, 0], head: [-0.15, 0, 0] }, B: { y: -0.08, spine: [0.38, 0, 0], chest: [0.1, 0, 0], head: [-0.3, 0, 0], lHip: [-0.1, 0, 0], lKn: [0.15, 0, 0], rHip: [-0.2, 0, 0], rKn: [0.3, 0, 0], lSh: [0, 0, 0.5], rSh: [0, 0, 0.5], lEl: [0.45, 0, 0], rEl: [0.6, 0, 0] }, C: { spine: [0.3, 0, 0], head: [-0.2, 0, 0], lSh: [0, 0, 0.2], rSh: [0, 0, 0.2] }, land: 1.1 },
+  // the hammer is hauled back and up as a counterweight, the torso twisting with it, then a heavy landing
+  thor: { A: { rSh: [0.25, 0, 0], chest: [0, 0.1, 0] }, B: { rSh: [0.65, 0, 0.15], rEl: [0.3, 0, 0], chest: [0, 0.25, 0], lSh: [-0.25, 0, 0] }, C: { rSh: [0.3, 0, 0], chest: [0, 0.12, 0], spine: [0.1, 0, 0] }, land: 1.3 },
+  // a kendo retreat: a sharp, low hop with the blade held on the centre line, rear foot reaching back to land first
+  susanoo: { A: { spine: [0.08, 0, 0], lHip: [0.05, 0, 0] }, B: { y: -0.04, spine: [0.1, 0, 0], lHip: [0.2, 0, 0], lKn: [-0.25, 0, 0], rHip: [0.2, 0, 0], rKn: [-0.4, 0, 0], rWr: [-0.12, 0, 0] }, C: { spine: [-0.04, 0, 0], rHip: [0.1, 0, 0], rKn: [-0.1, 0, 0] }, land: 0.6 },
+  // a giant's lumbering hop: the club hoisted high, the free arm out for balance, then a deep, heavy squat
+  heracles: { A: { y: -0.04, rSh: [-0.2, 0, 0] }, B: { spine: [-0.12, 0, 0], chest: [0, 0.15, 0], rSh: [-0.6, 0, 0.1], rEl: [-0.15, 0, 0], lSh: [0.3, 0, 0.35], lHip: [0, 0, 0.12], rHip: [0, 0, 0.12] }, C: { spine: [0.16, 0, 0], rSh: [-0.2, 0, 0], lSh: [0.1, 0, 0.15] }, land: 1.5 },
+  // a shadow's glide: feet together and pointed, rising a little, the cloak arm spread wide, chin up, barely landing
+  hades: { A: { y: 0.03, lHip: [0.1, 0, 0], lKn: [-0.1, 0, 0] }, B: { y: 0.16, rx: -0.12, spine: [-0.04, 0, 0], chest: [-0.06, 0, 0], head: [-0.06, 0, 0], lHip: [0.6, 0, 0], lKn: [-0.75, 0, 0], lAn: [0.6, 0, 0], rHip: [-0.2, 0, 0], rKn: [-0.55, 0, 0], rAn: [0.65, 0, 0], lSh: [0, 0, 0.55], lEl: [0.35, 0, 0], rSh: [0, 0, 0.25] }, C: { y: 0.08, rx: -0.06, lHip: [0.35, 0, 0], lKn: [-0.3, 0, 0], lAn: [0.35, 0, 0], rAn: [0.3, 0, 0], lSh: [0, 0, 0.3] }, land: 0.25 },
+  // a pirouette: one leg drawn up and turned out, the arms spread in the cosmic dance, a full turn before landing
+  shiva: { A: { lHip: [-0.1, 0, 0.15] }, B: { lHip: [-0.7, 0, 0.35], lKn: [0.7, 0, 0], lAn: [0.3, 0, 0], rHip: [-0.1, 0, 0], rKn: [-0.4, 0, 0], rAn: [0.75, 0, 0], lSh: [0, 0, 0.8], lEl: [0.35, 0, 0], rSh: [0, 0, 0.75], rEl: [1.0, 0, 0], neck: [0, 0, 0.15] }, C: { lHip: [-0.35, 0, 0.15], lKn: [0.3, 0, 0], lSh: [0, 0, 0.3], rSh: [0, 0, 0.3], rEl: [0.4, 0, 0] }, spin: 1, land: 0.6 },
+  // a graceful back skip into an arabesque: the rear leg lifted behind with the toes pointed, back arched, arms rising
+  aphrodite: { A: { rHip: [0.25, 0, 0], spine: [-0.05, 0, 0] }, B: { spine: [-0.18, 0, 0], chest: [-0.08, 0, 0], head: [-0.12, 0, 0], rHip: [0.85, 0, 0], rKn: [-0.2, 0, 0], rAn: [0.5, 0, 0], lHip: [-0.05, 0, 0], lKn: [0.2, 0, 0], lAn: [0.3, 0, 0], lSh: [-0.6, 0, 0.35], rSh: [-0.25, 0, 0.45], rEl: [-0.3, 0, 0] }, C: { rHip: [0.3, 0, 0], rAn: [0.3, 0, 0], lSh: [-0.25, 0, 0.15], rSh: [0, 0, 0.2] }, sway: 0.5, land: 0.4 },
+  // he simply floats back: rising off the ground with the legs folding into a lotus, hands still in their mudra
+  shaka: { A: { y: 0.06, lHip: [-0.3, 0, 0.2], lKn: [0.6, 0, 0], rHip: [-0.2, 0, 0.2], rKn: [0.6, 0, 0] }, B: { y: 0.24, lHip: [-1.05, 0, 0.55], lKn: [1.75, 0, 0], lAn: [-0.3, 0, 0], rHip: [-0.95, 0, 0.55], rKn: [1.8, 0, 0], rAn: [-0.3, 0, 0] }, C: { y: 0.14, lHip: [-0.45, 0, 0.25], lKn: [0.75, 0, 0], rHip: [-0.3, 0, 0.2], rKn: [0.6, 0, 0], lAn: [0.3, 0, 0], rAn: [0.3, 0, 0] }, land: 0.2 },
+  // an archer's leap: knees tucked, the bow arm still aimed forward, the string hand drawn back as if to loose
+  apollo: { A: { lSh: [-0.15, 0, 0] }, B: { y: 0.05, rx: -0.1, lHip: [-0.3, 0, 0], lKn: [0.35, 0, 0], rHip: [-0.15, 0, 0], rKn: [0.3, 0, 0], lSh: [-0.35, 0, 0], lEl: [0.45, 0, 0], rSh: [0.45, 0, 0.1], rEl: [-0.7, 0, 0], head: [0.05, 0, 0] }, C: { lSh: [-0.2, 0, 0], lEl: [0.2, 0, 0], rSh: [0.2, 0, 0], rEl: [-0.3, 0, 0] }, land: 0.6 },
+  // a stately step back: the spear butt pushes off the ground, the legs scissor, the cape arm sweeps the cloak wide
+  odin: { A: { rSh: [0.2, 0, 0], rEl: [-0.2, 0, 0] }, B: { lHip: [0.45, 0, 0], lKn: [-0.25, 0, 0], rHip: [0.4, 0, 0], rKn: [-0.45, 0, 0], rAn: [0.1, 0, 0], lSh: [0, 0, 0.5], lEl: [0.4, 0, 0], rSh: [0.1, 0, 0], spine: [-0.02, 0, 0] }, C: { lHip: [0.05, 0, 0], rHip: [0.35, 0, 0], rKn: [-0.15, 0, 0], lSh: [0, 0, 0.25] }, land: 0.7 },
+};
+const BS_ANIM = [[0, 'stance'], [0.16, 'bsA'], [0.5, 'bsB'], [0.84, 'bsC'], [1, 'stance']];
+// build each god's backstep keys once its pose library is ready: the stance plus the generic hop plus its own touch
+function bsKey(st, gen, own) {
+  const p = copyPose(st);
+  for (const d of [gen, own]) if (d) for (const k in d) {
+    if (Array.isArray(d[k])) { const q = p[k]; q[0] += d[k][0]; q[1] += d[k][1]; q[2] += d[k][2]; }
+    else if (k === 'air' || k === 'lie') p[k] = d[k];
+    else p[k] = (p[k] || 0) + d[k];
+  }
+  return p;
+}
+for (const key in BACKSTEP) {
+  const L = POSES[key], B = BACKSTEP[key];
+  if (!L) continue;
+  // a god whose backstep stays airborne-looking all through (a glide or a float) skips the generic hop's legs
+  const legsOwn = key === 'hades' || key === 'shaka';
+  for (const n of ['A', 'B', 'C']) L['bs' + n] = bsKey(L.stance, legsOwn ? { air: BS_GENERIC[n].air } : BS_GENERIC[n], B[n]);
+}
+function backstepPose(v, out) {
+  const f = v.f, L = v.lib, B = BACKSTEP[f.key] || {};
+  const u = clamp(f.st / Math.max(0.05, f.dashT), 0, 1);
+  if (!L.bsB) { copyPose(L.backstep, out); return out; }
+  sampleAnim(L, BS_ANIM, u, out);
+  if (B.spin) { out.ry += -f.facing * Math.PI * 2 * B.spin * sm01((u - 0.08) / 0.8); v.spinDirect = true; }
+  if (B.sway) out.ry += -f.facing * B.sway * Math.sin(Math.PI * u);
+  if (B.flip) out.rx += B.flip * Math.sin(Math.PI * clamp((u - 0.1) / 0.75, 0, 1));
+  v.landK = B.land !== undefined ? B.land : 0.8;
+  return out;
+}
+
 class FighterView {
   constructor(f, model) {
     this.f = f; this.m = model;
@@ -10796,6 +11000,7 @@ class FighterView {
     this.gOff = 0; this.bodyY = this.S.hipH;
     this.phase = 0; this.lastX = f.x;
     this.glow = 0; this.flip = 0;
+    this.gPh = 0; this.gDir = 1; this.walkW = 0; this.landT = 0; this.landAmp = 0; this.landK = 0; this.bsWas = false;
     this.prevState = '';
     this.trails = (model.trails || []).map((d) => new SwordTrail(d));
     if (model.ribbon) this.ribbon = new Ribbon(model.ribbon);
@@ -10830,14 +11035,31 @@ class FighterView {
         break;
       }
       case 'walk': {
-        this.phase += (f.x - this.lastX) * f.facing * (f.key === 'zeus' || f.key === 'thor' ? 6.2 : 7.5);
-        cyclePose(L.stance, this.phase, 0.55, out, false);
+        // the step cycle advances with the ground actually covered, so planted feet stay put
+        const G = GAIT[f.key] || GAIT.zeus;
+        let dx = (f.x - this.lastX) * f.facing;
+        if (Math.abs(dx) < 1e-6) dx = f.walkDir * f.facing * Math.abs(f.vx) * dt * 0.5;   // pressed against a wall or a foe: step on the spot
+        if (Math.abs(dx) > 1e-6) {
+          const d = dx > 0 ? 1 : -1;
+          // a fresh walk leads with the front foot going forward, the rear foot going back
+          if (this.walkW < 0.05) this.gPh = d > 0 ? G.duty : 0.499;
+          this.gDir = d;
+        }
+        this.gPh += dx / (this.gDir > 0 ? G.cyc : G.cycB);
+        this.walkW = Math.min(1, this.walkW + dt * 7);
+        gaitPose(this, L.stance, G, out, false);
+        rate = 18 + 50 * this.walkW;
         break;
       }
       case 'dash':
-        if (f.dashDir === f.facing) { this.phase += Math.abs(f.x - this.lastX) * 4.2; cyclePose(L.run, this.phase, 1.0, out, true); }
-        else copyPose(L.backstep, out);
-        rate = 20;
+        if (f.dashDir === f.facing) {
+          const G = GAIT[f.key] || GAIT.zeus;
+          if (this.walkW < 0.05) this.gPh = G.runDuty;
+          this.gDir = 1; this.gPh += Math.abs(f.x - this.lastX) / G.runCyc;
+          this.walkW = Math.min(1, this.walkW + dt * 10);
+          gaitPose(this, L.run, G, out, true);
+          rate = 24 + 30 * this.walkW;
+        } else { backstepPose(this, out); rate = 34; }
         break;
       case 'jump': {
         copyPose(L.jump, out);
@@ -10906,6 +11128,23 @@ class FighterView {
         break;
       }
       default: copyPose(L.stance, out);
+    }
+    if (f.state !== 'walk' && !(f.state === 'dash' && f.dashDir === f.facing)) this.walkW = Math.max(0, this.walkW - dt * 5);
+    // after a backstep the landing sinks into the knees and springs back, as deep as the god is heavy
+    const bsNow = f.state === 'dash' && f.dashDir !== f.facing;
+    if (this.bsWas && !bsNow && (f.state === 'idle' || f.state === 'walk' || f.state === 'block' || f.state === 'crouch')) {
+      this.landT = 0.24; this.landAmp = this.landK || 0.8;
+      if (this.landAmp >= 0.6) dust(f.x, Math.round(5 * this.landAmp), 0.3 + 0.3 * this.landAmp);
+    }
+    this.bsWas = bsNow;
+    if (this.landT > 0) {
+      this.landT -= dt;
+      if (f.state === 'idle' || f.state === 'walk' || f.state === 'block') {
+        const k = Math.sin(Math.PI * clamp(1 - this.landT / 0.24, 0, 1)) * this.landAmp;
+        for (const s of ['l', 'r']) { out[s + 'Hip'][0] -= 0.2 * k; out[s + 'Kn'][0] += 0.4 * k; out[s + 'An'][0] -= 0.2 * k; }
+        out.spine[0] += 0.07 * k;
+        rate = Math.max(rate, 30);
+      }
     }
     this.lastX = f.x;
     return rate;
@@ -12407,7 +12646,7 @@ function handleEvents() {
       }
       case 'newMatch': renderPips(); break;
       case 'land': if (e.heavy) { dust(e.x, 20, 1.3); sfx.land(true); shake = Math.max(shake, 0.1); } else { dust(e.x, 6, 0.6); sfx.land(false); } break;
-      case 'dash': dust(f.x, 6, 0.6); sfx.dash(); break;
+      case 'dash': dust(f.x, 6, 0.6); sfx.dash(); if (e.dir !== f.facing) backstepFx(f); break;
       case 'jump': dust(f.x, 8, 0.7); break;
     }
   }
@@ -14114,7 +14353,7 @@ THREE.ShaderMaterial.prototype.dispose = function () {
 // made the first super (and other first-time effects) of a fight stall on phones. Every event the fight can raise is
 // dispatched once here, drawn once into the composer's target, and cleared away. Effects that need a particular god's
 // model (a club, a spear...) are retried with each god in turn until they succeed.
-const WARM_EVENTS = ['move', 'hit', 'block', 'clash', 'bolt', 'geyser', 'crush', 'superDash', 'superDive', 'soulBurst', 'teleport', 'judgment', 'mist', 'runeBind', 'fireRing', 'danceStrike', 'cosmicDance', 'thirdEye', 'eyeBeam', 'damaru', 'nullify', 'charm', 'shellRise', 'parry', 'absorb', 'zazen', 'vitarka', 'sealWheel', 'earthTouch', 'lotusRise', 'lionRoar', 'reclineSlide', 'petalShower', 'birthLight', 'stepLotus', 'lotusBud', 'bell', 'daibutsu', 'kaigen', 'oracle', 'foresee', 'sunFlare', 'lyreAppear', 'twang', 'laurelArc', 'pythonStrike', 'dawn', 'swanWings', 'sunCall', 'laurelBind', 'laurelTight', 'sunChariot', 'trample', 'heliosCharge', 'skyArrow', 'charmKiss', 'ribbonLash', 'roseStorm', 'foamLeap', 'heartSeal', 'ravenStrike', 'odinAscend', 'odinLand', 'gungnirCharge', 'gungnirThrow', 'mistStrike', 'gateRise', 'gatePush', 'zeusStorm', 'zeusSpear', 'tidalWall', 'anubisSpirit', 'thorVortex', 'heavenBlade', 'lionSpirit', 'dashJump', 'thorStrike', 'storm', 'counter', 'thorLand', 'windWall', 'reflect', 'drain', 'shade', 'chains', 'soulDrain', 'tartarus', 'armor', 'grabBreak', 'hgrab', 'hslam', 'hthrow', 'rockLand', 'orochi', 'serpent', 'stormCharge', 'thorCharge', 'catch'];
+const WARM_EVENTS = ['dash', 'move', 'hit', 'block', 'clash', 'bolt', 'geyser', 'crush', 'superDash', 'superDive', 'soulBurst', 'teleport', 'judgment', 'mist', 'runeBind', 'fireRing', 'danceStrike', 'cosmicDance', 'thirdEye', 'eyeBeam', 'damaru', 'nullify', 'charm', 'shellRise', 'parry', 'absorb', 'zazen', 'vitarka', 'sealWheel', 'earthTouch', 'lotusRise', 'lionRoar', 'reclineSlide', 'petalShower', 'birthLight', 'stepLotus', 'lotusBud', 'bell', 'daibutsu', 'kaigen', 'oracle', 'foresee', 'sunFlare', 'lyreAppear', 'twang', 'laurelArc', 'pythonStrike', 'dawn', 'swanWings', 'sunCall', 'laurelBind', 'laurelTight', 'sunChariot', 'trample', 'heliosCharge', 'skyArrow', 'charmKiss', 'ribbonLash', 'roseStorm', 'foamLeap', 'heartSeal', 'ravenStrike', 'odinAscend', 'odinLand', 'gungnirCharge', 'gungnirThrow', 'mistStrike', 'gateRise', 'gatePush', 'zeusStorm', 'zeusSpear', 'tidalWall', 'anubisSpirit', 'thorVortex', 'heavenBlade', 'lionSpirit', 'dashJump', 'thorStrike', 'storm', 'counter', 'thorLand', 'windWall', 'reflect', 'drain', 'shade', 'chains', 'soulDrain', 'tartarus', 'armor', 'grabBreak', 'hgrab', 'hslam', 'hthrow', 'rockLand', 'orochi', 'serpent', 'stormCharge', 'thorCharge', 'catch'];
 const WARM_KINDS = ['bloom', 'gateShut', 'gungnir', 'heartBurst', 'hellfire', 'judgment', 'lion', 'mjolnir', 'pralaya', 'storm', 'sunLance', 'thunder', 'tidal'];
 function warmFx() {
   pinPrograms();
