@@ -8941,23 +8941,37 @@ function waterMaterial(c1, c2, opacity = 0.8, speed = 1) {
 
 // ---------------- generic timed objects ----------------
 class Timed {
-  constructor(scene) { this.scene = scene; this.list = []; }
+  constructor(scene) { this.scene = scene; this.list = []; this.pool = {}; }
   add(obj, life, update, onEnd) {
     this.scene.add(obj);
     this.list.push({ obj, life, t: 0, update, onEnd });
   }
+  // the commonest flashes (rings, glows, streaks) reuse their mesh and material instead of building new ones each
+  // hit: an object made here carries userData.pool and goes back to the pool when its life ends
+  take(key, make) {
+    const p = this.pool[key];
+    if (p && p.length) return p.pop();
+    const o = make(); o.userData.pool = key; return o;
+  }
   update(dt) {
-    for (const e of this.list) {
+    const L = this.list;
+    for (let i = 0; i < L.length; i++) {
+      const e = L[i];
       e.t += dt;
       const k = Math.min(1, e.t / e.life);
       e.update && e.update(e.obj, k, dt, e.t);
     }
-    for (const e of this.list) if (e.t >= e.life) {
+    let w = 0;
+    for (let i = 0; i < L.length; i++) {
+      const e = L[i];
+      if (e.t < e.life) { L[w++] = e; continue; }
       this.scene.remove(e.obj);
       e.onEnd && e.onEnd(e.obj);
+      const key = e.obj.userData.pool;
+      if (key) { (this.pool[key] || (this.pool[key] = [])).push(e.obj); continue; }
       e.obj.traverse((o) => { if (o.geometry && !o.geometry.userData.shared) o.geometry.dispose(); if (o.material && o.material.userData.own) o.material.dispose(); });
     }
-    this.list = this.list.filter((e) => e.t < e.life);
+    L.length = w;
   }
 }
 
@@ -9503,16 +9517,16 @@ function tornado(x, h, n, r0 = 0.9) {
 
 const QUAD = new THREE.PlaneGeometry(1, 1); QUAD.userData.shared = true;
 function ring(x, y, z, color, size, life, vertical = false, opacity = 1) {
-  const m = new THREE.Mesh(QUAD, new THREE.MeshBasicMaterial({ map: FT.ring, color, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, opacity }));
-  m.material.userData.own = true;
-  if (!vertical) m.rotation.x = -Math.PI / 2;
+  const m = timed.take('ring', () => new THREE.Mesh(QUAD, new THREE.MeshBasicMaterial({ map: FT.ring, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false })));
+  m.material.color.set(color); m.material.opacity = opacity;
+  m.rotation.set(vertical ? 0 : -Math.PI / 2, 0, 0); m.scale.setScalar(size * 0.2);
   m.position.set(x, y, z);
   m.renderOrder = 7;
   timed.add(m, life, (o, k) => { const s = size * (0.2 + 0.8 * (1 - Math.pow(1 - k, 3))); o.scale.set(s, s, s); o.material.opacity = opacity * (1 - k); if (vertical) o.quaternion.copy(camera.quaternion); });
 }
 function glowPuff(x, y, z, color, size, life) {
-  const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: FT.glow, color, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false }));
-  s.material.userData.own = true;
+  const s = timed.take('glow', () => new THREE.Sprite(new THREE.SpriteMaterial({ map: FT.glow, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false })));
+  s.material.color.set(color); s.material.opacity = 1; s.scale.setScalar(size * 0.6);
   s.position.set(x, y, z);
   s.renderOrder = 8;
   timed.add(s, life, (o, k) => { const sc = size * (0.6 + k * 0.8); o.scale.set(sc, sc, sc); o.material.opacity = (1 - k) * (1 - k); });
@@ -10130,10 +10144,9 @@ function geyser(x) {
 
 // giant additive slash streak (crossing / sky-splitting finishers)
 function slashStreak(x, y, z, len, w, rot, color, life) {
-  const m = new THREE.MeshBasicMaterial({ color: new THREE.Color(...color), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide, map: FT.glow });
-  m.userData.own = true;
-  const mesh = new THREE.Mesh(QUAD, m);
-  mesh.position.set(x, y, z); mesh.rotation.z = rot;
+  const mesh = timed.take('streak', () => new THREE.Mesh(QUAD, new THREE.MeshBasicMaterial({ transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide, map: FT.glow })));
+  const m = mesh.material; m.color.setRGB(color[0], color[1], color[2]); m.opacity = 1;
+  mesh.position.set(x, y, z); mesh.rotation.set(0, 0, rot); mesh.scale.set(w, 0.001, 1);
   timed.add(mesh, life, (o, k) => { const g = k < 0.15 ? k / 0.15 : 1; o.scale.set(w * (1 - k * 0.7), len * g, 1); m.opacity = 1 - Math.pow(k, 1.5); });
 }
 // Yamata no Orochi: a storm serpent erupts from the ground and strikes the victim
@@ -10979,7 +10992,8 @@ const ROAR_TEX = canvasTex(128, 128, (g, w, h) => { g.clearRect(0, 0, w, h); g.f
 // --- Apollo ---
 const NOTE_TEX = canvasTex(64, 64, (g, w, h) => { g.clearRect(0, 0, w, h); g.fillStyle = '#fff'; g.font = '900 52px serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('♪', w / 2, h / 2); });
 function musicNote(x, y, z, life, vx, vy) {
-  const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: NOTE_TEX, color: new THREE.Color(2.4, 1.8, 0.6), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false })); s.material.userData.own = true;
+  const s = timed.take('note', () => new THREE.Sprite(new THREE.SpriteMaterial({ map: NOTE_TEX, color: new THREE.Color(2.4, 1.8, 0.6), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false })));
+  s.material.opacity = 1; s.scale.setScalar(0.001);
   s.position.set(x, y, z); const sc = rand(0.22, 0.34);
   timed.add(s, life, (o, k, dt) => { o.position.x += vx * dt; o.position.y += vy * dt; o.position.x += Math.sin(k * 12) * dt * 0.6; o.scale.setScalar(sc * (k < 0.15 ? k / 0.15 : 1)); o.material.opacity = 1 - k * k; });
 }
@@ -12562,7 +12576,8 @@ const bgm = {
     dl.connect(mg, 0, 0); dr.connect(mg, 0, 1); mg.connect(dg); dg.connect(this.bus); dg.connect(this.verb);
     this.dry = c.createGain(); this.dry.connect(this.bus); this.dry.connect(vhp); vhp.connect(this.verb);
   },
-  dyn(name) { const T = this.TRACKS[name]; return name === 'battle' || !!T.style; },
+  // battle tracks get an intense render too - not on phones, where every render competes with the match for the CPU
+  dyn(name) { const T = this.TRACKS[name]; return !isMobile && (name === 'battle' || !!T.style); },
   TAIL: 3.6,
   // the segments of a track, in bars: [0,1), [1,2), [2,4), [4,bars)
   segsOf(T) { const b = T.bars, out = []; for (const [x, y] of [[0, 1], [1, 2], [2, 4], [4, b]]) if (x < b) out.push([x, Math.min(y, b)]); return out; },
@@ -12577,8 +12592,8 @@ const bgm = {
       const mine = { c: off, intense: I, track: name, bus: this.bus, dry: this.dry, dly: this.dly, verb: this.verb };
       for (let st = st0; st < st1; st++) {
         this.play16(T, st, (st - st0) * s16, s16);
-        // build the notes a bar at a time so the main thread never stalls for long
-        if (st % 16 === 15 && st + 1 < st1) { this.c = keep[0]; this.intense = keep[1]; this.track = keep[2]; await new Promise((r) => setTimeout(r, 0)); Object.assign(this, mine); }
+        // build the notes half a bar at a time so the main thread never stalls for long
+        if (st % 8 === 7 && st + 1 < st1) { this.c = keep[0]; this.intense = keep[1]; this.track = keep[2]; await new Promise((r) => setTimeout(r, 0)); Object.assign(this, mine); }
       }
     } finally { this.c = keep[0]; this.intense = keep[1]; this.track = keep[2]; }
     const buf = await new Promise((res, rej) => { off.oncomplete = (ev) => res(ev.renderedBuffer); const p = off.startRendering(); if (p && p.catch) p.catch(rej); });
@@ -12953,6 +12968,7 @@ const bgm = {
     // calm <-> intense crossfade (segments without an intense render play through gSolo, unaffected)
     this.gLo.gain.setTargetAtTime(Math.max(0.0001, 1 - this.intense), now, 0.3);
     this.gHi.gain.setTargetAtTime(Math.max(0.0001, this.intense), now, 0.3);
+    if (isMobile) this.gSolo.gain.setTargetAtTime(1 + 0.22 * this.intense, now, 0.3);   // phones: the climax only swells
   },
   startBuf(b, g, t) {
     const c = sfx.ctx, s = c.createBufferSource(); s.buffer = b; s.connect(g); s.start(t);
@@ -13629,6 +13645,7 @@ function frame(now) {
   addP.update(edt); normP.update(edt);
   bolts.update(edt); timed.update(edt);
   if (!paused) cineUpdate(edt);
+  if (screen === 'match' && sim.phase === 'ko' && cfg.mode !== 'practice') bgm.prefetch(cfg.mode === 'player' && sim.roundWinner !== 0 ? 'defeat' : 'victory');   // the end theme renders during the KO
   if (screen === 'match') bgm.play(sim.phase === 'matchEnd' && sim.phaseT > 0.8 ? (cfg.mode === 'player' && sim.matchWinner !== 0 ? 'defeat' : 'victory') : cfg.mode === 'practice' ? 'practice' : STAGES[curStage].bgm);
   bgm.intense = damp(bgm.intense, cineFlag || sim.fighters.some((f) => f.hp < f.c.hp * 0.3) ? 1 : 0, 2, rdt);
   updateCamera(rdt, clock);
@@ -13673,7 +13690,7 @@ function setupMatch(c) {
   if (talk.on) { talk.done = null; talkEnd(); }
   cfg = c;
   curStage = c.stage || 'olympus';
-  bgm.prefetch(c.mode === 'practice' ? 'practice' : STAGES[curStage].bgm, 'victory', c.mode === 'player' ? 'defeat' : '');
+  bgm.prefetch(c.mode === 'practice' ? 'practice' : STAGES[curStage].bgm);
   for (const v of views) { scene.remove(v.m.root); for (const tr of v.trails) tr.dispose(); if (v.ribbon) v.ribbon.dispose(); }
   for (const v of projViews.values()) scene.remove(v.g);
   projViews.clear();
