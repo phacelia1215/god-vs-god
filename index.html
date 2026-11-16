@@ -12550,6 +12550,36 @@ function backstepPose(v, out) {
 
 // story talk on the stage (see talkStart): the fight waits while the gods speak
 const talk = { on: false, lines: [], i: -1, shown: 0, n: -1, lineT: 0, phase: 'off', cardT: 0, done: null, speaker: -1, cut: false };
+// Attacks read harder: the wind-up eases in, the strike snaps out (fast start, arriving on the active frame), carries a
+// touch past the authored pose and settles back, and the recovery holds the extension a moment before returning.
+// The body lunges into the blow. Returns how hard the pose is snapping right now (0..1).
+const STR_OVER = 0.1, STR_AMT = 0.2, sm3 = (k) => k * k * (3 - 2 * k);
+const isWind = (n) => n.endsWith('Wind') || n === 'stance';
+function strikeAnim(L, A, t, out, tmp) {
+  if (t <= A[0][0]) { copyPose(L[A[0][1]], out); return 0; }
+  for (let i = 0; i < A.length - 1; i++) {
+    const [t0, n0] = A[i], [t1, n1] = A[i + 1];
+    if (t < t0 || t > t1) continue;
+    const k = t1 > t0 ? (t - t0) / (t1 - t0) : 1;
+    const strike = n0 !== n1 && !isWind(n1);
+    // starting from a pose that a strike just reached: overshoot it, then settle
+    let from = L[n0], snap = 0;
+    const prevN = i > 0 ? A[i - 1][1] : null, sinceHit = t - t0;
+    if (prevN && prevN !== n0 && !isWind(n0) && sinceHit < STR_OVER) {
+      const e = STR_AMT * Math.sin(Math.PI * Math.min(1, sinceHit / STR_OVER)) * (1 - sinceHit / STR_OVER * 0.5);
+      from = blend(L[prevN], L[n0], 1 + e, tmp); snap = 1 - sinceHit / STR_OVER;
+    }
+    let c = strike ? 1 - Math.pow(1 - k, 3.2) : n1 === 'stance' ? sm3(Math.pow(k, 1.6)) : sm3(k);
+    // a blow thrown straight from the stance (no authored wind-up) still draws back a hair before it fires
+    if (strike && n0 === 'stance' && t1 - t0 >= 0.09) { const p = 0.3; c = k < p ? -0.14 * sm3(k / p) : -0.14 + 1.14 * (1 - Math.pow(1 - (k - p) / (1 - p), 3.2)); }
+    blend(from, L[n1], c, out);
+    if (strike) { snap = Math.max(snap, 1 - k * 0.5); out.z += 0.09 * Math.sin(Math.PI * Math.min(1, k * 1.2)); out.y -= 0.03 * Math.sin(Math.PI * k); }
+    else if (snap > 0) out.z += 0.06 * snap;
+    return snap;
+  }
+  copyPose(L[A[A.length - 1][1]], out); return 0;
+}
+const WHITE_C = new THREE.Color(1, 0.97, 0.92);
 class FighterView {
   constructor(f, model) {
     this.f = f; this.m = model;
@@ -12576,12 +12606,35 @@ class FighterView {
       else o.castShadow = true;
     });
   }
+  // the strike's smear (the fist or foot that moves fastest leaves a streak while the blow snaps out) and the
+  // white flash of a body that has just been hit
+  impactFx(dt) {
+    const M = this.m, f = this.f;
+    // (gods with a weapon already draw its trail: only their kicks smear)
+    if (!this.limbs) { this.limbs = (this.trails.length ? ['lAn', 'rAn'] : ['lWr', 'rWr', 'lAn', 'rAn']).filter((j) => M.j[j]).map((j) => ({ j: M.j[j], p: new V3(), q: new V3(), ok: false })); }
+    if (this.snap > 0.25 && f.state === 'attack' && sim.hitstop <= 0) {
+      let best = null, bd = 0.07;
+      for (const L of this.limbs) { L.q.set(0, 0, 0); L.j.localToWorld(L.q); if (L.ok) { const d = L.q.distanceTo(L.p); if (d > bd) { bd = d; best = L; } } }
+      if (best) { const c = AIRCOL[f.key] || COL.spark, w = Math.min(0.32, 0.08 + bd * 0.5); beamStreak(best.p, best.q, w, [0.5 + c[0] * 0.5, 0.5 + c[1] * 0.5, 0.5 + c[2] * 0.5], 0.09); }
+      for (const L of this.limbs) { L.p.copy(L.q); L.ok = true; }
+    } else for (const L of this.limbs) L.ok = false;
+    if (this.flashT > 0) {
+      this.flashT -= dt;
+      if (!this.flashMats) { this.flashMats = []; M.root.traverse((o) => { const ms = Array.isArray(o.material) ? o.material : o.material ? [o.material] : []; for (const m of ms) if (m.emissive && !this.flashMats.some((x) => x.m === m)) this.flashMats.push({ m, c: new THREE.Color(), i: 1 }); }); }
+      if (!this.flashing) { this.flashing = true; for (const x of this.flashMats) { x.c.copy(x.m.emissive); x.i = x.m.emissiveIntensity; } }
+      const a = Math.max(0, this.flashT / this.flashLen) * this.flashAmt;
+      for (const x of this.flashMats) { x.m.emissive.copy(x.c).lerp(WHITE_C, a); x.m.emissiveIntensity = Math.max(x.i, a * 1.2); }
+      if (this.flashT <= 0) { this.flashing = false; for (const x of this.flashMats) { x.m.emissive.copy(x.c); x.m.emissiveIntensity = x.i; } }
+    }
+  }
+  hitFlash(power) { this.flashLen = this.flashT = 0.06 + Math.min(0.06, power / 1500); this.flashAmt = clamp(0.35 + power / 200, 0.4, 0.85); }
   targetPose(dt, t) {
     const f = this.f, L = this.lib, out = this.tgt;
     if (talk.on && screen === 'match' && f.state !== 'ko' && f.state !== 'down') { talkPose(this, dt, t); this.lastX = f.x; return 8; }
     let rate = 16;
     this.flip = 0;
     this.spinDirect = false;
+    this.snap = 0;
     switch (f.state) {
       case 'intro': {
         // signature entrance per god (2.6 s), ending in the fighting stance
@@ -12638,8 +12691,8 @@ class FighterView {
       }
       case 'attack': {
         const m = f.move;
-        sampleAnim(L, m.anim, f.mt, out);
-        rate = m.type === 'super' ? 30 : 42;
+        if (m.type === 'super') { sampleAnim(L, m.anim, f.mt, out); rate = 30; this.snap = 0; }
+        else { this.snap = strikeAnim(L, m.anim, f.mt, out, this.tmp); rate = this.snap > 0 ? 80 : 46; }
         if (f.key === 'poseidon' && m.name === '旋回双刃') {
           // procedural whirlwind: coil, two smooth full turns, settle
           const u = clamp((f.mt - 0.06) / 0.34, 0, 1);
@@ -12668,7 +12721,10 @@ class FighterView {
       case 'hitstun': {
         const k = clamp(1 - f.st / Math.max(0.1, f.stunT), 0, 1);
         blend(L.stance, f.lastHitHigh ? L.hurt : L.hurtLow, clamp(k * 2.2, 0, 1), out);
-        rate = 34;
+        // the blow lands: the head and chest whip back at once, then the body sags into the reel
+        const r = clamp(1 - f.st / 0.12, 0, 1), r2 = r * r;
+        out.head[0] -= 0.35 * r2; out.chest[0] -= 0.18 * r2; out.spine[0] -= 0.12 * r2; out.z -= 0.1 * r2;
+        rate = f.st < 0.08 ? 95 : 34;
         break;
       }
       case 'juggle': {
@@ -12756,6 +12812,7 @@ class FighterView {
     let jx = 0;
     if ((sim.hitstop > 0 && ['hitstun', 'juggle', 'blockstun', 'locked'].includes(f.state)) || (f.state === 'locked')) jx = (Math.random() - 0.5) * 0.07;
     M.root.position.set(f.x + jx, f.y, 0);
+    this.impactFx(dt);
     // body height + ground contact
     let wantY;
     if (c.lie || f.state === 'down' || f.state === 'ko') {
@@ -13429,7 +13486,7 @@ const bgm = {
       catch (err) { console.warn('bgm render failed', j.name, err); e.failed = true; this.jobs = this.jobs.filter((q) => q.name !== j.name); }
     }
     // keep memory bounded: drop the least recently used tracks that are neither playing nor wanted
-    while (this.cache.size > 4) {
+    while (this.cache.size > (isMobile ? 3 : 4)) {
       const k = [...this.cache.keys()].find((n) => n !== this.playing && n !== this.want); if (!k) break;
       this.cache.delete(k); this.jobs = this.jobs.filter((q) => q.name !== k);
     }
@@ -14161,6 +14218,8 @@ function handleEvents() {
         break;
       case 'hit':
         hitFx(e);
+        if (views[1 - e.side] && !e.superHit) views[1 - e.side].hitFlash(e.power || 30);
+        if (!e.proj && !e.superHit && (e.power || 0) >= 55) shake = Math.max(shake, 0.06 + Math.min(0.12, (e.power - 55) / 400));
         sfx.impact(e.proj ? 'pole' : weaponOf(f), e.power, e.fx, e.x);
         if (e.combo >= 2) showCombo(e.side, e.combo, 0, false);
         break;
@@ -14472,8 +14531,27 @@ const selState = { mode: 'player', keys: ['zeus', 'poseidon'], dummy: 'stand', l
 const held = { left: false, right: false, down: false, up: false };
 const lastTap = { left: -9, right: -9 };
 const modelCache = {};
+// Every god model is about 9 MB of geometry and textures (kept both in JS and on the GPU). Desktops keep all 24
+// (each god for each side); phones keep only the last few used and free the rest, or the page outgrows what a
+// phone's browser allows and gets killed (seen at the start of the story's second fight). A freed model is simply
+// built again when picked (its shaders stay compiled).
+const MODEL_KEEP = isMobile ? 4 : 99, modelUse = [];
+const FT_SET = new Set(Object.values(FT));
+function freeModel(id) {
+  const m = modelCache[id]; if (!m) return;
+  delete modelCache[id];
+  if (m.root.parent) m.root.parent.remove(m.root);
+  const seen = new Set();
+  m.root.traverse((o) => {
+    if (o.geometry && !o.geometry.userData.shared && !seen.has(o.geometry)) { seen.add(o.geometry); o.geometry.dispose(); }
+    const ms = Array.isArray(o.material) ? o.material : o.material ? [o.material] : [];
+    for (const mt of ms) for (const k in mt) { const v = mt[k]; if (v && v.isTexture && !FT_SET.has(v) && !seen.has(v)) { seen.add(v); v.dispose(); } }
+  });
+}
 function modelFor(side, key) {
   const id = side + key;
+  const u = modelUse.indexOf(id); if (u >= 0) modelUse.splice(u, 1); modelUse.push(id);
+  while (modelUse.length > MODEL_KEEP) freeModel(modelUse.shift());
   if (!modelCache[id]) modelCache[id] = key === 'zeus' ? buildZeus(FT) : key === 'anubis' ? buildAnubis(FT) : key === 'thor' ? buildThor(FT) : key === 'susanoo' ? buildSusanoo(FT) : key === 'heracles' ? buildHeracles(FT) : key === 'hades' ? buildHades(FT) : key === 'odin' ? buildOdin(FT) : key === 'shiva' ? buildShiva(FT) : key === 'aphrodite' ? buildAphrodite(FT) : key === 'shaka' ? buildShaka(FT) : key === 'apollo' ? buildApollo(FT) : buildPoseidon(FT);
   if (!modelCache[id].outlined) { modelCache[id].outlined = true; if (!isMobile) addOutline(modelCache[id].root); }
   return modelCache[id];
