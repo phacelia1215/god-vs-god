@@ -9224,7 +9224,8 @@ class Timed {
       const e = L[i];
       e.t += dt;
       const k = Math.min(1, e.t / e.life);
-      e.update && e.update(e.obj, k, dt, e.t);
+      // an effect that fails ends at once instead of stopping every frame after it
+      if (e.update) try { e.update(e.obj, k, dt, e.t); } catch (err) { e.t = e.life; if (!Timed.warned) { Timed.warned = true; console.error(err); } }
     }
     let w = 0;
     for (let i = 0; i < L.length; i++) {
