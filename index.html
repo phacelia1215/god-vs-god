@@ -9345,7 +9345,10 @@ let quality = 'high';
 try { const q = localStorage.getItem('gods-quality'); if (q) quality = q; } catch (e) { }
 
 const canvas = document.getElementById('c');
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
+// every frame is drawn through the composer (offscreen) and only copied to the canvas at the end, so the canvas's own
+// antialias never touched the scene - it only cost memory and bandwidth. Edges are smoothed on the scene's own target
+// instead (phones, below).
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, powerPreference: 'high-performance' });
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 0.72;
@@ -9359,8 +9362,32 @@ const camera = new THREE.PerspectiveCamera(36, 1, 0.1, 900);
 camera.position.set(0, 2, 12);
 
 const pmrem = new THREE.PMREMGenerator(renderer);
-scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+const IBL_TEX = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+scene.environment = IBL_TEX;
 scene.environmentIntensity = 0.28;
+// Phones: the image-based lighting (the room's soft reflections and ambient) was over a third of every frame's
+// shading - each lit pixel samples it several times - for a contribution dimmed to 0.28. The gods (the focus) keep
+// it whole, so they look exactly as before; the scenery, which fills most of the screen, keeps it only on metal and
+// glossy surfaces (gold, bronze, gems, lacquer) and takes a flat ambient lift, through its own texture, in its place.
+const IBL_SEL = isMobile, iblMats = [], ambMats = [], IBL_AMB = 0.18;
+if (IBL_SEL) scene.environment = null;
+const keepIBL = (m) => m.metalness >= 0.5 || m.clearcoat >= 0.5 || m.roughness <= 0.2;
+function iblPolicy(root, god = false) {
+  if (!IBL_SEL) return;
+  root.traverse((o) => {
+    const ms = Array.isArray(o.material) ? o.material : o.material ? [o.material] : [];
+    for (const m of ms) {
+      if (!m.isMeshStandardMaterial || m.userData.ibl || (m.envMap && m.envMap !== IBL_TEX)) continue;
+      m.userData.ibl = true;
+      // (a material a freed model shared with a later build is already set up: it only rejoins the list)
+      if (m.envMap === IBL_TEX || god || keepIBL(m)) { if (m.envMap !== IBL_TEX) { m.envMap = IBL_TEX; m.needsUpdate = true; } iblMats.push(m); }
+      else if (m.emissive && m.emissive.getHex() === 0 && !m.emissiveMap) {
+        m.emissive.copy(m.color).multiplyScalar(IBL_AMB); if (m.map) m.emissiveMap = m.map;
+        ambMats.push(m); m.needsUpdate = true;
+      }
+    }
+  });
+}
 
 const composer = new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene, camera));
@@ -9369,6 +9396,22 @@ composer.addPass(bloom);
 // phones: the glow is soft anyway, so its blur chain runs at half the screen's resolution (a quarter of the pixels)
 if (isMobile) { const setBloom = bloom.setSize.bind(bloom); bloom.setSize = (w, h) => setBloom(Math.max(2, Math.round(w * 0.5)), Math.max(2, Math.round(h * 0.5))); }
 composer.addPass(new OutputPass());
+// phones: 4x multisampling on the scene's render target - their tile-based GPUs resolve it on chip, so smooth edges
+// cost far less than more pixels would. Checked once: a device that cannot multisample this target renders without it.
+// Low quality (chosen, or picked automatically when a phone runs a first match under 32 fps) goes without it.
+let MSAA = isMobile && renderer.capabilities.maxSamples >= 4 ? 4 : 0;
+function setMSAA() {
+  const want = quality === 'high' ? MSAA : 0, rt = composer.renderTarget1;
+  if (rt.samples !== want) { rt.samples = want; rt.dispose(); }
+}
+function checkMSAA() {
+  if (!composer.renderTarget1.samples) return;
+  const gl = renderer.getContext();
+  renderer.setRenderTarget(composer.renderTarget1); renderer.clear();
+  const ok = gl.checkFramebufferStatus(gl.FRAMEBUFFER) === gl.FRAMEBUFFER_COMPLETE && gl.getError() === gl.NO_ERROR;
+  renderer.setRenderTarget(null);
+  if (!ok) { MSAA = 0; setMSAA(); console.warn('MSAA unavailable on this target: rendering without it'); }
+}
 
 // lights
 const hemi = new THREE.HemisphereLight(0xb9b4ff, 0x4a3022, 0.5);
@@ -9399,6 +9442,7 @@ function applyQuality() {
   const pr = basePR() * resScale;
   renderer.setPixelRatio(pr);
   bloom.enabled = quality === 'high';
+  setMSAA();
   renderer.shadowMap.type = isMobile ? THREE.PCFShadowMap : THREE.PCFSoftShadowMap;   // fixed: changing it recompiles every material
   const ms = quality === 'high' ? (isMobile ? 1024 : 1536) : 1024;
   if (key.shadow.mapSize.x !== ms) {
@@ -14564,6 +14608,9 @@ function frame(now) {
   rim.intensity = BASE.rim * (1 + stage.dim * 0.4);
   fill.intensity = BASE.fill * dimK;
   scene.environmentIntensity = 0.28 * dimK;
+  // phones: the materials that keep the reflections, and the scenery's ambient lift, dim with the rest of the light
+  for (const m of iblMats) m.envMapIntensity = 0.28 * dimK;
+  for (const m of ambMats) m.emissiveIntensity = dimK;
   stage.skyMat.uniforms.uTime.value = clock;
   stage.skyMat.uniforms.uFlash.value = stage.flash;
   stage.skyMat.uniforms.uDim.value = stage.dim;
@@ -14630,13 +14677,19 @@ function freeModel(id) {
   if (m.root.parent) m.root.parent.remove(m.root);
   const live = new Set(); for (const k in modelCache) modelParts(modelCache[k], (x) => live.add(x));
   modelParts(m, (x) => { if ((partUses.get(x) || 0) <= 1 && !live.has(x) && !FT_SET.has(x) && !(x.userData && x.userData.shared)) x.dispose(); });
+  // its materials leave the per-frame reflection list (unless a model still in use shares them)
+  if (iblMats.length) {
+    const mats = (r, set) => { r.traverse((o) => { const ms = Array.isArray(o.material) ? o.material : o.material ? [o.material] : []; for (const x of ms) set.add(x); }); return set; };
+    const gone = mats(m.root, new Set()), keep = new Set(); for (const k in modelCache) mats(modelCache[k].root, keep);
+    for (let i = iblMats.length - 1; i >= 0; i--) if (gone.has(iblMats[i]) && !keep.has(iblMats[i])) { iblMats[i].userData.ibl = false; iblMats.splice(i, 1); }
+  }
 }
 function modelFor(side, key) {
   const id = side + key;
   const u = modelUse.indexOf(id); if (u >= 0) modelUse.splice(u, 1); modelUse.push(id);
   while (modelUse.length > MODEL_KEEP) freeModel(modelUse.shift());
   if (!modelCache[id]) modelCache[id] = key === 'zeus' ? buildZeus(FT) : key === 'anubis' ? buildAnubis(FT) : key === 'thor' ? buildThor(FT) : key === 'susanoo' ? buildSusanoo(FT) : key === 'heracles' ? buildHeracles(FT) : key === 'hades' ? buildHades(FT) : key === 'odin' ? buildOdin(FT) : key === 'shiva' ? buildShiva(FT) : key === 'aphrodite' ? buildAphrodite(FT) : key === 'shaka' ? buildShaka(FT) : key === 'apollo' ? buildApollo(FT) : buildPoseidon(FT);
-  if (!modelCache[id].outlined) { modelCache[id].outlined = true; if (!isMobile) addOutline(modelCache[id].root); modelParts(modelCache[id], (x) => partUses.set(x, (partUses.get(x) || 0) + 1)); }
+  if (!modelCache[id].outlined) { modelCache[id].outlined = true; if (!isMobile) addOutline(modelCache[id].root); iblPolicy(modelCache[id].root, true); modelParts(modelCache[id], (x) => partUses.set(x, (partUses.get(x) || 0) + 1)); }
   return modelCache[id];
 }
 // anime-style ink outline: back-face hull pushed out along the normals
@@ -16413,6 +16466,8 @@ function warmFx() {
   }
   shake = 0; stage.flash = 0;
   setupMatch(ATTRACT);
+  // some effects fire a moment later (setTimeout): sweep those away too, or they flash over the title after loading
+  setTimeout(() => { timed.update(1e5); addP.update(10); normP.update(10); bolts.update(10); shake = 0; stage.flash = 0; flashLevel = 0; flashEl().style.opacity = 0; }, 1200);
 }
 function setLoad(msg, k) {
   const l = $('loading'); l.classList.remove('pending');
@@ -16429,7 +16484,7 @@ async function boot() {
   steps.push(['メニュー背景を構築中…', () => buildMenuBackdrops(arena)]);
   steps.push(['ステージを構築中…', () => buildStages(arena, [])]);
   for (const id of STAGE_IDS) if (STAGES[id].build) steps.push([`ステージ「${STAGES[id].name}」を構築中…`, () => buildStages(arena, [id])]);
-  steps.push(['対戦を準備中…', () => { setupMatch(ATTRACT); applyQuality(); }]);
+  steps.push(['対戦を準備中…', () => { iblPolicy(scene); setupMatch(ATTRACT); applyQuality(); checkMSAA(); }]);
   steps.push(['ライトを準備中…', () => installLampRig()]);
   for (const k of MENU_KEYS) steps.push([`${CHARS[k].name}を召喚中…`, () => { warmObj(modelFor(0, k).root); warmObj(modelFor(1, k).root); }]);
   steps.push(['ステージを描画準備中…', () => { for (const id of STAGE_IDS) if (STAGES[id].group) warmObj(STAGES[id].group); }]);
@@ -16554,7 +16609,9 @@ function buildMoveList() {
   $('movesBody').innerHTML = html.join('');
 }
 
-window.__game = { get renderer() { return renderer; }, get scene() { return scene; }, setupMatch: (c) => setupMatch(c), get sim() { return sim; }, get views() { return views; }, get sfx() { return sfx; }, get bgm() { return bgm; }, get speed() { return speed; }, set speed(v) { speed = v; }, SUPER2, SUPER_K };
+window.__game = { get renderer() { return renderer; }, get scene() { return scene; }, setupMatch: (c) => setupMatch(c), get sim() { return sim; }, get views() { return views; }, get sfx() { return sfx; }, get bgm() { return bgm; }, get speed() { return speed; }, set speed(v) { speed = v; }, SUPER2, SUPER_K,
+  get composer() { return composer; }, get camera() { return camera; }, get bloom() { return bloom; }, get keyLight() { return key; }, get lamps() { return lampSlots; }, get BASE() { return BASE; }, get IBL() { return { tex: IBL_TEX, iblMats, ambMats }; },
+  clearFx() { timed.update(1e5); addP.update(10); normP.update(10); bolts.update(10); shake = 0; stage.flash = 0; flashLevel = 0; flashEl().style.opacity = 0; } };
 boot().catch((err) => showError(err));
 
 function showError(err) {
