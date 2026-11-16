@@ -11586,6 +11586,7 @@ class Ribbon {
 //  Second supers: each god's own effects (the sim raises 'sup2' events: k = god, ev = beat)
 // ============================================================
 const S2 = { heads: 0, eros: null, valk: 0 };
+const s2In = (k) => Math.pow(Math.min(1, Math.max(0, k)), 2.2);
 const addMat = (r, g, b, op = 1, side = THREE.FrontSide) => { const m = new THREE.MeshBasicMaterial({ color: new THREE.Color(r, g, b), transparent: true, opacity: op, blending: THREE.AdditiveBlending, depthWrite: false, side }); m.userData.own = true; return m; };
 const foeOf = (side) => views[1 - side];
 const foeChest = (e) => { const v = foeOf(e.side); return v ? chestOf(v) : new V3(e.x, (e.y || 0) + 1.1, 0); };
@@ -11770,24 +11771,35 @@ function cerberusHead(e, n) {
   const side = n === 0 ? -1 : n === 1 ? 1 : 0, tx = e.x, ty = (e.y || 0) + 1.1;
   const x0 = tx + side * 2.3 - (side ? 0 : 0.4), z0 = side ? -1.2 : -2.2;
   const curve = new THREE.CatmullRomCurve3([new V3(x0, -0.8, z0), new V3(x0 + side * 0.3, ty * 0.7 + 0.6, z0 * 0.7), new V3(tx + side * 1.0, ty + 1.3, z0 * 0.3), new V3(tx + side * 0.25, ty + 0.2, 0.2)]);
-  const body = new THREE.TubeGeometry(curve, 50, 0.32, 10, false), total = body.index.count;
-  const bm = new THREE.MeshStandardMaterial({ color: 0x0c0608, roughness: 0.6, metalness: 0.2, emissive: new THREE.Color(0.55, 0.05, 0.12), emissiveIntensity: 1, transparent: true }); bm.userData.own = true;
-  const g = new THREE.Group(); const tube = new THREE.Mesh(body, bm); tube.frustumCulled = false; g.add(tube);
+  // a hound of shadow (unlit black, so no light can wash it out) with a hellfire outline: each part is drawn twice,
+  // black and then as a slightly larger glowing back-face shell
+  const body = new THREE.TubeGeometry(curve, 50, 0.26, 10, false), total = body.index.count;
+  const rimBody = new THREE.TubeGeometry(curve, 50, 0.33, 10, false);
+  const bm = new THREE.MeshBasicMaterial({ color: 0x0b0406, transparent: true }); bm.userData.own = true;
+  const rm = addMat(1.7, 0.18, 0.12, 0.55, THREE.BackSide);
+  const g = new THREE.Group(); const tube = new THREE.Mesh(body, bm), rimTube = new THREE.Mesh(rimBody, rm); tube.frustumCulled = rimTube.frustumCulled = false; g.add(tube, rimTube);
   const head = new THREE.Group();
-  head.add(new THREE.Mesh(new THREE.SphereGeometry(0.36, 12, 10).scale(1, 0.85, 1.1), bm));
-  const snout = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.24, 0.55, 10).rotateX(Math.PI / 2).translate(0, -0.06, 0.42), bm); head.add(snout);
-  const jaw = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.18, 0.45, 8).rotateX(Math.PI / 2).translate(0, -0.2, 0.36), bm); jaw.rotation.x = 0.35; head.add(jaw);
-  for (const s2 of [-1, 1]) { const ear = new THREE.Mesh(new THREE.ConeGeometry(0.1, 0.34, 6).translate(0, 0.17, 0), bm); ear.position.set(s2 * 0.2, 0.24, -0.08); ear.rotation.z = -s2 * 0.35; head.add(ear); }
-  const em = addMat(3, 0.5, 0.3, 1);
-  for (const s2 of [-1, 1]) { const ey = new THREE.Mesh(new THREE.SphereGeometry(0.045, 8, 6), em); ey.position.set(s2 * 0.13, 0.06, 0.3); head.add(ey); }
+  let jaw = null;
+  for (const [mat, k] of [[bm, 1], [rm, 1.16]]) {
+    const h = new THREE.Group(); h.scale.setScalar(k);
+    h.add(new THREE.Mesh(new THREE.SphereGeometry(0.36, 12, 10).scale(1, 0.85, 1.1), mat));
+    h.add(new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.24, 0.55, 10).rotateX(Math.PI / 2).translate(0, -0.06, 0.42), mat));
+    const j = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.18, 0.45, 8).rotateX(Math.PI / 2).translate(0, -0.2, 0.36), mat); j.rotation.x = 0.35; h.add(j);
+    for (const s2 of [-1, 1]) { const ear = new THREE.Mesh(new THREE.ConeGeometry(0.1, 0.34, 6).translate(0, 0.17, 0), mat); ear.position.set(s2 * 0.2, 0.24, -0.08); ear.rotation.z = -s2 * 0.35; h.add(ear); }
+    if (!jaw) jaw = []; jaw.push(j);
+    head.add(h);
+  }
+  const em = addMat(3, 1.2, 0.3, 1);
+  for (const s2 of [-1, 1]) { const ey = new THREE.Mesh(new THREE.SphereGeometry(0.05, 8, 6), em); ey.position.set(s2 * 0.13, 0.06, 0.31); head.add(ey); }
   head.scale.setScalar(1.6); g.add(head);
   timed.add(g, SUPER_LIFE(0.62), (o, k) => {
     const grow = Math.min(1, k / 0.3);
     body.setDrawRange(0, Math.floor(total * grow / 6) * 6);
     const p = curve.getPoint(grow), tg = curve.getTangent(Math.min(0.999, grow));
     head.position.copy(p); head.lookAt(p.clone().add(tg));
-    jaw.rotation.x = k < 0.3 ? 0.9 : 0.15;
-    bm.opacity = em.opacity = k < 0.7 ? 1 : 1 - (k - 0.7) / 0.3;
+    for (const j of jaw) j.rotation.x = k < 0.3 ? 0.9 : 0.15;
+    bm.opacity = em.opacity = k < 0.7 ? 1 : 1 - (k - 0.7) / 0.3; rm.opacity = 0.55 * bm.opacity * (0.85 + Math.sin(k * 60) * 0.15);
+    for (let i = 0; i < 3; i++) { const q = curve.getPoint(Math.random() * grow); addP.spawn(q.x + rand(-0.2, 0.2), q.y + rand(-0.1, 0.25), q.z, rand(-0.4, 0.4), rand(1, 2.2), 0, 0.3, 0.14, 0.03, 2.3, 0.45, 0.2, 1, 1, -2); }
     if (Math.random() < 0.6) addP.spawn(p.x + rand(-0.3, 0.3), p.y + rand(-0.2, 0.3), p.z, rand(-0.5, 0.5), rand(1, 2.5), 0, 0.35, 0.16, 0.04, 2.2, 0.5, 0.25, 1, 1, -2);
     if (k > 0.3 && !o.userData.bit) { o.userData.bit = true; glowPuff(tx, ty, 0.2, 0xff4060, 2.6, 0.3); ring(tx, ty, 0.2, 0xff8090, 2.4, 0.25, true); addP.burst(26, tx, ty, 0.2, 7, { life: [0.15, 0.4], size: [0.06, 0.14], color: COL.hell, drag: 3 }); sfx.kick(140, 50, 0.12, 0.4); }
   });
@@ -11804,11 +11816,11 @@ function shivaSkyEye(e) {
 }
 function shivaBeam(e) {
   const life = SUPER_LIFE(1.12), side = e.side, vv = foeOf(side);
-  const cm = addMat(3, 2.3, 1.3, 1), om = addMat(2.2, 0.7, 0.2, 0.55), vm = addMat(1.2, 0.4, 2.4, 0.35);
+  const cm = addMat(3, 2.4, 1.4, 1), om = addMat(2.4, 0.8, 0.15, 0.6), vm = addMat(1.0, 0.35, 2.2, 0.16);
   const g = new THREE.Group();
-  const core = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.11, 1, 10, 1, true).rotateZ(Math.PI / 2).translate(0.5, 0, 0), cm);
-  const outer = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.42, 1, 14, 1, true).rotateZ(Math.PI / 2).translate(0.5, 0, 0), om);
-  const halo = new THREE.Mesh(new THREE.CylinderGeometry(0.75, 0.75, 1, 14, 1, true).rotateZ(Math.PI / 2).translate(0.5, 0, 0), vm);
+  const core = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 1, 10, 1, true).rotateZ(Math.PI / 2).translate(0.5, 0, 0), cm);
+  const outer = new THREE.Mesh(new THREE.CylinderGeometry(0.17, 0.17, 1, 14, 1, true).rotateZ(Math.PI / 2).translate(0.5, 0, 0), om);
+  const halo = new THREE.Mesh(new THREE.CylinderGeometry(0.34, 0.34, 1, 14, 1, true).rotateZ(Math.PI / 2).translate(0.5, 0, 0), vm);
   g.add(core, outer, halo);
   timed.add(g, life, (o, k, dt, t) => {
     const from = thirdEyePos(side), to = vv ? chestOf(vv) : new V3(e.x, 1.2, 0);
@@ -11838,7 +11850,7 @@ function aphEros(e) {
     const a = Math.min(1, k * 6) * (k > 0.9 ? (1 - k) / 0.1 : 1); wm.opacity = 0.85 * a; body.material.opacity = a; bow.material.opacity = a;
     if (Math.random() < 0.3) addP.spawn(o.position.x + rand(-0.2, 0.2), o.position.y, 0.3, rand(-0.3, 0.3), -0.6, 0, 0.6, 0.06, 0.02, 2.4, 1.8, 1.0, 1, 1, 0);
   }, () => { if (S2.eros === g) S2.eros = null; });
-  glowPuff(g.position.x, 2.9, 0.3, 0xffd0e0, 2, 0.4); sfx.ring([1047, 1319, 1568, 2093], 0.8, 0.05);
+  const ex = v ? v.f.x - v.f.facing * 0.6 : e.x; glowPuff(ex, 2.9, 0.3, 0xffd0e0, 2, 0.4); sfx.ring([1047, 1319, 1568, 2093], 0.8, 0.05);
 }
 function aphArrow(e, big) {
   const c = foeChest(e), from = S2.eros ? S2.eros.position.clone() : new V3(c.x - 3, 3, 0.3);
@@ -11855,7 +11867,7 @@ function shakaGreatPalm(e) {
   const hand = palmMesh(pm, dir); hand.scale.setScalar(3.6);
   const x = e.x, life = SUPER_LIFE(0.7);
   hand.position.set(x, 13, -0.2);
-  timed.add(hand, life, (o, k, dt, t) => { const fall = Math.min(1, k / 0.22); o.position.y = 13 - 11.4 * easeIn(fall) + (fall >= 1 ? Math.sin(t * 30) * 0.03 : 0); pm.opacity = 0.9 * (k > 0.85 ? (1 - k) / 0.15 : 1); });
+  timed.add(hand, life, (o, k, dt, t) => { const fall = Math.min(1, k / 0.22); o.position.y = 13 - 11.4 * s2In(fall) + (fall >= 1 ? Math.sin(t * 30) * 0.03 : 0); pm.opacity = 0.9 * (k > 0.85 ? (1 - k) / 0.15 : 1); });
   runeRing(x, 0.05, 0, 4.2, life, false, [2.2, 1.6, 0.6], dharmaTex());
   lightPillar(x, 1.6, 16, [1.2, 0.9, 0.35], life * 0.5, -0.4);
   sfx.ring([131, 196, 262, 392], 1.4, 0.07); sfx.tone(98, 65, 0.9, 'sine', 0.22);
@@ -11901,7 +11913,7 @@ function apolloMuses(e) {
   for (let i = 0; i < 9; i++) { const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: FT.glow, color: new THREE.Color().setHSL(0.1 + i * 0.03, 1, 0.65), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false })); s.material.userData.own = true; s.scale.setScalar(0.9); g.add(s); lights.push(s); }
   timed.add(g, life, (o, k, dt, t) => {
     const f = v ? v.f : null; o.position.set(f ? f.x : e.x, (f ? f.y : 0) + 1.2, 0);
-    const r = 2.6 * (1 - easeIn(k));
+    const r = 2.6 * (1 - s2In(k));
     lights.forEach((s, i) => { const a = t * 4 + (i / 9) * Math.PI * 2; s.position.set(Math.cos(a) * r, Math.sin(a) * r * 0.75, Math.sin(a) * 0.3); });
   });
   sfx.ring([392, 494, 587, 784, 988], 1.0, 0.05);
@@ -11920,7 +11932,11 @@ function odinValkyrie(e, n) {
   const g = new THREE.Group();
   const body = new THREE.Sprite(new THREE.SpriteMaterial({ map: FT.glow, color: 0xd8ecff, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false })); body.material.userData.own = true; body.scale.set(0.9, 1.6, 1); g.add(body);
   const wm = addMat(1.5, 2.0, 2.8, 0.75, THREE.DoubleSide);
-  const wingShape = new THREE.Shape(); wingShape.moveTo(0, 0); wingShape.quadraticCurveTo(0.6, 0.9, 1.6, 1.1); wingShape.quadraticCurveTo(1.1, 0.5, 1.3, 0.2); wingShape.quadraticCurveTo(0.8, 0.1, 0.9, -0.3); wingShape.quadraticCurveTo(0.4, -0.1, 0, 0);
+  // a swan's wing: a rounded leading edge out to the tip, then a trailing edge of long feathers
+  const wingShape = new THREE.Shape(); wingShape.moveTo(0, 0); wingShape.bezierCurveTo(0.3, 0.7, 1.0, 1.15, 1.7, 1.0);
+  const tips = [[1.55, 0.62], [1.35, 0.7], [1.3, 0.3], [1.05, 0.38], [0.95, -0.02], [0.7, 0.1], [0.55, -0.32], [0.3, -0.12]];
+  for (let i = 0; i < tips.length; i += 2) { wingShape.quadraticCurveTo(tips[i][0] + 0.12, tips[i][1] + 0.08, tips[i][0], tips[i][1]); wingShape.lineTo(tips[i + 1][0], tips[i + 1][1]); }
+  wingShape.quadraticCurveTo(0.12, -0.12, 0, 0);
   const wings = [];
   for (const s2 of [-1, 1]) { const w = new THREE.Mesh(new THREE.ShapeGeometry(wingShape, 8), wm); w.scale.set(s2, 1, 1); w.position.set(0, 0.25, -0.05); g.add(w); wings.push(w); }
   const spear = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 2.2, 6), addMat(2.6, 2.4, 1.6, 1)); spear.position.y = -0.2; g.add(spear);
@@ -11928,7 +11944,7 @@ function odinValkyrie(e, n) {
   g.position.copy(from);
   timed.add(g, 0.5, (o, k, dt, t) => {
     const dive = Math.min(1, k / 0.42);
-    o.position.lerpVectors(from, c, easeIn(dive));
+    o.position.lerpVectors(from, c, s2In(dive));
     for (const w of wings) w.rotation.y = Math.sin(t * 22) * 0.4;
     const a = k > 0.84 ? (1 - k) / 0.16 : 1; wm.opacity = 0.75 * a; body.material.opacity = a; spear.material.opacity = a;
     if (dive < 1) addP.spawn(o.position.x, o.position.y, o.position.z, rand(-0.3, 0.3), rand(-0.3, 0.3), 0, 0.35, 0.18, 0.04, 1.2, 1.7, 2.6, 1, 2, 0);
@@ -11993,7 +12009,7 @@ function super2Fx(e) {
     case 'hades:head': if (e.i === 0) S2.heads = 0; cerberusHead(e, S2.heads++ % 3); break;
     case 'hades:howl': { const x = e.x; for (let i = 0; i < 3; i++) setTimeout(() => ring(x, 0.06, 0, 0xff3050, 4 + i * 2.5, 0.5), i * 90); addP.burst(60, x, 0.4, 0, 5, { life: [0.4, 0.9], size: [0.08, 0.18], color: COL.hell, up: 5, drag: 1.5 }); sfx.tone(110, 40, 1.0, 'sawtooth', 0.16); sfx.tone(140, 55, 1.0, 'sawtooth', 0.1, 0.05); break; }
     case 'hades:hellfire': {
-      const x = e.x; lightPillar(x, 1.6, 14, [2.6, 0.35, 0.5], 0.9);
+      const x = e.x; lightPillar(x, 1.6, 14, [2.6, 0.45, 0.25], 0.9);
       normP.burst(isMobile ? 50 : 100, x, 0.6, 0, 6, { life: [0.6, 1.3], size: [0.2, 0.4], color: [0.06, 0.02, 0.03], alpha: 0.85, drag: 1.5, up: 4 });
       finaleFlash(x, 2, 0xff6080, '#ffe0e8', COL.hell, 1.1); break;
     }
@@ -12840,7 +12856,9 @@ class FighterView {
       }
     } else if (f.key === 'thor') {
       // Mjolnir leaves the hand while thrown
-      M.hammer.visible = !sim.projs.some((q) => q.owner === f.side && q.ret);
+      // (the second super hurls Mjolnir into the storm and catches it on the way down)
+      const sky = f.state === 'attack' && f.move && f.move.super2 && f.mt / SUPER_K > 0.3 && f.mt / SUPER_K < 1.5;
+      M.hammer.visible = !sim.projs.some((q) => q.owner === f.side && q.ret) && !sky;
       const flick = 0.75 + Math.random() * 0.5;
       M.triGlow.material.opacity = (0.15 + this.glow * 0.95) * flick * (M.hammer.visible ? 1 : 0);
       M.mats.gem.emissiveIntensity = 0.6 + this.glow * 2.6 * flick;
@@ -12853,9 +12871,7 @@ class FighterView {
     } else if (f.key === 'odin') {
       const flick = 0.85 + Math.random() * 0.3;
       const cs = cineState();
-      // (the first super throws Mjolnir at the finish; the second hurls it into the storm and catches it on the way down)
-      const two = f.state === 'attack' && f.move && f.move.super2, tt = f.mt / SUPER_K;
-      const thrown = sim.projs.some((q) => q.owner === f.side && q.ret) || (cs && cs.f === f && !two && cs.t > 1.62 && cs.t < 2.05) || (two && tt > 0.3 && tt < 1.5);
+      const thrown = sim.projs.some((q) => q.owner === f.side && q.ret) || (cs && cs.f === f && !(f.move && f.move.super2) && cs.t > 1.62 && cs.t < 2.05);
       M.spear.visible = !thrown;
       M.triGlow.material.opacity = (0.2 + this.glow * 0.9) * flick * (thrown ? 0 : 1);
       M.soulFire.material.opacity = (0.5 + this.glow * 0.5) * flick;
