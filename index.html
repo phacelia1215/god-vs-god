@@ -14403,7 +14403,7 @@ const sfx = {
       // every effect goes through a bus with a short hall reverb for weight and space
       this.bus = c.createGain();
       this.bus.connect(this.master);
-      const verb = c.createConvolver(); verb.buffer = this.makeIR(isMobile ? 0.8 : 1.5, 2.6);
+      const verb = c.createConvolver(); verb.buffer = this.makeIR(isMobile ? 0.6 : 1.5, 2.6);
       const wet = c.createGain(); wet.gain.value = 0.22;
       const verbHP = c.createBiquadFilter(); verbHP.type = 'highpass'; verbHP.frequency.value = 180;
       this.bus.connect(verbHP); verbHP.connect(verb); verb.connect(wet); wet.connect(this.master);
@@ -14418,43 +14418,52 @@ const sfx = {
     bgm.init();
   },
   makeIR(sec, decay) {
-    const c = this.ctx, n = Math.floor(c.sampleRate * sec), b = c.createBuffer(2, n, c.sampleRate);
-    for (let ch = 0; ch < 2; ch++) {
+    const c = this.ctx, n = Math.floor(c.sampleRate * sec), nch = isMobile ? 1 : 2, b = c.createBuffer(nch, n, c.sampleRate);   // phones: a mono hall is half the convolution
+    for (let ch = 0; ch < nch; ch++) {
       const d = b.getChannelData(ch); let lp = 0;
       for (let i = 0; i < n; i++) { lp += (Math.random() * 2 - 1 - lp) * 0.35; d[i] = lp * Math.pow(1 - i / n, decay) * (i < 300 ? i / 300 : 1); }
     }
     return b;
   },
   ok() { return this.ctx && !this.muted && this.ctx.state === 'running'; },
+  // phones: a voice budget. A heavy hit layers a dozen voices and a combo stacks several hits, which peaked near 50
+  // voices at once - more than a phone's audio thread can mix in time, so the sound broke up. Past the budget the
+  // quiet layers go first, then everything; the loud core of each hit (thump, crunch) always gets through first.
+  voices: 0, vEnd: 0,
+  full(gain) { if (this.voices && this.ctx.currentTime > this.vEnd + 0.3) this.voices = 0;   // (a lost 'ended' event must never mute the game)
+    return isMobile && (this.voices >= 22 || (this.voices >= 12 && gain < 0.13) || (this.voices >= 7 && gain < 0.05)); },
+  voice(src, end) { if (!isMobile) return; this.voices++; if (end > this.vEnd) this.vEnd = end; src.onended = () => { if (this.voices > 0) this.voices--; }; },
+  // phones: filter sweeps are computed once per audio block rather than per sample
+  kr(f) { if (isMobile) try { f.frequency.automationRate = 'k-rate'; } catch (e) { } return f; },
   out(node) {
     if (this._pan && this.ctx.createStereoPanner) { const p = this.ctx.createStereoPanner(); p.pan.value = this._pan; node.connect(p); p.connect(this.bus); }
     else node.connect(this.bus);
   },
   // filtered noise. atk = attack time (short = transient, long = swell)
   noise(dur, f0, f1, type = 'bandpass', q = 1, gain = 0.4, delay = 0, atk = 0.004, sat = false) {
-    if (!this.ok()) return;
+    if (!this.ok() || this.full(gain)) return;
     const c = this.ctx, t = c.currentTime + delay;
-    const src = c.createBufferSource(); src.buffer = this.noiseBuf;
+    const src = c.createBufferSource(); src.buffer = this.noiseBuf; this.voice(src, t + dur + 0.05);
     src.playbackRate.value = rand(0.85, 1.15);
-    const f = c.createBiquadFilter(); f.type = type; f.Q.value = q;
+    const f = this.kr(c.createBiquadFilter()); f.type = type; f.Q.value = q;
     f.frequency.setValueAtTime(f0, t); f.frequency.exponentialRampToValueAtTime(Math.max(20, f1), t + dur);
     const g = c.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(gain, t + Math.min(atk, dur * 0.8)); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
     let last = f;
     src.connect(f);
-    if (sat) { const ws = c.createWaveShaper(); ws.curve = this.satCurve; ws.oversample = '2x'; const pre = c.createGain(); pre.gain.value = 3; f.connect(pre); pre.connect(ws); last = ws; }
+    if (sat) { const ws = c.createWaveShaper(); ws.curve = this.satCurve; ws.oversample = isMobile ? 'none' : '2x'; const pre = c.createGain(); pre.gain.value = 3; f.connect(pre); pre.connect(ws); last = ws; }
     last.connect(g); this.out(g);
     src.start(t, rand(0, 1)); src.stop(t + dur + 0.05);
   },
   // oscillator with a pitch glide; buzzy waves are tamed with a lowpass so nothing sounds like a cheap beeper
   tone(f0, f1, dur, type = 'sine', gain = 0.4, delay = 0, atk = 0.008) {
-    if (!this.ok()) return;
+    if (!this.ok() || this.full(gain)) return;
     const c = this.ctx, t = c.currentTime + delay;
-    const o = c.createOscillator(); o.type = type;
+    const o = c.createOscillator(); o.type = type; this.voice(o, t + dur + 0.05);
     o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(Math.max(20, f1), t + dur);
     if (type === 'sawtooth' || type === 'square') gain *= 0.7;
     const g = c.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(gain, t + Math.min(atk, dur * 0.5)); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
     if (type === 'sawtooth' || type === 'square') {
-      const lp = c.createBiquadFilter(); lp.type = 'lowpass'; lp.Q.value = 0.7;
+      const lp = this.kr(c.createBiquadFilter()); lp.type = 'lowpass'; lp.Q.value = 0.7;
       lp.frequency.setValueAtTime(Math.min(8000, Math.max(f0, f1) * 3), t); lp.frequency.exponentialRampToValueAtTime(Math.max(120, Math.min(f0, f1) * 1.5), t + dur);
       o.connect(lp); lp.connect(g);
     } else o.connect(g);
@@ -14463,9 +14472,9 @@ const sfx = {
   },
   // the "thump": a sine whose pitch drops fast - the core of every satisfying hit
   kick(f0, f1, dur, gain, delay = 0) {
-    if (!this.ok()) return;
+    if (!this.ok() || this.full(gain)) return;
     const c = this.ctx, t = c.currentTime + delay;
-    const o = c.createOscillator(); o.type = 'sine';
+    const o = c.createOscillator(); o.type = 'sine'; this.voice(o, t + dur + 0.05);
     o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(f1, t + Math.min(0.07, dur * 0.45));
     const g = c.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(gain, t + 0.003); g.gain.exponentialRampToValueAtTime(gain * 0.35, t + dur * 0.3); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
     const ws = c.createWaveShaper(); ws.curve = this.satCurve;
@@ -14476,10 +14485,10 @@ const sfx = {
   click(gain = 0.3, f = 4000, delay = 0) { this.noise(0.014, f * 1.6, f, 'highpass', 0.7, gain, delay, 0.001); },
   // swelling air sweep (rises then falls) - whooshes and swings
   sweep(dur, fA, fB, q, gain, delay = 0) {
-    if (!this.ok()) return;
+    if (!this.ok() || this.full(gain)) return;
     const c = this.ctx, t = c.currentTime + delay;
-    const src = c.createBufferSource(); src.buffer = this.noiseBuf; src.playbackRate.value = rand(0.9, 1.1);
-    const f = c.createBiquadFilter(); f.type = 'bandpass'; f.Q.value = q;
+    const src = c.createBufferSource(); src.buffer = this.noiseBuf; src.playbackRate.value = rand(0.9, 1.1); this.voice(src, t + dur + 0.05);
+    const f = this.kr(c.createBiquadFilter()); f.type = 'bandpass'; f.Q.value = q;
     f.frequency.setValueAtTime(fA, t); f.frequency.exponentialRampToValueAtTime(fB, t + dur * 0.55); f.frequency.exponentialRampToValueAtTime(fA * 0.8, t + dur);
     const g = c.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(gain, t + dur * 0.45); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
     src.connect(f); f.connect(g);
