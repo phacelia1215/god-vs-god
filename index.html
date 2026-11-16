@@ -9047,7 +9047,7 @@ class Particles {
     this.life = new Float32Array(max); this.ml = new Float32Array(max);
     this.drag = new Float32Array(max); this.grav = new Float32Array(max);
     this.alive = new Uint8Array(max);
-    this.cursor = 0;
+    this.cursor = 0; this.live = 0; this.clean = true;
     const g = new THREE.BufferGeometry();
     this.aPos = new THREE.BufferAttribute(this.pos, 3); this.aPos.setUsage(THREE.DynamicDrawUsage);
     this.aCol = new THREE.BufferAttribute(this.col, 4); this.aCol.setUsage(THREE.DynamicDrawUsage);
@@ -9079,7 +9079,9 @@ class Particles {
     this.vel[i * 3] = vx; this.vel[i * 3 + 1] = vy; this.vel[i * 3 + 2] = vz;
     this.base[i * 4] = r; this.base[i * 4 + 1] = g; this.base[i * 4 + 2] = b; this.base[i * 4 + 3] = a;
     this.life[i] = life; this.ml[i] = life; this.s0[i] = s0; this.s1[i] = s1;
-    this.drag[i] = drag; this.grav[i] = grav; this.alive[i] = 1;
+    this.drag[i] = drag; this.grav[i] = grav;
+    if (!this.alive[i]) this.live++;
+    this.alive[i] = 1; this.clean = false;
   }
   burst(n, x, y, z, speed, opts) {
     const o = Object.assign({ life: [0.3, 0.7], size: [0.1, 0.25], size1: 0, color: [1, 1, 1], alpha: 1, drag: 2, grav: 0, up: 0, spread: [1, 1, 1], dir: null, cone: 1 }, opts);
@@ -9094,11 +9096,12 @@ class Particles {
     }
   }
   update(dt) {
+    if (this.live === 0 && this.clean) return;   // nothing alive and the buffers already cleared: no work, no upload
     const p = this.pos, v = this.vel, col = this.col, b = this.base;
     for (let i = 0; i < this.max; i++) {
       if (!this.alive[i]) { col[i * 4 + 3] = 0; this.size[i] = 0; continue; }
       this.life[i] -= dt;
-      if (this.life[i] <= 0) { this.alive[i] = 0; col[i * 4 + 3] = 0; this.size[i] = 0; continue; }
+      if (this.life[i] <= 0) { this.alive[i] = 0; this.live--; col[i * 4 + 3] = 0; this.size[i] = 0; continue; }
       const k = Math.exp(-this.drag[i] * dt);
       v[i * 3] *= k; v[i * 3 + 1] = v[i * 3 + 1] * k - this.grav[i] * dt; v[i * 3 + 2] *= k;
       p[i * 3] += v[i * 3] * dt; p[i * 3 + 1] += v[i * 3 + 1] * dt; p[i * 3 + 2] += v[i * 3 + 2] * dt;
@@ -9110,6 +9113,7 @@ class Particles {
       this.size[i] = this.s0[i] + (this.s1[i] - this.s0[i]) * t;
     }
     this.aPos.needsUpdate = true; this.aCol.needsUpdate = true; this.aSize.needsUpdate = true;
+    this.clean = this.live <= 0;
   }
 }
 
@@ -13518,8 +13522,10 @@ const bgm = {
     for (let ch = 0; ch < 2; ch++) { const d = buf.getChannelData(ch); for (let k = 0; k < fade; k++) d[d.length - 1 - k] *= k / fade; }
     return { buf, dur: (st1 - st0) * s16 };
   },
+  // the cache is least-recently-used: a track touched again (queued or played) moves to the back of the line
+  touch(name) { const e = this.cache.get(name); if (e) { this.cache.delete(name); this.cache.set(name, e); } return e; },
   entry(name) {
-    let e = this.cache.get(name);
+    let e = this.touch(name);
     if (!e) {
       const T = this.TRACKS[name], segs = this.segsOf(T);
       e = { segs, lo: segs.map(() => null), hi: segs.map(() => null), dur: segs.map(([x, y]) => (y - x) * 16 * 60 / T.bpm / 4), dyn: this.dyn(name), failed: false };
@@ -13546,8 +13552,10 @@ const bgm = {
       try { const [x, y] = e.segs[j.k], r = await this.renderSeg(j.name, j.I, x, y); (j.I ? e.hi : e.lo)[j.k] = r.buf; }
       catch (err) { console.warn('bgm render failed', j.name, err); e.failed = true; this.jobs = this.jobs.filter((q) => q.name !== j.name); }
     }
-    // keep memory bounded: drop the least recently used tracks that are neither playing nor wanted
-    while (this.cache.size > (isMobile ? 3 : 4)) {
+    // keep memory bounded: drop the least recently used tracks that are neither playing nor wanted. A track is only
+    // 7-10 MB (phones render at 32 kHz) and a round of play (title, mode, select, the stage, the victory) touches about
+    // five: a cache that held fewer kept re-rendering them in the background, into the next fight
+    while (this.cache.size > (isMobile ? 7 : 8)) {
       const k = [...this.cache.keys()].find((n) => n !== this.playing && n !== this.want); if (!k) break;
       this.cache.delete(k); this.jobs = this.jobs.filter((q) => q.name !== k);
     }
@@ -13555,7 +13563,7 @@ const bgm = {
   },
   // render the music that the next screen will want while this one is still up
   prefetch(...names) { for (const n of names) this.need(n); },
-  play(name) { this.want = name; },
+  play(name) { if (this.want !== name) this.touch(name); this.want = name; },
   out(node, pan = 0, delay = false) {
     const c = this.c;
     if (pan && c.createStereoPanner) { const p = c.createStereoPanner(); p.pan.value = Math.max(-1, Math.min(1, pan)); node.connect(p); p.connect(this.dry); if (delay) p.connect(this.dly); }
@@ -14233,27 +14241,30 @@ function cutin(f, name) {
 function renderPips() {
   for (let s = 0; s < 2; s++) hud.pips[s].innerHTML = [0, 1].map((i) => `<i class="${i < sim.wins[s] ? 'on' : ''}"></i>`).join('');
 }
+// the HUD writes to the page only when a value changed (every write costs the browser a style pass, which phones feel)
+const hudLast = new Map();
+function hudSet(el, key, val, fn) { const k = hudLast.get(el); if (k && k[key] === val) return; (k || hudLast.set(el, {}).get(el))[key] = val; fn(val); }
 function updateHUD(dt) {
   for (let s = 0; s < 2; s++) {
     const f = sim.fighters[s];
     const r = clamp(f.hp / f.c.hp, 0, 1);
-    hud.hp[s].style.transform = `scaleX(${r})`;
-    hud.hp[s].classList.toggle('low', r < 0.25);
+    hudSet(hud.hp[s], 'w', r, (v) => { hud.hp[s].style.transform = `scaleX(${v})`; });
+    hudSet(hud.hp[s], 'low', r < 0.25, (v) => hud.hp[s].classList.toggle('low', v));
     if (hud.dmgR[s] > r) { hud.dmgDelay[s] -= dt; if (hud.dmgDelay[s] <= 0 && !f.inCombo) hud.dmgR[s] = Math.max(r, hud.dmgR[s] - dt * 0.6); }
     else { hud.dmgR[s] = r; hud.dmgDelay[s] = 0.5; }
-    hud.dmg[s].style.transform = `scaleX(${hud.dmgR[s]})`;
+    hudSet(hud.dmg[s], 'w', hud.dmgR[s], (v) => { hud.dmg[s].style.transform = `scaleX(${v})`; });
     const m = clamp(f.meter / 100, 0, 1);
-    hud.meter[s].style.transform = `scaleX(${m})`;
-    hud.meterBox[s].classList.toggle('full', m >= 1);
+    hudSet(hud.meter[s], 'w', m, (v) => { hud.meter[s].style.transform = `scaleX(${v})`; });
+    hudSet(hud.meterBox[s], 'full', m >= 1, (v) => hud.meterBox[s].classList.toggle('full', v));
     comboTimers[s] -= dt;
     if (comboTimers[s] <= 0) hud.combo[s].classList.remove('show');
     calloutTimers[s] -= dt;
     if (calloutTimers[s] <= 0) hud.callout[s].classList.remove('show');
   }
-  hud.timer.textContent = Math.max(0, Math.ceil(sim.timer));
+  hudSet(hud.timer, 't', Math.max(0, Math.ceil(sim.timer)), (v) => { hud.timer.textContent = v; });
   announceTimer -= dt;
   if (announceTimer <= 0) hud.announce.classList.remove('show');
-  if (flashLevel > 0) { flashLevel = Math.max(0, flashLevel - dt * 2.2); $('flash').style.opacity = flashLevel; }
+  if (flashLevel > 0) { flashLevel = Math.max(0, flashLevel - dt * 2.2); flashEl().style.opacity = flashLevel; }
 }
 
 // ============================================================
@@ -14516,7 +14527,11 @@ function frame(now) {
   slowT = frameAvg > 1 / 45 ? slowT + rdt : 0; fastT = frameAvg < 1 / 57 ? fastT + rdt : 0;
   if (resT > 0.5 && !document.hidden && !document.body.classList.contains('cine')) {
     resT = 0;
-    const want = slowT > 1.5 ? Math.max(0.6, resScale - 0.12) : fastT > 4 ? Math.min(1, resScale + 0.06) : resScale;
+    // phones only step down during play (a bigger step, so once is usually enough) and come back up on the menus: a
+    // phone warming up over a long session hovers near both thresholds, and flipping the resolution back and forth
+    // mid-fight made a hitch every few seconds. PCs keep adjusting both ways.
+    const upOk = !isMobile || screen !== 'match';
+    const want = slowT > 1.5 ? Math.max(0.6, resScale - (isMobile ? 0.15 : 0.12)) : fastT > 4 && upOk ? Math.min(1, resScale + 0.06) : resScale;
     if (Math.abs(want - resScale) > 0.001) { resScale = want; slowT = fastT = 0; renderer.setPixelRatio(basePR() * resScale); resize(); }
   }
   if ((pinT += rdt) > 1) { pinT = 0; pinPrograms(); }
@@ -14596,25 +14611,32 @@ const modelCache = {};
 // (each god for each side); phones keep only the last few used and free the rest, or the page outgrows what a
 // phone's browser allows and gets killed (seen at the start of the story's second fight). A freed model is simply
 // built again when picked (its shaders stay compiled).
-const MODEL_KEEP = isMobile ? 4 : 99, modelUse = [];
-const FT_SET = new Set(Object.values(FT));
+// Many textures and some geometry are shared by every build of a god (cached by the builders): those are never
+// freed - disposing them only made the live model re-upload them on its next frame (a hitch every time a god was
+// picked). Only what one build alone used is released.
+const MODEL_KEEP = isMobile ? 6 : 99, modelUse = [];
+const FT_SET = new Set(Object.values(FT)), partUses = new WeakMap();
+function modelParts(m, fn) {
+  const seen = new Set();
+  m.root.traverse((o) => {
+    if (o.geometry && !seen.has(o.geometry)) { seen.add(o.geometry); fn(o.geometry); }
+    const ms = Array.isArray(o.material) ? o.material : o.material ? [o.material] : [];
+    for (const mt of ms) for (const k in mt) { const v = mt[k]; if (v && v.isTexture && !seen.has(v)) { seen.add(v); fn(v); } }
+  });
+}
 function freeModel(id) {
   const m = modelCache[id]; if (!m) return;
   delete modelCache[id];
   if (m.root.parent) m.root.parent.remove(m.root);
-  const seen = new Set();
-  m.root.traverse((o) => {
-    if (o.geometry && !o.geometry.userData.shared && !seen.has(o.geometry)) { seen.add(o.geometry); o.geometry.dispose(); }
-    const ms = Array.isArray(o.material) ? o.material : o.material ? [o.material] : [];
-    for (const mt of ms) for (const k in mt) { const v = mt[k]; if (v && v.isTexture && !FT_SET.has(v) && !seen.has(v)) { seen.add(v); v.dispose(); } }
-  });
+  const live = new Set(); for (const k in modelCache) modelParts(modelCache[k], (x) => live.add(x));
+  modelParts(m, (x) => { if ((partUses.get(x) || 0) <= 1 && !live.has(x) && !FT_SET.has(x) && !(x.userData && x.userData.shared)) x.dispose(); });
 }
 function modelFor(side, key) {
   const id = side + key;
   const u = modelUse.indexOf(id); if (u >= 0) modelUse.splice(u, 1); modelUse.push(id);
   while (modelUse.length > MODEL_KEEP) freeModel(modelUse.shift());
   if (!modelCache[id]) modelCache[id] = key === 'zeus' ? buildZeus(FT) : key === 'anubis' ? buildAnubis(FT) : key === 'thor' ? buildThor(FT) : key === 'susanoo' ? buildSusanoo(FT) : key === 'heracles' ? buildHeracles(FT) : key === 'hades' ? buildHades(FT) : key === 'odin' ? buildOdin(FT) : key === 'shiva' ? buildShiva(FT) : key === 'aphrodite' ? buildAphrodite(FT) : key === 'shaka' ? buildShaka(FT) : key === 'apollo' ? buildApollo(FT) : buildPoseidon(FT);
-  if (!modelCache[id].outlined) { modelCache[id].outlined = true; if (!isMobile) addOutline(modelCache[id].root); }
+  if (!modelCache[id].outlined) { modelCache[id].outlined = true; if (!isMobile) addOutline(modelCache[id].root); modelParts(modelCache[id], (x) => partUses.set(x, (partUses.get(x) || 0) + 1)); }
   return modelCache[id];
 }
 // anime-style ink outline: back-face hull pushed out along the normals
