@@ -766,6 +766,8 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
 // ======== sim.js ========
@@ -9396,22 +9398,13 @@ composer.addPass(bloom);
 // phones: the glow is soft anyway, so its blur chain runs at half the screen's resolution (a quarter of the pixels)
 if (isMobile) { const setBloom = bloom.setSize.bind(bloom); bloom.setSize = (w, h) => setBloom(Math.max(2, Math.round(w * 0.5)), Math.max(2, Math.round(h * 0.5))); }
 composer.addPass(new OutputPass());
-// phones: 4x multisampling on the scene's render target - their tile-based GPUs resolve it on chip, so smooth edges
-// cost far less than more pixels would. Checked once: a device that cannot multisample this target renders without it.
+// phones: edges smoothed by FXAA, one plain full-screen pass after the colour grade. (A multisampled half-float scene
+// target was tried first: some phone GPUs flicker with it, and it cannot be told apart from a working one in advance.)
 // Low quality (chosen, or picked automatically when a phone runs a first match under 32 fps) goes without it.
-let MSAA = isMobile && renderer.capabilities.maxSamples >= 4 ? 4 : 0;
-function setMSAA() {
-  const want = quality === 'high' ? MSAA : 0, rt = composer.renderTarget1;
-  if (rt.samples !== want) { rt.samples = want; rt.dispose(); }
-}
-function checkMSAA() {
-  if (!composer.renderTarget1.samples) return;
-  const gl = renderer.getContext();
-  renderer.setRenderTarget(composer.renderTarget1); renderer.clear();
-  const ok = gl.checkFramebufferStatus(gl.FRAMEBUFFER) === gl.FRAMEBUFFER_COMPLETE && gl.getError() === gl.NO_ERROR;
-  renderer.setRenderTarget(null);
-  if (!ok) { MSAA = 0; setMSAA(); console.warn('MSAA unavailable on this target: rendering without it'); }
-}
+const fxaa = new ShaderPass(FXAAShader);
+fxaa.enabled = false;
+composer.addPass(fxaa);
+function setAA() { fxaa.enabled = isMobile && quality === 'high'; }
 
 // lights
 const hemi = new THREE.HemisphereLight(0xb9b4ff, 0x4a3022, 0.5);
@@ -9442,7 +9435,7 @@ function applyQuality() {
   const pr = basePR() * resScale;
   renderer.setPixelRatio(pr);
   bloom.enabled = quality === 'high';
-  setMSAA();
+  setAA();
   renderer.shadowMap.type = isMobile ? THREE.PCFShadowMap : THREE.PCFSoftShadowMap;   // fixed: changing it recompiles every material
   const ms = quality === 'high' ? (isMobile ? 1024 : 1536) : 1024;
   if (key.shadow.mapSize.x !== ms) {
@@ -9460,6 +9453,8 @@ function resize() {
   composer.setSize(w, h);
   composer.setPixelRatio(renderer.getPixelRatio());
   bloom.resolution.set(w * 0.5, h * 0.5);
+  const db = renderer.getDrawingBufferSize(new THREE.Vector2());
+  fxaa.material.uniforms.resolution.value.set(1 / db.x, 1 / db.y);
   camera.aspect = w / h;
   camera.updateProjectionMatrix();
   document.body.classList.toggle('portrait', h > w * 1.05);
@@ -16513,7 +16508,7 @@ async function boot() {
   steps.push(['メニュー背景を構築中…', () => buildMenuBackdrops(arena)]);
   steps.push(['ステージを構築中…', () => buildStages(arena, [])]);
   for (const id of STAGE_IDS) if (STAGES[id].build) steps.push([`ステージ「${STAGES[id].name}」を構築中…`, () => buildStages(arena, [id])]);
-  steps.push(['対戦を準備中…', () => { iblPolicy(scene); setupMatch(ATTRACT); applyQuality(); checkMSAA(); }]);
+  steps.push(['対戦を準備中…', () => { iblPolicy(scene); setupMatch(ATTRACT); applyQuality(); }]);
   steps.push(['ライトを準備中…', () => installLampRig()]);
   for (const k of MENU_KEYS) steps.push([`${CHARS[k].name}を召喚中…`, () => { warmObj(modelFor(0, k).root); warmObj(modelFor(1, k).root); }]);
   steps.push(['ステージを描画準備中…', () => { for (const id of STAGE_IDS) if (STAGES[id].group) warmObj(STAGES[id].group); }]);
