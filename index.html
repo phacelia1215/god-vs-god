@@ -1280,7 +1280,7 @@ const SHIVA_MOVES = {
   },
   sv_kick: {
     name: '舞踏脚', type: 'normal', weap: 'fist', dur: 0.46, cancel: [0.2, 0.46],
-    anim: [[0, 'stance'], [0.08, 'kickWind'], [0.15, 'kick'], [0.28, 'kick'], [0.46, 'stance']],
+    anim: [[0, 'stance'], [0.08, 'kickWind'], [0.14, 'kick'], [0.25, 'kick'], [0.33, 'kickRe'], [0.46, 'stance']],
     hits: [H({ t0: 0.13, t1: 0.2, dmg: 50, range: [0.2, 1.75], y: [0.6, 2.1], hs: 0.42, kb: 2.2, stop: 0.08, fx: 'cosmic' })],
   },
   sv_low: {
@@ -1311,7 +1311,7 @@ const SHIVA_MOVES = {
   sv_tandava: {
     name: 'ターンダヴァ', type: 'special', weap: 'fist', dur: 0.8, glow: 'both', spin: [[0.06, 0.48, 2]],
     motion: [{ t0: 0.08, t1: 0.48, vx: 7.5 }], stopNear: 0.75,
-    anim: [[0, 'glide'], [0.07, 'whirl'], [0.46, 'whirl'], [0.5, 'kickWind'], [0.55, 'kick'], [0.66, 'kick'], [0.8, 'stance']],
+    anim: [[0, 'glide'], [0.07, 'whirl'], [0.46, 'whirl'], [0.5, 'kickWind'], [0.55, 'kick'], [0.64, 'kick'], [0.7, 'kickRe'], [0.8, 'stance']],
     hits: [
       H({ t0: 0.1, t1: 0.16, dmg: 18, range: [-0.4, 1.35], y: [0.4, 2.1], hs: 0.4, kb: 0.2, stop: 0.035, fx: 'cosmic' }),
       H({ t0: 0.2, t1: 0.26, dmg: 18, range: [-0.4, 1.35], y: [0.4, 2.1], hs: 0.4, kb: 0.2, stop: 0.035, fx: 'cosmic' }),
@@ -5147,6 +5147,39 @@ AOP.crouchBlock = mk(AOP.block, Object.assign({ y: -0.42, z: 0.02, spine: [0.32,
   set(APP, { jhWind: A(APP, 'lashWind', { rx: -0.1 }), jh: A(APP, 'lash', { rx: 0.4 }), jsWind: A(APP, 'kissWind'), js: A(APP, 'kiss', { rx: 0.25 }) });
   set(SKP, { jhWind: A(SKP, 'palmWind' in SKP ? 'palmWind' : 'skyWind', { rx: -0.1 }), jh: A(SKP, 'palm', { rx: 0.75 }), jsWind: A(SKP, 'wheelWind'), js: A(SKP, 'wheelRoll', { rx: 0.35 }) });
   set(AOP, { jhWind: A(AOP, 'sweepWind', { rx: -0.1 }), jh: A(AOP, 'sweep', { rx: 0.4 }), jsWind: mk(AOP.airDraw, { rx: 0.55 }), js: mk(AOP.airLoose, { rx: 0.65 }) });
+})();
+// Shiva's kick as a middle kick (a roundhouse with the rear leg): the knee lifts and turns in, the hips turn over
+// so the shin lands level at body height while the torso leans away and the lead arm guards, then the leg
+// snaps back bent before it is set down
+(function midKickPoses() {
+  const B = SVP.stance;
+  SVP.kickWind = mk(B, { ry: 0.45, rz: -0.1, hips: [0, -0.1, 0], spine: [-0.1, -0.2, 0], chest: [0, -0.2, 0], head: [0, -0.25, 0],
+    lHip: [-0.1, 0, 0.12], lKn: [0.35, 0, 0], lAn: [-0.25, 0, 0], rHip: [-1.25, 0, 0.75], rKn: [2.0, 0, 0], rAn: [0.5, 0, 0],
+    lSh: [-1.4, 0, 0.5], lEl: [-1.7, 0, 0], rSh: [-0.6, 0, 0.6], rEl: [-1.2, 0, 0] });
+  SVP.kick = mk(B, { ry: 1.0, rz: -0.34, y: 0.08, hips: [0, 0, 0], spine: [-0.12, -0.45, -0.1], chest: [-0.05, -0.3, -0.05], head: [0.1, -0.5, 0.3],
+    lHip: [0.02, 0, 0], lKn: [0.1, 0, 0], lAn: [-0.08, 0, 0], rHip: [-1.6, 0, 1.25], rKn: [0.1, 0, 0], rAn: [0.6, 0, 0],
+    lSh: [-1.6, 0, 0.55], lEl: [-1.8, 0, 0], rSh: [0.5, 0, 0.45], rEl: [-0.3, 0, 0] });
+  SVP.kickRe = mk(B, { ry: 0.6, rz: -0.15, hips: [0, -0.05, 0], spine: [-0.12, -0.3, 0], chest: [0, -0.2, 0], head: [0, -0.3, -0.05],
+    lHip: [-0.05, 0, 0.12], lKn: [0.3, 0, 0], lAn: [-0.2, 0, 0], rHip: [-1.15, 0, 0.8], rKn: [1.6, 0, 0], rAn: [0.5, 0, 0],
+    lSh: [-1.5, 0, 0.5], lEl: [-1.7, 0, 0], rSh: [-0.2, 0, 0.5], rEl: [-0.8, 0, 0] });
+})();
+// victory poses, one per god in their own legend: Zeus flexes the body that is his weapon, Thor rests Mjolnir on his
+// shoulder and laughs, Poseidon plants the trident, Anubis salutes with a raised blade like a judge, Susanoo flicks
+// the blood from his sword, Heracles shoulders the club and flexes, Hades plants the bident and holds out an open
+// hand, Odin stands over Gungnir, Shiva takes the Nataraja's dance, Aphrodite blows a kiss, Apollo raises a hand
+// to the sun; Shaka keeps his 'above heaven and below, I alone' (one hand to the sky, one to the earth)
+(function winPoses() {
+  ZP.win = mk(ZP.stance, {y: 0, z: 0, rx: 0, ry: 0, rz: 0, hips: [0, 0, 0], spine: [-0.05, 0, 0], chest: [-0.15, 0, 0], neck: [0, 0, 0], head: [-0.3, 0, 0], lSh: [-1.15, 0.5, -0.1], lEl: [-2.2, 0, 0], lWr: [0, 0, 0], rSh: [-1.15, 0.5, -0.1], rEl: [-2, 0, 0], rWr: [0, 0, 0], lHip: [-0.1, 0, 0.35], lKn: [0.1, 0, 0], lAn: [0, 0, -0.3], rHip: [0.05, 0, 0.35], rKn: [0.1, 0, 0], rAn: [0, 0, -0.3]});
+  TP.win = mk(TP.stance, {y: 0, z: 0, rx: 0, ry: 0, rz: 0, hips: [0, 0, 0], spine: [-0.1, 0, 0], chest: [-0.2, 0, 0], neck: [0, 0, 0], head: [-0.45, 0, 0], lSh: [0.35, 0.9, 0.6], lEl: [-1.6, 0, 0], rSh: [-1.2, 0, 1.2], rEl: [-2.3, 0, 0], rWr: [1.2, 0, 0], lHip: [-0.1, 0, 0.35], lKn: [0.15, 0, 0], lAn: [0, 0, -0.3], rHip: [0.05, 0, 0.35], rKn: [0.15, 0, 0], rAn: [0, 0, -0.3]});
+  PP.win = mk(PP.stance, {y: 0, z: 0, rx: 0, ry: 0, rz: 0, hips: [0, 0, 0.08], spine: [-0.05, 0.1, 0], chest: [-0.1, 0.1, 0], neck: [0, 0.1, 0], head: [-0.2, 0.3, 0], lSh: [0.35, 0.9, 0.6], lEl: [-1.6, 0, 0], rSh: [-0.2, 0, 0.45], rEl: [-0.9, 0, 0], rWr: [0, 0, 1.5], lHip: [-0.2, 0, 0.1], lKn: [0.35, 0, 0], lAn: [0, 0, 0], rHip: [0.05, 0, 0.2], rKn: [0.05, 0, 0], rAn: [0, 0, -0.15]});
+  AP.win = mk(AP.stance, {y: 0, z: 0, rx: 0, ry: 0, rz: 0, hips: [0, 0, 0], spine: [0, 0, 0], chest: [-0.05, 0, 0], neck: [0, 0, 0], head: [0.15, 0, 0], rSh: [-1.3, 0, -0.1], rEl: [-1.6, 0, 0], rWr: [0, 0, 0], lSh: [0.3, 0, 0.35], lEl: [-0.1, 0, 0], lWr: [0, 0, 0], lHip: [-0.05, 0, 0.12], lKn: [0.05, 0, 0], lAn: [0, 0, 0], rHip: [0.05, 0, 0.12], rKn: [0.05, 0, 0], rAn: [0, 0, 0]});
+  SUP.win = mk(SUP.stance, {y: 0, z: 0, rx: 0, ry: 0, rz: 0, hips: [0, 0, 0], spine: [-0.12, 0, 0], chest: [-0.12, 0, 0], neck: [0, 0, 0], head: [-0.2, -0.2, 0], rSh: [0.2, 0, 0.9], rEl: [-0.2, 0, 0], rWr: [1.2, 0, 0], lSh: [0.35, 0.9, 0.6], lEl: [-1.6, 0, 0], lHip: [-0.15, 0, 0.35], lKn: [0.2, 0, 0], lAn: [0, 0, -0.3], rHip: [0.1, 0, 0.35], rKn: [0.15, 0, 0], rAn: [0, 0, -0.3]});
+  HEP.win = mk(HEP.stance, {y: 0, z: 0, rx: 0, ry: 0, rz: 0, hips: [0, 0, 0], spine: [-0.05, 0.2, 0], chest: [-0.12, 0.2, 0], neck: [0, 0.2, 0], head: [-0.1, 0.4, 0], rSh: [-1, 0, 0.9], rEl: [-2.2, 0, 0], rWr: [1.2, 0, 0], lSh: [-1.15, 0.5, -0.1], lEl: [-2.2, 0, 0], lWr: [0, 0, 0], lHip: [-0.1, 0, 0.35], lKn: [0.15, 0, 0], lAn: [0, 0, -0.3], rHip: [0.05, 0, 0.35], rKn: [0.15, 0, 0], rAn: [0, 0, -0.3]});
+  HDP.win = mk(HDP.stance, {y: 0, z: 0, rx: 0, ry: 0, rz: 0, hips: [0, 0, 0], spine: [0, 0, 0], chest: [-0.05, 0, 0], neck: [0, 0, 0], head: [0.12, 0, 0], lSh: [-1.4, 0, 0.3], lEl: [-0.3, 0, 0], lWr: [-0.5, 0, 0], rSh: [-0.4, 0, 0.3], rEl: [-1.2, 0, 0], rWr: [0, 0, 0], lHip: [-0.1, 0, 0.12], lKn: [0.1, 0, 0], lAn: [0, 0, 0], rHip: [0.05, 0, 0.12], rKn: [0.05, 0, 0], rAn: [0, 0, 0]});
+  SVP.win = mk(SVP.stance, {y: -0.05, z: 0, rx: 0, ry: 0, rz: 0, hips: [0, 0, 0], spine: [0, 0.1, -0.05], chest: [0, 0, 0], neck: [0, 0, 0.1], head: [0, 0, 0.1], rSh: [-2.2, 0, 1], rEl: [-1.2, 0, 0], lSh: [-1.3, 0, -0.6], lEl: [-0.2, 0, 0], lHip: [-1.7, 0, -1], lKn: [0.9, 0, 0], lAn: [0.5, 0, 0], rHip: [-0.1, 0, 0.1], rKn: [0.3, 0, 0], rAn: [-0.2, 0, 0]});
+  APP.win = mk(APP.stance, {y: 0, z: 0, rx: 0, ry: 0, rz: 0, hips: [0, 0, -0.08], spine: [0, 0, 0.05], chest: [-0.05, 0, 0], neck: [0, 0, 0.1], head: [0, 0, 0.2], rSh: [-1.6, 0, -0.2], rEl: [-2.3, 0, 0], lSh: [0, 0, 1.4], lEl: [-0.3, 0, 0], lHip: [0.4, 0, 0.1], lKn: [1.6, 0, 0], lAn: [0.5, 0, 0], rHip: [0, 0, 0.05], rKn: [0.05, 0, 0], rAn: [0, 0, 0]});
+  AOP.win = mk(AOP.stance, {y: 0, z: 0, rx: 0, ry: 0, rz: 0, hips: [0, 0, 0], spine: [-0.1, 0, 0], chest: [-0.2, 0, 0], neck: [0, 0, 0], head: [-0.5, 0, 0], rSh: [-2.5, 0, 0.6], rEl: [-0.2, 0, 0], lSh: [0.1, 0, 0.3], lEl: [-0.2, 0, 0], lHip: [-0.3, 0, 0.1], lKn: [0.2, 0, 0], lAn: [0.4, 0, 0], rHip: [0.05, 0, 0.1], rKn: [0.05, 0, 0], rAn: [0, 0, 0]});
+  ODP.win = mk(ODP.stance, {y: 0, z: 0, rx: 0, ry: 0, rz: 0, hips: [0, 0, 0], spine: [0, 0, 0], chest: [-0.05, 0, 0], neck: [0, 0, 0], head: [0.15, 0, 0], rSh: [-1, 0, -0.15], rEl: [-1.2, 0, 0], rWr: [0, 0, 0], lSh: [-1.2, 0, -0.25], lEl: [-1, 0, 0], lHip: [-0.05, 0, 0.15], lKn: [0.05, 0, 0], lAn: [0, 0, 0], rHip: [0.05, 0, 0.15], rKn: [0.05, 0, 0], rAn: [0, 0, 0]});
 })();
 const POSES = { zeus: ZP, poseidon: PP, anubis: AP, thor: TP, susanoo: SUP, heracles: HEP, hades: HDP, odin: ODP, shiva: SVP, aphrodite: APP, shaka: SKP, apollo: AOP };
 
@@ -12783,7 +12816,7 @@ class FighterView {
         break;
       }
       case 'win': {
-        const anim = [[0, 'stance'], [0.35, 'win'], [9, 'win']];
+        const anim = [[0, 'stance'], [0.45, 'win'], [9, 'win']];
         sampleAnim(L, anim, f.st, out);
         out.chest[0] += Math.sin(t * 2) * 0.02;
         rate = 10;
