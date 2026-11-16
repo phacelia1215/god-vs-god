@@ -2250,6 +2250,9 @@ const AI_HUMAN = [
   { react: 0.17, jit: 0.03, learn: 0.3, temp: 0.2, know: 1.0, confirm: 0.95, aaSkill: 0.92, gap: 0.11 },
 ];
 // how far each super reaches and how long after its flash it takes hold (measured from the scripts)
+// every super's opening plays fast: whatever its authored wind-up, it reaches its first strike this long after the
+// flash (real seconds), so a super closes a combo cleanly and is a real threat in neutral
+const SUP_TAKE = 0.18;
 const AI_SUPER = { zeus: [2.3, 0.45], poseidon: [2.3, 0.4], anubis: [2.3, 0.32], thor: [9, 0.37], susanoo: [9, 0.37], heracles: [9, 0.4], hades: [9, 0.42], shiva: [9, 0.4], aphrodite: [5.6, 0.58], shaka: [5.6, 0.4], apollo: [5.6, 0.42], odin: [5.6, 0.4] };
 // each god's preferred fighting distance and temperament
 // (react: extra reaction time, focus: looseness of choices - a temperament, not a level)
@@ -2478,8 +2481,8 @@ class Sim {
       const o = this.fighters[1 - f.side];
       f.facing = Math.sign(o.x - f.x) || f.facing;
       // cancelled out of a combo, it takes hold before the reeling foe can recover
-      const SR = m.super2 ? SUPER2[f.key].ai : AI_SUPER[f.key];
-      if (o.state === 'hitstun' && SR) o.stunT = Math.max(o.stunT, o.st + SR[1] * SUPER_K + 0.1);
+      // and a foe already reeling in a combo is held where they are (in the air too) until it lands
+      if (o.inCombo && (o.state === 'hitstun' || o.state === 'juggle')) o.supHeld = true;
       this.emit('super', { side: f.side, id, name: m.name });
       f.invuln = 0.4;
     }
@@ -2529,6 +2532,10 @@ class Sim {
   }
 
   updateFighter(f, o, dt) {
+    if (f.supHeld) {
+      if ((f.state === 'hitstun' || f.state === 'juggle') && o.state === 'attack' && o.move && o.move.type === 'super' && o.sup && !o.sup.ev.connect) return;
+      f.supHeld = false;
+    }
     f.st += dt;
     if (f.invuln > 0) f.invuln -= dt;
     if (f.oracleT > 0) f.oracleT -= dt;
@@ -3145,6 +3152,11 @@ class Sim {
   }
 
   superScript(f, o, dt) {
+    const s0 = f.sup || (f.sup = { ev: {} });
+    if (!s0.ev.connect) {
+      const ct = f.move.super2 ? SUPER2[f.key].conn.t : (AI_SUPER[f.key] || [0, 0.4])[1];
+      dt *= Math.max(1, ct * SUPER_K / SUP_TAKE);
+    }
     f.mt += dt;
     const t = f.mt / SUPER_K;
     const s = f.sup || (f.sup = { ev: {} });
@@ -3780,9 +3792,9 @@ class Sim {
     if (f.meter < 100) return null;
     const c = f.c, opts = [];
     const SR = AI_SUPER[f.key];
-    if (SR && d <= SR[0] && win >= SR[1] * SUPER_K + 0.03) opts.push([c.super, 1]);
+    if (SR && d <= SR[0] && win >= SUP_TAKE + 0.03) opts.push([c.super, 1]);
     const D = SUPER2[f.key];
-    if (D && c.super2 && d <= D.ai[0] && win >= D.ai[1] * SUPER_K + 0.03 && !(air && D.conn.grab)) opts.push([c.super2, D.conn.grab ? (this.canBlock(o) ? 3 : 0.6) : 1]);
+    if (D && c.super2 && d <= D.ai[0] && win >= SUP_TAKE + 0.03 && !(air && D.conn.grab)) opts.push([c.super2, D.conn.grab ? (this.canBlock(o) ? 3 : 0.6) : 1]);
     if (!opts.length) return null;
     let r = R() * opts.reduce((a, x) => a + x[1], 0);
     for (const x of opts) { r -= x[1]; if (r <= 0) return x[0]; }
@@ -3841,7 +3853,7 @@ class Sim {
     if (now > (ai.guardUntil || 0) && !ai.backGuard) f.guarding = false;
     if (ai.backGuard && !(f.state === 'walk' && f.walkDir !== toward)) { ai.backGuard = false; f.guarding = false; }
 
-    if (f.state === 'blockstun') { if (ai.blockedSerial !== o.serial) { ai.blockedSerial = o.serial; ai.strWatch = null; } }
+    if (f.state === 'blockstun') { ai.bsT = now; if (ai.blockedSerial !== o.serial) { ai.blockedSerial = o.serial; ai.strWatch = null; } }
     if (o.state !== 'down' && o.state !== 'getup') ai.okiNew = false;
     // a jump-in that came down: was it swatted?
     if (ai.jumpIn && f.y <= 0.001 && f.state !== 'jump' && !(f.state === 'attack' && f.move && f.move.type === 'air')) {
@@ -4127,7 +4139,8 @@ class Sim {
         opts.push({ v: 34 + I.dmg * 0.08 + W.wait * 10 * mix + W.atk * 8 - W.jump * 6 + (I.grab ? W.wait * 14 : 0) - risk, k: 'meaty', I });
       }
       opts.push({ v: 30 + W.atk * 22, k: 'bait' });
-      if (K.projs.length && (AI_STYLE[f.key] || {}).range > 3) opts.push({ v: 40, k: 'zone' });
+      const shots = K.projs.filter((Q) => !Q.proj.ret || !this.weaponOut(f));
+      if (shots.length && (AI_STYLE[f.key] || {}).range > 3) opts.push({ v: 40, k: 'zone', shots });
       ai.oki = this.aiChoose(f, opts);
     }
     const P = ai.oki;
@@ -4137,6 +4150,7 @@ class Sim {
       if (tV - I.su <= 0.03 && tV - I.su > -0.08) {
         if (d <= I.reach - 0.05) { ai.oki = null; ai.neutralSwing = -1; this.startMove(f, I.id); return true; }
       }
+      if (d - want > 1.3 && tV > I.su + 0.4 && f.state !== 'dash') { this.dash(f, toward, 0.2); return true; }   // close in fast
       if (Math.abs(d - want) > 0.25 && tV > I.su + 0.12) { this.walk(f, d > want ? toward : -toward, 0.08); return true; }
       if (f.state === 'walk') this.idle(f, 0.02);
       return true;
@@ -4146,8 +4160,16 @@ class Sim {
       this.aiGuard(f, M.low > 0.5, 0.35); ai.oki = null; return true;
     }
     if (P.k === 'zone') {
-      if (d < 3.5 && tV > 0.25 && Math.abs(f.x) < STAGE - 1) { this.walk(f, -toward, 0.08); return true; }
-      if (tV < 0.3) { const Q = K.projs[0]; ai.oki = null; this.startMove(f, Q.id); return true; }
+      // a meaty shot: timed to arrive just as the rising foe can be hit. Too early and it flies through a body that
+      // cannot be hit yet (or over one lying down), too late and they are up and guarding.
+      const arrive = (Q) => { const p = Q.proj; if (p.atTarget) return p.t + (p.delay || 0); const gap = Math.max(0, d - 0.95 - (p.w || 0.4) - o.c.width * 0.5); return p.t + gap / Math.max(1, Math.abs(p.vx)); };
+      const fit = P.shots.filter((Q) => !Q.proj.atTarget || d <= Q.proj.atTarget + 0.2);
+      if (!fit.length) { ai.oki = null; return false; }
+      const Q = fit.reduce((a, b) => (Math.abs(tV - arrive(b)) < Math.abs(tV - arrive(a)) ? b : a)), lead = tV - arrive(Q);
+      if (d < 3.2 && lead > 0.35 && Math.abs(f.x) < STAGE - 1) { this.walk(f, -toward, 0.08); return true; }
+      if (lead <= 0.03 && lead > -0.12) { ai.oki = null; this.startMove(f, Q.id); return true; }
+      if (lead <= -0.12) { ai.oki = null; return false; }   // missed the moment: back to neutral
+      if (f.state === 'walk') this.idle(f, 0.02);
       return true;
     }
     return false;
@@ -4184,8 +4206,7 @@ class Sim {
         if (f.meter < 100) { this.aiGuard(f, M.low > 0.5, 0.35); return true; }
         // the grab takes a foe standing close (guarding or not); anything else needs a committed foe
         if (m.grab) { if (this.canGrab(f, o, SUPER2[f.key].conn.range - 0.1)) return this.startMove(f, id); this.aiGuard(f, M.low > 0.5, 0.35); return true; }
-        const SR = (m.super2 ? SUPER2[f.key].ai : AI_SUPER[f.key]) || [2.5, 0.4];
-        const committed = o.state === 'attack' && o.move && o.move.type !== 'super' && o.move.type !== 'air' && o.move.dur - o.mt > SR[1] * SUPER_K + 0.05;
+        const committed = o.state === 'attack' && o.move && o.move.type !== 'super' && o.move.type !== 'air' && o.move.dur - o.mt > SUP_TAKE + 0.05;
         if (!committed && R() < this.aiLevel(f).know) { this.aiGuard(f, M.low > 0.5, 0.35); return true; }
         return this.startMove(f, id);
       }
@@ -4237,7 +4258,7 @@ class Sim {
       opts.push({ v: v * aggr + pushy - cautious, k: 'move', id: I.id, poke: true });
     }
     // projectiles
-    if (!myProj) for (const P of K.projs) {
+    if (!myProj && !rising) for (const P of K.projs) {
       if (d < 2.4 && !P.proj.atTarget) continue;
       if (P.proj.atTarget && d > P.proj.atTarget + 0.5) continue;
       const jumpRisk = M.projJump * (d < 4.6 ? 22 : 6);
@@ -4249,7 +4270,7 @@ class Sim {
     opts.push({ v: 26 + 9 * clamp((want - d) / 1.2, -1.5, 1.2) + danger * 12 - wall * 34 + cautious, k: 'back' });
     // pinned near the wall: get out over the top
     if (wall > 0.5 && d < 2.8 && s.state !== 'jump') opts.push({ v: 24 + wall * 16 + danger * 8, k: 'jump' });
-    if (d > want + 1.6) opts.push({ v: 30 + 6 * clamp((d - want - 1.6) / 2, 0, 1.5) - (theirProjNear ? 10 : 0) + (aggr - 1) * 10 + pushy, k: 'dash' });
+    if (d > want + 1.2) opts.push({ v: 31 + 6 * clamp((d - want - 1.2) / 2, 0, 1.5) - (theirProjNear ? 10 : 0) + (aggr - 1) * 10 + pushy, k: 'dash' });
     if (inTheirs) opts.push({ v: 27 + danger * 26 + cautious + (coming ? 6 : 0), k: 'guard' });
     opts.push({ v: 25 + (d > theirReach && d < theirReach + 0.9 ? M.atk[b] * 14 : 0) + cautious * 0.5 - pushy, k: 'wait' });
     if (d > 1.9 && d < 3.7) opts.push({ v: 22 + (1 - M.aa) * 16 - (st.range > 3 ? 8 : 0) + (s.state === 'crouch' ? 6 : 0) + M.crouch * 5 + pushy * 0.5, k: 'jump' });
@@ -4257,7 +4278,13 @@ class Sim {
     const AS = K.airS && K.airS.m;
     if (AS && (AS.proj || AS.projs) && !myProj && d > 3.4 && d < 7) opts.push({ v: 22 + (st.range > 3 ? 7 : 0) + (theirProjNear ? 6 : 0) - cautious * 0.5, k: 'jumpS', dir: d > 5.5 ? toward : 0 });
     if (AS && AS.airVel && d > 2.4 && d < 4.4) opts.push({ v: 19 + (1 - M.aa) * 10 + (s.state === 'crouch' ? 4 : 0) + pushy * 0.5, k: 'jumpS', dir: toward });
-    if (d < 1.6 && danger > 0.25 && !cornered) opts.push({ v: 22 + danger * 18, k: 'backdash' });
+    // back-dash out of pressure (above all right after guarding a string), and dash in to swing from beyond reach
+    const justBlocked = now - (ai.bsT || -9) < 0.3;
+    if (d < 2.2 && (danger > 0.2 || justBlocked) && !cornered) opts.push({ v: 24 + danger * 20 + (justBlocked ? 10 : 0) - wall * 24 + cautious * 0.5, k: 'backdash' });
+    if (!rising && !theirProjNear) {
+      const P = K.hitters.find((I) => !I.proj && !I.grab && !I.tele && I.su <= 0.2 && I.reach <= 3 && d > I.reach + 0.3 && d < I.reach + 2.4);
+      if (P) opts.push({ v: 24 + (aggr - 1) * 14 + pushy + (s.state === 'attack' || s.state === 'recover' ? 10 : 0) - M.atk[b] * 8, k: 'dashIn', id: P.id, reach: P.reach });
+    }
     // the gods' own tools
     for (const T of K.tools) {
       if (T.meditate && d > 4.6 && f.meter < 100 && !theirProjNear && s.state !== 'dash') opts.push({ v: 34 + (d - 4.6) * 5, k: 'move', id: T.id });
@@ -4281,6 +4308,7 @@ class Sim {
       case 'back': this.walk(f, -toward, 0.18 * jitter() + 0.05); ai.backGuard = true; f.guarding = true; f.crouchG = false; return;
       case 'dash': this.dash(f, toward, 0.2 + 0.12 * R()); return;
       case 'backdash': this.dash(f, -toward, 0.26); return;
+      case 'dashIn': this.dash(f, toward, 0.4); ai.pending = { id: pick.id, reach: pick.reach - 0.15, until: this.time + 0.42 }; return;
       case 'guard': this.aiGuard(f, M.low > 0.5, 0.18 * jitter() + 0.08); return;
       case 'wait': this.idle(f, H.gap * jitter()); return;
       case 'jump': this.jump(f, toward); ai.jumpIn = { t: this.time, hit: false }; return;
@@ -14811,7 +14839,7 @@ function moveFacts(key, id) {
   else if (m.parry) { facts.push(['受付', Math.round(m.parry[0] * 60) + '〜' + Math.round(m.parry[1] * 60) + 'F']); tags.push('受け流し（相手をよろけさせる）', '飛び道具を消す'); }
   else if (m.meditate) { facts.push(['ゲージ', '+' + m.meditate[2] + '%'], ['全体', f(m.dur) + 'F']); tags.push('神威ゲージ溜め'); }
   else if (m.oracle) { facts.push(['持続', m.oracle[1].toFixed(1) + '秒'], ['全体', f(m.dur) + 'F']); tags.push('次の攻撃を自動回避'); }
-  else if (m.type === 'super') { facts.push(['消費', '神威ゲージ100%'], m.grab ? ['届く距離', '密着（つかみ）'] : ['ガード時', '約-43F（確定反撃あり）']); tags.push('超必殺技'); if (m.grab) tags.push('ガード不能', '空中の相手には届かない'); }
+  else if (m.type === 'super') { facts.push(['消費', '神威ゲージ100%'], ['発生', '暗転後 約10F'], m.grab ? ['届く距離', '密着（つかみ）'] : ['ガード時', '約-43F（確定反撃あり）']); tags.push('超必殺技'); if (m.grab) tags.push('ガード不能', '空中の相手には届かない'); }
   return { facts, tags };
 }
 function renderViewer() {
