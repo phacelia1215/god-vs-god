@@ -552,6 +552,8 @@ body.compact.landscape .vsmark{display:none}
    select screen), which costs more than the whole scene there; the panels are opaque enough without it */
 html.mob *{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
 html.mob .pick{background:rgba(10,6,18,.9)}
+/* phones: the title's ray fan (a masked layer larger than the screen) stands still instead of turning once in 90 s */
+html.mob #start .rays{animation:none}
 html.mob #pauseMenu{background:rgba(4,2,10,.8)}
 #pauseMenu .pm-h{font-family:var(--en);font-weight:900;letter-spacing:.4em;font-size:clamp(20px,3vw,30px);color:var(--gold2);margin-bottom:18px;padding-left:.4em}
 #pauseMenu .pm-col{display:flex;flex-direction:column;gap:12px;align-items:stretch;width:min(280px,80vw)}
@@ -1999,7 +2001,7 @@ class Fighter {
     this.state = 'intro'; this.st = 0;
     this.move = null; this.moveId = null; this.mt = 0;
     this.hitDone = []; this.contact = false;
-    this.plan = [];
+    this.plan = []; this.link = null;
     this.invuln = 0; this.stunT = 0; this.guardT = 0;
     this.inCombo = false; this.combo = 0; this.comboDmg = 0; this.juggleN = 0; this.launchN = 0; this.airN = 0;
     this.walkDir = 0; this.walkT = 0; this.dashDir = 0; this.dashT = 0;
@@ -2208,13 +2210,14 @@ const HUMAN = {
 // CPU strength, 1 (weakest) .. 5 (strongest): combo execution here; its reaction time, learning and judgement are in
 // AI_HUMAN (below).  drop: chance to fumble each link of a combo   maxCombo: longest route it can follow
 // superRoute: chance a route ends in a super when the gauge is full
+// best: how often it goes for its god's highest-damage combo (AI_COMBO) instead of a standard route
 const AI_LEVELS = [
   null,
-  { drop: 0.38, maxCombo: 2, superRoute: 0.0 },
-  { drop: 0.2, maxCombo: 3, superRoute: 0.3 },
-  { drop: 0.1, maxCombo: 4, superRoute: 0.55 },
-  { drop: 0.05, maxCombo: 5, superRoute: 0.75 },
-  { drop: 0.0, maxCombo: 99, superRoute: 1.0 },
+  { drop: 0.38, maxCombo: 2, superRoute: 0.0, best: 0 },
+  { drop: 0.2, maxCombo: 3, superRoute: 0.3, best: 0 },
+  { drop: 0.1, maxCombo: 4, superRoute: 0.55, best: 0.2 },
+  { drop: 0.05, maxCombo: 5, superRoute: 0.75, best: 0.5 },
+  { drop: 0.0, maxCombo: 99, superRoute: 1.0, best: 1 },
 ];
 const AI_LEVEL_DEFAULT = 3;
 
@@ -2255,6 +2258,8 @@ const AI_HUMAN = [
 // every super's opening plays fast: whatever its authored wind-up, it reaches its first strike this long after the
 // flash (real seconds), so a super closes a combo cleanly and is a real threat in neutral
 const SUP_TAKE = 0.18;
+// a foe this close to the wall is comboed with the corner routes
+const AI_CORNER = 1.5;
 const AI_SUPER = { zeus: [2.3, 0.45], poseidon: [2.3, 0.4], anubis: [2.3, 0.32], thor: [9, 0.37], susanoo: [9, 0.37], heracles: [9, 0.4], hades: [9, 0.42], shiva: [9, 0.4], aphrodite: [5.6, 0.58], shaka: [5.6, 0.4], apollo: [5.6, 0.42], odin: [5.6, 0.4] };
 // each god's preferred fighting distance and temperament
 // (react: extra reaction time, focus: looseness of choices - a temperament, not a level)
@@ -2264,6 +2269,257 @@ const AI_STYLE = {
   hades: { range: 2.3, aggr: 0.95 }, shiva: { range: 1.5, aggr: 1.05, react: -0.05, focus: 0.55 }, aphrodite: { range: 2.0, aggr: 0.95, react: -0.04, focus: 0.6 },
   shaka: { range: 3.6, aggr: 0.85, react: -0.06, focus: 0.45 }, apollo: { range: 4.6, aggr: 0.8, react: -0.06, focus: 0.45 }, odin: { range: 3.0, aggr: 0.9, react: 0.04, focus: 1.4 },
 };
+
+// ---- every god's highest-damage combos, found by searching the fight engine itself (each one played out against
+// several foes and distances; the average damage is the number in front). Per first move: [midscreen, midscreen
+// ending in a super, corner, corner ending in a super] ('' / missing: same as midscreen). g: the foe standing,
+// a: the foe already in the air. '>' is a link (the next move starts after the last one recovered); every other
+// step cancels the move before it. Each cancel chain uses a move once, as a player's does. raw: a super on its own.
+const AI_COMBO = {
+  zeus: {
+    pre: 'z_', raw: [218, 191],
+    g: {
+      jab: ['306 upper knee > hammer knee upper jab straight bolt', '384 upper knee > upper > hammer knee upper body straight super', '379 hammer knee upper > hammer upper > hammer upper body straight knee jab', '555 hammer knee upper > hammer upper > hammer upper body straight knee jab super'],
+      straight: ['287 body upper knee > straight knee body upper hammer bolt', '388 body upper knee > straight knee body upper hammer super', '331 knee hammer upper > hammer upper > hammer upper body straight knee jab', '448 knee hammer upper > hammer upper > hammer upper body straight knee jab super'],
+      body: ['328 upper knee > hammer knee upper jab straight bolt', '407 upper knee > hammer body knee upper jab straight super', '401 hammer knee upper > hammer upper > hammer upper body straight knee jab', '577 hammer knee upper > hammer upper > hammer upper body straight knee jab super'],
+      knee: ['309 upper > straight body knee upper hammer bolt', '462 upper > straight body knee jab upper hammer super', '392 hammer upper > hammer > straight hammer upper knee jab > jab body straight', '568 hammer upper > hammer > straight hammer upper knee jab > jab body straight super'],
+      upper: ['329 knee > upper > hammer knee upper body bolt', '450 knee > upper > hammer knee body upper jab straight super', '345 knee > upper > upper hammer knee body straight bolt', '508 knee > upper > hammer upper knee body straight jab super'],
+      hammer: ['283 knee upper > jab knee hammer upper straight bolt', '383 knee upper > jab knee hammer upper straight super', '393 knee upper > hammer upper > hammer body jab knee upper straight', '569 knee upper > hammer upper > hammer body jab knee upper straight super'],
+    },
+    a: {
+      jab: ['73 > straight knee upper hammer > hammer upper straight knee body jab', '184 hammer super', '207 > straight hammer > straight upper hammer jab > straight jab knee upper body', '325 > straight hammer > straight upper hammer jab > straight jab knee upper body super'],
+      straight: ['113 bolt', '251 hammer super', '234 > straight hammer > straight hammer upper knee jab > jab knee upper body', '351 > straight hammer > straight hammer upper knee jab > jab knee upper body super'],
+      upper: ['39', '167 super'],
+      hammer: ['70', '262 super', '47', '175 super'],
+    },
+  },
+  poseidon: {
+    pre: 'p_', raw: [188, 163],
+    g: {
+      thrust: ['186 > slash spin thrust wave', '274 sweep slash spin rise super', '263 rise slash > rise > rise > rise slash thrust > slash thrust spin vortex', '352 rise slash > rise > rise > rise slash thrust > thrust slash rise spin super'],
+      slash: ['196 > thrust sweep rise slash spin vortex', '294 > thrust sweep rise slash spin super', '278 sweep rise > rise > rise > rise slash thrust > thrust sweep spin vortex', '364 sweep rise > rise > rise > rise slash thrust > thrust slash rise sweep super'],
+      spin: ['182 sweep rise slash vortex', '303 slash sweep rise thrust super', '262 rise > rise > rise > rise spin thrust > spin rise thrust sweep vortex', '348 rise > rise > rise > rise spin slash thrust > thrust rise slash spin super'],
+      rise: ['211 > rise > rise > thrust rise spin wave', '306 > rise > rise > thrust rise spin super', '279 > rise > rise > rise slash thrust > rise spin slash thrust sweep vortex', '392 > rise > thrust rise slash spin super'],
+      sweep: ['196 slash rise > thrust rise slash wave', '294 slash rise > thrust rise slash super', '284 slash rise > rise > rise > rise slash thrust > slash rise spin vortex', '370 rise slash > rise > rise > rise slash thrust > thrust rise slash spin super'],
+    },
+    a: {
+      thrust: ['156 rise > rise > thrust rise slash wave', '254 rise > rise > thrust rise slash super', '310 rise > rise > rise slash spin thrust > slash spin rise sweep vortex', '436 rise > rise > rise slash spin thrust > thrust rise sweep spin slash super'],
+      spin: ['85 thrust rise vortex', '181 thrust rise super', '296 rise > rise > rise spin slash thrust > rise spin thrust sweep vortex', '413 rise > rise > rise spin thrust > thrust sweep rise spin slash super'],
+      rise: ['148 > rise > thrust rise spin wave', '248 > rise > thrust rise spin super', '326 > rise > rise > rise slash spin thrust > thrust rise slash sweep vortex', '443 > rise > rise > rise slash spin thrust > thrust rise slash sweep super'],
+    },
+  },
+  anubis: {
+    pre: 'a_', raw: [184, 156],
+    g: {
+      jab: ['340 kick rise > kick > blink kick rise slash > slash blink twin rise', '503 kick rise > kick > blink kick rise slash > slash blink twin rise super', '356 kick rise > kick blink > rise blink twin > twin rise slash blink', '504 kick rise > kick blink > rise blink twin > twin rise slash low super'],
+      slash: ['354 kick rise > kick > blink kick rise slash > slash blink twin rise', '517 kick rise > kick > blink kick rise slash > slash blink twin rise super', '370 kick rise > kick blink > rise blink twin > twin rise slash blink', '518 kick rise > kick blink > rise blink twin > twin rise slash low super'],
+      twin: ['449 kick > jab kick rise > kick > blink kick twin > twin rise blink', '612 kick > jab kick rise > kick > blink kick twin > twin rise blink super'],
+      low: ['358 kick rise > kick > blink kick rise slash > slash blink twin rise', '521 kick rise > kick > blink kick rise slash > slash blink twin rise super', '374 kick rise > kick blink > rise blink twin > twin rise slash blink', '522 kick rise > kick blink > rise blink twin > twin rise slash low super'],
+      rise: ['330 > kick blink > blink twin rise slash jab > jab twin slash low', '490 > kick blink > blink rise twin jab > jab slash rise twin super', '351 > kick > rise kick > blink rise twin slash jab > jab slash blink', '511 > kick > rise kick > blink rise twin slash jab > jab twin rise super'],
+      kick: ['376 blink rise > kick rise blink twin slash > twin rise slash blink', '527 blink rise > kick rise blink twin slash jab > slash rise blink super', '', '524 rise > kick > blink kick rise twin slash > twin slash blink super'],
+      blink: ['350 kick rise > blink rise twin jab > jab rise twin slash blink', '498 kick rise > blink rise twin jab > jab rise twin slash low super'],
+    },
+    a: {
+      jab: ['95 kick > blink kick rise slash > blink jab slash twin rise low', '148 kick > blink kick rise twin > twin jab slash rise blink super', '190 kick > blink kick rise slash > blink jab slash twin rise low', '296 kick > blink kick rise twin > twin jab slash rise blink super'],
+      slash: ['303 blink kick > kick blink rise slash > jab rise slash twin blink', '456 kick > blink kick rise twin > twin slash jab rise blink super', '293 kick > blink kick rise twin > twin slash jab rise blink'],
+      twin: ['295 blink kick rise > rise blink twin > twin rise slash jab blink', '447 blink kick rise > rise blink twin slash > slash twin rise low super', '302 kick blink > rise kick blink twin > twin rise slash jab blink', '458 kick blink > rise kick blink twin > twin rise slash blink super'],
+      rise: ['229 > rise kick > rise blink twin > twin rise low jab slash blink', '330 > rise kick > rise blink twin > twin rise slash jab blink super', '330 > rise kick > rise kick blink twin > twin rise slash jab blink', '478 > rise kick > rise kick blink twin > twin rise low slash jab super'],
+      kick: ['327 > blink kick rise > rise kick blink twin slash jab > jab blink', '487 > blink kick rise > rise kick blink twin jab > jab twin rise super'],
+      blink: ['323 kick > rise kick > rise blink twin jab > jab twin slash blink', '479 kick > rise kick > rise blink twin slash > slash twin rise jab super'],
+    },
+  },
+  thor: {
+    pre: 't_', raw: [256, 163],
+    g: {
+      jab: ['499 upper leap slam swing throw', '634 upper slam leap swing low super', '629 swing leap shoulder upper > jab slam upper swing low shoulder', '850 swing leap shoulder upper > jab slam upper swing low shoulder super'],
+      swing: ['522 slam upper leap shoulder jab > jab upper slam swing throw', '585 slam upper leap shoulder jab > jab upper slam swing super', '510 shoulder jab slam upper > shoulder slam upper swing low jab', '658 shoulder jab slam upper > shoulder slam upper swing low jab super'],
+      low: ['522 upper slam leap swing throw', '649 upper slam leap shoulder swing super', '430 upper slam leap swing shoulder', '651 upper slam leap swing shoulder super'],
+      upper: ['534 slam leap swing low throw', '661 slam leap shoulder swing low super', '442 slam leap swing low shoulder', '663 slam leap swing low shoulder super'],
+      slam: ['516 upper leap shoulder jab > jab upper slam swing throw', '587 upper leap shoulder jab > jab upper slam swing super', '435 swing low upper > jab slam upper low'],
+      shoulder: ['684 swing slam upper leap jab > jab shoulder upper slam swing throw', '778 swing slam upper leap jab > jab shoulder upper slam swing super', '631 swing leap jab upper > jab slam swing upper low shoulder', '852 swing leap jab upper > jab slam swing upper low shoulder super'],
+      leap: ['192 throw', '289 super', '538 shoulder jab upper > jab upper slam throw', '641 shoulder low upper slam swing super'],
+    },
+    a: {
+      jab: ['449 slam leap swing low throw', '581 slam leap upper swing shoulder super', '384 leap upper > jab upper slam swing low', '605 leap upper > jab upper slam swing low super'],
+      swing: ['462 slam leap low jab throw', '601 slam leap low shoulder upper super', '418 leap upper > jab upper slam swing low', '639 leap upper > jab upper slam swing low super'],
+      upper: ['86', '320 super'],
+      slam: ['545 leap shoulder jab > jab upper slam swing throw', '639 leap shoulder jab > jab upper slam swing super', '434 leap swing jab > jab upper slam swing', '655 leap swing jab > jab upper slam swing super'],
+      shoulder: ['466 leap upper slam swing throw', '592 slam leap low upper swing super', '435 leap upper slam swing jab > jab upper swing', '656 leap upper slam swing jab > jab upper swing super'],
+      leap: ['335 shoulder jab > shoulder upper slam jab swing throw', '398 shoulder jab > shoulder upper slam jab swing super', '292 shoulder slam swing jab > jab upper slam shoulder', '439 shoulder slam swing jab > jab upper slam shoulder super'],
+    },
+  },
+  susanoo: {
+    pre: 's_', raw: [189, 159],
+    g: {
+      cut: ['315 kabuto rise > kabuto dash rise kesa cut > cut kabuto rise dash', '419 kabuto rise > kabuto dash rise kesa cut > cut kabuto rise spin super'],
+      kesa: ['412 kabuto rise > dash rise kabuto thrust cut > cut rise kabuto dash', '568 kabuto rise > dash rise kabuto kesa cut > cut rise kabuto kesa super'],
+      thrust: ['400 kabuto rise > dash rise kabuto thrust cut > cut rise kabuto dash', '556 kabuto rise > dash rise kabuto kesa cut > cut rise kabuto kesa super', '382 kabuto dash spin rise > rise kabuto spin sweep kesa dash', '481 kabuto rise > dash rise kabuto kesa cut > cut rise kabuto kesa super'],
+      spin: ['372 kabuto sweep dash rise > rise kabuto spin kesa sweep dash', '519 kabuto sweep dash rise > rise kabuto spin kesa sweep thrust super', '377 rise > dash rise kabuto spin cut > cut kabuto rise thrust dash', '521 rise > dash kabuto rise kesa cut > cut rise kabuto spin super'],
+      rise: ['372 > kabuto dash rise thrust cut > cut rise thrust kesa dash', '531 > kabuto dash rise thrust cut > cut rise kabuto kesa thrust super', '388 > dash rise kabuto spin cut > cut kabuto rise thrust dash', '544 > dash rise kabuto spin cut > cut kabuto rise thrust spin super'],
+      sweep: ['292 rise > kabuto dash rise kesa cut > kesa rise thrust cut dash', '396 rise > kabuto dash rise kesa cut > kesa rise thrust cut spin super', '394 rise kabuto dash kesa > rise kabuto kesa spin cut dash', '545 rise kabuto dash kesa > rise kabuto spin kesa thrust sweep super'],
+      kabuto: ['378 rise > dash rise kabuto kesa cut > cut rise thrust dash', '487 rise > dash rise kabuto kesa cut > cut rise kabuto kesa super', '403 rise > dash rise kabuto kesa cut > cut rise kabuto thrust spin', '564 rise > dash rise kabuto kesa cut > cut rise kabuto kesa super'],
+      dash: ['96', '277 super'],
+      wind: ['314 rise kabuto dash cut > cut rise thrust kesa dash', '473 rise kabuto dash cut > cut rise kabuto kesa thrust super'],
+    },
+    a: {
+      cut: ['304 dash rise > rise kabuto dash cut sweep spin', '469 dash rise > rise kabuto dash cut sweep spin super', '333 > kabuto dash rise > kabuto rise spin kesa sweep dash', '482 dash kabuto rise > kabuto rise spin kesa thrust sweep super'],
+      kesa: ['328 dash kabuto rise > kabuto rise kesa thrust dash', '482 dash rise > rise kabuto dash cut thrust spin super', '348 dash kabuto rise > kabuto rise kesa spin thrust dash', '498 dash kabuto rise > kabuto rise spin kesa sweep thrust super'],
+      thrust: ['328 > kabuto dash rise > rise kabuto spin thrust cut dash', '483 > kabuto dash rise > rise kabuto kesa thrust sweep spin super', '337 dash kabuto rise > kabuto rise spin kesa thrust dash', '487 dash kabuto rise > kabuto rise kesa spin sweep thrust super'],
+      spin: ['304 > dash kesa rise kabuto cut > cut kabuto rise dash', '454 > dash kesa rise kabuto cut > cut kabuto rise sweep super', '325 dash kabuto rise > rise kabuto spin kesa sweep dash', '474 dash kabuto rise > rise kabuto spin kesa cut wind super'],
+      rise: ['220 > rise kabuto dash cut > cut sweep rise dash', '328 > rise kabuto dash cut > cut thrust rise kesa sweep super', '303 > rise kabuto dash cut > cut sweep rise dash', '465 > rise kabuto dash cut > cut thrust rise kesa sweep super'],
+      kabuto: ['288 > dash thrust kabuto rise kesa spin', '453 > dash thrust kabuto rise kesa spin super', '371 > rise kabuto dash kesa cut > cut rise kabuto kesa thrust dash', '521 > rise kabuto dash kesa cut > cut rise kabuto kesa thrust sweep super'],
+      dash: ['322 rise > rise kabuto dash spin kesa sweep', '487 rise > rise kabuto dash spin kesa sweep super', '355 kabuto rise > rise kabuto cut thrust > thrust rise cut dash', '509 kabuto rise > rise kabuto cut thrust > cut kesa rise sweep super'],
+      wind: ['292 spin dash kesa kabuto cut > spin rise kesa thrust dash', '437 spin dash kesa kabuto cut > spin rise sweep cut thrust super', '206 dash kabuto rise > spin rise kabuto kesa cut dash', '307 dash kabuto rise > spin rise kabuto kesa thrust sweep super'],
+    },
+  },
+  heracles: {
+    pre: 'h_', raw: [185, 166],
+    g: {
+      jab: ['392 grab shoulder club upper > shoulder upper smash low club', '536 grab shoulder club upper > shoulder upper smash low club super', '412 smash upper > smash club > shoulder smash upper club low jab', '556 smash upper > smash club > shoulder smash upper club low jab super'],
+      club: ['396 shoulder grab upper > shoulder upper smash club quake', '498 shoulder grab upper > shoulder low upper club smash super', '307 grab upper smash jab > club smash shoulder upper low', '403 grab upper smash jab > club smash shoulder upper low super'],
+      low: ['331 shoulder upper > smash shoulder club upper > shoulder upper jab club', '401 smash shoulder upper > smash shoulder upper jab club low super', '333 club smash upper > smash upper shoulder jab > jab upper shoulder', '429 club smash upper > smash upper shoulder jab > jab upper shoulder super'],
+      upper: ['386 > smash shoulder club upper > shoulder upper smash club', '530 > smash shoulder club upper > shoulder upper smash club super', '403 > smash shoulder upper > upper smash club jab shoulder low', '547 > smash shoulder upper > upper smash club jab shoulder low super'],
+      smash: ['381 shoulder upper > smash shoulder club jab > shoulder jab upper smash club', '477 shoulder upper > smash shoulder club jab > shoulder jab upper smash club super', '335 club upper > smash shoulder upper > upper club low shoulder jab', '431 club upper > smash shoulder upper > upper club low shoulder jab super'],
+      shoulder: ['389 grab upper > shoulder upper smash club quake', '530 club grab upper > shoulder upper jab smash club super', '438 grab upper smash club jab > upper club smash jab shoulder', '582 grab upper smash club jab > upper club smash jab shoulder super'],
+      grab: ['409 shoulder upper smash jab > shoulder upper smash club', '553 shoulder upper smash jab > shoulder upper smash club super', '435 upper smash club shoulder jab > jab low club upper shoulder', '579 upper smash club shoulder jab > jab low club upper shoulder super'],
+    },
+    a: {
+      jab: ['202 > shoulder club jab > shoulder upper > shoulder jab upper smash club', '298 > shoulder club jab > shoulder upper > shoulder jab upper smash club super', '231 > club upper > smash upper club shoulder jab > jab upper club shoulder', '327 > club upper > smash upper club shoulder jab > jab upper club shoulder super'],
+      club: ['187 smash rock', '282 smash super', '355 > smash club upper > smash upper club shoulder low jab', '499 > smash club upper > smash upper club shoulder low jab super'],
+      upper: ['41', '145 super'],
+      smash: ['145 rock', '240 super'],
+      shoulder: ['287 > shoulder upper > smash shoulder jab > shoulder upper club jab low', '383 > shoulder upper > smash shoulder jab > shoulder upper club jab low super', '364 smash > upper smash club shoulder jab > jab club upper shoulder', '508 smash > upper smash club shoulder jab > jab club upper shoulder super'],
+    },
+  },
+  hades: {
+    pre: 'hd_', raw: [170, 149],
+    g: {
+      jab: ['261 slam rise > slam shade slash jab rise dog', '353 slam rise > slam shade slash jab rise super', '316 slam rise > slam shade rise > rise slam slash shade hands', '407 slam rise > slam shade palm rise slash > slash sweep rise slam super'],
+      slash: ['268 rise palm slam shade jab > slam shade hands', '345 rise > rise > slam shade slash rise sweep jab super', '324 slam rise > slam shade rise > rise slam slash shade hands', '415 slam rise > slam shade palm rise slash > slash sweep rise slam super'],
+      sweep: ['314 rise slash slam shade jab > slash jab shade hands', '371 rise slash slam shade jab > jab rise slam super', '419 slam shade rise > slam rise palm sweep shade hands', '539 slam shade rise > rise slam palm jab > jab rise slam slash super'],
+      rise: ['287 palm slam shade jab > slam shade hands', '365 > slam rise > slam shade jab slash super', '402 slam shade slash > rise slam jab > jab rise slash sweep hands', '518 shade slam palm > rise slam jab > jab rise slash sweep super'],
+      palm: ['338 slam rise > slam shade slash jab rise dog', '476 slam rise > slam shade slash jab rise super', '440 slam rise > slam rise > slam rise slash jab shade hands', '552 slam rise > slam shade rise > rise slam palm slash sweep jab super'],
+      slam: ['286 sweep rise > slam shade rise slash jab dog', '380 sweep rise > slam shade sweep jab rise slash super', '331 rise > slam rise > slam rise slash jab shade hands', '407 rise > slam shade rise > rise slam palm slash sweep jab super'],
+      shade: ['242 jab rise slam hands', '353 jab rise slam super', '383 jab rise > slam shade rise slash jab > slash jab palm hands', '528 jab slam rise > slam rise slash jab > jab slam rise slash super'],
+    },
+    a: {
+      jab: ['288 > slam shade rise > rise slam shade slash jab', '435 > slam shade rise > rise slam shade slash jab super', '349 slam > rise shade slam jab > jab rise sweep slam palm hands', '463 slam > rise shade slam jab > jab rise slam palm slash super'],
+      slash: ['192 shade slam rise hands', '267 > slash shade sweep rise jab slam super', '331 slam > rise slam shade jab > jab rise shade hands', '475 slam > rise slam shade jab > jab rise slam slash sweep super'],
+      rise: ['195 > rise > slam shade slash jab rise sweep', '293 > rise > slam shade slash jab rise sweep super', '346 > rise shade slash slam jab > slash rise slam jab sweep hands', '459 > rise shade slash slam jab > slash rise slam jab sweep super'],
+      palm: ['153 shade slam rise hands', '231 shade slam rise super', '240 slam > rise slam shade jab > jab rise sweep slash palm hands', '320 slam > rise slam shade jab > jab rise slam slash sweep super'],
+      slam: ['135 > slam shade rise slash jab > jab rise shade hands', '228 super', '376 > slam rise shade slash jab > jab rise slam slash palm hands', '489 > slam rise shade slash jab > jab rise slam slash palm super'],
+      shade: ['198 slash slam hands', '309 slash slam super', '379 slam > slam rise palm jab > jab slam rise slash palm hands', '493 palm slam > slam rise slash jab > jab rise palm slash sweep super'],
+    },
+  },
+  shiva: {
+    pre: 'sv_', raw: [186, 158],
+    g: {
+      palm: ['334 heel rise kick > tandava whirl rise kick low heel', '457 heel rise kick > tandava whirl rise kick low heel super', '340 heel rise kick > tandava whirl rise kick low heel', '505 heel rise kick > tandava whirl rise kick low heel super'],
+      kick: ['280 heel rise damaru tandava palm > kick palm rise heel tandava', '378 heel rise damaru tandava palm > kick palm whirl low super', '326 heel damaru rise > damaru heel rise tandava whirl kick', '436 heel damaru rise > damaru heel rise tandava whirl kick super'],
+      low: ['290 heel kick whirl tandava palm > palm rise heel low tandava', '394 heel kick whirl tandava palm > whirl palm rise low kick super', '354 heel kick whirl tandava palm > palm rise heel whirl tandava', '517 heel kick whirl tandava palm > palm rise heel whirl kick super'],
+      whirl: ['317 heel low kick tandava palm > kick rise whirl tandava', '437 heel rise kick > tandava heel rise palm whirl kick super', '332 heel low kick tandava palm > kick rise whirl tandava', '497 heel low kick tandava palm > kick rise whirl tandava super'],
+      rise: ['309 > heel rise > heel kick tandava whirl rise palm', '419 > heel rise > heel kick tandava whirl rise palm super', '383 > heel rise > heel rise kick tandava whirl low', '548 > heel rise > heel rise kick tandava whirl low super'],
+      heel: ['290 rise palm > heel tandava whirl rise kick damaru', '398 rise palm > heel tandava whirl rise kick low super', '337 damaru rise > heel rise > heel rise whirl kick low tandava', '442 damaru rise > heel rise > heel rise whirl kick low palm super'],
+      tandava: ['280 heel rise > tandava whirl rise low palm kick', '445 heel rise > tandava whirl rise low palm kick super', '304 heel rise damaru whirl palm > kick palm rise whirl tandava', '453 heel kick palm > tandava palm rise kick whirl low super'],
+      damaru: ['94 whirl kick heel rise > tandava rise whirl palm', '242 super', '244 whirl heel kick tandava palm > palm whirl rise heel', '354 whirl heel kick tandava palm > palm whirl rise heel super'],
+    },
+    a: {
+      palm: ['179 heel tandava rise > heel kick tandava', '289 heel tandava rise > heel kick tandava super', '220 heel > heel rise > kick rise heel whirl low tandava', '325 heel > heel rise > kick rise heel whirl low palm super'],
+      kick: ['302 tandava heel rise > kick rise heel tandava whirl palm', '467 tandava heel rise > kick rise heel tandava whirl palm super'],
+      whirl: ['265 heel tandava palm > tandava palm rise kick whirl low', '430 heel tandava palm > tandava palm rise kick whirl low super', '265 heel tandava palm > tandava palm rise heel kick whirl'],
+      rise: ['38', '154 super'],
+      heel: ['319 tandava rise > heel kick tandava whirl rise palm', '484 tandava rise > heel kick tandava whirl rise palm super', '329 tandava rise > heel rise kick tandava whirl low', '494 tandava rise > heel rise kick tandava whirl low super'],
+      tandava: ['236 rise > heel kick tandava whirl palm', '401 rise > heel tandava whirl rise palm super', '295 heel rise > rise heel whirl kick palm tandava', '449 heel rise > rise heel whirl kick tandava super'],
+      damaru: ['240 tandava rise > heel whirl low tandava', '398 tandava rise > heel whirl tandava super', '273 heel > heel rise > whirl heel rise kick low tandava', '436 tandava rise > heel rise tandava whirl palm super'],
+    },
+  },
+  aphrodite: {
+    pre: 'ap_', raw: [160, 140],
+    g: {
+      flick: ['231 heel rise spiral lash foam', '333 heel rise spiral lash super', '280 heel rise > lash heel rise spiral > spiral rise heel petal foam', '355 heel rise > lash heel rise > spiral heel rise low lash petal super'],
+      lash: ['191 spiral low rise petal foam', '256 heel low flick rise super', '235 heel rise > lash heel rise > lash petal rise heel spiral foam', '292 heel rise > lash heel rise > lash rise heel petal spiral low super'],
+      spiral: ['212 heel rise lash foam', '284 heel rise flick petal lash super', '270 heel rise > lash heel rise > lash petal rise heel spiral foam', '346 heel rise > lash heel rise > lash rise heel petal spiral low super'],
+      low: ['235 heel rise flick lash foam', '293 heel rise flick petal lash super', '318 heel rise > lash heel rise > rise heel spiral lash petal foam', '386 heel rise > lash heel rise > rise heel spiral lash low flick super'],
+      rise: ['225 > rise > rise flick heel spiral lash foam', '293 > rise > rise flick heel spiral lash super', '264 > rise > flick heel rise spiral lash foam', '386 > rise > flick heel rise spiral lash super'],
+      heel: ['242 rise > lash rise spiral foam', '310 rise > lash rise flick spiral super', '304 rise > heel rise > heel rise > spiral rise heel flick petal foam', '380 low rise > spiral rise flick lash super'],
+      petal: ['197 heel spiral lash foam', '256 heel lash flick spiral super', '243 heel rise > rise heel petal spiral flick > flick rise spiral foam', '311 heel rise > rise heel petal spiral flick > flick rise spiral super'],
+    },
+    a: {
+      flick: ['146 > lash spiral flick foam', '210 > lash rise petal super', '252 heel > rise > heel rise > rise heel petal spiral lash foam', '326 heel > rise > heel rise > rise heel petal spiral lash flick super'],
+      lash: ['127 heel foam', '230 heel rise super', '266 heel > rise > heel rise > rise heel petal spiral lash foam', '340 heel > rise > heel rise > rise heel petal flick spiral lash super'],
+      spiral: ['177 > rise > lash rise spiral flick foam', '242 rise > rise flick heel spiral lash super', '263 heel > lash heel rise > heel petal spiral rise lash foam', '340 heel > lash heel rise > heel petal spiral rise lash low super'],
+      rise: ['163 > rise heel spiral lash foam', '231 > rise heel spiral lash super', '264 > rise heel lash > heel rise lash petal spiral foam', '338 > rise heel lash > heel rise lash petal spiral flick super'],
+      heel: ['110 > lash foam', '247 rise super', '252 > rise > heel rise > heel rise petal spiral lash foam', '327 > rise > heel rise > rise heel petal spiral lash low super'],
+      petal: ['170 heel spiral rise > lash flick foam', '236 heel flick > rise lash spiral flick super', '295 heel rise > rise heel petal spiral flick > spiral rise lash foam', '405 heel rise > rise heel petal spiral flick > flick rise low spiral super'],
+    },
+  },
+  shaka: {
+    pre: 'sk_', raw: [164, 151],
+    g: {
+      vitarka: ['296 roar recline lotus > roar lotus > lotus seal earth vitarka roar palmsky', '349 roar recline lotus > roar lotus > lotus seal earth vitarka roar super', '343 lotus > roar lotus > roar seal lotus vitarka > vitarka seal recline palmsky', '383 lotus > roar lotus > lotus roar seal vitarka > vitarka lotus roar seal super'],
+      seal: ['285 lotus > roar recline lotus > lotus vitarka > seal lotus vitarka recline palmsky', '344 lotus > roar recline lotus > lotus vitarka > seal lotus roar vitarka super', '334 lotus > roar lotus > roar lotus seal vitarka > vitarka seal recline palmsky', '388 lotus > roar lotus > roar lotus seal vitarka > vitarka seal lotus super'],
+      earth: ['305 roar recline lotus > lotus > lotus roar vitarka > lotus roar earth palmsky', '367 roar recline lotus > lotus > lotus roar vitarka > lotus seal vitarka roar super', '319 roar lotus > lotus > lotus roar seal > seal lotus vitarka recline palmsky', '385 roar lotus > lotus > lotus roar seal vitarka > seal lotus roar vitarka super'],
+      lotus: ['288 > roar recline lotus > lotus roar vitarka earth recline palmsky', '349 > roar recline lotus > vitarka roar lotus recline seal earth super', '353 > roar lotus > roar lotus seal vitarka > vitarka seal recline palmsky', '407 > roar lotus > roar lotus seal vitarka > vitarka seal lotus super'],
+      roar: ['291 recline lotus > roar lotus > lotus seal vitarka earth roar palmsky', '344 recline lotus > roar lotus > lotus seal vitarka earth roar super', '297 recline lotus > roar lotus > lotus roar seal earth recline palmsky', '370 lotus > lotus > lotus roar vitarka > lotus roar seal earth vitarka super'],
+      recline: ['287 vitarka roar lotus > vitarka recline lotus roar seal earth', '433 vitarka roar lotus > vitarka recline lotus roar seal earth super', '383 vitarka roar lotus > lotus > lotus roar seal vitarka > seal recline palmsky', '481 vitarka roar lotus > lotus > lotus roar vitarka > seal lotus roar vitarka super'],
+    },
+    a: {
+      vitarka: ['166 roar lotus palmsky', '254 > lotus > lotus > lotus vitarka seal roar super', '347 roar > vitarka roar lotus > lotus > lotus roar seal vitarka recline palmsky', '445 roar > vitarka roar lotus > lotus roar seal vitarka > vitarka seal roar super'],
+      seal: ['243 > vitarka roar recline lotus > seal lotus vitarka > vitarka lotus roar palmsky', '303 > vitarka roar recline lotus > lotus seal vitarka > vitarka seal lotus earth super', '340 roar > vitarka roar lotus > lotus > seal roar lotus vitarka recline palmsky', '438 roar > vitarka roar lotus > lotus roar seal vitarka > vitarka seal roar super'],
+      lotus: ['102 palmsky', '202 super'],
+      roar: ['156 lotus palmsky', '260 lotus super', '368 > vitarka > roar lotus > roar lotus vitarka > vitarka seal lotus recline palmsky', '454 > vitarka roar lotus > lotus roar seal vitarka > vitarka seal lotus earth super'],
+    },
+  },
+  apollo: {
+    pre: 'apo_', raw: [161, 148],
+    g: {
+      jab: ['235 rise sun > bash rise jab point arrow', '323 rise sun > bash rise jab point super', '331 bash sun > bash sun rise > bash point rise kick sun rain', '384 bash sun > bash sun rise > bash rise point kick low jab super'],
+      kick: ['260 rise sun > rise kick sun bash point rain', '342 rise sun > rise kick bash point super', '346 bash sun > bash sun rise > bash point rise kick sun rain', '399 bash sun > bash sun rise > bash rise point kick low jab super'],
+      low: ['251 kick rise sun > bash point rain', '336 rise sun > bash rise jab point super', '348 bash sun > sun point bash rise > jab rise kick sun rain', '433 rise sun > bash rise kick point super'],
+      rise: ['267 sun > bash sun rise jab point rain', '353 sun > bash sun rise point super', '339 bash sun > sun rise point jab > jab kick sun rain', '451 sun > bash sun rise jab point super'],
+      bash: ['252 rise sun > bash jab point arrow', '338 rise sun > bash jab point super', '330 sun > bash sun rise > bash point rise kick sun rain', '392 sun point rise > bash point sun rise kick low super'],
+      point: ['188 jab sun kick bash arrow', '274 jab rise sun bash super', '209 sun kick bash rise rain', '287 sun bash kick rise super'],
+      sun: ['273 > bash sun rise kick point arrow', '358 > bash sun rise kick point super', '361 bash rise > sun point bash rise jab > jab rise sun rain', '452 rise > bash sun rise jab point super'],
+    },
+    a: {
+      jab: ['153 > bash kick point arrow', '234 > kick sun bash point super', '283 sun > sun > sun bash rise kick jab > jab rise sun rain', '334 sun > sun bash rise > sun jab kick low rise bash super'],
+      kick: ['160 bash rise rain', '251 bash rise super', '280 bash sun > sun > sun rise point bash jab rain', '345 bash sun > sun > sun rise point bash jab super'],
+      rise: ['185 > rise sun kick bash point arrow', '274 > rise sun kick bash point super', '303 sun > sun bash point rise kick jab > jab rise sun rain', '352 sun > sun bash rise point kick jab > jab rise bash super'],
+      bash: ['151 rise rain', '264 sun super', '311 sun > sun point bash rise > jab kick low rise sun rain', '365 sun > sun point bash kick jab > kick rise bash low jab super'],
+      point: ['129 rise rain', '258 bash super', '296 bash sun > sun > sun rise point bash jab rain', '361 bash sun > sun > sun rise point bash jab super'],
+      sun: ['100 > sun bash > sun bash rise jab > jab rise sun rain', '217 super', '299 > sun > sun rise bash point jab > jab rise bash sun rain', '352 > sun > sun bash rise point kick jab > jab rise kick low super'],
+    },
+  },
+  odin: {
+    pre: 'o_', raw: [173, 159],
+    g: {
+      jab: ['270 slam rise > slam rise spear', '333 slam rise > slam rise super', '330 slam rise > slam > rise slam slash jab > jab rise slam slash', '432 slam rise > slam > rise slam slash jab > jab rise slam slash super'],
+      slash: ['273 slam jab > jab rise slam spear', '336 slam jab > jab rise slam super', '343 slam rise > slam > slash rise slam jab > jab slam rise slash', '446 slam rise > slam > slash rise slam jab > jab slam rise slash super'],
+      sweep: ['272 slash rise slam spear', '334 slam jab > jab rise slam super', '337 slam rise > slam rise palm slash jab > jab rise slam palm', '439 slam rise > slam rise palm slash jab > jab rise slam palm super'],
+      rise: ['275 > slam rise > slam rise slash spear', '355 > slam rise > slam slash super', '326 > slam rise > rise slam palm slash jab > jab rise slash', '429 > slam rise > rise slam palm slash jab > jab rise slash super'],
+      palm: ['330 slam rise > slam rise spear', '404 rise > rise > slam jab rise slash super', '435 slam rise > slam > rise slam slash jab > jab rise slam slash', '589 slam rise > slam > rise slam slash jab > jab rise slam slash super'],
+      slam: ['275 jab rise > slam rise spear', '339 rise jab > rise slam super', '323 rise > slam rise > rise slam slash jab > jab slash sweep', '426 rise > slam rise > rise slam slash jab > jab slash sweep super'],
+    },
+    a: {
+      jab: ['200 > slash rise slam spear', '276 rise > rise > slam jab slash super', '351 slam > slam rise slash palm jab > jab rise slam slash sweep', '505 slam > slam rise slash palm jab > jab rise slam slash sweep super'],
+      slash: ['194 rise > rise slash slam spear', '281 rise > rise slash slam super', '367 slam > slam rise slash palm jab > jab rise slam slash sweep', '521 slam > slam rise slash palm jab > jab rise slam slash sweep super'],
+      rise: ['189 > rise > slam rise slash spear', '275 > rise > slam rise slash super', '328 > rise > slam rise slash palm jab > jab rise slash sweep', '482 > rise > slam rise slash palm jab > jab rise slash sweep super'],
+      palm: ['102 slam rune', '188 slam super', '249 slam > slam rise palm slash jab > jab rise slam slash sweep', '351 slam > slam rise palm slash jab > jab rise slam slash sweep super'],
+      slam: ['138 spear', '239 super', '356 > slam palm rise > slam sweep slash jab rise palm', '510 > slam palm rise > slam sweep slash jab rise palm super'],
+    },
+  },
+};
+const AIC = {};
+function aiCombos(key) {
+  if (AIC[key]) return AIC[key];
+  const src = AI_COMBO[key], C = CHARS[key], out = { g: {}, a: {}, raw: {} };
+  out.raw[C.super] = src.raw[0]; if (C.super2) out.raw[C.super2] = src.raw[1];
+  for (const grp of ['g', 'a']) for (const st in src[grp]) {
+    const v = src[grp][st].map((t) => { if (!t) return null; const w = t.split(' '); return { dmg: +w[0], seq: [src.pre + st, ...w.slice(1).map((x) => (x === '>' ? x : src.pre + x))] }; });
+    out[grp][src.pre + st] = { p: v[0] || null, s: v[1] || null, cp: v[2] || v[0] || null, cs: v[3] || v[1] || null };
+  }
+  return (AIC[key] = out);
+}
 
 // ---- what a CPU knows about a god's moves (start-up, reach, safety, tools), worked out once from the move tables
 const AIK = {};
@@ -2315,6 +2571,8 @@ function aiKnow(key) {
     let best = I.dmg;
     for (const r of C.routes) if (r[0] === I.id) best = Math.max(best, r.reduce((a, x) => a + (x === 'SUPER' ? 0 : md(x)), 0) * 0.8);
     I.routeDmg = best;
+    const B = aiCombos(key).g[I.id];
+    I.bestDmg = Math.max(best, B && B.p ? B.p.dmg : 0);
   }
   const pokes = K.hitters.filter((I) => I.su <= 0.16 && !I.grab && !I.tele && I.reach <= 2.6);   // not the long rushes
   K.pokeReach = pokes.length ? Math.max(...pokes.map((I) => I.reach)) : 1.4;
@@ -2624,6 +2882,8 @@ class Sim {
             if (this.nextInPlan(f, o)) break;
           }
           if (t >= m.dur) {
+            // the rest of a planned combo after a link ('>'): picked up again once this move has recovered
+            f.link = f.contact && f.plan[0] === '>' && f.plan.length > 1 ? f.plan.slice(1) : null; f.linkSerial = f.serial;
             f.plan = [];
             if (m.flipEnd) f.facing = Math.sign(o.x - f.x) || f.facing;
             if (m.type === 'air' && f.y > 0) { f.state = 'jump'; f.move = null; f.st = 0; }
@@ -2803,7 +3063,7 @@ class Sim {
       this.hitstop = Math.max(this.hitstop, 0.1);
       if (h.proj) { this.emit('absorb', { side: o.side, x: o.x + Math.sign(f.x - o.x) * 0.5, y: hitY }); return 'absorb'; }
       const back = Math.sign(f.x - o.x) || -o.facing;
-      f.contact = false; f.plan = []; f.move = null; f.moveId = null; f.sup = null;
+      f.contact = false; f.plan = []; f.link = null; f.move = null; f.moveId = null; f.sup = null;
       f.state = 'hitstun'; f.st = 0; f.stunT = 0.5; f.vx = back * 2.2; f.charmT = 0;
       this.setState(o, 'idle'); o.invuln = Math.max(o.invuln, 0.1);
       this.emit('parry', { side: o.side, x: (o.x + f.x) / 2, y: hitY });
@@ -2866,7 +3126,7 @@ class Sim {
       f.meter = Math.min(100, f.meter + h.dmg * 0.12);
       o.meter = Math.min(100, o.meter + h.dmg * 0.07);
     }
-    o.plan = []; o.move = null; o.moveId = null; o.sup = null;
+    o.plan = []; o.link = null; o.move = null; o.moveId = null; o.sup = null;
     o.lastHitHigh = hitY - o.y > 1.0;
     const airborne = o.y > 0.01 || o.state === 'juggle';
     if (opts.lock) {
@@ -2914,8 +3174,8 @@ class Sim {
     o.state = 'juggle'; o.st = 0;
     o.vy = Math.max(o.vy, 7.5); o.vx = dir * 4.5;
     if (o.y < 0.02) o.y = 0.02;
-    o.plan = [];
-    f.plan = [];
+    o.plan = []; o.link = null;
+    f.plan = []; f.link = null;
     this.projs = [];
     this.emit('ko', { winner: f.side, loser: o.side, x: o.x });
   }
@@ -2926,7 +3186,7 @@ class Sim {
     let w = ra > rb ? 0 : rb > ra ? 1 : (R() < 0.5 ? 0 : 1);
     this.phase = 'ko'; this.phaseT = 0; this.timeUp = true;
     this.roundWinner = w;
-    for (const f of this.fighters) { f.plan = []; }
+    for (const f of this.fighters) { f.plan = []; f.link = null; }
     this.emit('timeUp', { winner: w });
   }
 
@@ -3060,7 +3320,7 @@ class Sim {
   }
   lock(f, o) {
     o.state = 'locked'; o.st = 0; o.lockedBy = f.side;
-    o.vx = 0; o.vy = 0; o.plan = []; o.move = null; o.moveId = null;
+    o.vx = 0; o.vy = 0; o.plan = []; o.link = null; o.move = null; o.moveId = null;
     if (!o.inCombo) { o.inCombo = true; f.combo = 0; f.comboDmg = 0; o.juggleN = 0; }
     // a super that connects at point-blank range would play its whole cinematic with the two bodies pressed
     // together: knock the victim back to a clear striking distance (the attacker gives ground at a wall)
@@ -3807,7 +4067,7 @@ class Sim {
   aiPunish(f, o, d, win, K) {
     const toward = Math.sign(o.x - f.x) || f.facing;
     const sid = o.invuln <= 0 ? this.aiSuperFor(f, o, d, win, o.y > 0.01) : null;
-    if (sid) { this.startMove(f, sid); return true; }
+    const L = AI_LEVELS[f.level] || AI_LEVELS[AI_LEVEL_DEFAULT];
     let best = null, bv = -1;
     for (const I of K.hitters) {
       if (I.grab && o.y > 0.01) continue;
@@ -3816,8 +4076,13 @@ class Sim {
       if (I.su + tReach > win - 0.02) continue;
       if (gap > 0 && gap > 4) continue;
       if (d < I.rmin - 0.3) continue;
-      const v = I.routeDmg - tReach * 30;
+      const v = this.aiComboDmg(f, o, I, L) - tReach * 30;
       if (v > bv) { bv = v; best = I; }
+    }
+    // the super at once - unless this CPU knows a combo from here that ends in it and takes clearly more
+    if (sid) {
+      const B = best && d <= best.reach - 0.15 && R() < L.best ? this.aiBestCombo(f, o, best.id, true) : null;
+      if (!(B && B.dmg > aiCombos(f.key).raw[sid] + 25)) { this.startMove(f, sid); return true; }
     }
     if (!best) return false;
     if (d > best.reach - 0.15) {
@@ -3833,6 +4098,8 @@ class Sim {
   // start a combo route beginning with `first` (or any route when first is null)
   aiRoute(f, o, first) {
     const routes = f.c.routes, L = AI_LEVELS[f.level] || AI_LEVELS[AI_LEVEL_DEFAULT];
+    const B = first ? this.aiBestRoute(f, o, first, L) : null;
+    if (B) { f.plan = B.slice(1); this.startMove(f, first); return; }
     let pool = routes.filter((r) => !first || r[0] === first);
     const sup = pool.filter((r) => r[r.length - 1] === 'SUPER'), plain = pool.filter((r) => r[r.length - 1] !== 'SUPER');
     pool = f.meter >= 100 && sup.length && R() < L.superRoute ? sup : plain.length ? plain : sup;
@@ -3841,6 +4108,36 @@ class Sim {
     const id = route.shift();
     f.plan = route;
     this.startMove(f, id);
+  }
+
+  // the highest-damage combo this CPU knows from `first` as things stand (the foe standing or in the air, near the
+  // corner or not, the gauge full or not) - null when it plays a standard route instead
+  aiBestCombo(f, o, first, sup) {
+    const T = aiCombos(f.key), air = o.y > 0.01 || o.state === 'juggle';
+    const E = (air ? T.a : T.g)[first];
+    if (!E) return null;
+    const corner = Math.abs(o.x) > STAGE - AI_CORNER && Math.sign(o.x) === Math.sign(o.x - f.x);
+    return (sup ? (corner ? E.cs : E.s) : null) || (corner ? E.cp : E.p);
+  }
+  aiBestRoute(f, o, first, L) {
+    if (!(R() < L.best)) return null;
+    const sup = f.meter >= 100 && R() < L.superRoute;
+    const B = this.aiBestCombo(f, o, first, sup);
+    if (!B) return null;
+    // as long a part of it as this CPU can carry out
+    const seq = [];
+    let n = 0;
+    for (const x of B.seq) { if (x !== '>') { if (n >= L.maxCombo) break; n++; } seq.push(x); }
+    while (seq[seq.length - 1] === '>') seq.pop();
+    // a gauge that fills on the way (or a full one the route did not use) is spent on the last hit
+    if (n === B.seq.length - B.seq.filter((x) => x === '>').length && f.c.moves[seq[seq.length - 1]].type !== 'super' && R() < L.superRoute) seq.push('SUPER');
+    return seq;
+  }
+  // what a combo from `id` is worth to this CPU: its best route's damage to the degree it goes for those
+  aiComboDmg(f, o, I, L) {
+    if (!L.best) return I.routeDmg;
+    const B = this.aiBestCombo(f, o, I.id, f.meter >= 100 && L.superRoute >= 0.5);
+    return I.routeDmg + ((B ? Math.max(B.dmg, I.routeDmg) : I.routeDmg) - I.routeDmg) * L.best;
   }
 
   think(f, o, dt) {
@@ -3942,14 +4239,22 @@ class Sim {
     if (ai.wakePlan) { const w = ai.wakePlan; ai.wakePlan = null; if (this.aiDoWake(f, o, d, toward, K, w)) return true; }
 
     // follow up a hit that landed (a jump-in, a projectile, a stray poke): combo while the foe still reels
+    // (the next part of a combo already under way needs no second look)
+    if (f.link && this.comboLink(f, o)) return true;
     if ((s.state === 'hitstun' || s.state === 'juggle') && (o.state === 'hitstun' || o.state === 'juggle')) {
       // time left before the foe recovers - or, juggled, before they touch down (lifts shrink as a combo goes on)
       const gj = GRAV * 0.86, left = o.state === 'hitstun' ? o.stunT - o.st : (o.vy + Math.sqrt(Math.max(0, o.vy * o.vy + 2 * gj * o.y))) / gj - 0.05;
+      // the fastest move that reaches - or, for a CPU that knows its best combos, the one that opens the most damage
+      const L = AI_LEVELS[f.level] || AI_LEVELS[AI_LEVEL_DEFAULT], top = L.best > 0 && R() < L.best;
+      let pick = null, pv = -1;
       for (const I of K.hitters) {
         if (I.grab || I.tele || I.su + 0.02 >= left || d > I.reach - 0.1 || d < I.rmin - 0.3) continue;
         if (o.state === 'juggle' && f.y + I.top < o.y + 0.4) continue;
-        this.aiRoute(f, o, I.id); return true;
+        if (!top) { pick = I; break; }
+        const B = this.aiBestCombo(f, o, I.id, f.meter >= 100), v = B ? B.dmg : I.dmg;
+        if (v > pv) { pv = v; pick = I; }
       }
+      if (pick) { this.aiRoute(f, o, pick.id); return true; }
     }
 
     // projectiles coming at the CPU
@@ -4321,6 +4626,8 @@ class Sim {
   // a neutral swing gets a short follow-up plan that only continues if it hits (hit-confirm)
   aiPlanAfter(f, o, id) {
     const L = AI_LEVELS[f.level] || AI_LEVELS[AI_LEVEL_DEFAULT];
+    const B = this.aiBestRoute(f, o, id, L);
+    if (B) return B.slice(1);
     const routes = f.c.routes.filter((r) => r[0] === id && r.length > 1);
     if (!routes.length) return [];
     let pool = routes.filter((r) => r[r.length - 1] !== 'SUPER');
@@ -4335,6 +4642,7 @@ class Sim {
     if (f.ctl === 'ai') this.think(f, o, dt);
     else if (f.ctl === 'human') this.human(f, o, dt);
     else if (f.ctl === 'guard') this.dummyGuard(f);
+    else if (f.ctl === 'combo') { if (this.actionable(f)) this.comboLink(f, o); }   // test rig: only carries out its plan
     // 'dummy' / 'none': no input at all
   }
 
@@ -4410,19 +4718,42 @@ class Sim {
   idle(f, t) { this.setState(f, 'idle'); f.ai.t = t; }
   dash(f, dir, t) { f.state = 'dash'; f.st = 0; f.dashDir = dir; f.dashT = t; f.ai.t = t; this.emit('dash', { side: f.side, dir }); }
 
+  // the next part of a planned combo, linked after the last move recovered: started the moment it can reach the
+  // reeling foe (true: it was started, or it is being waited for - a juggled foe still too high)
+  comboLink(f, o) {
+    const L = f.link;
+    if (!L) return false;
+    f.link = null;
+    if (f.linkSerial !== f.serial || !o.inCombo || (o.state !== 'hitstun' && o.state !== 'juggle')) return false;
+    const id = L[0] === 'SUPER' ? f.c.super : L[0], m = f.c.moves[id], d = Math.abs(o.x - f.x);
+    if (!m) return false;
+    if (m.type === 'super') { if (f.meter < 100 || !this.startMove(f, id)) return false; f.plan = L.slice(1); return true; }
+    const I = aiKnow(f.key).all[id];
+    if (!I || !m.hits) return false;
+    const gj = GRAV * 0.86, left = o.state === 'hitstun' ? o.stunT - o.st : (o.vy + Math.sqrt(Math.max(0, o.vy * o.vy + 2 * gj * o.y))) / gj - 0.05;
+    if (I.su + 0.02 >= left || d > I.reach - 0.1 || d < I.rmin - 0.3) return false;
+    if (o.state === 'juggle' && f.y + I.top < o.y + 0.4) { f.link = L; return true; }
+    f.facing = Math.sign(o.x - f.x) || f.facing;
+    if (!this.startMove(f, id)) return false;
+    f.plan = L.slice(1);
+    return true;
+  }
+
   nextInPlan(f, o) {
-    if (!f.plan.length) return false;
+    if (!f.plan.length || f.plan[0] === '>') return false;   // '>' is a link, not a cancel: the rest waits for this move to recover
     const drop = f.ctl === 'ai' ? (AI_LEVELS[f.level] || AI_LEVELS[AI_LEVEL_DEFAULT]).drop : 0.05;
     if (R() < drop) { f.plan = []; return false; } // human-like drop
     // hit-confirm: a CPU that sees its chain guarded stops it there rather than finish an unsafe string
     if (f.ctl === 'ai' && (o.state === 'blockstun' || o.state === 'block') && R() < this.aiLevel(f).confirm) { f.plan = []; return false; }
     const id = f.plan.shift();
     if (id === 'SUPER') {
+      if (f.ctl === 'ai' && o.state !== 'hitstun' && o.state !== 'juggle' && o.state !== 'locked') { f.plan = []; return false; }
       if (f.meter >= 100) { this.startMove(f, (f.ctl === 'ai' && this.aiSuperFor(f, o, Math.abs(o.x - f.x), 9, o.y > 0.01)) || f.c.super); return true; }
       f.plan = []; return false;
     }
     // don't continue a ground chain if the opponent fell out of range
     const m = f.c.moves[id];
+    if (m.type === 'super') { if (f.meter >= 100 && this.startMove(f, id)) return true; f.plan = []; return false; }
     if (m.hits && !m.reach) {
       const d = Math.abs(o.x - f.x);
       if (d > m.hits[0].range[1] + 0.5) { f.plan = []; return false; }
@@ -5326,6 +5657,16 @@ function clothTex(base, band) {
 // ---------------- geometry helpers ----------------
 const SPH = new THREE.SphereGeometry(1, 44, 32);
 const SPH_LO = new THREE.SphereGeometry(1, 14, 10);
+// phones: a rounded part is only as finely divided as its size can show on their screens - a knuckle or a bead a
+// centimetre across was the same 2,700 triangles as a shoulder, and a god came to 200,000 of them. (Same shape, same
+// texture layout: only the facet count differs. PCs keep the full sphere everywhere.)
+const SPH_BY_SIZE = TEX_CAP < 1024 ? [[0.02, new THREE.SphereGeometry(1, 12, 8)], [0.04, new THREE.SphereGeometry(1, 16, 12)], [0.08, new THREE.SphereGeometry(1, 22, 16)], [0.15, new THREE.SphereGeometry(1, 30, 22)], [1e9, new THREE.SphereGeometry(1, 36, 26)]] : null;
+function sphFor(s) {
+  if (!SPH_BY_SIZE) return SPH;
+  const r = Math.max(Math.abs(s[0]), Math.abs(s[1]), Math.abs(s[2]));
+  for (const [lim, g] of SPH_BY_SIZE) if (r <= lim) return g;
+  return SPH;
+}
 
 function muscleLimb(len, r0, r1, bulge = 0, bpos = 0.5, seg = 40, bw = 0.045) {
   const pts = [];
@@ -5416,7 +5757,7 @@ class PartSet {
     g.applyMatrix4(m);
     this.items.push({ joint, g, mat, cast });
   }
-  ell(joint, mat, p, s, r = [0, 0, 0], lo = false) { this.add(joint, lo ? SPH_LO : SPH, mat, p, r, s); }
+  ell(joint, mat, p, s, r = [0, 0, 0], lo = false) { this.add(joint, lo ? SPH_LO : sphFor(s), mat, p, r, s); }
   build() {
     const groups = new Map();
     for (const it of this.items) {
@@ -14631,7 +14972,8 @@ function frame(now) {
 
   const edt = paused ? 0 : rdt * speed * (ts < 1 ? 0.45 : 1);
   if (!paused) ambient(edt);
-  for (const v of views) v.update(!started ? rdt : paused ? 0 : edt, clock);
+  // (a fighter the menus keep out of sight is not posed, and its cloth is not simulated)
+  for (const v of views) if (!v.m.root.userData.menuHidden) v.update(!started ? rdt : paused ? 0 : edt, clock);
   if (!paused) for (const v of views) airTrail(v.f);
   updateProjViews(edt);
   addP.update(edt); normP.update(edt);
@@ -14755,6 +15097,8 @@ function showScreen(name) {
   $('viewer').classList.toggle('hidden', name !== 'viewer');
   $('story').classList.toggle('hidden', name !== 'story');
   if (name !== 'match') { hud.announce.className = ''; hud.cutin.className = 'hide'; document.body.classList.remove('cine'); $('cineTitle').classList.remove('show'); }
+  // a fight's call-outs ("ガード不能!", a combo count) do not follow the player out of it: their timers only run in a fight
+  if (name !== 'match') for (const sd of [0, 1]) { hud.callout[sd].classList.remove('show'); hud.combo[sd].classList.remove('show'); calloutTimers[sd] = comboTimers[sd] = 0; }
   $('start').classList.toggle('hidden', name !== 'title');
   $('mode').classList.toggle('hidden', name !== 'mode');
   $('select').classList.toggle('hidden', name !== 'select');
@@ -15060,7 +15404,7 @@ function viewerPlay() {
   sim.projs = []; sim.freeze = 0; sim.hitstop = 0; sim.phase = 'fight'; sim.events.length = 0;
   for (const x of sim.fighters) {
     sim.setState(x, 'idle'); x.y = 0; x.vx = 0; x.vy = 0; x.push = 0; x.hp = x.c.hp; x.invuln = 0;
-    x.inCombo = false; x.lockedBy = null; x.sup = null; x.plan = []; x.chain = []; x.juggleN = 0; x.launchN = 0; x.airN = 0;
+    x.inCombo = false; x.lockedBy = null; x.sup = null; x.plan = []; x.link = null; x.chain = []; x.juggleN = 0; x.launchN = 0; x.airN = 0;
   }
   const d = viewerDistance(m);
   f.x = -d / 2 - 0.3; o.x = d / 2 - 0.3; f.facing = 1; o.facing = -1;
@@ -15701,6 +16045,77 @@ function floorDiscTex(base, line) {
   });
 }
 
+// a god's model in the pose its colossus on the title screen holds
+function statuePose(k, M) {
+  const p = POSES[k].win;
+  for (const jn of JOINTS) { const sg = jn.charCodeAt(0) === 114 ? -1 : 1; M.j[jn].rotation.set(p[jn][0], sg * p[jn][1], sg * p[jn][2]); }
+  M.body.position.y = SKEL[k].hipH;
+  if (M.cape) updateCape(M, 0, 0, 0);
+  if (M.cloths) settleCloth(M);
+}
+// phones: the colossus of god k, cut from that god's fighter model as it is built during loading (everything that glows
+// in the pantheon's colour, the rest in bronze, as the full statues are)
+function fillStatue(k, M) {
+  const S = menuBG.statues && menuBG.statues[k];
+  if (!S || S.done) return;
+  S.done = true;
+  statuePose(k, M);
+  const glow = (o) => !!(o.material && o.material.isMeshBasicMaterial);
+  S.g.add(new THREE.Mesh(clusterMeshes(M.root, (o) => !glow(o), 0.02, S.eyes), S.bronze));
+  const gg = clusterMeshes(M.root, glow, 0.012);
+  if (gg.index.count) S.g.add(new THREE.Mesh(gg, new THREE.MeshBasicMaterial({ color: new THREE.Color(MENU_COL[k]).multiplyScalar(3) })));
+  iblPolicy(S.g);
+}
+
+// every chosen mesh under `root` as one coarse geometry in root's space: vertices are snapped to a grid of `cell` and
+// merged (each merged vertex sits at the average of those it replaces), triangles that collapse or repeat are dropped.
+// eyes: places (in root's space) it is only ever seen from - triangles facing well away from all of them are left out
+function clusterMeshes(root, pick, cell, eyes) {
+  root.updateMatrixWorld(true);
+  const inv = new THREE.Matrix4().copy(root.matrixWorld).invert(), m = new THREE.Matrix4(), v = new V3();
+  const ids = new Map(), sum = [], idx = [], seen = new Set(), N = 2097152;
+  root.traverse((o) => {
+    if (!o.isMesh || !o.geometry || !pick(o)) return;
+    for (let q = o; q && q !== root.parent; q = q.parent) if (!q.visible) return;
+    m.multiplyMatrices(inv, o.matrixWorld);
+    const p = o.geometry.attributes.position, ix = o.geometry.index, map = new Int32Array(p.count);
+    for (let i = 0; i < p.count; i++) {
+      v.fromBufferAttribute(p, i).applyMatrix4(m);
+      const key = (Math.round(v.x / cell) + 2048) * 16777216 + (Math.round(v.y / cell) + 2048) * 4096 + (Math.round(v.z / cell) + 2048);
+      let id = ids.get(key);
+      if (id === undefined) { id = sum.length / 4; ids.set(key, id); sum.push(0, 0, 0, 0); }
+      sum[id * 4] += v.x; sum[id * 4 + 1] += v.y; sum[id * 4 + 2] += v.z; sum[id * 4 + 3]++;
+      map[i] = id;
+    }
+    const n = ix ? ix.count : p.count;
+    for (let i = 0; i + 2 < n; i += 3) {
+      let a = map[ix ? ix.getX(i) : i], b = map[ix ? ix.getX(i + 1) : i + 1], c = map[ix ? ix.getX(i + 2) : i + 2];
+      if (a === b || b === c || a === c) continue;
+      // the same triangle facing the same way, whichever corner it starts from
+      if (b < a && b < c) { const t = a; a = b; b = c; c = t; } else if (c < a && c < b) { const t = c; c = b; b = a; a = t; }
+      const k = (a * N + b) * N + c;
+      if (a < N && b < N && c < N) { if (seen.has(k)) continue; seen.add(k); }
+      idx.push(a, b, c);
+    }
+  });
+  const count = sum.length / 4, pos = new Float32Array(count * 3);
+  for (let i = 0; i < count; i++) { const k = sum[i * 4 + 3]; pos[i * 3] = sum[i * 4] / k; pos[i * 3 + 1] = sum[i * 4 + 1] / k; pos[i * 3 + 2] = sum[i * 4 + 2] / k; }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  g.setIndex(idx);
+  g.computeVertexNormals();
+  if (eyes && eyes.length) {
+    const A = new V3(), B = new V3(), C = new V3(), nrm = new V3(), to = new V3(), kept = [];
+    for (let i = 0; i < idx.length; i += 3) {
+      A.fromArray(pos, idx[i] * 3); B.fromArray(pos, idx[i + 1] * 3); C.fromArray(pos, idx[i + 2] * 3);
+      nrm.subVectors(B, A).cross(to.subVectors(C, A)).normalize();
+      if (eyes.some((e) => nrm.dot(to.subVectors(e, A).normalize()) > -0.3)) kept.push(idx[i], idx[i + 1], idx[i + 2]);
+    }
+    g.setIndex(kept);
+  }
+  return g;
+}
+
 function buildTitleBackdrop() {
   return sceneGroup(() => {
     const sky = new THREE.Mesh(new THREE.SphereGeometry(500, 48, 24), menuSkyMat(0));
@@ -15774,24 +16189,32 @@ function buildTitleBackdrop() {
     MENU_KEYS.forEach((k, i) => {
       const u = (i - (MENU_KEYS.length - 1) / 2) / ((MENU_KEYS.length - 1) / 2);   // -1..1
       const x = u * 30, z = -44 + Math.abs(u) * 10, y = 1.5 - Math.abs(u) * 2.5;
-      const M = builders[k](FT);
-      M.root.traverse((o) => {
-        if (o.isSprite) o.visible = false;
-        else if (o.isMesh) {
-          if (o.material && o.material.isMeshBasicMaterial) { o.material = new THREE.MeshBasicMaterial({ color: new THREE.Color(MENU_COL[k]).multiplyScalar(3) }); }
-          else o.material = bronze;
-          o.castShadow = false; o.receiveShadow = false;
-        }
-      });
-      const p = POSES[k].win;
-      for (const jn of JOINTS) { const sg = jn.charCodeAt(0) === 114 ? -1 : 1; M.j[jn].rotation.set(p[jn][0], sg * p[jn][1], sg * p[jn][2]); }
-      M.body.position.y = SKEL[k].hipH;
-      if (M.cape) updateCape(M, 0, 0, 0);
-      if (M.cloths) settleCloth(M);
-      M.root.scale.setScalar(5.4);
-      M.root.position.set(x, y, z);
-      M.root.rotation.y = -u * 0.5;
-      scene.add(M.root);
+      let statue;
+      if (isMobile) {
+        // phones: each colossus is a far-off silhouette some 130 pixels tall, yet was drawn as a full fighter model of
+        // its own - twelve of them, 2.5 million triangles a frame on the title screen. There it is one coarse mesh
+        // (plus one for its glowing parts), made from the fighter's model when that is built (fillStatue).
+        statue = new THREE.Group();
+        // the title camera stands in front of the altar (nearer on wide screens, further back on tall ones)
+        const eyes = [new V3(0, 2.6, 13), new V3(0, 3.6, 28)].map((e) => e.sub(new V3(x, y, z)).divideScalar(5.4).applyAxisAngle(new V3(0, 1, 0), u * 0.5));
+        (menuBG.statues = menuBG.statues || {})[k] = { g: statue, bronze, eyes };
+      } else {
+        const M = builders[k](FT);
+        M.root.traverse((o) => {
+          if (o.isSprite) o.visible = false;
+          else if (o.isMesh) {
+            if (o.material && o.material.isMeshBasicMaterial) { o.material = new THREE.MeshBasicMaterial({ color: new THREE.Color(MENU_COL[k]).multiplyScalar(3) }); }
+            else o.material = bronze;
+            o.castShadow = false; o.receiveShadow = false;
+          }
+        });
+        statuePose(k, M);
+        statue = M.root;
+      }
+      statue.scale.setScalar(5.4);
+      statue.position.set(x, y, z);
+      statue.rotation.y = -u * 0.5;
+      scene.add(statue);
       // cliff pillar under each colossus
       const cl = new THREE.Mesh(new THREE.CylinderGeometry(3.2, 5.5, 30, 7, 3), cliffM);
       { const pp = cl.geometry.attributes.position; for (let q = 0; q < pp.count; q++) { pp.setX(q, pp.getX(q) * (0.8 + Math.random() * 0.4)); pp.setZ(q, pp.getZ(q) * (0.8 + Math.random() * 0.4)); } cl.geometry.computeVertexNormals(); }
@@ -15905,7 +16328,12 @@ function updateMenuBackdrops(dt, t) {
   menuBG.select.visible = which === 'select';
   const fg = which === 'arena' ? STAGES[curStage].fog : FOG[which]; scene.fog.color.setHex(fg[0]); scene.fog.near = fg[1]; scene.fog.far = fg[2];
   // gods only stand in the hall of the gods: hide fighters on the title / mode screens
-  for (const v of views) v.m.root.visible = which !== 'title' && !(screen === 'select' && selState.mode === 'story' && v.f.side === 1);
+  // (a model is only shown again by the screen that hid it: in a fight its own view may be hiding it - Hades vanishing)
+  for (const v of views) {
+    const root = v.m.root, hide = which === 'title' || (screen === 'select' && selState.mode === 'story' && v.f.side === 1);
+    if (hide) root.visible = false; else if (root.userData.menuHidden) root.visible = true;
+    root.userData.menuHidden = hide;
+  }
   if (which === 'arena') return;
   menuBG.flash = Math.max(0, menuBG.flash - dt * 2.5);
   if (which === 'title') {
@@ -16498,6 +16926,7 @@ function setLoad(msg, k) {
   $('ldMsg').textContent = msg; $('ldPct').textContent = Math.round(k * 100) + '%'; $('ldFill').style.width = (k * 100).toFixed(1) + '%';
 }
 // two animation frames guarantee the browser really painted (Safari can run a 0ms timer before painting)
+const bootLog = [];   // how long each loading step took (ms), for profiling
 const nextPaint = () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(r, 0))));
 async function boot() {
   // every step runs after a repaint so the progress bar actually moves
@@ -16510,14 +16939,16 @@ async function boot() {
   for (const id of STAGE_IDS) if (STAGES[id].build) steps.push([`ステージ「${STAGES[id].name}」を構築中…`, () => buildStages(arena, [id])]);
   steps.push(['対戦を準備中…', () => { iblPolicy(scene); setupMatch(ATTRACT); applyQuality(); }]);
   steps.push(['ライトを準備中…', () => installLampRig()]);
-  for (const k of MENU_KEYS) steps.push([`${CHARS[k].name}を召喚中…`, () => { warmObj(modelFor(0, k).root); warmObj(modelFor(1, k).root); }]);
+  for (const k of MENU_KEYS) steps.push([`${CHARS[k].name}を召喚中…`, () => { const m = modelFor(0, k); fillStatue(k, m); warmObj(m.root); warmObj(modelFor(1, k).root); }]);
   steps.push(['ステージを描画準備中…', () => { for (const id of STAGE_IDS) if (STAGES[id].group) warmObj(STAGES[id].group); }]);
   steps.push(['描画を最終準備中…', () => warmAll()]);
   steps.push(['技の演出を準備中…', () => warmFx()]);
   for (let i = 0; i < steps.length; i++) {
     setLoad(steps[i][0], i / steps.length);
     await nextPaint();
+    const t0 = performance.now();
     steps[i][1]();
+    bootLog.push([steps[i][0], Math.round(performance.now() - t0)]);
     setLoad(steps[i][0], (i + 1) / steps.length);
   }
   setLoad('準備完了', 1);
@@ -16634,7 +17065,7 @@ function buildMoveList() {
 }
 
 window.__game = { get renderer() { return renderer; }, get scene() { return scene; }, setupMatch: (c) => setupMatch(c), get sim() { return sim; }, get views() { return views; }, get sfx() { return sfx; }, get bgm() { return bgm; }, get speed() { return speed; }, set speed(v) { speed = v; }, SUPER2, SUPER_K,
-  get composer() { return composer; }, get camera() { return camera; }, get bloom() { return bloom; }, get keyLight() { return key; }, get lamps() { return lampSlots; }, get BASE() { return BASE; }, get IBL() { return { tex: IBL_TEX, iblMats, ambMats }; }, get light() { return { stageFlash: stage.flash, flashLevel, fx: fxLight.intensity, hemi: hemi.intensity, dim: stage.dim, resScale, flashing: flashRest.size }; },
+  get composer() { return composer; }, get bootLog() { return bootLog; }, get camera() { return camera; }, get bloom() { return bloom; }, get keyLight() { return key; }, get lamps() { return lampSlots; }, get BASE() { return BASE; }, get IBL() { return { tex: IBL_TEX, iblMats, ambMats }; }, get light() { return { stageFlash: stage.flash, flashLevel, fx: fxLight.intensity, hemi: hemi.intensity, dim: stage.dim, resScale, flashing: flashRest.size }; },
   clearFx() { timed.update(1e5); addP.update(10); normP.update(10); bolts.update(10); shake = 0; stage.flash = 0; flashLevel = 0; flashEl().style.opacity = 0; } };
 boot().catch((err) => showError(err));
 
