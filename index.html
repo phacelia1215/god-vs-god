@@ -12688,7 +12688,7 @@ function strikeAnim(L, A, t, out, tmp) {
   }
   copyPose(L[A[A.length - 1][1]], out); return 0;
 }
-const WHITE_C = new THREE.Color(1, 0.97, 0.92);
+const WHITE_C = new THREE.Color(0.85, 0.82, 0.78), flashRest = new Map();
 class FighterView {
   constructor(f, model) {
     this.f = f; this.m = model;
@@ -12724,19 +12724,34 @@ class FighterView {
     if (this.snap > 0.25 && f.state === 'attack' && sim.hitstop <= 0) {
       let best = null, bd = 0.07;
       for (const L of this.limbs) { L.q.set(0, 0, 0); L.j.localToWorld(L.q); if (L.ok) { const d = L.q.distanceTo(L.p); if (d > bd) { bd = d; best = L; } } }
-      if (best) { const c = AIRCOL[f.key] || COL.spark, w = Math.min(0.32, 0.08 + bd * 0.5); beamStreak(best.p, best.q, w, [0.5 + c[0] * 0.5, 0.5 + c[1] * 0.5, 0.5 + c[2] * 0.5], 0.09); }
+      // tinted and dim enough to stay under the glow threshold (bright streaks on every blow read as white flicker)
+      if (best) { const c = AIRCOL[f.key] || COL.spark, w = Math.min(0.28, 0.07 + bd * 0.45), k = 0.32 / Math.max(c[0], c[1], c[2]); beamStreak(best.p, best.q, w, [0.12 + c[0] * k, 0.12 + c[1] * k, 0.12 + c[2] * k], 0.08); }
       for (const L of this.limbs) { L.p.copy(L.q); L.ok = true; }
     } else for (const L of this.limbs) L.ok = false;
     if (this.flashT > 0) {
       this.flashT -= dt;
-      if (!this.flashMats) { this.flashMats = []; M.root.traverse((o) => { const ms = Array.isArray(o.material) ? o.material : o.material ? [o.material] : []; for (const m of ms) if (m.emissive && !this.flashMats.some((x) => x.m === m)) this.flashMats.push({ m, c: new THREE.Color(), i: 1 }); }); }
-      if (!this.flashing) { this.flashing = true; for (const x of this.flashMats) { x.c.copy(x.m.emissive); x.i = x.m.emissiveIntensity; } }
+      if (!this.flashMats) { const s = new Set(); M.root.traverse((o) => { const ms = Array.isArray(o.material) ? o.material : o.material ? [o.material] : []; for (const m of ms) if (m.emissive) s.add(m); }); this.flashMats = [...s]; }
+      if (!this.flashing) { this.flashing = true; for (const m of this.flashMats) { let r = flashRest.get(m); if (!r) flashRest.set(m, r = { c: m.emissive.clone(), i: m.emissiveIntensity, n: 0 }); r.n++; } }
       const a = Math.max(0, this.flashT / this.flashLen) * this.flashAmt;
-      for (const x of this.flashMats) { x.m.emissive.copy(x.c).lerp(WHITE_C, a); x.m.emissiveIntensity = Math.max(x.i, a * 1.2); }
-      if (this.flashT <= 0) { this.flashing = false; for (const x of this.flashMats) { x.m.emissive.copy(x.c); x.m.emissiveIntensity = x.i; } }
+      for (const m of this.flashMats) { const r = flashRest.get(m); m.emissive.copy(r.c).lerp(WHITE_C, a); m.emissiveIntensity = r.i; }
+      if (this.flashT <= 0) this.endFlash();
     }
   }
-  hitFlash(power) { this.flashLen = this.flashT = 0.06 + Math.min(0.06, power / 1500); this.flashAmt = clamp(0.35 + power / 200, 0.4, 0.85); }
+  // a short, soft whitening of the struck body: only for real blows (the small ticks of a multi-hit would strobe it),
+  // at most once every 0.12 s, and kept below the glow threshold so it never blooms into a white flash
+  hitFlash(power) {
+    if (power < 25 || clock - (this.flashAt ?? -9) < 0.12) return;
+    this.flashAt = clock;
+    this.flashLen = this.flashT = 0.05 + Math.min(0.04, power / 2500);
+    this.flashAmt = clamp(0.18 + power / 400, 0.22, 0.4);
+  }
+  // the resting colours are kept per material (not per view): a material two gods share (a mirror match) is put back
+  // only by the last flash to end, never 'restored' to a colour that was itself mid-flash
+  endFlash() {
+    if (!this.flashing) return;
+    this.flashing = false; this.flashT = 0;
+    for (const m of this.flashMats) { const r = flashRest.get(m); if (r && --r.n <= 0) { m.emissive.copy(r.c); m.emissiveIntensity = r.i; flashRest.delete(m); } }
+  }
   targetPose(dt, t) {
     const f = this.f, L = this.lib, out = this.tgt;
     if (talk.on && screen === 'match' && f.state !== 'ko' && f.state !== 'down') { talkPose(this, dt, t); this.lastX = f.x; return 8; }
@@ -14661,7 +14676,9 @@ const modelCache = {};
 // Many textures and some geometry are shared by every build of a god (cached by the builders): those are never
 // freed - disposing them only made the live model re-upload them on its next frame (a hitch every time a god was
 // picked). Only what one build alone used is released.
-const MODEL_KEEP = isMobile ? 6 : 99, modelUse = [];
+// Phones also let a model move between 1P and 2P (it is the same god either way), so picking for one side after the
+// other reuses what is already built instead of building a second copy.
+const MODEL_KEEP = isMobile ? 8 : 99, modelUse = [];
 const FT_SET = new Set(Object.values(FT)), partUses = new WeakMap();
 function modelParts(m, fn) {
   const seen = new Set();
@@ -14685,7 +14702,12 @@ function freeModel(id) {
   }
 }
 function modelFor(side, key) {
-  const id = side + key;
+  const id = side + key, other = (1 - side) + key;
+  // phones: take the other side's copy when that side is not showing this same god (a mirror match needs two)
+  if (isMobile && !modelCache[id] && modelCache[other] && !(sim && sim.fighters && sim.fighters[1 - side] && sim.fighters[1 - side].key === key)) {
+    modelCache[id] = modelCache[other]; delete modelCache[other];
+    const o = modelUse.indexOf(other); if (o >= 0) modelUse.splice(o, 1);
+  }
   const u = modelUse.indexOf(id); if (u >= 0) modelUse.splice(u, 1); modelUse.push(id);
   while (modelUse.length > MODEL_KEEP) freeModel(modelUse.shift());
   if (!modelCache[id]) modelCache[id] = key === 'zeus' ? buildZeus(FT) : key === 'anubis' ? buildAnubis(FT) : key === 'thor' ? buildThor(FT) : key === 'susanoo' ? buildSusanoo(FT) : key === 'heracles' ? buildHeracles(FT) : key === 'hades' ? buildHades(FT) : key === 'odin' ? buildOdin(FT) : key === 'shiva' ? buildShiva(FT) : key === 'aphrodite' ? buildAphrodite(FT) : key === 'shaka' ? buildShaka(FT) : key === 'apollo' ? buildApollo(FT) : buildPoseidon(FT);
@@ -14706,7 +14728,7 @@ function setupMatch(c) {
   cfg = c;
   curStage = c.stage || 'olympus';
   bgm.prefetch(c.mode === 'practice' ? 'practice' : STAGES[curStage].bgm);
-  for (const v of views) { scene.remove(v.m.root); for (const tr of v.trails) tr.dispose(); if (v.ribbon) v.ribbon.dispose(); }
+  for (const v of views) { v.endFlash(); scene.remove(v.m.root); for (const tr of v.trails) tr.dispose(); if (v.ribbon) v.ribbon.dispose(); }
   for (const v of projViews.values()) scene.remove(v.g);
   projViews.clear();
   const ctl = c.mode === 'auto' || c.aiP1 ? ['ai', 'ai'] : c.mode === 'player' ? ['human', 'ai'] : ['human', c.dummy === 'guard' ? 'guard' : 'dummy'];
@@ -14834,7 +14856,12 @@ function renderSelect() {
   $('btnFight').innerHTML = `<span>${m === 'story' ? 'ストーリー開始' : '試合開始'}</span>`;
   // only the select screen's freshly rendered buttons (the move viewer's god buttons persist, and adding a handler to
   // them on every render piled up copies that each re-rendered the screen and rebuilt the preview match)
-  document.querySelectorAll('#select .pick').forEach((b) => b.addEventListener('click', () => { selState.keys[+b.dataset.side] = b.dataset.key; renderSelect(); refreshPreview(false, +b.dataset.side); }));
+  // the pick shows at once; the 3D preview follows a moment later, so tapping through several gods builds only the one
+  // settled on (a god not held in memory has to be built, which is what made the screen stall)
+  document.querySelectorAll('#select .pick').forEach((b) => b.addEventListener('click', () => {
+    const side = +b.dataset.side; selState.keys[side] = b.dataset.key; renderSelect();
+    clearTimeout(previewTimer); previewTimer = setTimeout(() => refreshPreview(false, side), 140);
+  }));
   $('dummyOpt').classList.toggle('hidden', m !== 'practice');
   $('levelOpt').classList.toggle('hidden', m === 'practice');
   $('levelOpt').innerHTML = levelRows(m);
@@ -14842,7 +14869,9 @@ function renderSelect() {
   $('keysHelp').classList.toggle('hidden', m === 'auto');
 }
 // show the two chosen gods face to face in the 3D stage behind the select screen
+let previewTimer = 0;
 function refreshPreview(force, changedSide) {
+  clearTimeout(previewTimer);
   const id = selState.keys.join('-');
   if (!force && id === previewKey) return;
   previewKey = id;
@@ -16610,7 +16639,7 @@ function buildMoveList() {
 }
 
 window.__game = { get renderer() { return renderer; }, get scene() { return scene; }, setupMatch: (c) => setupMatch(c), get sim() { return sim; }, get views() { return views; }, get sfx() { return sfx; }, get bgm() { return bgm; }, get speed() { return speed; }, set speed(v) { speed = v; }, SUPER2, SUPER_K,
-  get composer() { return composer; }, get camera() { return camera; }, get bloom() { return bloom; }, get keyLight() { return key; }, get lamps() { return lampSlots; }, get BASE() { return BASE; }, get IBL() { return { tex: IBL_TEX, iblMats, ambMats }; },
+  get composer() { return composer; }, get camera() { return camera; }, get bloom() { return bloom; }, get keyLight() { return key; }, get lamps() { return lampSlots; }, get BASE() { return BASE; }, get IBL() { return { tex: IBL_TEX, iblMats, ambMats }; }, get light() { return { stageFlash: stage.flash, flashLevel, fx: fxLight.intensity, hemi: hemi.intensity, dim: stage.dim, resScale, flashing: flashRest.size }; },
   clearFx() { timed.update(1e5); addP.update(10); normP.update(10); bolts.update(10); shake = 0; stage.flash = 0; flashLevel = 0; flashEl().style.opacity = 0; } };
 boot().catch((err) => showError(err));
 
