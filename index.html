@@ -1991,12 +1991,12 @@ class Fighter {
     this.hitDone = []; this.contact = false;
     this.plan = [];
     this.invuln = 0; this.stunT = 0; this.guardT = 0;
-    this.inCombo = false; this.combo = 0; this.comboDmg = 0; this.juggleN = 0;
+    this.inCombo = false; this.combo = 0; this.comboDmg = 0; this.juggleN = 0; this.launchN = 0; this.airN = 0;
     this.walkDir = 0; this.walkT = 0; this.dashDir = 0; this.dashT = 0;
     this.lockedBy = null; this.sup = null; this.lastHitHigh = true; this.charmT = 0; this.oracleT = 0;
     this.ai = { t: 0.3 + R() * 0.3, airUsed: false, threatSerial: -1, threatReact: false, threatRoll: 0, punishSerial: -1 };
     this.airborneT = 0;
-    this.buf = {}; this.chain = []; this.guarding = false; this.comboCap = false;
+    this.buf = {}; this.chain = []; this.guarding = false;
   }
   get grounded() { return this.y <= 0.0001 && this.vy <= 0; }
 }
@@ -2004,7 +2004,13 @@ class Fighter {
 // ------------------------------------------------------------
 // Human input mapping: button -> direction class -> move id.
 // dir: n=neutral, f=forward, b=back, d=down, u=up (relative to opponent)
+// Up also jumps, so the rising launchers sit on forward + heavy (K) as well; up + J/K still gives them.
 for (const k in AIR2) { CHARS[k].airH = AIR2[k] + '_airH'; CHARS[k].airS = AIR2[k] + '_airS'; }
+// every jump attack is an overhead (中段, guard it standing): its strikes, its shots and the impact a dive lands with
+for (const k in CHARS) {
+  const mv = CHARS[k].moves, mid = (x) => { if (!x) return; x.lv = 'mid'; if (x.hits) for (const h of x.hits) h.lv = 'mid'; if (x.proj) x.proj.lv = 'mid'; if (x.projs) for (const q of x.projs) q.lv = 'mid'; };
+  for (const id in mv) if (mv[id].type === 'air') { mid(mv[id]); if (mv[id].land) mid(mv[mv[id].land]); }
+}
 const HUMAN = {
   zeus: {
     J: { n: 'z_jab', f: 'z_straight', b: 'z_body', d: 'z_knee', u: 'z_upper' },
@@ -2018,52 +2024,52 @@ const HUMAN = {
   },
   anubis: {
     J: { n: 'a_jab', f: 'a_slash', b: 'a_twin', d: 'a_low', u: 'a_rise' },
-    K: { n: 'a_twin', f: 'a_kick', b: 'a_slash', d: 'a_low', u: 'a_rise' },
+    K: { n: 'a_twin', f: 'a_rise', b: 'a_kick', d: 'a_low', u: 'a_rise' },
     L: { n: 'a_soul', f: 'a_blink', b: 'a_soul', d: 'a_soul', u: 'a_soul' },
   },
   thor: {
     J: { n: 't_jab', f: 't_swing', b: 't_jab', d: 't_low', u: 't_upper' },
-    K: { n: 't_slam', f: 't_shoulder', b: 't_slam', d: 't_low', u: 't_upper' },
+    K: { n: 't_slam', f: 't_upper', b: 't_shoulder', d: 't_low', u: 't_upper' },
     L: { n: 't_throw', f: 't_leap', b: 't_throw', d: 't_throw', u: 't_leap' },
   },
   susanoo: {
     J: { n: 's_cut', f: 's_kesa', b: 's_thrust', d: 's_sweep', u: 's_rise' },
-    K: { n: 's_kabuto', f: 's_spin', b: 's_kabuto', d: 's_sweep', u: 's_rise' },
+    K: { n: 's_kabuto', f: 's_rise', b: 's_spin', d: 's_sweep', u: 's_rise' },
     L: { n: 's_wind', f: 's_dash', b: 's_wind', d: 's_wind', u: 's_wind' },
   },
   heracles: {
     J: { n: 'h_jab', f: 'h_club', b: 'h_jab', d: 'h_low', u: 'h_upper' },
-    K: { n: 'h_smash', f: 'h_shoulder', b: 'h_smash', d: 'h_low', u: 'h_upper' },
+    K: { n: 'h_smash', f: 'h_upper', b: 'h_shoulder', d: 'h_low', u: 'h_upper' },
     L: { n: 'h_rock', f: 'h_quake', b: 'h_grab', d: 'h_grab', u: 'h_rock' },
   },
   hades: {
     J: { n: 'hd_jab', f: 'hd_slash', b: 'hd_jab', d: 'hd_sweep', u: 'hd_rise' },
-    K: { n: 'hd_slam', f: 'hd_palm', b: 'hd_palm', d: 'hd_sweep', u: 'hd_rise' },
+    K: { n: 'hd_slam', f: 'hd_rise', b: 'hd_palm', d: 'hd_sweep', u: 'hd_rise' },
     L: { n: 'hd_dog', f: 'hd_shade', b: 'hd_hands', d: 'hd_hands', u: 'hd_dog' },
   },
   shiva: {
     J: { n: 'sv_palm', f: 'sv_kick', b: 'sv_whirl', d: 'sv_low', u: 'sv_rise' },
-    K: { n: 'sv_heel', f: 'sv_whirl', b: 'sv_kick', d: 'sv_low', u: 'sv_rise' },
+    K: { n: 'sv_heel', f: 'sv_rise', b: 'sv_whirl', d: 'sv_low', u: 'sv_rise' },
     L: { n: 'sv_eye', f: 'sv_tandava', b: 'sv_damaru', d: 'sv_damaru', u: 'sv_eye' },
   },
   aphrodite: {
     J: { n: 'ap_flick', f: 'ap_lash', b: 'ap_spiral', d: 'ap_low', u: 'ap_rise' },
-    K: { n: 'ap_heel', f: 'ap_spiral', b: 'ap_lash', d: 'ap_low', u: 'ap_rise' },
+    K: { n: 'ap_heel', f: 'ap_rise', b: 'ap_spiral', d: 'ap_low', u: 'ap_rise' },
     L: { n: 'ap_heart', f: 'ap_petal', b: 'ap_foam', d: 'ap_foam', u: 'ap_heart' },
   },
   odin: {
     J: { n: 'o_jab', f: 'o_slash', b: 'o_jab', d: 'o_sweep', u: 'o_rise' },
-    K: { n: 'o_slam', f: 'o_palm', b: 'o_palm', d: 'o_sweep', u: 'o_rise' },
+    K: { n: 'o_slam', f: 'o_rise', b: 'o_palm', d: 'o_sweep', u: 'o_rise' },
     L: { n: 'o_spear', f: 'o_spear', b: 'o_ravens', d: 'o_rune', u: 'o_ravens' },
   },
   shaka: {
     J: { n: 'sk_vitarka', f: 'sk_seal', b: 'sk_vitarka', d: 'sk_earth', u: 'sk_lotus' },
-    K: { n: 'sk_roar', f: 'sk_recline', b: 'sk_roar', d: 'sk_recline', u: 'sk_lotus' },
+    K: { n: 'sk_roar', f: 'sk_lotus', b: 'sk_recline', d: 'sk_recline', u: 'sk_lotus' },
     L: { n: 'sk_wheel', f: 'sk_palmsky', b: 'sk_mudra', d: 'sk_zazen', u: 'sk_palmsky' },
   },
   apollo: {
     J: { n: 'apo_jab', f: 'apo_kick', b: 'apo_jab', d: 'apo_low', u: 'apo_rise' },
-    K: { n: 'apo_bash', f: 'apo_point', b: 'apo_bash', d: 'apo_low', u: 'apo_rise' },
+    K: { n: 'apo_bash', f: 'apo_rise', b: 'apo_point', d: 'apo_low', u: 'apo_rise' },
     L: { n: 'apo_arrow', f: 'apo_rain', b: 'apo_oracle', d: 'apo_sun', u: 'apo_sun' },
   },
 };
@@ -2309,13 +2315,13 @@ class Sim {
 
   comboCheck(att, def) {
     if (def.inCombo && !['hitstun', 'juggle', 'locked'].includes(def.state)) {
-      def.inCombo = false; def.comboCap = false;
+      def.inCombo = false;
       if (att.combo >= 2) {
         this.emit('comboEnd', { side: att.side, hits: att.combo, dmg: att.comboDmg });
         this.stats.combos.push(att.combo);
       }
       this.stats.maxCombo = Math.max(this.stats.maxCombo, att.combo);
-      att.combo = 0; att.comboDmg = 0; def.juggleN = 0;
+      att.combo = 0; att.comboDmg = 0; def.juggleN = 0; def.launchN = 0; def.airN = 0;
     }
   }
 
@@ -2342,6 +2348,9 @@ class Sim {
       // a super always opens toward the foe, even straight out of a move that crossed under them
       const o = this.fighters[1 - f.side];
       f.facing = Math.sign(o.x - f.x) || f.facing;
+      // cancelled out of a combo, it takes hold before the reeling foe can recover
+      const SR = AI_SUPER[f.key];
+      if (o.state === 'hitstun' && SR) o.stunT = Math.max(o.stunT, o.st + SR[1] * SUPER_K + 0.1);
       this.emit('super', { side: f.side, id, name: m.name });
       f.invuln = 0.4;
     }
@@ -2509,6 +2518,10 @@ class Sim {
         break;
       case 'juggle':
         break;
+      case 'recover':
+        f.vx *= Math.exp(-8 * dt);
+        if (f.st >= f.stunT) this.setState(f, 'idle');
+        break;
       case 'down':
         f.vx *= Math.exp(-6 * dt);
         f.invuln = 0.2;
@@ -2633,7 +2646,6 @@ class Sim {
     if (o.invuln > 0 || o.state === 'down' || o.state === 'getup' || o.state === 'ko' || o.state === 'locked') return false;
     // a super that has caught its foe plays out to the end: nothing in flight can cut it short
     if (o.state === 'attack' && o.move && o.move.type === 'super' && o.sup && (o.sup.lock || o.sup.hadLock)) return false;
-    if (o.inCombo && o.comboCap && !opts.superHit && !opts.lock) return false;
     // counter stance (Zeus): a melee hit during the window is cancelled and answered at once
     if (!opts.superHit && !opts.lock && !h.proj && o.state === 'attack' && o.move && o.move.counter && o.mt >= o.move.counter[0] && o.mt <= o.move.counter[1]) {
       this.emit('counter', { side: o.side, x: o.x, y: hitY });
@@ -2703,9 +2715,8 @@ class Sim {
       this.emit('block', { side: f.side, x: o.x - dir * 0.3, y: hitY, fx: h.fx, power: h.dmg, chip, proj: !!h.proj });
       return true;
     }
-    if (!o.inCombo) { o.inCombo = true; f.combo = 0; f.comboDmg = 0; o.juggleN = 0; }
+    if (!o.inCombo) { o.inCombo = true; f.combo = 0; f.comboDmg = 0; o.juggleN = 0; o.launchN = 0; o.airN = 0; }
     f.combo++;
-    if (!opts.superHit && !opts.lock && (f.combo >= 10 || o.juggleN >= 5)) o.comboCap = true;
     let scale = Math.max(0.3, 1 - 0.1 * (f.combo - 1));
     if (opts.superHit) scale = Math.max(0.55, scale);
     const dmg = Math.max(1, Math.round(h.dmg * scale));
@@ -2725,17 +2736,23 @@ class Sim {
     } else if (h.launch || airborne || (h.kd && !h.noKdGround)) {
       o.state = 'juggle'; o.st = 0;
       o.juggleN++;
+      // no combo is cut off by a hard cap: instead every lift in one combo carries the foe less high than the last.
+      // A launcher sends them lower each time one is used again (78% of the height, then 61%, 47% ...) and each
+      // juggling hit lifts a little less, so any loop of launches or juggles simply runs out of air and the foe lands.
+      // (supers play their own scripted heights)
+      const relaunch = !opts.superHit && (h.launch || (h.bounce && airborne));
+      const lift = opts.superHit ? 1 : Math.max(0.12, Math.pow(0.78, o.launchN) * Math.pow(0.93, o.airN));
       let vy;
-      if (h.launch) vy = h.launch;
-      else if (airborne) vy = Math.max(3.2, 6 - o.juggleN * 0.55);
-      else vy = 4.2;
-      if (h.bounce && airborne) vy = 7.2;
-      if (o.juggleN > 6) vy *= 0.5;
+      if (h.launch) vy = h.launch * lift;
+      else if (h.bounce && airborne) vy = 7.2 * lift;
+      else if (airborne) vy = Math.max(1, (6 - o.juggleN * 0.45) * (opts.superHit ? 1 : Math.pow(0.78, o.launchN * 0.5) * Math.pow(0.9, Math.max(0, o.airN - 2))));
+      else vy = 4.2 * Math.max(0.5, lift);
+      if (relaunch) o.launchN++; else if (airborne && !opts.superHit) o.airN++;
       o.vy = vy;
       o.vx = dir * h.kb * (h.launch ? 0.35 : 0.6);
       if (o.y < 0.02) o.y = 0.02;
     } else {
-      o.state = 'hitstun'; o.st = 0; o.stunT = h.hs * Math.max(0.55, 1 - 0.05 * (f.combo - 1));
+      o.state = 'hitstun'; o.st = 0; o.stunT = h.hs * Math.max(0.4, 1 - 0.05 * (f.combo - 1));
       o.vx = dir * h.kb;
       o.charmT = 0;
       if (h.charm && f.combo === 1) { o.charmT = o.stunT; this.emit('charm', { side: f.side, x: o.x, y: o.y + 2.2 }); }
@@ -2948,6 +2965,25 @@ class Sim {
     }
   }
 
+  // a super whose opening strike was guarded (or found nothing) leaves its god spent and wide open: guarded, the
+  // recovery is long enough for anything to punish it (about 40 frames minus); whiffed, most things can
+  superMiss(f, o) {
+    const reach = (AI_SUPER[f.key] || [2.5])[0] + 0.6;
+    const guarded = this.canBlock(o) && Math.abs(o.x - f.x) < reach;
+    if (guarded) {
+      const dir = Math.sign(o.x - f.x) || f.facing;
+      o.state = 'blockstun'; o.st = 0; o.stunT = 0.3; o.vx = dir * 2.4;
+      const chip = o.c.noChip ? 0 : 12;
+      o.hp = Math.max(1, o.hp - chip);
+      this.hitstop = Math.max(this.hitstop, 0.12);
+      this.stats.blocks++;
+      this.emit('block', { side: f.side, x: o.x - dir * 0.3, y: o.y + 1.2, fx: 'heavy', power: 90, chip, proj: false });
+      this.emit('superGuarded', { side: f.side, guard: o.side });
+    }
+    f.y = 0; f.vy = 0; f.vx = 0; f.sup = null;
+    this.setState(f, 'recover'); f.stunT = guarded ? 1.0 : 0.6;
+  }
+
   superScript(f, o, dt) {
     f.mt += dt;
     const t = f.mt / SUPER_K;
@@ -2957,7 +2993,8 @@ class Sim {
     // after the final blow releases the victim, a god still in the air (Odin) keeps playing his descent
     // instead of snapping to the ground; everyone else recovers as before
     if (s.ev.connect && !s.lock && !(s.hadLock && f.y > 0.001)) {
-      // opening strike missed (or the cinematic is over): short recovery
+      if (!s.hadLock) { this.superMiss(f, o); return; }
+      // the cinematic is over: short recovery
       s.whiffT = (s.whiffT || 0) + dt;
       if (s.whiffT > 0.3) { f.y = 0; f.vy = 0; f.sup = null; this.setState(f, 'idle'); }
       return;
@@ -3647,12 +3684,11 @@ class Sim {
     const ai = f.ai;
     if (ai.airUsed || !K.air) return;
     // which of the three jump attacks this jump is for is decided on the way up (then timed on the way down)
-    if (!ai.airPick) {
-      const opts = [[f.c.air, K.air, 1], [f.c.airH, K.airH, 0.9], [f.c.airS, K.airS, 0.7]].filter((x) => x[1]);
-      let r = R() * opts.reduce((a, x) => a + x[2], 0); ai.airPick = opts[0][0];
-      for (const x of opts) { r -= x[2]; if (r <= 0) { ai.airPick = x[0]; break; } }
-    }
-    const id = ai.airPick, M = f.c.moves[id], A = K.all[id] || K.air, ahead = (o.x - f.x) * f.facing;
+    if (!ai.airPick) ai.airPick = this.aiAirPick(f, o, K);
+    let ahead = (o.x - f.x) * f.facing;
+    // a shot meant for range, but the jump carried in too close: swing instead
+    if (ai.airPick === f.c.airS && K.airS && (K.airS.m.proj || K.airS.m.projs) && ahead < 1.1 && f.vy < 2) ai.airPick = K.airH && R() < 0.5 ? f.c.airH : f.c.air;
+    const id = ai.airPick, M = f.c.moves[id], A = K.all[id] || K.air;
     const go = () => { ai.airUsed = true; this.startMove(f, id); ai.jumpAtk = !!M.hits; };
     if (M.teleport) { if (f.y > 1.2 && Math.abs(o.x - f.x) < 6 && f.vy < 5) go(); return; }
     if (ahead < -0.2) return;
@@ -3668,6 +3704,29 @@ class Sim {
     const yOk = f.y + A.top >= low + 0.2 && f.y + A.bot <= tall;
     const close = ahead <= A.reach + (f.vy < 0 ? 0.1 : -0.2) && ahead >= A.rmin - 0.6;
     if (f.y > 0.35 && yOk && close && (f.vy < 3 || o.y > 0.5)) go();
+  }
+
+  // ---- which jump attack suits this jump: the light one is quick and reliable, the heavy one hits hardest on a foe
+  // who does not anti-air (or is already reeling), the special depends on what it is - a shot from range, a dive onto
+  // the foe, a dash through the air, a vanish (Hades) that beats a foe waiting to anti-air
+  aiAirPick(f, o, K) {
+    const M = this.aiMind(f), ahead = (o.x - f.x) * f.facing, aa = M.aa || 0;
+    const open = o.state === 'hitstun' || o.state === 'juggle' || o.state === 'recover' || o.state === 'attack';
+    const opts = [];
+    if (K.air) opts.push({ v: 40 + aa * 6 + (ahead > 2.6 ? 3 : 0), id: f.c.air });
+    if (K.airH) opts.push({ v: 37 + (1 - aa) * 9 + (open ? 8 : 0) + (ahead < 2.4 ? 3 : -4), id: f.c.airH });
+    if (K.airS) {
+      const m = K.airS.m;
+      let v = 33;
+      if (m.proj || m.projs) v += ahead > 3 ? 14 : ahead > 1.8 ? 2 : -12;
+      else if (m.teleport) v += aa * 14 + (ahead > 1.5 ? 2 : -4);
+      else if (m.airVel && m.airVel[0][2] < -4) v += ahead > 1.4 && ahead < 4.6 ? 7 + (1 - aa) * 4 : -8;
+      else if (m.airVel) v += ahead > 1.6 && ahead < 4 ? 8 : -6;
+      if (open) v += 3;
+      opts.push({ v, id: f.c.airS });
+    }
+    const pick = this.aiChoose(f, opts) || opts[0];
+    return pick ? pick.id : f.c.air;
   }
 
   // ---- what the CPU sees and answers this instant
@@ -3692,8 +3751,9 @@ class Sim {
     if (ai.wakePlan) { const w = ai.wakePlan; ai.wakePlan = null; if (this.aiDoWake(f, o, d, toward, K, w)) return true; }
 
     // follow up a hit that landed (a jump-in, a projectile, a stray poke): combo while the foe still reels
-    if ((s.state === 'hitstun' || s.state === 'juggle') && (o.state === 'hitstun' || o.state === 'juggle') && !o.comboCap) {
-      const left = o.state === 'hitstun' ? o.stunT - o.st : 0.35;
+    if ((s.state === 'hitstun' || s.state === 'juggle') && (o.state === 'hitstun' || o.state === 'juggle')) {
+      // time left before the foe recovers - or, juggled, before they touch down (lifts shrink as a combo goes on)
+      const gj = GRAV * 0.86, left = o.state === 'hitstun' ? o.stunT - o.st : (o.vy + Math.sqrt(Math.max(0, o.vy * o.vy + 2 * gj * o.y))) / gj - 0.05;
       for (const I of K.hitters) {
         if (I.grab || I.tele || I.su + 0.02 >= left || d > I.reach - 0.1 || d < I.rmin - 0.3) continue;
         if (o.state === 'juggle' && f.y + I.top < o.y + 0.4) continue;
@@ -3772,6 +3832,13 @@ class Sim {
         const chainy = o.move.cancel && o.mt < o.move.cancel[1] && M.string > 0.55 && win < 0.25;
         if (!chainy && win > 0.08 && R() < H.know && this.aiPunish(f, o, d, win, K)) return true;
       }
+    }
+
+    // a super the CPU guarded (or saw whiff) left its god spent: punish it
+    if (o.state === 'recover' && s.state === 'recover' && ai.recPunish !== o.serial) {
+      ai.recPunish = o.serial;
+      const win = o.stunT - o.st;
+      if (win > 0.12 && R() < Math.max(0.6, H.know) && this.aiPunish(f, o, d, win, K)) return true;
     }
 
     // the foe knocked down: set up the wake-up
@@ -3932,7 +3999,15 @@ class Sim {
     switch (w.k) {
       case 'guard': this.aiGuard(f, M.low > 0.5, 0.35); return true;
       case 'rev': case 'move': return this.startMove(f, w.id);
-      case 'super': return this.startMove(f, f.c.super);
+      case 'super': {
+        // a reversal super only pays off against a foe already committed to a swing that will still be playing when
+        // it takes hold - a foe who is free just guards it, and a guarded super is punished hard. A seasoned CPU
+        // checks first and guards instead; a novice sometimes throws it anyway.
+        const SR = AI_SUPER[f.key] || [2.5, 0.4];
+        const committed = o.state === 'attack' && o.move && o.move.type !== 'super' && o.move.type !== 'air' && o.move.dur - o.mt > SR[1] * SUPER_K + 0.05;
+        if (!committed && R() < this.aiLevel(f).know) { this.aiGuard(f, M.low > 0.5, 0.35); return true; }
+        return this.startMove(f, f.c.super);
+      }
       case 'back': this.dash(f, -toward, 0.26); return true;
       case 'jump': this.jump(f, -toward); return true;
     }
@@ -3996,7 +4071,11 @@ class Sim {
     if (d > want + 1.6) opts.push({ v: 30 + 6 * clamp((d - want - 1.6) / 2, 0, 1.5) - (theirProjNear ? 10 : 0) + (aggr - 1) * 10 + pushy, k: 'dash' });
     if (inTheirs) opts.push({ v: 27 + danger * 26 + cautious + (coming ? 6 : 0), k: 'guard' });
     opts.push({ v: 25 + (d > theirReach && d < theirReach + 0.9 ? M.atk[b] * 14 : 0) + cautious * 0.5 - pushy, k: 'wait' });
-    if (d > 1.9 && d < 3.7) opts.push({ v: 22 + (1 - M.aa) * 16 - (st.range > 3 ? 8 : 0) + (s.state === 'crouch' ? 4 : 0) + pushy * 0.5, k: 'jump' });
+    if (d > 1.9 && d < 3.7) opts.push({ v: 22 + (1 - M.aa) * 16 - (st.range > 3 ? 8 : 0) + (s.state === 'crouch' ? 6 : 0) + M.crouch * 5 + pushy * 0.5, k: 'jump' });
+    // the jump special: a shot fired from the top of a jump (it also clears their projectile), or a dive onto the foe
+    const AS = K.airS && K.airS.m;
+    if (AS && (AS.proj || AS.projs) && !myProj && d > 3.4 && d < 7) opts.push({ v: 22 + (st.range > 3 ? 7 : 0) + (theirProjNear ? 6 : 0) - cautious * 0.5, k: 'jumpS', dir: d > 5.5 ? toward : 0 });
+    if (AS && AS.airVel && d > 2.4 && d < 4.4) opts.push({ v: 19 + (1 - M.aa) * 10 + (s.state === 'crouch' ? 4 : 0) + pushy * 0.5, k: 'jumpS', dir: toward });
     if (d < 1.6 && danger > 0.25 && !cornered) opts.push({ v: 22 + danger * 18, k: 'backdash' });
     // the gods' own tools
     for (const T of K.tools) {
@@ -4024,6 +4103,7 @@ class Sim {
       case 'guard': this.aiGuard(f, M.low > 0.5, 0.18 * jitter() + 0.08); return;
       case 'wait': this.idle(f, H.gap * jitter()); return;
       case 'jump': this.jump(f, toward); ai.jumpIn = { t: this.time, hit: false }; return;
+      case 'jumpS': this.jump(f, pick.dir); ai.airPick = f.c.airS; if (pick.dir) ai.jumpIn = { t: this.time, hit: false }; return;
     }
   }
 
@@ -11898,6 +11978,15 @@ class FighterView {
       case 'getup':
         sampleAnim(L, [[0, 'down'], [0.12, 'getupSit'], [0.26, 'getupCrouch'], [0.38, 'stance']], f.st, out); rate = 30;
         break;
+      case 'recover': {
+        // a guarded super: thrown off balance, then crouched and spent, catching breath, before standing again
+        const T = Math.max(0.4, f.stunT);
+        sampleAnim(L, [[0, 'hurtLow'], [0.16, 'getupCrouch'], [T - 0.16, 'getupCrouch'], [T, 'stance']], f.st, out);
+        const b = Math.sin(f.st * 11);
+        out.spine[0] += 0.05 * b; out.chest[0] += 0.04 * b; out.head[0] += 0.06 * b;
+        rate = 26;
+        break;
+      }
       case 'locked': {
         copyPose(L.locked, out);
         out.spine[0] += Math.sin(t * 40) * 0.08; out.head[1] += Math.sin(t * 33) * 0.2;
@@ -13398,6 +13487,7 @@ function handleEvents() {
       case 'airFx': airMoveFx(e); break;
       case 'geyser': geyser(e.x); break;
       case 'crush': callout(e.side, e.lv === 'low' ? '下段！' : '中段！', false); break;
+      case 'superGuarded': callout(e.guard, '反撃のチャンス！', false); break;
       case 'superDash': case 'superDive': sfx.whoosh(2.5); break;
       case 'superImpact': superImpact(e); break;
       case 'soulBurst': ring(e.x, 0.06, 0, 0x9ff3ff, 4.5, 0.4); addP.burst(30, e.x, 1.0, 0, 6, { life: [0.15, 0.4], size: [0.05, 0.12], color: COL.soul, drag: 3 }); sfx.whoosh(2); break;
@@ -13876,7 +13966,7 @@ function moveCommand(key, id) {
   if (m.type === 'super') return '超必殺(O)　※神威ゲージMAX';
   if (m.type === 'air') return id === c.airS ? 'ジャンプ中に 必殺(L)' : id === c.airH ? 'ジャンプ中に 強(K)' : 'ジャンプ中に 弱(J)';
   const map = HUMAN[key], found = [];
-  for (const b of ['J', 'K', 'L']) for (const d of ['n', 'f', 'b', 'd', 'u']) if (map[b][d] === id) found.push(DIRS[d] + BTN[b]);
+  for (const d of ['n', 'f', 'b', 'd', 'u']) for (const b of ['J', 'K', 'L']) if (map[b][d] === id) found.push(DIRS[d] + BTN[b]);
   if (!found.length) { const i = AUTO[key].indexOf(id); return i > 0 ? `弱(J)連打の${i + 1}段目` : 'コンボ中のみ'; }
   return [...new Set(found)].slice(0, 2).join(' / ');
 }
@@ -13916,7 +14006,7 @@ function moveFacts(key, id) {
   else if (m.parry) { facts.push(['受付', Math.round(m.parry[0] * 60) + '〜' + Math.round(m.parry[1] * 60) + 'F']); tags.push('受け流し（相手をよろけさせる）', '飛び道具を消す'); }
   else if (m.meditate) { facts.push(['ゲージ', '+' + m.meditate[2] + '%'], ['全体', f(m.dur) + 'F']); tags.push('神威ゲージ溜め'); }
   else if (m.oracle) { facts.push(['持続', m.oracle[1].toFixed(1) + '秒'], ['全体', f(m.dur) + 'F']); tags.push('次の攻撃を自動回避'); }
-  else if (m.type === 'super') { facts.push(['消費', '神威ゲージ100%']); tags.push('超必殺技'); }
+  else if (m.type === 'super') { facts.push(['消費', '神威ゲージ100%'], ['ガード時', '約-43F（確定反撃あり）']); tags.push('超必殺技'); }
   return { facts, tags };
 }
 function renderViewer() {
@@ -14004,7 +14094,7 @@ function viewerPlay() {
   sim.projs = []; sim.freeze = 0; sim.hitstop = 0; sim.phase = 'fight'; sim.events.length = 0;
   for (const x of sim.fighters) {
     sim.setState(x, 'idle'); x.y = 0; x.vx = 0; x.vy = 0; x.push = 0; x.hp = x.c.hp; x.invuln = 0;
-    x.inCombo = false; x.comboCap = false; x.lockedBy = null; x.sup = null; x.plan = []; x.chain = []; x.juggleN = 0;
+    x.inCombo = false; x.lockedBy = null; x.sup = null; x.plan = []; x.chain = []; x.juggleN = 0; x.launchN = 0; x.airN = 0;
   }
   const d = viewerDistance(m);
   f.x = -d / 2 - 0.3; o.x = d / 2 - 0.3; f.facing = 1; o.facing = -1;
@@ -14040,7 +14130,7 @@ function viewerUpdate(dt) {
     const ready = m.oracle ? f.oracleT > 0 && f.oracleT < m.oracle[1] - 0.3 : f.state === 'attack' && f.moveId === viewer.id && f.mt >= viewer.poke;
     if (ready && sim.actionable(o)) { viewer.poke = 0; o.facing = Math.sign(f.x - o.x) || o.facing; sim.startMove(o, o.c.routes[0][0]); }
   }
-  const busy = f.state === 'attack' || f.state === 'jump' || sim.freeze > 0 || sim.projs.length || ['hitstun', 'juggle', 'locked', 'down', 'getup', 'blockstun'].includes(o.state);
+  const busy = f.state === 'attack' || f.state === 'jump' || f.state === 'recover' || sim.freeze > 0 || sim.projs.length || ['hitstun', 'juggle', 'locked', 'down', 'getup', 'blockstun'].includes(o.state);
   if (busy) { viewer.wait = 0; return; }
   viewer.wait += dt;
   if (viewer.repeat && viewer.wait > 0.9) viewerPlay();
