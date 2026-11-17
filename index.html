@@ -15393,7 +15393,7 @@ function frame(now) {
   clock += rdt;
   if (started && !paused) {
     runTime += rdt;
-    if (!fpsChecked && runTime > 2) { fpsAcc += rdt; fpsN++; if (fpsN > 150) { fpsChecked = true; const fps = fpsN / fpsAcc; if (fps < 32 && quality === 'high') { quality = 'low'; applyQuality(); } } }
+    // (no automatic drop to low quality: the player chooses it in the menu)
   }
   // a KO landed by a super already has its own finisher slow-motion: don't stack the KO slow-mo on top
   if (sim.phase === 'ko') { if (cineState()) koBySuper = true; } else koBySuper = false;
