@@ -271,6 +271,7 @@ body.portrait #ctrl button{font-size:11px;padding:6px 8px}
 body:not(.compact) .panel .picks .pick{padding:6px 10px}body:not(.compact) .panel .picks .pick .emb{width:28px;height:28px}
 .pick{position:relative;flex:1;display:flex;align-items:center;gap:10px;padding:10px 12px;color:rgba(255,255,255,.7);font-family:var(--jp);font-weight:800;font-size:14px;letter-spacing:.08em;background:rgba(10,6,18,.78);border:2px solid rgba(255,255,255,.15);cursor:pointer;transition:all .15s;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
 .pick .emb{width:34px;height:34px;flex:none}
+.face{image-rendering:crisp-edges;image-rendering:pixelated;display:block}
 .pick.zeus{color:var(--zeus)}.pick.poseidon{color:var(--pos)}.pick.anubis{color:#f0c46a}.pick.thor{color:#c8b0ff}.pick.susanoo{color:#9fffd8}.pick.heracles{color:#ffb870}.pick.hades{color:#ff6a88}.pick.odin{color:#b8d8ff}.pick.shiva{color:#8fa8ff}.pick.aphrodite{color:#ff9cc8}.pick.shaka{color:#ff9e4a}.pick.apollo{color:#ffe14d}
 .pick:not(.on){opacity:.6}
 .pick:hover{opacity:1;border-color:rgba(255,255,255,.5)}
@@ -520,7 +521,6 @@ body.compact.portrait .vsmark{bottom:calc(max(10px,env(safe-area-inset-bottom)) 
 .sbtns button{opacity:0;animation:sline .5s forwards}
 /* phone character select: portrait uses one shared grid of big named cells; landscape gets a named 4-column grid per side */
 .sharedpick{display:none}
-body.compact.portrait .sharedpick{display:block;position:absolute;left:8px;right:8px;top:calc(max(8px,env(safe-area-inset-top)) + 150px);z-index:3;pointer-events:auto}
 body.compact.portrait .panel .picks{display:none}
 body.compact.portrait .panel .pinfo{border-color:rgba(232,192,106,.25);opacity:.7}
 body.compact.portrait .panel.act .pinfo{border-color:var(--gold2);box-shadow:0 0 18px rgba(255,200,90,.55);opacity:1}
@@ -544,6 +544,28 @@ body.compact.landscape .pick{flex-direction:column;gap:1px;padding:4px 0 3px;min
 body.compact.landscape .pick .emb{width:22px;height:22px}
 body.compact.landscape .pick span{display:block;font-size:9px;letter-spacing:-.03em;white-space:nowrap}
 body.compact.landscape .vsmark{display:none}
+/* phones, both ways up: the two gods stand clear in the middle of the screen. Each side keeps only its name card (tap it
+   to choose which side is being picked) and a single roster of face icons along the bottom edits that side */
+body.compact .sharedpick{display:block;position:absolute;left:8px;right:8px;top:auto;z-index:3;pointer-events:auto;bottom:calc(max(10px,env(safe-area-inset-bottom)) + 142px)}
+body.compact .panel .picks{display:none}
+body.compact .vsmark{display:none}
+body.compact .panel .pinfo{border-color:rgba(232,192,106,.25);opacity:.75}
+body.compact .panel.act .pinfo{border-color:var(--gold2);box-shadow:0 0 18px rgba(255,200,90,.55);opacity:1}
+body.compact .panel.act .pside:after{content:'選択中';font-size:10px;letter-spacing:.1em;color:var(--gold2);border:1px solid var(--gold);padding:0 6px}
+body.compact .panel:not(.act) .pside:after{content:'タップで切替';font-size:9px;letter-spacing:.05em;opacity:.7}
+body.compact #select.story .panel:not(.act) .pside:after{content:none}
+body.compact .sp-grid{grid-template-columns:repeat(7,1fr);gap:4px}
+body.compact .sp-grid .pick{min-height:0;padding:3px;aspect-ratio:1}
+body.compact .sp-grid .pick span{display:none!important}
+body.compact .sp-grid .pick .face{width:100%;height:100%}
+body.compact .sp-head{font-size:11px;margin-bottom:4px}
+body.compact.landscape .panel{width:min(26vw,230px)}
+body.compact.landscape .pinfo{width:auto}
+body.compact.landscape .sharedpick{bottom:calc(max(10px,env(safe-area-inset-bottom)) + 50px);left:50%;right:auto;transform:translateX(-50%);width:max-content;max-width:calc(100vw - 16px)}
+body.compact.landscape .sp-grid{display:flex;justify-content:center}
+body.compact.landscape .sp-grid .pick{flex:none;width:min(46px,calc((100vw - 16px) / 14 - 4px));height:auto}
+body.compact.landscape .sp-head{justify-content:center}
+body.compact.landscape .dummy-opt{bottom:auto!important;top:calc(max(8px,env(safe-area-inset-top)) + 40px)}
 /* global volume button (every non-match screen) and the Esc pause menu */
 #btnVolG{position:fixed;top:max(8px,env(safe-area-inset-top));right:8px;z-index:44;font-family:var(--jp);font-weight:700;font-size:12px;letter-spacing:.05em;color:var(--gold2);background:rgba(12,8,22,.72);border:1px solid rgba(232,192,106,.6);padding:6px 10px;min-height:32px;border-radius:2px;cursor:pointer;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
 #btnVolG:hover{border-color:var(--gold)}
@@ -15135,6 +15157,33 @@ const GOD = {
   apollo: { acc: '#ffe14d', acc2: '#8a5a00', emb: `<svg viewBox="0 0 64 64" class="emb"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/><circle cx="32" cy="32" r="9" fill="currentColor"/><g stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M32 13v6M32 45v6M13 32h6M45 32h6M18.6 18.6l4.2 4.2M41.2 41.2l4.2 4.2M45.4 18.6l-4.2 4.2M22.8 41.2l-4.2 4.2"/></g><path d="M14 50C24 40 40 24 50 14" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M46 12l5 1-1 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>`, tag: '太陽と弓矢の神', desc: '太陽と音楽と弓を司る美しき神。遠くから射るほど強くなる光の矢、空中からの斜め撃ち、立ちガード必須の矢の雨で距離を支配する。神託で次の一撃を予知してかわす。', stats: [['攻撃', 3], ['速度', 4], ['射程', 5], ['防御', 2]] },
   odin: { acc: '#b8d8ff', acc2: '#1a2a5a', emb: `<svg viewBox="0 0 64 64" class="emb"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/><path d="M32 13L44 34H20Z M24 22L36 43H12Z M40 22L52 43H28Z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><path d="M32 46v8" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>`, tag: '九界の主神', desc: '隻眼の全知神。決して外れぬ神槍グングニルを投げ、二羽の鴉とルーン魔術で間合いを支配する、神座の主にして最後の壁。', stats: [['攻撃', 4], ['速度', 3], ['射程', 5], ['防御', 4]] },
 };
+// the roster's face icons: 16x16 pixel art, drawn by hand. [palette as (letter + rrggbb)..., 256 cells row by row, '.' = clear]
+const FACE_PX = {
+  zeus: ['wf4f4f8Wb4b8c8se0b088db07c58k2a1c24e140c14m7a3a34ge8c06a', '.......kk.............kwwk..........kkwwWwkk.......kwwwwwwwwk.....kwwssssssWwk....kwsssssssswk...kwwWWsssWWswk...kwsekdssdkeswk..kwssssddssssk....kswwwddwwwsk....kwwwwwwwwwwk....kwwwmmmmwwwk.....kwwwwwwwwk......kWwwwwwwWk.......kWwwwwWk.........kkWWkk.....'],
+  poseidon: ['hecd472Hb8962esf6dcc6dd4ac90k241a24e3a9ae8wffffffma05a50gf0b428b2a48c8', '.....kkkkkk........kkhhhhhhkk.....khhhHhhHhhhk...khhhhhhhhhhhhk..khhHsssssshHhk..khhssssssssHhk..khskkssskkshhk..khswessswesHhk..khsssssdssshhk..khHssssdsssHhk..khhsssmmssshhk..khHhsssssshHhk..khhHkssssk.hhk..khhkggggggkhhk...kkbbggggbbkk.....kbbbbbbbbk...'],
+  anubis: ['K1c1c2an34344agf0c040Gb08420b2c44c0B1c2a80effe060k0c0a12wf4f4f8', '..kk........kk...kgGk......kGgk..kgKGk....kGKgk..kKKKgk..kgKKKk..kKKKKkkkkKKKKk...kKKKKKKKKKKk...kbKKnKKKKnKKbk..kbKeeKKKKeeKbk..kbBKKKnnKKKBbk..kbbKKKnnKKKbbk..kbBkKKnnKKkBbk..kbb.kKnnKk.bbk..kbB.kKnnKk.Bbk..kbb..kKKk..bbk...kkk.kwwk.kkk.........kk.......'],
+  thor: ['ra82a20Rd85238D6e1612sf4dcc8dd0a88ck241418ee09a30wffffffm904a40', '.....kkkkkk........kkrrRrrrkk.....krrrRrrRrrrk...krrRrrrrrrRrrk..krrrrssssrrrrk..krRrssssssrRrk..krrskkssskksrk..krrswessewsrrk..krRsssssssrRrk..krrssssdsssrrk..krrDssmmssDrrk..krRrssssssrRrk..krrrksssskrrrk..krRrrkddkrrRrk..kDrrrkssk.rrDk...kkkk....kkkk..'],
+  susanoo: ['h2c3c8cH4a64c8D18204cweef0f8sf0cfa8dc89c78k161222ee0b030m8a4a3cWffffffc3048b0', '....kk..kkk........khhkkhwwk.kk...khHhhhhhwwkhk..khhhHhhhhhwwhk..khhhhhhhhhhwwk..khHhshhhsshhwk..khhssshsssshhk..khskkssskksHhk.khhsWessseWshhk.khHsssssssssHhk..khssssdssssshk..khdsssmmsssdhk...khsssssssshk...khDkssssssk.hk...k.kccddcck.........kcccck.....'],
+  heracles: ['oe8742aOffa44aDa84414sf2c8a0dcc9870k2a1612e3a8a4awffffffma0503cWf0ece4', '.k..k.kk.k..k...kok.kokokok.kok.kOokoOoOoOokoOk..koooOoooOoooDk..kDooooooooooOk..kooosssosssook..koossssssssook..kDskkkssskkkDk..koswessssewsok...kssssssssssk....ksssssdssssk....kdswwwwwwsdk.....kssmmmmssk.......kssssssk.......kWkddddkWk.....kWWWkkkkWWWk..'],
+  hades: ['hdcdce8HffffffD9a9ab4sf0e0dcdc8b0b4k1a1420eb040d8wffffffm7a4458p5a2a90P8a4ad0ge8c06a', '.....kkkkkk........kkhhHhhhkk.....khhHhhhhhhhk...khhHhhhhhhHhhk..khhhhhhhhhhhhk..khHhsshhhhhHhk..khhsssshhhhhDk..khskkssshhhhDk..khsweesshhhDhk..kDssssssshhDhk..kDsssdsssshDk....khssmmsssDk.....kDkssssskDk......kpksssskpk.....kpPpkddkpPpk....kppPgkkgPppk..'],
+  shiva: ['h18141eH3a3448s8a88e0d6460b8k0c0812effe040wffffffm40308agf0c030Gb88a18b2a50d0We8ecfftff5a4a', '..k.kk.kk.kk.k...khkhhkhhkhhkhk..khhHhhhHhhhHhk..khhhhhhhhhhhhk..kggGggggggGggk..khhsssstsssshk..khssssstssssHk..khskkssssskkhk..khsewsssswehhk..kHssssssssshhk..khsssssdssssHk..khhsskmmkssshk..kh.kssssssk.hk..kh..ksssk...hk.....kbWbWbWk........kWbWbWbk....'],
+  aphrodite: ['hb8d87aHe4f0a8D7c9c48sfbe6d8de0bca8k22201ce48a0e8wffffffme03a5apff9cc8', '.....kkkkkk........kkhhHHhhkk.....khhHHhhhhhhk...khhHhhhhhHhhhk..khHhhhhHhhhhhk..khhhsshhhsshDk..khhssssssssshk..kDhskkssskkshk..khhswessswehDk..khDsssssssshhk.khhhsssssdsshhhkkhHDssmmmsssDhhkkDhhkssssssk.hDk.khhDkssssk.hhk..kDhh.kddk..hDk...kk..kppk...k..'],
+  shaka: ['hf4f4f0HffffffDb8b8c0sf2d2b0dcca584k201a22pff7ac0Pffc0e0ge8c06am8a4a40c4a9af0Cb0d8ffb28368cte04040', '......kkkk...........khHHhk..........kDhhDk........kkkhhhhkkk.....khhhHhhHhhhk...khHhhhhhhhhHhk..khhsssstsssshk..khgggsssgggshk..kgpPpgggpPpghk..khgpgsssgpgshk..kDsssssdssssDk..kD.ssmcCssk.Dk..kD.kssckssk.Dk..k...kskkk....k.....kbkssbbk.......kbbbkkbbbk...'],
+  apollo: ['hc88a90Hf0b8b4D8c5460sfbe4d4ddeb8a4k221820e78c0e8wffffffmc0605cgf0c440Wf4f0e8', '.....kkkkkk........kkhhHhhhkk.....khhHHhhhhhhk...khhHhhhhhhHhhk..khhhhhhhhhhhhk..khHhhshhshhHhk..khhhsssssshhhk..khhskkssskkhhk..khhswessewshhk..khHsssssssshDk..khhssssdssshhk..kDhsssmmssshDk..kDh.kssssk.hDk..kD...kddk..gDk..k...kWssWk.g.k.....kWWWWWWk....'],
+  odin: ['h7a94b4Ha8c0dcD48607cse4c8acdb89c80k141822e3a6ad0wffffffK0a0a10ge8c06an243048N3a4a6cm7a4a44', '..kk........kk...khHk......kHhk..khhk.kkkk.khhk..kDhkkhhhhkkhDk...kDhhHhhHhhDk....khhhhhhhhhhk....khssssssssDk....kskksssgggsk....kswesssgKKgk....kssssdssgggk....khsssddsskhk....khhhhhhhhhhk....kDhhhmmhhhDk.....kDhhhhhhDk.....knNkDhhDkNnk....knnNkkkkNnnk..'],
+  beelzebub: ['h1c1830H3a3460sf4e4e0dccb4b8k0a0812e7a3ab0we8e0ecm8a5a68p8a5ac8Pb48cf0c18142aub09aa8', '....k.kkkk.k.......khkhhhhkhk.....khhhhHhhhhhk...khhHhhhhhHhhhk..khhhhhhhhhhhhk.khhhHhhhhhhHhhhk.khhhshhhshhhhk..khhsshssshshhk..khskkkssskkkhk..khsuewssweushk..khsussssssushk...kssssdsssshk....khsssmmssshk.....kccsssscck.....kcpckddkcpck....kcPcckkccPck..'],
+};
+const faceURL = {};
+function faceImg(k) {
+  if (!faceURL[k]) {
+    const [pal, px] = FACE_PX[k], cv = document.createElement('canvas'); cv.width = cv.height = 16;
+    const g = cv.getContext('2d'), col = {};
+    for (let i = 0; i < pal.length; i += 7) col[pal[i]] = '#' + pal.slice(i + 1, i + 7);
+    for (let i = 0; i < 256; i++) if (px[i] !== '.') { g.fillStyle = col[px[i]]; g.fillRect(i % 16, i >> 4, 1, 1); }
+    faceURL[k] = cv.toDataURL();
+  }
+  return `<img class="emb face" src="${faceURL[k]}" alt="">`;
+}
 function panelHTML(side) {
   const key = selState.keys[side], G = GOD[key], c = CHARS[key];
   const m = selState.mode;
@@ -15142,7 +15191,7 @@ function panelHTML(side) {
   const stat = G.stats.map(([n, v]) => `<div class="stat"><span>${n}</span><div class="bar5">${[1, 2, 3, 4, 5].map((k) => `<i class="${k <= v ? 'on' : ''}"></i>`).join('')}</div></div>`).join('');
   const mv = c.moves;
   const names = (type) => Object.values(mv).filter((x) => x.type === type && !x.hidden).map((x) => `<span>${x.name}${x.lv === 'low' ? '〔下段〕' : x.lv === 'mid' ? '〔中段〕' : ''}${x.armor ? '〔アーマー〕' : ''}${x.hits && x.hits.some((q) => q.grab) ? '〔ガード不能〕' : ''}${x.hits && x.hits.some((q) => q.drain) ? '〔吸命〕' : ''}${x.teleport ? '〔背後移動〕' : ''}</span>`).join('');
-  const picks = MENU_KEYS.filter((k) => !(m === 'story' && CHARS[k].boss)).map((k) => `<button class="pick ${k} ${k === key ? 'on' : ''}" data-side="${side}" data-key="${k}">${GOD[k].emb}<span>${CHARS[k].name}</span></button>`).join('');
+  const picks = MENU_KEYS.filter((k) => !(m === 'story' && CHARS[k].boss)).map((k) => `<button class="pick ${k} ${k === key ? 'on' : ''}" data-side="${side}" data-key="${k}">${faceImg(k)}<span>${CHARS[k].name}</span></button>`).join('');
   return `<div class="pside"><i>${side + 1}P</i>${who}</div>
     <div class="pinfo" style="--acc:${G.acc};--acc2:${G.acc2}">
       <div class="en">${c.en}</div><h3 style="color:${G.acc}">${c.name}</h3><div class="ttl">${G.tag}</div>
@@ -15159,7 +15208,7 @@ function renderSharedPick() {
   const who = m === 'auto' || (act === 0 && m === 'story' && selState.storyAI) ? 'AI' : act === 0 ? 'あなた' : m === 'practice' ? '木人' : 'CPU';
   const cells = MENU_KEYS.filter((k) => !(m === 'story' && CHARS[k].boss)).map((k) => {
     const mine = selState.keys[act] === k, other = m !== 'story' && selState.keys[1 - act] === k;
-    return `<button class="pick ${k} ${mine ? 'on' : ''} ${other ? 'other' : ''}" data-side="${act}" data-key="${k}">${other ? `<b class="tag">${2 - act}P</b>` : ''}${GOD[k].emb}<span>${CHARS[k].name}</span></button>`;
+    return `<button class="pick ${k} ${mine ? 'on' : ''} ${other ? 'other' : ''}" data-side="${act}" data-key="${k}">${other ? `<b class="tag">${2 - act}P</b>` : ''}${faceImg(k)}<span>${CHARS[k].name}</span></button>`;
   }).join('');
   $('sharedPick').innerHTML = `<div class="sp-head"><i>${act + 1}P</i>${who}のキャラを選択${m === 'story' ? '' : '（上の1P/2Pをタップで切替）'}</div><div class="sp-grid">${cells}</div>`;
 }
@@ -15198,6 +15247,7 @@ function renderSelect() {
   $('panel0').innerHTML = panelHTML(0);
   $('panel1').innerHTML = m === 'story' ? `<div class="pside"><i>2P</i>CPU</div><div class="pinfo" style="--acc:#e8c06a;--acc2:#8a5a10"><div class="en">RIVALS</div><h3 style="color:var(--gold2)">？？？</h3><div class="ttl">神座決戦</div><p class="desc2">因縁の神々が、選んだ神の前に立ちはだかる。4柱すべてを下し、神座を目指せ。対戦は相手のステージで行われる。</p></div>` : panelHTML(1);
   if (m === 'story') selState.active = 0;
+  $('select').classList.toggle('story', m === 'story');
   $('panel0').classList.toggle('act', selState.active === 0); $('panel1').classList.toggle('act', selState.active === 1);
   renderSharedPick();
   document.querySelector('.stagePick').classList.toggle('hidden', m === 'story');
@@ -15241,7 +15291,7 @@ function menuUpdate(dt, t) {
   sim.events.length = 0; sim.freeze = 0; sim.projs = [];
   sim.fighters.forEach((f, i) => {
     menuPose[i] += dt;
-    f.x = L.x[i]; f.y = 0; f.vx = 0; f.vy = 0; f.facing = i === 0 ? 1 : -1;
+    f.x = L.x[i] * (screen === 'select' && document.body.classList.contains('compact') && document.body.classList.contains('portrait') ? 0.8 : 1); f.y = 0; f.vx = 0; f.vy = 0; f.facing = i === 0 ? 1 : -1;
     f.move = null; f.hp = f.c.hp;
     if (screen === 'title') { f.state = 'win'; f.st = menuPose[i]; }
     else if (screen === 'select' && menuPose[i] < 2.2) { f.state = 'intro'; f.st = menuPose[i]; }
@@ -15269,8 +15319,9 @@ function menuCam(t, portrait) {
   }
   // select: the two chosen gods centred between the info panels
   const s = Math.sin(t * 0.25) * 0.4;
-  const lift = !portrait && document.body.classList.contains('compact') ? 0.65 : 0;
-  return { pos: new V3(s, 1.35 - lift, 6.4), look: new V3(0, 1.2 - lift, 0), fov: 36 * w, rate: 3 };
+  // phones: the gods stand in the clear band between the name cards and the roster along the bottom
+  const compact = document.body.classList.contains('compact'), lift = compact ? (portrait ? 0.7 : 0.5) : 0;
+  return { pos: new V3(s * (compact && portrait ? 0.5 : 1), 1.35 - lift, compact && portrait ? 7.2 : 6.4), look: new V3(0, 1.2 - lift, 0), fov: 36 * w, rate: 3 };
 }
 
 // ============================================================
@@ -15329,7 +15380,7 @@ function moveFacts(key, id) {
 }
 function renderViewer() {
   const key = viewer.key, c = CHARS[key], G = GOD[key];
-  $('vChars').innerHTML = MENU_KEYS.map((k) => `<button class="pick ${k} ${k === key ? 'on' : ''}" data-key="${k}" title="${CHARS[k].name}">${GOD[k].emb}<span>${CHARS[k].name}</span></button>`).join('');
+  $('vChars').innerHTML = MENU_KEYS.map((k) => `<button class="pick ${k} ${k === key ? 'on' : ''}" data-key="${k}" title="${CHARS[k].name}">${faceImg(k)}<span>${CHARS[k].name}</span></button>`).join('');
   $('vName').innerHTML = `<span style="color:${G.acc}">${c.name}</span><small>${c.title}</small>`;
   const groups = [['超必殺技', (m) => m.type === 'super'], ['必殺技', (m) => m.type === 'special'], ['通常技', (m) => m.type === 'normal'], ['空中技', (m) => m.type === 'air']];
   $('vList').innerHTML = groups.map(([label, fn]) => {
@@ -15340,9 +15391,9 @@ function renderViewer() {
   $('vChars').querySelectorAll('.pick').forEach((b) => b.addEventListener('click', () => openViewer(b.dataset.key)));
   $('vList').querySelectorAll('button').forEach((b) => b.addEventListener('click', () => { viewer.id = b.dataset.id; $('viewer').classList.remove('list-open'); renderViewer(); viewerPlay(); }));
   // phones: the god switcher, the grid of all gods with their names, and the bar naming the move being shown
-  $('vGodBtn').innerHTML = `${G.emb}<span style="color:${G.acc}">${c.name}</span><small>${c.title}</small><i>▼</i>`;
+  $('vGodBtn').innerHTML = `${faceImg(key)}<span style="color:${G.acc}">${c.name}</span><small>${c.title}</small><i>▼</i>`;
   $('vGodBtn').className = 'vgodbtn ' + key;
-  $('vGridList').innerHTML = MENU_KEYS.map((k) => `<button class="pick ${k} ${k === key ? 'on' : ''}" data-key="${k}">${GOD[k].emb}<span>${CHARS[k].name}</span><small>${CHARS[k].title}</small></button>`).join('');
+  $('vGridList').innerHTML = MENU_KEYS.map((k) => `<button class="pick ${k} ${k === key ? 'on' : ''}" data-key="${k}">${faceImg(k)}<span>${CHARS[k].name}</span><small>${CHARS[k].title}</small></button>`).join('');
   $('vGridList').querySelectorAll('.pick').forEach((b) => b.addEventListener('click', () => { $('vGrid').classList.add('hidden'); openViewer(b.dataset.key); }));
   const m = viewer.id && c.moves[viewer.id], open = $('viewer').classList.contains('list-open');
   $('vBar').innerHTML = m ? `<span class="k">${{ super: '超必殺技', special: '必殺技', normal: '通常技', air: '空中技' }[m.type]}</span><b>${m.name}</b><small>${moveCommand(key, viewer.id)}</small><em>${open ? '閉じる ▼' : '技一覧 ▲'}</em>` : `<b>技を選んでください</b><em>技一覧 ▲</em>`;
