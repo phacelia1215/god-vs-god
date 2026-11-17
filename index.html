@@ -4249,8 +4249,10 @@ class Sim {
   aiSuperFor(f, o, d, win = 9, air = false) {
     if (f.meter < 100) return null;
     if (o.y > 0.01 && !['juggle', 'hitstun', 'locked'].includes(o.state)) {
-      // a foe jumping free: only if they will be low enough when the opening strike lands (the flash stops them)
-      const g = (o.state === 'jump' || (o.move && o.move.type === 'air')) ? JUMP_GRAV * (o.c.jumpGrav || 1) : GRAV, t = SUP_TAKE + 0.02;
+      // a foe jumping free: only if they will be low enough when the opening strike lands (the flash stops them).
+      // An air attack may hover or follow its own path, so only a plain jump's arc is trusted.
+      if (o.state !== 'jump') return null;
+      const g = JUMP_GRAV * (o.c.jumpGrav || 1), t = SUP_TAKE + 0.02;
       const y = o.y + o.vy * t - 0.5 * g * t * t;
       if (y > SUPER_AIR_H - 0.15 || y < 0.05) return null;
     }
