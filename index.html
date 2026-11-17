@@ -15798,10 +15798,11 @@ function moveFacts(key, id) {
     if (m.ghost) tags.push('すり抜け');
     if (m.leap) tags.push('跳躍');
     if (m.reflect) tags.push('飛び道具反射');
+    if (m.hits.some((h) => h.chip)) tags.push('ガードの上から削る');
     if (m.low) tags.push('姿勢が低い（上段・飛び道具をくぐる）');
     if (m.hits[0].range[0] >= 0.5) tags.push('離れた位置を打つ');
   } else if (m.counter) { facts.push(['受付', Math.round(m.counter[0] * 60) + '〜' + Math.round(m.counter[1] * 60) + 'F']); tags.push('当て身（打撃を返す）'); }
-  else if (m.parry) { facts.push(['受付', Math.round(m.parry[0] * 60) + '〜' + Math.round(m.parry[1] * 60) + 'F']); tags.push('受け流し（相手をよろけさせる）', '飛び道具を消す'); }
+  else if (m.parry) { facts.push(['受付', Math.round(m.parry[0] * 60) + '〜' + Math.round(m.parry[1] * 60) + 'F']); tags.push('受け流し（相手をよろけさせる）', m.reflect ? '飛び道具を跳ね返す' : '飛び道具を消す'); }
   else if (m.meditate) { facts.push(['ゲージ', '+' + m.meditate[2] + '%'], ['全体', f(m.dur) + 'F']); tags.push('神威ゲージ溜め'); }
   else if (m.oracle) { facts.push(['持続', m.oracle[1].toFixed(1) + '秒'], ['全体', f(m.dur) + 'F']); tags.push('次の攻撃を自動回避'); }
   else if (m.type === 'super') { facts.push(['消費', '神威ゲージ100%'], ['発生', '暗転後 約10F'], m.grab ? ['届く距離', '密着（つかみ）'] : ['ガード時', '約-43F（確定反撃あり）']); tags.push('超必殺技'); if (m.grab) tags.push('ガード不能', '空中の相手には届かない'); }
