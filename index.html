@@ -88,6 +88,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;color:#fff;font
 #announce.champ.shiva .a-main{background:linear-gradient(#ffffff 20%,#8fa8ff 55%,#1a1050 95%);-webkit-background-clip:text;background-clip:text;color:transparent}
 #announce.champ.aphrodite .a-main{background:linear-gradient(#fff4f8 20%,#ff9cc8 55%,#7a1a4a 95%);-webkit-background-clip:text;background-clip:text;color:transparent}
 #announce.champ.shaka .a-main{background:linear-gradient(#fffbe8 20%,#ffb050 55%,#6a2a0a 95%);-webkit-background-clip:text;background-clip:text;color:transparent}
+#announce.champ.beelzebub .a-main{background:linear-gradient(#ffffff 20%,#b48cf0 55%,#2a1458 95%);-webkit-background-clip:text;background-clip:text;color:transparent}
 #announce.champ.apollo .a-main{background:linear-gradient(#ffffff 20%,#ffe14d 55%,#8a5a00 95%);-webkit-background-clip:text;background-clip:text;color:transparent}
 #announce.champ.odin .a-main{background:linear-gradient(#ffffff 20%,#a8d4ff 55%,#1a2a5a 95%);-webkit-background-clip:text;background-clip:text;color:transparent}
 #announce.champ.hades .a-main{background:linear-gradient(#ffe8ee 20%,#ff5a78 55%,#3a0010 95%);-webkit-background-clip:text;background-clip:text;color:transparent}
@@ -106,6 +107,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;color:#fff;font
 .ci-band.shiva{background:linear-gradient(90deg,rgba(8,6,30,0),rgba(30,24,90,.94) 18%,rgba(80,50,160,.92) 60%,rgba(8,6,30,0));border-top:2px solid #ffb060;border-bottom:2px solid #ffb060;box-shadow:0 0 40px rgba(120,140,255,.5)}
 .ci-band.aphrodite{background:linear-gradient(90deg,rgba(40,8,24,0),rgba(140,40,90,.92) 18%,rgba(230,110,160,.9) 60%,rgba(40,8,24,0));border-top:2px solid #ffe6a0;border-bottom:2px solid #ffe6a0;box-shadow:0 0 40px rgba(255,140,200,.5)}
 .ci-band.shaka{background:linear-gradient(90deg,rgba(40,16,4,0),rgba(150,60,10,.92) 18%,rgba(240,150,50,.9) 60%,rgba(40,16,4,0));border-top:2px solid #fff0b0;border-bottom:2px solid #fff0b0;box-shadow:0 0 40px rgba(255,190,90,.5)}
+.ci-band.beelzebub{background:linear-gradient(90deg,rgba(14,6,30,0),rgba(60,30,120,.92) 18%,rgba(170,130,255,.9) 60%,rgba(14,6,30,0));border-top:2px solid #e4d4ff;border-bottom:2px solid #e4d4ff;box-shadow:0 0 40px rgba(170,130,255,.55)}
 .ci-band.apollo{background:linear-gradient(90deg,rgba(40,30,0,0),rgba(170,110,0,.92) 18%,rgba(255,215,70,.9) 60%,rgba(40,30,0,0));border-top:2px solid #fff6c0;border-bottom:2px solid #fff6c0;box-shadow:0 0 40px rgba(255,220,90,.55)}
 .ci-band.odin{background:linear-gradient(90deg,rgba(4,8,24,0),rgba(14,26,64,.94) 18%,rgba(40,60,120,.92) 60%,rgba(4,8,24,0));border-top:2px solid #ffe6a0;border-bottom:2px solid #ffe6a0;box-shadow:0 0 40px rgba(140,200,255,.5)}
 .ci-band.hades{background:linear-gradient(90deg,rgba(20,0,6,0),rgba(60,4,18,.94) 18%,rgba(120,10,40,.92) 60%,rgba(20,0,6,0));border-top:2px solid #ffb0c0;border-bottom:2px solid #ffb0c0;box-shadow:0 0 40px rgba(255,60,100,.5)}
@@ -161,7 +163,7 @@ body:not(.portrait) .portrait-only{display:none}
 #movesBody{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
 #movesBody section{border:1px solid rgba(232,192,106,.4);padding:16px 18px;background:rgba(255,255,255,.03)}
 #movesBody h3{font-size:22px;margin-bottom:6px}
-#movesBody .zeus h3{color:var(--zeus)} #movesBody .poseidon h3{color:var(--pos)} #movesBody .anubis h3{color:#f0c46a} #movesBody .thor h3{color:#c8b0ff} #movesBody .susanoo h3{color:#9fffd8} #movesBody .heracles h3{color:#ffb870} #movesBody .hades h3{color:#ff6a88} #movesBody .odin h3{color:#b8d8ff} #movesBody .shiva h3{color:#8fa8ff} #movesBody .aphrodite h3{color:#ff9cc8} #movesBody .shaka h3{color:#ff9e4a} #movesBody .apollo h3{color:#ffe14d}
+#movesBody .zeus h3{color:var(--zeus)} #movesBody .poseidon h3{color:var(--pos)} #movesBody .anubis h3{color:#f0c46a} #movesBody .thor h3{color:#c8b0ff} #movesBody .susanoo h3{color:#9fffd8} #movesBody .heracles h3{color:#ffb870} #movesBody .hades h3{color:#ff6a88} #movesBody .odin h3{color:#b8d8ff} #movesBody .shiva h3{color:#8fa8ff} #movesBody .aphrodite h3{color:#ff9cc8} #movesBody .shaka h3{color:#ff9e4a} #movesBody .apollo h3{color:#ffe14d} #movesBody .beelzebub h3{color:#b48cf0}
 #movesBody h3 small{font-size:12px;margin-left:10px;opacity:.7;letter-spacing:.2em}
 #movesBody h4{font-size:12px;letter-spacing:.3em;color:var(--gold);margin:12px 0 4px}
 #movesBody ul{list-style:none;font-size:14px;line-height:1.8}
@@ -272,7 +274,7 @@ body:not(.compact) .panel .picks .pick{padding:6px 10px}body:not(.compact) .pane
 .pick{position:relative;flex:1;display:flex;align-items:center;gap:10px;padding:10px 12px;color:rgba(255,255,255,.7);font-family:var(--jp);font-weight:800;font-size:14px;letter-spacing:.08em;background:rgba(10,6,18,.78);border:2px solid rgba(255,255,255,.15);cursor:pointer;transition:all .15s;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
 .pick .emb{width:34px;height:34px;flex:none}
 .face{image-rendering:crisp-edges;image-rendering:pixelated;display:block}
-.pick.zeus{color:var(--zeus)}.pick.poseidon{color:var(--pos)}.pick.anubis{color:#f0c46a}.pick.thor{color:#c8b0ff}.pick.susanoo{color:#9fffd8}.pick.heracles{color:#ffb870}.pick.hades{color:#ff6a88}.pick.odin{color:#b8d8ff}.pick.shiva{color:#8fa8ff}.pick.aphrodite{color:#ff9cc8}.pick.shaka{color:#ff9e4a}.pick.apollo{color:#ffe14d}
+.pick.zeus{color:var(--zeus)}.pick.poseidon{color:var(--pos)}.pick.anubis{color:#f0c46a}.pick.thor{color:#c8b0ff}.pick.susanoo{color:#9fffd8}.pick.heracles{color:#ffb870}.pick.hades{color:#ff6a88}.pick.odin{color:#b8d8ff}.pick.shiva{color:#8fa8ff}.pick.aphrodite{color:#ff9cc8}.pick.shaka{color:#ff9e4a}.pick.apollo{color:#ffe14d}.pick.beelzebub{color:#b48cf0}
 .pick:not(.on){opacity:.6}
 .pick:hover{opacity:1;border-color:rgba(255,255,255,.5)}
 .pick.on{opacity:1;border-color:var(--gold2);background:rgba(50,36,10,.7);box-shadow:0 0 22px rgba(255,200,90,.5)}
@@ -308,7 +310,7 @@ body.cine #hud,body.cine .meter,body.cine #ctrl,body.cine .keyhelp,body.cine .co
 #cineTitle{position:fixed;left:0;right:0;top:50%;transform:translateY(-50%);text-align:center;z-index:18;pointer-events:none;opacity:0}
 #cineTitle b{display:block;font-size:clamp(54px,11vw,150px);font-weight:800;letter-spacing:.18em;line-height:1;background:linear-gradient(#fff 20%,var(--cc) 70%,#222);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 30px var(--cc)) drop-shadow(0 6px 0 #000)}
 #cineTitle small{display:block;margin-top:10px;font-size:clamp(14px,2.2vw,28px);letter-spacing:.5em;color:#fff;text-shadow:0 0 14px var(--cc),0 2px 4px #000}
-#cineTitle.zeus{--cc:#ffd77a}#cineTitle.poseidon{--cc:#5ff0e6}#cineTitle.anubis{--cc:#f0c46a}#cineTitle.thor{--cc:#c8b0ff}#cineTitle.susanoo{--cc:#9fffd8}#cineTitle.heracles{--cc:#ffb870}#cineTitle.hades{--cc:#ff6a88}#cineTitle.odin{--cc:#b8d8ff}#cineTitle.shiva{--cc:#8fa8ff}#cineTitle.aphrodite{--cc:#ff9cc8}#cineTitle.shaka{--cc:#ffb050}#cineTitle.apollo{--cc:#ffe14d}
+#cineTitle.zeus{--cc:#ffd77a}#cineTitle.poseidon{--cc:#5ff0e6}#cineTitle.anubis{--cc:#f0c46a}#cineTitle.thor{--cc:#c8b0ff}#cineTitle.susanoo{--cc:#9fffd8}#cineTitle.heracles{--cc:#ffb870}#cineTitle.hades{--cc:#ff6a88}#cineTitle.odin{--cc:#b8d8ff}#cineTitle.shiva{--cc:#8fa8ff}#cineTitle.aphrodite{--cc:#ff9cc8}#cineTitle.shaka{--cc:#ffb050}#cineTitle.apollo{--cc:#ffe14d}#cineTitle.beelzebub{--cc:#b48cf0}
 #cineTitle.show{animation:ctl 1.6s cubic-bezier(.2,.8,.2,1) forwards}
 @keyframes ctl{0%{opacity:0;transform:translateY(-50%) scale(1.8);filter:blur(10px)}12%{opacity:1;transform:translateY(-50%) scale(1);filter:none}80%{opacity:1;transform:translateY(-50%) scale(1.05)}100%{opacity:0;transform:translateY(-50%) scale(1.12)}}
 
@@ -1573,6 +1575,91 @@ const APOLLO_MOVES = {
   },
 };
 
+// ============================================================
+//  BEELZEBUB (ベルゼブブ) : the Lord of the Flies, who fights with vibration. A mid-range guard-breaker.
+//  Unique: every blow carries its tremor through a guard (he alone wears a blocking foe down with normal
+//  attacks), パルミラ is a shell of vibration over the left hand that turns a blow aside and sends a shot back,
+//  共鳴震 makes the ground under the foe's feet erupt (guard it crouching), ソラト・レシュ throws the right
+//  hand's vibration as a cutting wave, ソラト・サメク bursts the air around him.
+// ============================================================
+const BZC = 0.15;   // the share of a blocked blow that still goes through
+const BEELZEBUB_MOVES = {
+  bz_jab: {
+    // 触震: an open hand laid on the foe - the touch alone shakes them
+    name: '触震', type: 'normal', weap: 'fist', dur: 0.3, cancel: [0.12, 0.3], fxAt: [[0.06, 'vibe', { k: 'touch' }]],
+    anim: [[0, 'stance'], [0.03, 'touchWind'], [0.07, 'touch'], [0.16, 'touch'], [0.3, 'stance']],
+    hits: [H({ t0: 0.06, t1: 0.12, dmg: 28, range: [0.2, 1.5], y: [0.8, 1.9], hs: 0.34, bs: 0.18, kb: 1.3, stop: 0.05, fx: 'vibe', chip: BZC })],
+  },
+  bz_staff: {
+    // 髑髏薙ぎ: the skull-headed staff swept flat across
+    name: '髑髏薙ぎ', type: 'normal', dur: 0.46, cancel: [0.2, 0.46], fxAt: [[0.12, 'vibe', { k: 'sweep' }]],
+    anim: [[0, 'stance'], [0.08, 'sweepWind'], [0.15, 'sweep'], [0.3, 'sweep'], [0.46, 'stance']],
+    hits: [H({ t0: 0.13, t1: 0.2, dmg: 46, range: [0.2, 1.95], y: [0.6, 2.1], hs: 0.42, kb: 1.9, stop: 0.07, fx: 'vibe', chip: BZC })],
+  },
+  bz_low: {
+    // 地鳴り: the staff's foot set on the floor - the tremor runs along the ground
+    name: '地鳴り', type: 'normal', dur: 0.5, cancel: [0.22, 0.5], fxAt: [[0.13, 'vibe', { k: 'ground' }]],
+    anim: [[0, 'stance'], [0.08, 'plantWind'], [0.15, 'plant'], [0.32, 'plant'], [0.5, 'stance']],
+    hits: [H({ t0: 0.14, t1: 0.21, dmg: 42, range: [0.15, 2.0], y: [0.0, 0.8], hs: 0.48, kb: 1.4, kd: true, stop: 0.08, fx: 'vibe', chip: BZC })],
+  },
+  bz_rise: {
+    // 震天掌: the palm driven up under the chin, the air above it shaking
+    name: '震天掌', type: 'normal', weap: 'fist', dur: 0.56, cancel: [0.25, 0.56], fxAt: [[0.13, 'vibe', { k: 'rise' }]],
+    anim: [[0, 'stance'], [0.09, 'riseWind'], [0.16, 'rise'], [0.32, 'rise'], [0.56, 'stance']],
+    hits: [H({ t0: 0.14, t1: 0.22, dmg: 54, range: [0.2, 1.6], y: [0.2, 2.9], hs: 0.5, kb: 1.2, launch: 10, stop: 0.1, fx: 'vibe', chip: BZC })],
+  },
+  bz_palm: {
+    // 共振掌: both palms set against the foe a hand apart - what lies between them resonates
+    name: '共振掌', type: 'normal', weap: 'fist', dur: 0.56, cancel: [0.26, 0.56], fxAt: [[0.15, 'vibe', { k: 'twin' }]],
+    anim: [[0, 'stance'], [0.1, 'twinWind'], [0.18, 'twin'], [0.34, 'twin'], [0.56, 'stance']],
+    motion: [{ t0: 0.08, t1: 0.18, vx: 3.2 }],
+    hits: [H({ t0: 0.16, t1: 0.24, dmg: 60, range: [0.3, 1.7], y: [0.4, 2.3], hs: 0.46, kb: 2.6, stop: 0.1, fx: 'vibe', chip: BZC })],
+  },
+  bz_skull: {
+    // 髑髏鎚: the skull brought down from overhead
+    name: '髑髏鎚', type: 'normal', dur: 0.62, cancel: [0.3, 0.62], fxAt: [[0.22, 'vibe', { k: 'skull' }]],
+    anim: [[0, 'stance'], [0.1, 'skullWind'], [0.2, 'skullWind'], [0.25, 'skull'], [0.42, 'skull'], [0.62, 'stance']],
+    hits: [H({ t0: 0.23, t1: 0.3, dmg: 64, range: [0.3, 2.0], y: [0.0, 2.6], hs: 0.5, kb: 1.6, bounce: 6, stop: 0.11, fx: 'vibe', chip: BZC })],
+  },
+  bz_resh: {
+    name: 'ソラト・レシュ', type: 'special', weap: 'fist', dur: 0.52, glow: 'both',
+    anim: [[0, 'stance'], [0.06, 'reshWind'], [0.2, 'reshWind'], [0.24, 'resh'], [0.52, 'stance']],
+    proj: { t: 0.24, kind: 'vibeWave', vx: 15, y: 1.35, dmg: 38, hits: 1, hs: 0.42, kb: 2.3, w: 0.5, h: 0.55, fx: 'vibe', chip: 0.3 },
+  },
+  bz_quake: {
+    name: '共鳴震', type: 'special', dur: 0.66, glow: 'both',
+    anim: [[0, 'stance'], [0.08, 'plantWind'], [0.24, 'plantWind'], [0.28, 'plant'], [0.5, 'plant'], [0.66, 'stance']],
+    proj: { t: 0.28, kind: 'tremor', atTarget: 6.6, delay: 0.42, life: 0.8, vx: 0, y: 0.7, dmg: 30, hits: 2, hs: 0.44, kb: 0.8, w: 0.8, h: 1.1, fx: 'vibe', lv: 'low', launch: 7.5, chip: 0.3 },
+  },
+  bz_palmyra: {
+    name: 'パルミラ', type: 'special', weap: 'fist', dur: 0.6, glow: 'both', parry: [0.04, 0.4], reflect: [0.04, 0.4], fxAt: [[0.04, 'vibe', { k: 'palmyra' }]],
+    anim: [[0, 'stance'], [0.05, 'palmyra'], [0.4, 'palmyra'], [0.6, 'stance']],
+  },
+  bz_samekh: {
+    name: 'ソラト・サメク', type: 'special', weap: 'fist', dur: 0.64, glow: 'both', invuln: 0.12, fxAt: [[0.13, 'vibe', { k: 'samekh' }]],
+    anim: [[0, 'stance'], [0.06, 'samekhWind'], [0.14, 'samekh'], [0.38, 'samekh'], [0.64, 'stance']],
+    hits: [H({ t0: 0.13, t1: 0.25, dmg: 64, range: [-1.2, 1.6], y: [0.0, 3.4], hs: 0.5, kb: 1.6, launch: 9, stop: 0.1, fx: 'vibe', chip: 0.3 })],
+  },
+  bz_air: {
+    name: '空震掌', type: 'air', weap: 'fist', dur: 0.46,
+    anim: [[0, 'airWind'], [0.1, 'airPalm'], [0.46, 'airPalm']],
+    hits: [H({ t0: 0.1, t1: 0.26, dmg: 48, range: [-0.1, 1.5], y: [-0.9, 1.2], hs: 0.44, kb: 2.0, stop: 0.07, fx: 'vibe', chip: BZC })],
+  },
+};
+// both of his supers are told as data (the same script that plays every god's second super)
+const SUPER1 = {
+  // 虚神: he closes in and lays the right hand on the foe - the vibration builds inside them until it tears free
+  beelzebub: { id: 'bz_super', name: '虚神（カオス）', dur: 2.3, glow: 'both',
+    anim: [[0, 'chaosWind'], [0.24, 'chaosWind'], [0.32, 'chaosPalm'], [1.3, 'chaosPalm'], [1.4, 'chaosDraw'], [1.56, 'chaosDraw'], [1.64, 'chaosBurst'], [2.0, 'chaosBurst'], [2.3, 'stance']],
+    conn: { t: 0.34, range: 2.2, dmg: 28, fx: 'vibe', ev: 'grip' },
+    hits: [[0.05, 0, null, 'hum'], ...[0, 1, 2, 3, 4, 5, 6, 7].map((i) => [0.46 + i * 0.1, 12, 'vibe', 'pulse']), [1.38, 0, null, 'gather']],
+    fin: { t: 1.64, dmg: 150, fx: 'vibe', launch: 8, kb: 5, ev: 'chaos' }, ai: [4.0, 0.34],
+    run(f, o, s, t, dt) {
+      if (!s.lock) { if (t < 0.34 && (o.x - f.x) * f.facing > 1.0) f.x = clamp(f.x + f.facing * 12 * dt, -STAGE, STAGE); return; }
+      if (t < 1.64) { f.x = clamp(o.x - f.facing * 1.0, -STAGE, STAGE); o.y = Math.max(0, 0.35 * S2X((t - 0.36) / 0.3)) + Math.sin(t * 90) * 0.025; }
+    } },
+};
+
 // balance: Apollo's bow strikes and kicks hit a little harder (a zoner who still has to win up close)
 (function () { for (const m of Object.values(APOLLO_MOVES)) if (m.hits && m.type !== 'super') for (const h of m.hits) h.dmg = Math.round(h.dmg * 1.1); })();
 // balance: Shiva's dance hits a little harder (no weapon reach, modest health)
@@ -1613,6 +1700,7 @@ const APOLLO_MOVES = {
   set(ODIN_MOVES.o_sweep, 'low'); set(ODIN_MOVES.o_slam, 'mid'); set(ODIN_MOVES.o_air, 'mid');
   set(SHAKA_MOVES.sk_earth, 'low'); set(SHAKA_MOVES.sk_recline, 'low'); set(SHAKA_MOVES.sk_air, 'mid');
   set(APOLLO_MOVES.apo_low, 'low'); set(APOLLO_MOVES.apo_bash, 'mid');
+  set(BEELZEBUB_MOVES.bz_low, 'low'); set(BEELZEBUB_MOVES.bz_skull, 'mid'); set(BEELZEBUB_MOVES.bz_air, 'mid');
   set(HERACLES_MOVES.h_low, 'low'); set(HERACLES_MOVES.h_smash, 'mid'); set(HERACLES_MOVES.h_air, 'mid');
   set(SUSANOO_MOVES.s_sweep, 'low'); set(SUSANOO_MOVES.s_kabuto, 'mid'); set(SUSANOO_MOVES.s_air, 'mid');
 })();
@@ -1782,10 +1870,20 @@ Object.assign(APOLLO_MOVES, {
       { t: 0.25, kind: 'sunArrow', vx: 14, vy: -8, y: 1.3, dmg: 24, hits: 1, hs: 0.42, kb: 1.8, w: 0.42, h: 0.3, fx: 'sun' },
       { t: 0.3, kind: 'sunArrow', vx: 10, vy: -11, y: 1.25, dmg: 24, hits: 1, hs: 0.44, kb: 2.2, w: 0.42, h: 0.3, fx: 'sun' }] },
 });
-const AIR2 = { zeus: 'z', poseidon: 'p', anubis: 'a', thor: 't', susanoo: 's', heracles: 'h', hades: 'hd', odin: 'o', shiva: 'sv', aphrodite: 'ap', shaka: 'sk', apollo: 'apo' };
+Object.assign(BEELZEBUB_MOVES, {
+  // 髑髏落とし: the staff swung down from above with the whole fall behind it
+  bz_airH: { name: '髑髏落とし', type: 'air', dur: 0.58, airTier: 'heavy', fxAt: [AF(0.13, 'bzH')],
+    anim: [[0, 'jhWind'], [0.13, 'jh'], [0.58, 'jh']],
+    hits: [H({ t0: 0.13, t1: 0.26, dmg: 72, range: [-0.1, 1.8], y: [-0.9, 1.5], hs: 0.5, kb: 2.6, stop: 0.09, fx: 'vibe', chip: BZC })] },
+  // 降震波: hanging in the air he throws the vibration down at a slant
+  bz_airS: { name: '降震波', type: 'air', weap: 'fist', dur: 0.62, airTier: 'heavy', hover: [0.04, 0.42], fxAt: [AF(0.06, 'bzS')],
+    anim: [[0, 'jsWind'], [0.22, 'js'], [0.62, 'js']],
+    proj: { t: 0.22, kind: 'vibeWave', vx: 12, vy: -8.5, y: 1.2, dmg: 42, hits: 1, hs: 0.44, kb: 2.2, w: 0.5, h: 0.5, fx: 'vibe', chip: 0.3 } },
+});
+const AIR2 = { zeus: 'z', poseidon: 'p', anubis: 'a', thor: 't', susanoo: 's', heracles: 'h', hades: 'hd', odin: 'o', shiva: 'sv', aphrodite: 'ap', shaka: 'sk', apollo: 'apo', beelzebub: 'bz' };
 (function frameData() {
   const PROJ_REC = { kind: { rock: 34 / 60, hammer: 34 / 60, soul: 28 / 60, sunArrow: 26 / 60 }, def: 30 / 60 };
-  for (const T of [ZEUS_MOVES, POSEIDON_MOVES, ANUBIS_MOVES, THOR_MOVES, SUSANOO_MOVES, HERACLES_MOVES, HADES_MOVES, ODIN_MOVES, SHIVA_MOVES, APHRODITE_MOVES, SHAKA_MOVES, APOLLO_MOVES]) {
+  for (const T of [ZEUS_MOVES, POSEIDON_MOVES, ANUBIS_MOVES, THOR_MOVES, SUSANOO_MOVES, HERACLES_MOVES, HADES_MOVES, ODIN_MOVES, SHIVA_MOVES, APHRODITE_MOVES, SHAKA_MOVES, APOLLO_MOVES, BEELZEBUB_MOVES]) {
     for (const m of Object.values(T)) {
       if (m.type === 'air') m.tier = m.airTier || 'medium';
       if (m.type === 'super' || m.type === 'air') continue;
@@ -1985,6 +2083,21 @@ const CHARS = {
       ['apo_kick', 'apo_bash', 'SUPER'],
     ],
   },
+  beelzebub: {
+    key: 'beelzebub', name: 'ベルゼブブ', en: 'BEELZEBUB', title: '蠅の王', hp: 980, walk: 2.9, back: 2.8, dash: 10,
+    jumpV: 11, jumpX: 4.4, width: 0.36, height: 2.1, moves: BEELZEBUB_MOVES, air: 'bz_air', super: 'bz_super',
+    guard: 0.62, aggro: 0.8,
+    routes: [
+      ['bz_jab', 'bz_jab', 'bz_palm'],
+      ['bz_jab', 'bz_staff', 'bz_rise'],
+      ['bz_low', 'bz_quake'],
+      ['bz_jab', 'bz_staff', 'bz_skull'],
+      ['bz_staff', 'bz_rise', 'bz_samekh'],
+      ['bz_palm', 'bz_resh'],
+      ['bz_jab', 'bz_staff', 'bz_rise', 'SUPER'],
+      ['bz_staff', 'bz_palm', 'SUPER'],
+    ],
+  },
   odin: {
     key: 'odin', name: 'オーディン', en: 'ODIN', title: '九界の主神', hp: 1080, walk: 2.8, back: 2.4, dash: 9.5,
     jumpV: 10.5, jumpX: 4.2, width: 0.4, height: 2.2, moves: ODIN_MOVES, air: 'o_air', super: 'o_super',
@@ -2159,10 +2272,18 @@ const SUPER2 = {
     hits: [[0.2, 0, null, 'aurora'], [0.58, 8, 'rune'], ...[1, 2, 3].flatMap((i) => [[0.5 + i * 0.22, 18, 'rune', 'valk'], [0.58 + i * 0.22, 8, 'rune']]), [1.45, 0, null, 'runes']],
     fin: { t: 1.72, dmg: 150, fx: 'rune', launch: 8, kb: 4, ev: 'ragnarok' }, ai: [7.5, 0.5],
     run(f, o, s, t) { if (s.lock && t < 1.72) o.y = Math.max(o.y, 1.1 * S2X((t - 0.52) / 0.4)); } },
+  // 原罪・終震: the staff is planted and everything resonates - the foe is lifted on the standing wave and shaken apart
+  beelzebub: { id: 'bz_super2', name: '原罪・終震', dur: 2.4, glow: 'both',
+    anim: [[0, 'plantWind'], [0.3, 'plantWind'], [0.38, 'plant'], [1.36, 'plant'], [1.46, 'skullWind'], [1.62, 'skullWind'], [1.7, 'skull'], [2.1, 'skull'], [2.4, 'stance']],
+    conn: { t: 0.4, range: 7, dmg: 18, fx: 'vibe', ev: 'wave' },
+    hits: [[0.05, 0, null, 'toll'], ...[0, 1, 2, 3, 4, 5].map((i) => [0.54 + i * 0.13, 12, 'vibe', 'wave']), [1.44, 0, null, 'still']],
+    fin: { t: 1.72, dmg: 145, fx: 'vibe', launch: 7, kb: 4, ev: 'shatter' }, ai: [7, 0.4],
+    run(f, o, s, t) { if (s.lock && t < 1.72) o.y = Math.max(o.y * 0.9, 0.9 * S2X((t - 0.42) / 0.5)) + Math.sin(t * 80) * 0.02; } },
 };
+for (const k in SUPER1) { const D = SUPER1[k]; CHARS[k].moves[D.id] = { name: D.name, type: 'super', dur: D.dur, glow: D.glow, anim: D.anim, sd: D }; }
 for (const k in SUPER2) {
   const D = SUPER2[k], C = CHARS[k];
-  C.moves[D.id] = { name: D.name, type: 'super', dur: D.dur, glow: D.glow, anim: D.anim, super2: true, grab: !!D.conn.grab, spin: D.spin };
+  C.moves[D.id] = { name: D.name, type: 'super', dur: D.dur, glow: D.glow, anim: D.anim, super2: true, sd: D, grab: !!D.conn.grab, spin: D.spin };
   if (!D.spin) delete C.moves[D.id].spin;
   C.super2 = D.id;
 }
@@ -2227,6 +2348,11 @@ const HUMAN = {
     K: { n: 'apo_bash', f: 'apo_rise', b: 'apo_point', d: 'apo_low', u: 'apo_rise' },
     L: { n: 'apo_arrow', f: 'apo_rain', b: 'apo_oracle', d: 'apo_sun', u: 'apo_sun' },
   },
+  beelzebub: {
+    J: { n: 'bz_jab', f: 'bz_staff', b: 'bz_jab', d: 'bz_low', u: 'bz_rise' },
+    K: { n: 'bz_palm', f: 'bz_rise', b: 'bz_skull', d: 'bz_low', u: 'bz_rise' },
+    L: { n: 'bz_resh', f: 'bz_quake', b: 'bz_palmyra', d: 'bz_samekh', u: 'bz_samekh' },
+  },
 };
 
 // CPU strength, 1 (weakest) .. 5 (strongest): combo execution here; its reaction time, learning and judgement are in
@@ -2256,6 +2382,7 @@ const AUTO = {
   aphrodite: ['ap_flick', 'ap_spiral', 'ap_lash', 'ap_rise', 'ap_petal', 'SUPER'],
   shaka: ['sk_vitarka', 'sk_seal', 'sk_lotus', 'SUPER'],
   apollo: ['apo_jab', 'apo_kick', 'apo_bash', 'apo_rise', 'apo_sun', 'SUPER'],
+  beelzebub: ['bz_jab', 'bz_staff', 'bz_palm', 'bz_rise', 'bz_samekh', 'SUPER'],
 };
 
 // does the opponent have a projectile in flight toward f?
@@ -2282,7 +2409,7 @@ const AI_HUMAN = [
 const SUP_TAKE = 0.18;
 // a foe this close to the wall is comboed with the corner routes
 const AI_CORNER = 1.5;
-const AI_SUPER = { zeus: [2.3, 0.45], poseidon: [2.3, 0.4], anubis: [2.3, 0.32], thor: [9, 0.37], susanoo: [9, 0.37], heracles: [9, 0.4], hades: [9, 0.42], shiva: [9, 0.4], aphrodite: [5.6, 0.58], shaka: [5.6, 0.4], apollo: [5.6, 0.42], odin: [5.6, 0.4] };
+const AI_SUPER = { zeus: [2.3, 0.45], poseidon: [2.3, 0.4], anubis: [2.3, 0.32], thor: [9, 0.37], susanoo: [9, 0.37], heracles: [9, 0.4], hades: [9, 0.42], shiva: [9, 0.4], aphrodite: [5.6, 0.58], shaka: [5.6, 0.4], apollo: [5.6, 0.42], odin: [5.6, 0.4], beelzebub: [4.0, 0.34] };
 // each god's preferred fighting distance and temperament
 // (react: extra reaction time, focus: looseness of choices - a temperament, not a level)
 const AI_STYLE = {
@@ -2290,6 +2417,7 @@ const AI_STYLE = {
   thor: { range: 1.9, aggr: 1.0 }, susanoo: { range: 1.8, aggr: 1.1, react: 0.05, focus: 1.6 }, heracles: { range: 1.4, aggr: 1.15, react: 0.08, focus: 2.2 },
   hades: { range: 2.3, aggr: 0.95 }, shiva: { range: 1.5, aggr: 1.05, react: -0.05, focus: 0.55 }, aphrodite: { range: 2.0, aggr: 0.95, react: -0.04, focus: 0.6 },
   shaka: { range: 3.6, aggr: 0.85, react: -0.06, focus: 0.45 }, apollo: { range: 4.6, aggr: 0.8, react: -0.06, focus: 0.45 }, odin: { range: 3.0, aggr: 0.9, react: 0.04, focus: 1.4 },
+  beelzebub: { range: 1.9, aggr: 1.0, react: -0.03, focus: 0.7 },
 };
 
 // ---- every god's highest-damage combos, found by searching the fight engine itself (each one played out against
@@ -2528,6 +2656,26 @@ const AI_COMBO = {
       rise: ['189 > rise > slam rise slash spear', '275 > rise > slam rise slash super', '328 > rise > slam rise slash palm jab > jab rise slash sweep', '482 > rise > slam rise slash palm jab > jab rise slash sweep super'],
       palm: ['102 slam rune', '188 slam super', '249 slam > slam rise palm slash jab > jab rise slam slash sweep', '351 slam > slam rise palm slash jab > jab rise slam slash sweep super'],
       slam: ['138 spear', '239 super', '356 > slam palm rise > slam sweep slash jab rise palm', '510 > slam palm rise > slam sweep slash jab rise palm super'],
+    },
+  },
+  beelzebub: {
+    pre: 'bz_', raw: [175, 148],
+    g: {
+      jab: ['291 palm skull samekh > palm samekh skull staff resh', '385 palm skull samekh > palm samekh rise skull staff super', '325 palm skull samekh > palm rise > palm rise skull staff resh', '476 palm skull samekh > palm rise > palm jab rise skull staff super'],
+      staff: ['266 palm skull samekh > palm samekh skull resh', '361 palm skull samekh > palm samekh skull super', '301 palm skull samekh > palm skull rise > rise skull samekh quake', '395 palm skull samekh > palm skull rise > rise skull palm samekh super'],
+      low: ['236 palm samekh > palm rise staff skull resh', '332 palm samekh > palm rise staff skull super', '295 palm samekh skull > samekh skull rise palm staff quake', '433 palm samekh > palm rise samekh skull super'],
+      rise: ['275 palm samekh > samekh skull palm staff low quake', '369 palm samekh > samekh palm rise skull low staff super', '333 palm samekh > samekh skull palm staff low quake', '475 palm skull > samekh palm skull rise staff low super'],
+      palm: ['286 skull rise > skull palm rise samekh staff resh', '377 skull rise > skull rise samekh palm staff super', '312 skull samekh > palm skull rise > palm skull rise samekh quake', '400 skull samekh > palm skull rise > palm skull staff rise low super'],
+      skull: ['270 palm samekh > palm rise samekh skull staff resh', '360 palm samekh > palm rise samekh skull super', '313 samekh > palm skull rise > palm skull rise staff samekh quake', '402 samekh palm rise > samekh skull palm rise staff low super'],
+      samekh: ['261 > palm samekh skull rise staff resh', '340 palm skull > palm staff skull super', '347 palm skull > samekh skull rise palm staff quake', '485 palm skull > samekh palm skull rise staff low super'],
+    },
+    a: {
+      jab: ['169 > skull palm samekh staff resh', '273 > palm rise samekh skull super', '197 skull samekh > samekh rise skull palm jab > jab samekh quake', '289 skull samekh > samekh rise skull palm jab > jab rise palm super'],
+      staff: ['134 > skull palm staff resh', '224 > skull palm staff super', '259 skull > samekh skull palm > rise staff palm jab samekh quake', '343 skull samekh > samekh rise skull palm jab > jab rise staff super'],
+      rise: ['102 > samekh skull palm rise > palm samekh quake', '211 super', '244 > samekh palm skull > rise skull palm staff samekh quake', '308 > samekh skull palm rise > palm low rise staff jab super'],
+      palm: ['144 skull quake', '273 skull samekh super', '320 > samekh palm skull > samekh skull rise palm low quake', '457 > samekh palm skull > samekh rise staff skull low palm super'],
+      skull: ['109 samekh', '268 samekh super', '224 > samekh skull > samekh rise skull staff palm quake', '320 samekh > samekh skull palm rise staff low super'],
+      samekh: ['102 > samekh palm skull > samekh palm quake', '220 super', '223 > samekh skull > palm skull rise low samekh quake', '313 > samekh palm > samekh palm rise skull staff low super'],
     },
   },
 };
@@ -3237,7 +3385,7 @@ class Sim {
       x: px, y: (p.atTarget || p.at ? 0 : f.y) + p.y, vx: p.vx * f.facing,
       dmg: p.dmg, hitsLeft: p.hits, cd: 0, t: 0, w: p.w, h: p.h,
       hs: p.hs, kb: p.kb, fx: p.fx, kd: !!p.kd, dead: false, ret: p.ret || 0, dir0: f.facing, vy: p.vy || 0, grav: p.grav || 0, life: p.life || 0, launch: p.launch || 0,
-      cd0: p.delay || 0, pull: p.pull || 0, lv: p.lv || null, charm: p.charm || 0, grow: p.grow || 0, x0: px,
+      cd0: p.delay || 0, pull: p.pull || 0, lv: p.lv || null, charm: p.charm || 0, grow: p.grow || 0, x0: px, chip: p.chip || 0.15,
     };
     pr.cd = pr.cd0;
     this.projs.push(pr);
@@ -3300,7 +3448,7 @@ class Sim {
           const last = p.hitsLeft <= 1;
           // Apollo's arrows gather the sun as they fly: up to +grow damage over 7 m of flight
           const far = p.grow ? 1 + p.grow * clamp(Math.abs(p.x - p.x0) / 7, 0, 1) : 1;
-          const h = { charm: p.charm || 0, dmg: Math.round(p.dmg * far), hs: p.hs, bs: 0.25, kb: last ? p.kb : 0.6, stop: 0.07 + (far - 1) * 0.06, fx: far > 1.5 ? 'solar' : p.fx, chip: 0.15, kd: last && p.kd, launch: last ? p.launch : 0, lv: p.lv, y: [0, 0] };
+          const h = { charm: p.charm || 0, dmg: Math.round(p.dmg * far), hs: p.hs, bs: 0.25, kb: last ? p.kb : 0.6, stop: 0.07 + (far - 1) * 0.06, fx: far > 1.5 ? 'solar' : p.fx, chip: p.chip, kd: last && p.kd, launch: last ? p.launch : 0, lv: p.lv, y: [0, 0] };
           // projectile hits are not chained onto the owner's move contact
           const keepContact = f.contact;
           h.proj = true;
@@ -3387,7 +3535,7 @@ class Sim {
 
   // the second supers run from their table (SUPER2)
   super2Script(f, o, dt, t, s, once) {
-    const D = SUPER2[f.key];
+    const D = f.move.sd;
     const held = () => s.lock && o.state === 'locked';
     D.run.call(this, f, o, s, t, dt, once);
     if (t >= D.conn.t) once('connect', () => {
@@ -3419,7 +3567,7 @@ class Sim {
   // a super whose opening strike was guarded (or found nothing) leaves its god spent and wide open: guarded, the
   // recovery is long enough for anything to punish it (about 40 frames minus); whiffed, most things can
   superMiss(f, o) {
-    const two = f.move && f.move.super2, reach = (two ? SUPER2[f.key].ai : AI_SUPER[f.key] || [2.5])[0] + 0.6;
+    const two = f.move && f.move.sd, reach = (two ? two.ai : AI_SUPER[f.key] || [2.5])[0] + 0.6;
     const guarded = !(two && f.move.grab) && this.canBlock(o) && Math.abs(o.x - f.x) < reach;
     if (guarded) {
       const dir = Math.sign(o.x - f.x) || f.facing;
@@ -3438,7 +3586,7 @@ class Sim {
   superScript(f, o, dt) {
     const s0 = f.sup || (f.sup = { ev: {} });
     if (!s0.ev.connect) {
-      const ct = f.move.super2 ? SUPER2[f.key].conn.t : (AI_SUPER[f.key] || [0, 0.4])[1];
+      const ct = f.move.sd ? f.move.sd.conn.t : (AI_SUPER[f.key] || [0, 0.4])[1];
       dt *= Math.max(1, ct * SUPER_K / SUP_TAKE);
     }
     f.mt += dt;
@@ -3457,7 +3605,7 @@ class Sim {
     }
     const locked = s.lock && o.state === 'locked';
     this.superSep(f, o, dt);
-    if (f.move.super2) this.super2Script(f, o, dt, t, s, once);
+    if (f.move.sd) this.super2Script(f, o, dt, t, s, once);
     else if (f.key === 'zeus') {
       once('rise0', () => { f.y = 0; });
       if (t >= 0.34) once('connect', () => {
@@ -4785,7 +4933,7 @@ class Sim {
   }
 }
 
-return { DT, STAGE, GRAV, ROUND_TIME, WINS_NEEDED, SUPER_K, INTRO_EACH, setRandom, CHARS, HUMAN, AI_LEVELS, AI_LEVEL_DEFAULT, AUTO, SUPER2, Sim };
+return { DT, STAGE, GRAV, ROUND_TIME, WINS_NEEDED, SUPER_K, INTRO_EACH, setRandom, CHARS, HUMAN, AI_LEVELS, AI_LEVEL_DEFAULT, AUTO, SUPER1, SUPER2, Sim };
 })();
 
 // ======== poses.js ========
@@ -4807,6 +4955,7 @@ const SKEL = {
   hades: { hipH: 1.07, spine: 0.14, chest: 0.27, neck: 0.29, head: 0.11, shX: 0.3, shY: 0.23, upper: 0.32, fore: 0.29, hand: 0.09, hipX: 0.115, hipY: -0.055, thigh: 0.48, shin: 0.47, foot: 0.075, toe: 0.145 },
   heracles: { hipH: 1.1, spine: 0.15, chest: 0.29, neck: 0.3, head: 0.115, shX: 0.37, shY: 0.245, upper: 0.34, fore: 0.31, hand: 0.1, hipX: 0.135, hipY: -0.06, thigh: 0.49, shin: 0.48, foot: 0.08, toe: 0.155 },
   shaka: { hipH: 1.05, spine: 0.14, chest: 0.26, neck: 0.27, head: 0.108, shX: 0.29, shY: 0.225, upper: 0.31, fore: 0.28, hand: 0.088, hipX: 0.115, hipY: -0.055, thigh: 0.47, shin: 0.46, foot: 0.074, toe: 0.145 },
+  beelzebub: { hipH: 1.08, spine: 0.14, chest: 0.265, neck: 0.285, head: 0.107, shX: 0.285, shY: 0.228, upper: 0.315, fore: 0.285, hand: 0.086, hipX: 0.11, hipY: -0.055, thigh: 0.485, shin: 0.475, foot: 0.074, toe: 0.145 },
   apollo: { hipH: 1.07, spine: 0.14, chest: 0.265, neck: 0.28, head: 0.106, shX: 0.3, shY: 0.228, upper: 0.315, fore: 0.285, hand: 0.086, hipX: 0.112, hipY: -0.055, thigh: 0.48, shin: 0.47, foot: 0.074, toe: 0.145 },
 };
 
@@ -5473,6 +5622,54 @@ AOP.backstep = mk(AOP.stance, { spine: [-0.12, -0.1, 0], lHip: [-0.2, 0, 0.08], 
 AOP.jump = mk(AOP.airDraw, { air: true, rx: 0, lSh: [-0.8, 0, 0.3], lEl: [-0.5, 0, 0], rSh: [-0.6, 0, 0.5], rEl: [-0.9, 0, 0] });
 AOP.crouch = mk(AOP.stance, Object.assign({ y: -0.42, z: 0.03, spine: [0.26, -0.1, 0], chest: [0.06, -0.1, 0], head: [-0.2, 0.3, 0] }, aoSquat));
 AOP.crouchBlock = mk(AOP.block, Object.assign({ y: -0.42, z: 0.02, spine: [0.32, -0.1, 0], head: [-0.15, 0.5, 0] }, aoSquat));
+// ============================================================
+//  BEELZEBUB : the staff-bearer's library (the underworld king's pole work), re-stanced as a still, upright priest.
+//  The skull staff is in the right hand; the left hand is the one that touches - every palm is his own.
+// ============================================================
+const BZP = {};
+for (const k in HDP) BZP[k] = copyPoseP(HDP[k]);
+// stance: upright and unhurried, head a little bowed, the staff held like a walking staff, the left hand loose at his side
+const bzStance = mk(ODP.stance, { y: -0.01, hips: [0, -0.24, 0], spine: [0.0, -0.04, 0], chest: [-0.04, -0.04, 0], neck: [0.06, 0.1, 0], head: [0.16, 0.16, 0.03],
+  lHip: [-0.16, 0, 0.1], lKn: [0.12, 0, 0], lAn: [0.03, 0, 0], rHip: [0.1, 0, 0.11], rKn: [0.08, 0, 0], rAn: [-0.02, 0, 0],
+  lSh: [0.06, 0, 0.14], lEl: [-0.22, 0, 0], lWr: [0, 0, 0] });
+const bzLunge = { lHip: [-0.85, 0, 0.12], lKn: [0.88, 0, 0], lAn: [0.0, 0, 0], rHip: [0.5, 0, 0.13], rKn: [0.18, 0, 0], rAn: [-0.55, 0, 0] };
+Object.assign(BZP, {
+  stance: bzStance,
+  // 触震: the open left hand reaches out and rests on the foe
+  touchWind: mk(bzStance, { hips: [0, -0.34, 0], chest: [-0.02, 0.1, 0], lSh: [-0.5, 0, 0.3], lEl: [-1.7, 0, 0], lWr: [-0.6, 0, 0] }),
+  touch: mk(bzStance, Object.assign({ y: -0.08, z: 0.08, hips: [0, -0.08, 0], spine: [0.1, -0.1, 0], chest: [0.04, -0.4, 0], head: [0.0, 0.5, 0], lSh: [-1.5, 0, -0.08], lEl: [-0.08, 0, 0], lWr: [-1.3, 0, 0] }, bzLunge)),
+  sweepWind: mk(HDP.slashWind, { head: [0.05, 0.3, 0] }), sweep: mk(HDP.slashEnd, {}),
+  // the staff lifted, then its foot driven into the floor
+  plantWind: mk(HDP.slamWind, { y: -0.08, head: [-0.1, 0.2, 0] }), plant: mk(HDP.sweepEnd, { lSh: [-0.3, 0, 0.7], lEl: [-0.5, 0, 0], lWr: [0, 0, 0] }),
+  // 震天掌: gathered low, the left palm driven straight up
+  riseWind: mk(HDP.riseWind, { lSh: [0.2, 0, 0.3], lEl: [-1.8, 0, 0], lWr: [-0.8, 0, 0] }),
+  rise: mk(bzStance, { y: 0.04, z: 0.06, hips: [0, -0.05, 0], spine: [-0.16, 0, 0], chest: [-0.1, -0.2, 0], head: [-0.3, 0.2, 0], lSh: [-2.75, 0, 0.12], lEl: [-0.12, 0, 0], lWr: [-1.25, 0, 0], lHip: [-0.35, 0, 0.12], lKn: [0.2, 0, 0], lAn: [0.4, 0, 0], rHip: [0.2, 0, 0.12], rKn: [0.1, 0, 0], rAn: [0.3, 0, 0] }),
+  // 共振掌: the left palm and the staff hand set forward together, a hand apart
+  twinWind: mk(HDP.palmWind, { lSh: [0.3, 0, 0.3], lEl: [-1.8, 0, 0], lWr: [-0.6, 0, 0] }),
+  twin: mk(HDP.palm, { z: 0.14, lSh: [-1.5, 0, -0.16], lEl: [-0.08, 0, 0], lWr: [-1.3, 0, 0] }),
+  skullWind: mk(HDP.slamWind, {}), skull: mk(HDP.slamEnd, {}),
+  // ソラト・レシュ: the staff hand drawn back humming, then thrust out - the wave leaves it
+  reshWind: mk(HDP.slashWind, { hips: [0, -0.5, 0], head: [0.0, 0.5, 0] }), resh: mk(HDP.jab, {}),
+  // パルミラ: the left palm held out, fingers spread, the shell of vibration standing on it
+  palmyra: mk(bzStance, { y: -0.1, z: -0.02, hips: [0, -0.3, 0], spine: [-0.04, 0, 0], chest: [-0.04, -0.2, 0], head: [0.06, 0.35, 0], lSh: [-1.42, 0, 0.0], lEl: [-0.45, 0, 0], lWr: [-1.35, 0, 0], lHip: [-0.5, 0, 0.14], lKn: [0.6, 0, 0], lAn: [-0.1, 0, 0], rHip: [0.25, 0, 0.16], rKn: [0.45, 0, 0], rAn: [-0.5, 0, 0] }),
+  // ソラト・サメク: folded in on himself, then both arms thrown wide
+  samekhWind: mk(HDP.summonWind, { y: -0.22, spine: [0.3, 0, 0], head: [0.2, 0, 0], lSh: [-0.6, -0.9, 0], lEl: [-1.9, 0, 0] }),
+  samekh: mk(HDP.summon, { y: -0.04, spine: [-0.16, 0, 0], chest: [-0.14, 0, 0], head: [-0.3, 0, 0], lSh: [-1.0, 0, 1.25], lEl: [-0.2, 0, 0], lWr: [-0.8, 0, 0] }),
+  airPalm: mk(HDP.airWind, { rx: 0.35, spine: [0.15, 0, 0], head: [-0.25, 0.1, 0], lSh: [-1.8, 0, -0.08], lEl: [-0.06, 0, 0], lWr: [1.1, 0, 0] }),
+  // 虚神: the hand laid on the foe and held there; drawn back; the last push
+  chaosWind: mk(HDP.palmWind, { lSh: [0.35, 0, 0.3], lEl: [-1.9, 0, 0], lWr: [-0.7, 0, 0], head: [0.1, 0.3, 0] }),
+  chaosPalm: mk(HDP.palm, { lSh: [-1.5, 0, -0.05], lEl: [-0.25, 0, 0], lWr: [-1.35, 0, 0], head: [0.12, 0.4, 0] }),
+  chaosDraw: mk(HDP.palmWind, { z: -0.04, lSh: [0.5, 0, 0.35], lEl: [-2.0, 0, 0], lWr: [-0.9, 0, 0], head: [0.05, 0.3, 0] }),
+  chaosBurst: mk(HDP.palm, { z: 0.2, y: -0.28, spine: [0.22, -0.1, 0], lSh: [-1.55, 0, -0.1], lEl: [-0.03, 0, 0], lWr: [-1.4, 0, 0], head: [-0.1, 0.4, 0] }),
+  block: mk(HDP.block, {}),
+  // entrance: head bowed, the staff's foot on the ground; he looks up only at the end
+  intro: mk(bzStance, { head: [0.42, 0, 0], neck: [0.15, 0, 0], spine: [0.06, 0, 0] }),
+});
+Object.assign(BZP, generic(BZP.stance, false));
+BZP.backstep = mk(BZP.stance, { spine: [-0.1, -0.1, 0], lHip: [-0.1, 0, 0.12], lKn: [0.5, 0, 0], rHip: [0.12, 0, 0.12], rKn: [0.6, 0, 0] });
+BZP.jump = mk(BZP.airWind, { air: true });
+BZP.crouch = mk(BZP.stance, { y: -0.44, z: 0.04, spine: [0.3, -0.1, 0], chest: [0.1, -0.1, 0], head: [-0.2, 0.3, 0], lHip: [-1.2, 0, 0.18], lKn: [2.0, 0, 0], lAn: [-0.6, 0, 0], rHip: [-1.05, 0, 0.18], rKn: [2.0, 0, 0], rAn: [-0.7, 0, 0] });
+BZP.crouchBlock = mk(BZP.block, { y: -0.44, z: 0.02, spine: [0.4, 0, 0], head: [-0.2, 0.1, 0], lHip: [-1.2, 0, 0.18], lKn: [2.0, 0, 0], lAn: [-0.6, 0, 0], rHip: [-1.05, 0, 0.18], rKn: [2.0, 0, 0], rAn: [-0.7, 0, 0] });
 // jump heavy / jump special poses: each god's own ground attack, taken into the air (legs tucked, body pitched)
 (function airAttackPoses() {
   const LEGS = ['lHip', 'lKn', 'lAn', 'rHip', 'rKn', 'rAn'];
@@ -5497,6 +5694,7 @@ AOP.crouchBlock = mk(AOP.block, Object.assign({ y: -0.42, z: 0.02, spine: [0.32,
   set(HEP, { jhWind: A(HEP, 'smashWind', { rx: -0.2 }), jh: A(HEP, 'smashEnd', { rx: 0.5 }), jsWind: A(HEP, 'rockWind', { rx: -0.15 }), js: A(HEP, 'rockThrow', { rx: 0.35 }) });
   set(HDP, { jhWind: A(HDP, 'slashWind'), jh: A(HDP, 'slashEnd', { rx: 0.3 }), jsWind: A(HDP, 'shadeWind'), js: A(HDP, 'palm', { rx: 0.85 }, 'dive') });
   HDP.jsLand = Land(HDP, 'palm');
+  set(BZP, { jhWind: A(BZP, 'skullWind', { rx: -0.15 }), jh: A(BZP, 'skull', { rx: 0.3 }), jsWind: A(BZP, 'reshWind', { rx: -0.1 }), js: A(BZP, 'resh', { rx: 0.4 }) });
   set(ODP, { jhWind: mk(ODP.skyWind, {}), jh: mk(ODP.skyHurl, {}), jsWind: A(ODP, 'throwWind', { rx: -0.1 }), js: A(ODP, 'throw', { rx: 0.3 }) });
   set(SVP, { jhWind: A(SVP, 'heelWind', { rx: -0.1 }, 'own'), jh: A(SVP, 'heelDrop', { rx: 0.25 }, 'own'), jsWind: A(SVP, 'eyeWind'), js: A(SVP, 'eyeOpen', { rx: 0.35 }) });
   set(APP, { jhWind: A(APP, 'lashWind', { rx: -0.1 }), jh: A(APP, 'lash', { rx: 0.4 }), jsWind: A(APP, 'kissWind'), js: A(APP, 'kiss', { rx: 0.25 }) });
@@ -5535,8 +5733,9 @@ AOP.crouchBlock = mk(AOP.block, Object.assign({ y: -0.42, z: 0.02, spine: [0.32,
   APP.win = mk(APP.stance, {y: 0, z: 0, rx: 0, ry: 0, rz: 0, hips: [0, 0, -0.08], spine: [0, 0, 0.05], chest: [-0.05, 0, 0], neck: [0, 0, 0.1], head: [0, 0, 0.2], rSh: [-1.6, 0, -0.2], rEl: [-2.3, 0, 0], lSh: [0, 0, 1.4], lEl: [-0.3, 0, 0], lHip: [0.4, 0, 0.1], lKn: [1.6, 0, 0], lAn: [0.5, 0, 0], rHip: [0, 0, 0.05], rKn: [0.05, 0, 0], rAn: [0, 0, 0]});
   AOP.win = mk(AOP.stance, {y: 0, z: 0, rx: 0, ry: 0, rz: 0, hips: [0, 0, 0], spine: [-0.1, 0, 0], chest: [-0.2, 0, 0], neck: [0, 0, 0], head: [-0.5, 0, 0], rSh: [-2.5, 0, 0.6], rEl: [-0.2, 0, 0], lSh: [0.1, 0, 0.3], lEl: [-0.2, 0, 0], lHip: [-0.3, 0, 0.1], lKn: [0.2, 0, 0], lAn: [0.4, 0, 0], rHip: [0.05, 0, 0.1], rKn: [0.05, 0, 0], rAn: [0, 0, 0]});
   ODP.win = mk(ODP.stance, {y: 0, z: 0, rx: 0, ry: 0, rz: 0, hips: [0, 0, 0], spine: [0, 0, 0], chest: [-0.05, 0, 0], neck: [0, 0, 0], head: [0.15, 0, 0], rSh: [-1, 0, -0.15], rEl: [-1.2, 0, 0], rWr: [0, 0, 0], lSh: [-1.2, 0, -0.25], lEl: [-1, 0, 0], lHip: [-0.05, 0, 0.15], lKn: [0.05, 0, 0], lAn: [0, 0, 0], rHip: [0.05, 0, 0.15], rKn: [0.05, 0, 0], rAn: [0, 0, 0]});
+  BZP.win = mk(BZP.stance, { y: 0, head: [-0.08, 0.1, 0], neck: [0, 0, 0], lSh: [-0.9, -0.3, 0.2], lEl: [-1.3, 0, 0], lWr: [-0.5, 0, 0] });
 })();
-const POSES = { zeus: ZP, poseidon: PP, anubis: AP, thor: TP, susanoo: SUP, heracles: HEP, hades: HDP, odin: ODP, shiva: SVP, aphrodite: APP, shaka: SKP, apollo: AOP };
+const POSES = { zeus: ZP, poseidon: PP, anubis: AP, thor: TP, susanoo: SUP, heracles: HEP, hades: HDP, odin: ODP, shiva: SVP, aphrodite: APP, shaka: SKP, apollo: AOP, beelzebub: BZP };
 
 // ------------------------------------------------------------
 //  Blending helpers
@@ -9355,7 +9554,124 @@ function buildApollo(T) {
 }
 
 
-return { canvasTex, enhanceModel, buildZeus, buildPoseidon, updateCape, updateCloth, settleCloth, buildAnubis, buildThor, buildSusanoo, buildHeracles, buildHades, buildOdin, buildShiva, buildAphrodite, buildShaka, buildApollo, SPH };
+// ============================================================
+//  BEELZEBUB (the Lord of the Flies as a young priest: tousled black hair over tired eyes, a black cassock to the
+//             ankles under a short shoulder cape, a high collar banded in white, a purple stole barred in black
+//             hanging down the front, navy laced boots, and a red staff headed with a skull)
+// ============================================================
+// the cassock's skirts: black, with the stole's two purple bands (barred in black at both ends) down the front edges
+function bzCoatTex() {
+  return canvasTex(512, 512, (g, w, h) => {
+    g.fillStyle = '#17151d'; g.fillRect(0, 0, w, h);
+    for (let i = 0; i < 26; i++) { const x = Math.random() * w, wd = 6 + Math.random() * 22; const gr = g.createLinearGradient(x - wd, 0, x + wd, 0); gr.addColorStop(0, 'rgba(0,0,0,0)'); gr.addColorStop(0.5, `rgba(60,54,80,${0.12 + Math.random() * 0.14})`); gr.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = gr; g.fillRect(x - wd, 0, wd * 2, h); }
+    const bw = w * 0.115;
+    for (const x0 of [0, w - bw]) {
+      g.fillStyle = '#8a62c8'; g.fillRect(x0, 0, bw, h);
+      g.fillStyle = '#17151d';
+      for (const y0 of [0.06, 0.74]) for (let k = 0; k < 5; k++) g.fillRect(x0, h * (y0 + k * 0.04), bw, h * 0.014);
+      for (let k = 1; k < 4; k++) g.fillRect(x0 + bw * k / 4 - 1.5, h * 0.74, 3, h * 0.26);
+      g.fillRect(x0 === 0 ? bw - 4 : x0, 0, 4, h);
+    }
+  });
+}
+function buildBeelzebub(T) {
+  const M = makeSkeleton('beelzebub');
+  const { j } = M;
+  const P = new PartSet();
+  const DS = THREE.DoubleSide;
+
+  const skin = new THREE.MeshPhysicalMaterial({ color: 0xf2e2da, roughness: 0.55, sheen: 0.5, sheenColor: new THREE.Color(0xe8e0ff), sheenRoughness: 0.45 });
+  const black = new THREE.MeshStandardMaterial({ color: 0x18161e, roughness: 0.62, side: DS });
+  const coat = new THREE.MeshStandardMaterial({ color: 0xffffff, map: bzCoatTex(), roughness: 0.62 });
+  const lining = new THREE.MeshStandardMaterial({ color: 0x241c38, roughness: 0.6, side: THREE.BackSide });
+  const purple = new THREE.MeshStandardMaterial({ color: 0x8a62c8, roughness: 0.55, side: DS });
+  const white = new THREE.MeshStandardMaterial({ color: 0xe9e6ee, roughness: 0.5 });
+  const navy = new THREE.MeshStandardMaterial({ color: 0x1e2846, roughness: 0.45 });
+  const silver = new THREE.MeshStandardMaterial({ color: 0xcfd4de, metalness: 1, roughness: 0.25 });
+  const sole = new THREE.MeshStandardMaterial({ color: 0x0e0d12, roughness: 0.6 });
+  const hair = new THREE.MeshPhysicalMaterial({ color: 0x1c1826, roughness: 0.5, sheen: 1, sheenColor: new THREE.Color(0x6a5a9a), sheenRoughness: 0.4 });
+  const eye = new THREE.MeshBasicMaterial({ color: new THREE.Color(0.32, 0.18, 0.5) });
+  const bone = new THREE.MeshStandardMaterial({ color: 0xd8d0bc, roughness: 0.7 });
+  const shaft = new THREE.MeshStandardMaterial({ color: 0x7a2420, roughness: 0.5 });
+  const hum = new THREE.MeshStandardMaterial({ color: 0x100818, emissive: new THREE.Color(0.9, 0.4, 1.6), emissiveIntensity: 0.6, roughness: 0.3 });
+
+  // ---- hips and trunk: the cassock, buttoned to the throat ----
+  P.add(j.hips, lathe([[0, -0.17], [0.16, -0.15], [0.232, -0.08], [0.25, 0.02], [0.242, 0.15], [0, 0.17]]), black, [0, 0, 0], [0, 0, 0], [1, 1, 0.7]);
+  const abProf = [[0, -0.06], [0.232, -0.05], [0.236, 0.06], [0.243, 0.16], [0.256, 0.26], [0.264, 0.31], [0, 0.32]];
+  P.add(j.spine, lathe(abProf), black, [0, 0, 0], [0, 0, 0], [1, 1, 0.68]);
+  const chProf = [[0, -0.07], [0.258, -0.06], [0.286, 0.04], [0.306, 0.15], [0.3, 0.23], [0.258, 0.3], [0.15, 0.335], [0, 0.345]];
+  P.add(j.chest, sculptLathe(chProf, MUSCLE.chest(0.45)), black, [0, 0, 0], [0, 0, 0], [1, 1, 0.64]);
+  // the stole: two purple bands down the front, over the cassock
+  const band = (x) => Math.min(Math.abs(x) - 0.04, 0.125 - Math.abs(x));
+  P.add(j.chest, maskedLathe(chProf.map(([r, y], i) => [i === 0 || i === chProf.length - 1 ? 0 : r + 0.007, y]), MUSCLE.chest(0.45), 0.66, (x, y, z) => (z > 0 ? band(x) : -1)), purple);
+  P.add(j.spine, maskedLathe(abProf.map(([r, y], i) => [i === 0 || i === abProf.length - 1 ? 0 : r + 0.007, y]), [], 0.7, (x, y, z) => (z > 0 ? band(x) : -1), 30, 80), purple);
+  for (const s of [-1, 1]) for (const y of [0.16, 0.19, 0.22]) P.add(j.chest, new THREE.BoxGeometry(0.088, 0.008, 0.006), black, [s * 0.083, y, 0.2 - (y - 0.16) * 0.12], [-0.12, s * 0.38, 0]);
+  // the short cape over the shoulders, and the tall collar with its white band
+  P.add(j.chest, lathe([[0.118, 0.37], [0.2, 0.345], [0.3, 0.3], [0.36, 0.22], [0.385, 0.12], [0.39, 0.06]], 48), black, [0, 0, -0.01], [0, 0, 0], [1, 1, 0.74]);
+  P.add(j.chest, new THREE.CylinderGeometry(0.094, 0.116, 0.1, 28, 1, true), black, [0, 0.395, -0.012]);
+  P.add(j.chest, new THREE.CylinderGeometry(0.096, 0.099, 0.034, 28, 1, true), white, [0, 0.425, -0.012]);
+  // ---- neck and head: pale, heavy-lidded, the black hair falling into his eyes ----
+  P.add(j.neck, lathe([[0, -0.04], [0.078, -0.03], [0.072, 0.07], [0.068, 0.14], [0, 0.16]]), skin);
+  const H = j.head;
+  animeHead(P, H, { lashes: 2, lowerLash: 2, shadowCol: '70,50,110', shadowA: 0.3, lipFull: 0.35, contour: 0.12, blush: 0.0,
+    skin, hair, iris: eye, lip: 0xa8808a, lash: 0x1a1620, browW: 0.0028, browTilt: -0.06, lashW: 1.1,
+    face: { jaw: 0.9, chin: 0.94, len: 1.04, hollow: 0.012, nose: 0.98, noseLen: 1.02, eyeW: 1.02, eyeH: 0.66, eyeTilt: -0.05, lid: 0.62, browY: -0.002, mouthW: 0.74, smile: -0.08, ear: 0 },
+    style: { bangs: 9, bangLen: 0.115, bangSweep: 0.22, side: 0.15, back: 14, backLen: 0.2, backLift: 0.2, spikes: 0 } });
+  // ---- arms and legs: wide sleeves turned back at the cuff; trousers into laced navy boots ----
+  for (const [s, sg] of [['l', 1], ['r', -1]]) {
+    const sh = j[s + 'Sh'], el = j[s + 'El'], wr = j[s + 'Wr'];
+    P.add(sh, lathe([[0, 0.05], [0.088, 0.03], [0.09, -0.1], [0.086, -0.25], [0.084, -0.33], [0, -0.34]], 32), black);
+    P.ell(sh, black, [sg * 0.008, -0.03, 0], [0.088, 0.092, 0.086]);
+    P.add(el, lathe([[0, 0.04], [0.08, 0.02], [0.082, -0.12], [0.088, -0.2], [0, -0.2]], 32), black, [0, 0, 0], [0, 0, 0], [1, 1, 0.94]);
+    P.add(el, lathe([[0.086, -0.17], [0.098, -0.18], [0.1, -0.26], [0.094, -0.27], [0.07, -0.27]], 32), black, [0, 0, 0], [0, 0, 0], [1, 1, 0.94]);
+    P.add(el, lathe([[0.03, -0.24], [0.04, -0.27], [0.043, -0.3]], 16), skin);
+    P.ell(wr, skin, [0, -0.05, 0.008], [0.043, 0.055, 0.02]);
+    const hp = j[s + 'Hip'], kn = j[s + 'Kn'], an = j[s + 'An'];
+    P.add(hp, lathe([[0, 0.05], [0.11, 0.03], [0.114, -0.12], [0.108, -0.3], [0.09, -0.49], [0, -0.5]], 32), black);
+    P.add(kn, lathe([[0, 0.02], [0.084, 0.0], [0.082, -0.2], [0.074, -0.4], [0.07, -0.45], [0, -0.46]], 32), navy);
+    for (let k = 0; k < 5; k++) P.add(kn, new THREE.BoxGeometry(0.05, 0.007, 0.006), silver, [0, -0.1 - k * 0.07, 0.082 - k * 0.002]);
+    P.ell(an, navy, [0, -0.03, 0.04], [0.055, 0.048, 0.118]);
+    P.ell(an, navy, [0, -0.012, -0.025], [0.052, 0.052, 0.052]);
+    P.ell(an, sole, [0, -0.074, 0.06], [0.056, 0.009, 0.122]);
+  }
+  addDetail(P, j, { skin, hair, sole, strap: black, metal: silver }, { anime: true, k: 0.86, eye: [0.04, 0.108, 0.106], lip: 0xa8808a, curls: false, armored: true, open: true, boots: true });
+  P.build();
+
+  // ---- the staff: a red shaft headed with a skull (it lies along the hand's +Z) ----
+  const staff = new THREE.Group();
+  const SP = new PartSet();
+  SP.add(staff, new THREE.CylinderGeometry(0.016, 0.019, 1.36, 10), shaft, [0, 0, 0.08], [Math.PI / 2, 0, 0]);
+  for (const z of [-0.58, 0.7]) SP.add(staff, new THREE.TorusGeometry(0.022, 0.007, 6, 14), silver, [0, 0, z]);
+  SP.ell(staff, bone, [0, 0.008, 0.8], [0.046, 0.05, 0.054]);
+  SP.ell(staff, bone, [0, -0.028, 0.762], [0.031, 0.027, 0.027]);
+  for (const sx of [-1, 1]) SP.ell(staff, hum, [sx * 0.018, -0.038, 0.808], [0.011, 0.008, 0.012]);
+  SP.ell(staff, sole, [0, -0.047, 0.78], [0.005, 0.004, 0.008]);
+  SP.build();
+  staff.position.set(0, -SKEL.beelzebub.hand * 0.6, 0);
+  j.rWr.add(staff);
+  const skullGlow = glowSprite(T.glow, 0xa878ff, 0.42);
+  skullGlow.position.set(0, -0.03, 0.81);
+  staff.add(skullGlow);
+
+  // ---- the cassock's skirts, open down the front between the stole's two bands ----
+  makeCloth(M, { joint: j.hips, rows: 12, cols: 19, pin: 2, mats: [coat, lining],
+    rest: (v, u) => { const A = 0.16 + 0.1 * v, a = A + u * (Math.PI * 2 - 2 * A), L = 0.9, fl = Math.pow(v, 1.2); return [Math.sin(a) * (0.262 + 0.15 * fl), 0.14 - L * v, Math.cos(a) * (0.2 + 0.13 * fl)]; },
+    hold: (v) => 0.12 * (1 - v) * (1 - v) + 0.014 });
+  M.clothR = { pelvis: 0.17, pelvisX: 0.1, torso: 0.2, thigh: 0.125, shin: 0.095, foot: 0.07 };
+
+  M.staff = staff; M.triGlow = skullGlow;
+  M.trails = [
+    { obj: staff, a: new V3(0, 0, 0.3), b: new V3(0, 0, 0.86), color: [1.0, 0.5, 1.8], core: [2.0, 1.4, 2.8], spark: 'vibe' },
+    { obj: j.lWr, a: new V3(0, -0.06, 0.04), b: new V3(0, -0.16, 0.08), color: [1.0, 0.5, 1.8], core: [2.0, 1.4, 2.8], spark: 'vibe' },
+  ];
+  M.mats = { skin, gold: silver, gem: hum, eye };
+  M.color = new THREE.Color(1.1, 0.6, 2.0);
+  enhanceModel(M.root, 0xc8b8ff, 0.45);
+  settleCloth(M, 30);
+  return M;
+}
+
+return { canvasTex, enhanceModel, buildZeus, buildPoseidon, updateCape, updateCloth, settleCloth, buildAnubis, buildThor, buildSusanoo, buildHeracles, buildHades, buildOdin, buildShiva, buildAphrodite, buildShaka, buildApollo, buildBeelzebub, SPH };
 })();
 
 // ======== fx.js ========
@@ -9676,9 +9992,9 @@ return { makeFxTextures, Particles, Bolts, waterMaterial, Timed };
 
 // ======== game.js ========
 const __game = (() => {
-const { Sim, DT, STAGE, CHARS, HUMAN, AUTO, SUPER_K, INTRO_EACH, SUPER2 } = __sim;
+const { Sim, DT, STAGE, CHARS, HUMAN, AUTO, SUPER_K, INTRO_EACH, SUPER1, SUPER2 } = __sim;
 const { SKEL, POSES, JOINTS, sampleAnim, blend, copyPose, cyclePose } = __poses;
-const { canvasTex, buildZeus, buildPoseidon, buildAnubis, buildThor, buildSusanoo, buildHeracles, buildHades, buildOdin, buildShiva, buildAphrodite, buildShaka, buildApollo, updateCape, updateCloth, settleCloth } = __models;
+const { canvasTex, buildZeus, buildPoseidon, buildAnubis, buildThor, buildSusanoo, buildHeracles, buildHades, buildOdin, buildShiva, buildAphrodite, buildShaka, buildApollo, buildBeelzebub, updateCape, updateCloth, settleCloth } = __models;
 const { makeFxTextures, Particles, Bolts, waterMaterial, Timed } = __fx;
 // ============================================================
 //  GAME : renderer, stage, fighters' visuals, camera, HUD, audio
@@ -10226,6 +10542,7 @@ const COL = {
   dharma: [2.2, 1.6, 0.6],
   lotus: [2.2, 1.2, 1.4],
   sun: [2.6, 1.7, 0.45],
+  vibe: [1.3, 0.8, 2.4],
 };
 const VIOLET = new THREE.Color(1.0, 0.5, 1.9);
 const violetBolt = (a, b, o = {}) => bolts.spawn(a, b, Object.assign({ color: VIOLET }, o));
@@ -10265,7 +10582,7 @@ function glowPuff(x, y, z, color, size, life) {
   timed.add(s, life, (o, k) => { const sc = size * (0.6 + k * 0.8); o.scale.set(sc, sc, sc); o.material.opacity = (1 - k) * (1 - k); });
 }
 // jump heavy / jump special: each god's own flash in the air (and the impact where a dive lands)
-const AIRCOL = { zeus: COL.zeus, poseidon: COL.water, anubis: COL.gold, thor: COL.thor, susanoo: COL.storm, heracles: COL.might, hades: COL.hell, odin: COL.odin, shiva: COL.cosmic, aphrodite: COL.love, shaka: COL.dharma, apollo: COL.sun };
+const AIRCOL = { zeus: COL.zeus, poseidon: COL.water, anubis: COL.gold, thor: COL.thor, susanoo: COL.storm, heracles: COL.might, hades: COL.hell, odin: COL.odin, shiva: COL.cosmic, aphrodite: COL.love, shaka: COL.dharma, apollo: COL.sun, beelzebub: COL.vibe };
 function airMoveFx(e) {
   const v = views[e.side]; if (!v) return;
   const f = v.f, d = f.facing, h = handOf(v, 'r'), c = chestOf(v), x = f.x, y = f.y;
@@ -10345,6 +10662,10 @@ function airMoveFx(e) {
       runeRing(x, c.y, 0.25, 2.6, 0.6, true, [2.2, 1.6, 0.6]); glowPuff(x, c.y, 0.1, 0xffd890, 3, 0.5); sfx.ring([262, 392, 523], 0.8, 0.05); break;
     case 'apolloH':
       arc(COL.sun, 0xffe080, 14, 1.4, 1.2, -1.1); for (let i = 0; i < 10; i++) laurelLeaf(x + d * rand(0.3, 1.5), c.y + rand(-0.8, 0.6), rand(-0.3, 0.3), 0.8, d * rand(0.5, 2), rand(-0.5, 1), rand(-0.5, 0.5)); sfx.whoosh(1.3); break;
+    case 'bzH':
+      arc(COL.vibe, 0xd0b8ff, 12, 1.3, 1.1, -1.0); vibeRipple(x + d * 0.9, c.y - 0.3, 0.1, 1.3, true, 2); sfx.whoosh(1.2); sfx.vibe(0.5); break;
+    case 'bzS':
+      glowPuff(h.x, h.y, h.z, 0xb48cf0, 2, 0.35); vibeRipple(h.x, h.y, h.z, 1.4, true, 3); sfx.vibe(0.8); break;
     case 'apolloS':
       glowPuff(h.x, h.y, h.z, 0xffd060, 2.2, 0.4); ring(x, c.y, 0.2, 0xfff0b0, 2.6, 0.35, true); lightFlash(x, c.y, 0xffd070, 50); sfx.ring([784, 1175, 1568], 0.4, 0.04); break;
   }
@@ -10374,6 +10695,7 @@ function backstepFx(f) {
     case 'shaka': glowPuff(x, 1.0, 0.1, 0xffd890, 1.6, 0.4); addP.burst(10, x, 0.3, 0.1, 1.5, { life: [0.4, 0.8], size: [0.04, 0.08], color: COL.dharma, drag: 2, up: 1.2 }); break;
     case 'apollo': addP.burst(10, x, 1.1, 0.1, 3, { life: [0.2, 0.45], size: [0.04, 0.09], color: COL.sun, drag: 3 }); break;
     case 'odin': addP.burst(10, x, 0.6, 0.1, 2.5, { life: [0.3, 0.6], size: [0.04, 0.08], color: COL.odin, drag: 3, up: 1 }); break;
+    case 'beelzebub': ring(x, 0.06, 0, 0xb48cf0, 1.8, 0.3); addP.burst(8, x, 0.8, 0.1, 2, { life: [0.2, 0.5], size: [0.04, 0.08], color: COL.vibe, drag: 3 }); break;
   }
 }
 function dust(x, n = 14, power = 1) {
@@ -10421,6 +10743,12 @@ function hitFx(e) {
     ring(x, y, z, 0xfff0c0, (big ? 2.6 : 2.1) * p, 0.26, true);
     if (p > 0.55 || big) runeRing(x, y, z, 1.5 * p, 0.32, true, [2.4, 1.8, 0.7], dharmaTex());
     lightFlash(x, y, 0xffc870, (big ? 80 : 55) * p);
+  } else if (e.fx === 'vibe') {
+    addP.burst(18, x, y, z, 6, { life: [0.12, 0.36], size: [0.04, 0.11], color: COL.vibe, drag: 4 });
+    vibeRipple(x, y, z, 1.9 * p, true, p > 0.6 ? 4 : 3);
+    glowPuff(x, y, z, 0xb890ff, 1.7 * p, 0.2);
+    lightFlash(x, y, 0x9a70ff, 45 * p);
+    shake = Math.max(shake, 0.05 + 0.08 * p);
   } else if (e.fx === 'sun' || e.fx === 'solar') {
     const big = e.fx === 'solar';
     addP.burst(big ? 44 : 26, x, y, z, big ? 10 : 7, { life: [0.12, 0.4], size: [0.05, 0.13], color: COL.sun, drag: 4 });
@@ -10594,6 +10922,22 @@ function projSpawn(p) {
     const s2 = new THREE.Sprite(new THREE.SpriteMaterial({ map: FT.glow, color: 0xffe080, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false })); s2.scale.setScalar(0.7); s2.position.x = 0.5;
     const ag = new THREE.Group(); ag.add(arrow, streak, s2); ag.rotation.z = Math.atan2(p.vy || 0, p.vx);
     g.add(ag); g.userData.arrow = ag; g.userData.mats = [];
+  } else if (p.kind === 'vibeWave') {
+    // a wave of vibration: three thin rings facing the way it flies, breathing in and out of step
+    const rg = new THREE.Group(), rings = [];
+    for (let k = 0; k < 3; k++) {
+      const m = new THREE.Mesh(new THREE.TorusGeometry(0.42, 0.022, 6, 28), new THREE.MeshBasicMaterial({ color: new THREE.Color(k === 1 ? 2.2 : 1.3, k === 1 ? 1.8 : 0.8, 2.6), transparent: true, opacity: 0.85, blending: THREE.AdditiveBlending, depthWrite: false }));
+      m.rotation.y = Math.PI / 2; m.position.x = (k - 1) * 0.2; rg.add(m); rings.push(m);
+    }
+    const s2 = new THREE.Sprite(new THREE.SpriteMaterial({ map: FT.glow, color: 0xa070ff, transparent: true, opacity: 0.55, blending: THREE.AdditiveBlending, depthWrite: false })); s2.scale.setScalar(1.3);
+    rg.rotation.z = Math.atan2(p.vy || 0, Math.abs(p.vx));
+    g.add(rg, s2); g.userData.rings = rings; g.userData.mats = [];
+  } else if (p.kind === 'tremor') {
+    // the ground under the foe starts to hum, then throws its vibration up
+    const mark = new THREE.Mesh(new THREE.RingGeometry(0.55, 0.9, 32), new THREE.MeshBasicMaterial({ color: new THREE.Color(1.4, 0.8, 2.6), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide }));
+    mark.rotation.x = -Math.PI / 2; mark.position.y = 0.03;
+    g.add(mark); g.userData.mark = mark; g.userData.mats = [];
+    g.position.y = 0;
   } else if (p.kind === 'arrowRain') {
     // a ring of light marks the spot, then the sky lets fall its arrows
     const mark = new THREE.Mesh(new THREE.CircleGeometry(1.0, 32), new THREE.MeshBasicMaterial({ map: sunTex(), color: new THREE.Color(2.6, 1.8, 0.6), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }));
@@ -10694,6 +11038,8 @@ function projEnd(p, hit) {
   else if (p.kind === 'dharmaWheel') { addP.burst(30, p.x, p.y, 0.1, 5, { life: [0.2, 0.5], size: [0.05, 0.12], color: COL.dharma, drag: 3, up: 1 }); for (let i = 0; i < 6; i++) lotusPetal(p.x, p.y, 0.1, 0.8, rand(-2, 2), rand(0.5, 3), rand(-1, 1)); glowPuff(p.x, p.y, 0.1, 0xffd070, 1.8, 0.25); }
   else if (p.kind === 'buddhaPalm') { addP.burst(40, p.x, 1.0, 0.1, 6, { life: [0.3, 0.7], size: [0.06, 0.14], color: COL.dharma, up: 3, drag: 2 }); }
   else if (p.kind === 'sunArrow') { addP.burst(26, p.x, p.y, 0.1, 6, { life: [0.12, 0.35], size: [0.05, 0.12], color: COL.sun, drag: 4 }); glowPuff(p.x, p.y, 0.1, 0xffd060, 1.6, 0.2); if (!hit) { ring(p.x, Math.max(0.06, p.y), 0, 0xffd060, 1.6, 0.25, p.y > 0.4); } }
+  else if (p.kind === 'vibeWave') { addP.burst(20, p.x, p.y, 0.1, 5, { life: [0.12, 0.35], size: [0.05, 0.12], color: COL.vibe, drag: 4 }); vibeRipple(p.x, Math.max(0.1, p.y), 0.1, 1.6, true, 3); }
+  else if (p.kind === 'tremor') { }
   else if (p.kind === 'arrowRain') { addP.burst(20, p.x, 0.3, 0.1, 4, { life: [0.3, 0.6], size: [0.05, 0.11], color: COL.sun, up: 2, drag: 2 }); }
   else if (p.kind === 'heart' || p.kind === 'bubble') { for (let i = 0; i < 7; i++) loveHeart(p.x, p.y, 0.1, rand(0.14, 0.26), 0.6, rand(-2.5, 2.5), rand(0.5, 3)); if (p.kind === 'bubble') { normP.burst(26, p.x, p.y, 0.1, 3.5, { life: [0.3, 0.7], size: [0.03, 0.08], color: [1, 0.95, 1], alpha: 0.85, drag: 2 }); ring(p.x, p.y, 0.1, 0xffe0f0, 1.6, 0.25, true); } glowPuff(p.x, p.y, 0.1, 0xff9ac8, 1.6, 0.25); }
   else if (p.kind === 'gungnir' || p.kind === 'raven' || p.kind === 'runeTrap') { addP.burst(24, p.x, p.kind === 'runeTrap' ? 1 : p.y, 0.1, 5, { life: [0.15, 0.4], size: [0.05, 0.13], color: COL.odin, drag: 4 }); glowPuff(p.x, p.kind === 'runeTrap' ? 1 : p.y, 0.1, 0x9fd4ff, 1.8, 0.25); if (p.kind === 'raven') normP.burst(20, p.x, p.y, 0.1, 3, { life: [0.5, 1.0], size: [0.05, 0.1], color: [0.05, 0.05, 0.08], alpha: 0.9, grav: 3, drag: 1.5 }); }
@@ -10766,6 +11112,14 @@ function updateProjViews(dt) {
       v.g.position.y = p.y;
       v.g.userData.arrow.rotation.z = Math.atan2(p.vy || 0, p.vx);
       addP.burst(3, p.x - Math.sign(p.vx) * 0.4, p.y, 0.1, 0.6, { life: [0.12, 0.28], size: [0.05, 0.11], color: COL.sun, drag: 2 });
+    } else if (p.kind === 'vibeWave') {
+      v.g.position.y = p.y;
+      v.g.userData.rings.forEach((m, k) => { const q = (v.t * 5 + k / 3) % 1; m.scale.setScalar(0.55 + 0.6 * q); m.material.opacity = 0.9 * (1 - q * 0.7); });
+    } else if (p.kind === 'tremor') {
+      const show = clamp(v.t / 0.15, 0, 1), fade = clamp((v.t - p.cd0 - 0.3) / 0.15, 0, 1), mk = v.g.userData.mark;
+      mk.material.opacity = show * (1 - fade) * (0.55 + 0.35 * Math.sin(v.t * 60)); mk.scale.setScalar(1 + 0.06 * Math.sin(v.t * 75));
+      if (v.t < p.cd0 && Math.random() < 0.25) dust(p.x + rand(-0.6, 0.6), 1, 0.3);
+      if (v.t >= p.cd0 && !v.landed) { v.landed = true; for (let k = 0; k < 4; k++) ring(p.x, 0.3 + k * 0.55, 0, k % 2 ? 0xe8dcff : 0xb48cf0, 2.4 - k * 0.3, 0.3 + k * 0.05); addP.burst(26, p.x, 0.4, 0.1, 5, { life: [0.25, 0.6], size: [0.05, 0.12], color: COL.vibe, up: 6, drag: 2 }); dust(p.x, 14, 1.2); shake = Math.max(shake, 0.18); sfx.vibe(0.9); sfx.boom(0.35); }
     } else if (p.kind === 'arrowRain') {
       const show = clamp(v.t / 0.15, 0, 1), fade = clamp((v.t - p.cd0 - 0.4) / 0.15, 0, 1);
       v.g.userData.mark.material.opacity = show * (1 - fade) * 0.85; v.g.userData.mark.rotation.z -= dt * 1.5;
@@ -12424,6 +12778,29 @@ function odinValkyrie(e, n) {
 function super2Fx(e) {
   const v = views[e.side], k = e.k, ev = e.ev, c = () => foeChest(e);
   switch (k + ':' + ev) {
+    // Beelzebub - 虚神
+    case 'beelzebub:hum': { const h = handOf(v, 'l'); vibeRipple(h.x, h.y, h.z, 1.3, true, 3); glowPuff(h.x, h.y, h.z, 0xb48cf0, 1.8, 0.4); sfx.vibe(0.7); break; }
+    case 'beelzebub:grip': { const p = c(); vibeRipple(p.x, p.y, 0.2, 2.4, true, 4); glowPuff(p.x, p.y, 0.2, 0xb890ff, 2.4, 0.3); shake = Math.max(shake, 0.2); sfx.vibe(1); break; }
+    case 'beelzebub:pulse': { const p = c(); vibeRipple(p.x, p.y, 0.2, 1.2 + 0.3 * (e.i % 4), true, 2); addP.burst(10, p.x, p.y, 0.2, 5, { life: [0.12, 0.35], size: [0.04, 0.1], color: COL.vibe, drag: 4 }); shake = Math.max(shake, 0.1 + 0.02 * e.i); sfx.vibe(0.45); break; }
+    case 'beelzebub:gather': { const p = c(); glowPuff(p.x, p.y, 0.2, 0xd0b8ff, 3.2, 0.35); ring(p.x, p.y, 0.2, 0xffffff, 1.0, 0.3, true); sfx.tone(180, 720, 0.3, 'sine', 0.1); break; }
+    case 'beelzebub:chaos': {
+      const p = c();
+      vibeRipple(p.x, p.y, 0.2, 6, true, 5); vibeRipple(p.x, 0.06, 0, 7, false, 4);
+      lightPillar(p.x, 1.0, 14, [1.2, 0.7, 2.6], 0.7);
+      addP.burst(60, p.x, p.y, 0.2, 11, { life: [0.2, 0.7], size: [0.05, 0.15], color: COL.vibe, drag: 3 });
+      lightFlash(p.x, p.y, 0x9a70ff, 140); screenFlash(0.45, '#e0d0ff'); shake = Math.max(shake, 0.5); sfx.boom(1); sfx.vibe(1.4); break;
+    }
+    // Beelzebub - 原罪・終震
+    case 'beelzebub:toll': { const f = sim.fighters[e.side]; vibeRipple(f.x + f.facing * 0.6, 0.06, 0, 5.5, false, 4); dust(f.x + f.facing * 0.6, 12, 1); shake = Math.max(shake, 0.2); sfx.boom(0.5); sfx.vibe(1); break; }
+    case 'beelzebub:wave': { const p = c(); vibeRipple(e.x, 0.06, 0, 3.6, false, 3); vibeRipple(p.x, p.y, 0.2, 1.8, true, 2); dust(e.x + rand(-1, 1), 5, 0.6); addP.burst(8, p.x, p.y, 0.2, 4, { life: [0.15, 0.4], size: [0.04, 0.1], color: COL.vibe, drag: 3, up: 2 }); shake = Math.max(shake, 0.14); sfx.vibe(0.55); break; }
+    case 'beelzebub:still': { const p = c(); glowPuff(p.x, p.y, 0.2, 0xd0b8ff, 3, 0.3); sfx.tone(200, 800, 0.26, 'sine', 0.1); break; }
+    case 'beelzebub:shatter': {
+      const p = c();
+      for (let i = 0; i < 6; i++) ring(p.x, 0.3 + i * 0.75, 0, i % 2 ? 0xe8dcff : 0xb48cf0, 4.2 - i * 0.4, 0.4 + i * 0.05);
+      vibeRipple(p.x, p.y, 0.2, 5, true, 4); lightPillar(p.x, 1.3, 16, [1.2, 0.7, 2.6], 0.8);
+      addP.burst(60, p.x, p.y, 0.2, 10, { life: [0.2, 0.7], size: [0.05, 0.15], color: COL.vibe, drag: 3, up: 3 }); dust(p.x, 20, 1.6);
+      lightFlash(p.x, p.y, 0x9a70ff, 140); screenFlash(0.45, '#e0d0ff'); shake = Math.max(shake, 0.5); sfx.boom(1); sfx.vibe(1.4); break;
+    }
     // Zeus
     case 'zeus:jolt': zeusFist(e, true); break;
     case 'zeus:fist': zeusFist(e, false); break;
@@ -12533,6 +12910,7 @@ function super2Fx(e) {
 // running effects while a second super plays (cineUpdate calls this each frame; t is authored time)
 function super2Amb(f, o, t) {
   switch (f.key) {
+    case 'beelzebub': if (t > 0.4 && t < 1.6 && Math.random() < 0.2) ring(o.x + rand(-0.4, 0.4), o.y + rand(0.6, 1.8), 0.2, 0xb48cf0, rand(0.5, 1.1), 0.2, true, 0.6); break;
     case 'zeus':
       if (t > 0.3 && t < 1.15) for (const s of ['l', 'r']) { const h = handOf(views[f.side], s); if (Math.random() < 0.5) bolts.spawn(h.clone(), h.clone().add(new V3(rand(-0.5, 0.5), rand(-0.5, 0.5), rand(-0.3, 0.3))), { r: 0.015, life: 0.08, segs: 5, branches: 0 }); }
       if (t > 1.45 && t < 1.62 && Math.random() < 0.3) skyBolt(o.x + rand(-5, 5), false);
@@ -12551,7 +12929,7 @@ function super2Amb(f, o, t) {
 // the camera for a second super: open on the god, follow the hold around the foe, a low look at the finish,
 // then pull back wide (gods whose finish comes from the sky are framed looking up)
 function cineShot2(f, o, t, portrait) {
-  const D = SUPER2[f.key], s = f.facing, fx = f.x, ox = o.x, fw = portrait ? 1.35 : 1;
+  const D = f.move.sd, s = f.facing, fx = f.x, ox = o.x, fw = portrait ? 1.35 : 1;
   const sky = ['zeus', 'thor', 'shaka', 'odin', 'shiva', 'poseidon'].includes(f.key);
   const top = Math.max(o.y, f.y) + 2.6 + (sky ? 0.8 : 0);
   const lookY = Math.max(1.15, top * 0.42);
@@ -12765,6 +13143,34 @@ function trailSpark(kind, p, speed) {
 // ---------------- per-god entrances ----------------
 const chestOf = (v) => { const p = new V3(); v.m.j.chest.getWorldPosition(p); return p; };
 const handOf = (v, s) => { const p = new V3(0, -0.06, 0.02); v.m.j[s + 'Wr'].localToWorld(p); return p; };
+// ---- Beelzebub: vibration shows as ripples - a few rings at once, each a little wider and slower than the last
+function vibeRipple(x, y, z, size, vertical = true, n = 3) {
+  for (let i = 0; i < n; i++) ring(x, y, z, i % 2 ? 0xe8dcff : 0xb48cf0, size * (0.5 + 0.38 * i), 0.15 + 0.08 * i, vertical, 0.9 - 0.18 * i);
+}
+function bzFx(e) {
+  const v = views[e.side], f = sim.fighters[e.side], d = f.facing, x = f.x;
+  if (!v) return;
+  const hl = handOf(v, 'l'), tip = new V3(0, 0, 0.8); if (v.m.staff) v.m.staff.localToWorld(tip);
+  switch (e.k) {
+    case 'touch': vibeRipple(hl.x + d * 0.15, hl.y, hl.z, 0.9, true, 2); sfx.vibe(0.35); break;
+    case 'sweep': vibeRipple(tip.x, tip.y, tip.z, 1.1, true, 2); sfx.whoosh(1.1); sfx.vibe(0.4); break;
+    case 'ground': vibeRipple(x + d * 1.1, 0.06, 0, 3.0, false, 3); dust(x + d * 1.1, 10, 0.8); shake = Math.max(shake, 0.12); sfx.vibe(0.7); sfx.land(true); break;
+    case 'rise': vibeRipple(hl.x, hl.y + 0.2, hl.z, 1.5, false, 3); addP.burst(10, hl.x, hl.y, hl.z, 3, { life: [0.2, 0.45], size: [0.04, 0.1], color: COL.vibe, up: 3, drag: 2 }); sfx.vibe(0.6); break;
+    case 'twin': vibeRipple(x + d * 1.0, hl.y, 0.1, 1.9, true, 4); glowPuff(x + d * 1.0, hl.y, 0.1, 0xb890ff, 1.6, 0.2); shake = Math.max(shake, 0.1); sfx.vibe(0.8); break;
+    case 'skull': vibeRipple(x + d * 1.5, 0.06, 0, 2.6, false, 3); vibeRipple(tip.x, tip.y, tip.z, 1.2, true, 2); dust(x + d * 1.5, 8, 0.7); sfx.whoosh(1.4); sfx.vibe(0.7); break;
+    case 'palmyra': {
+      // the shell: rings standing on the left palm for as long as it holds
+      for (let i = 0; i < 4; i++) setTimeout(() => { if (sim.fighters[e.side] !== f || f.moveId !== 'bz_palmyra') return; const h = handOf(v, 'l'); vibeRipple(h.x + d * 0.25, h.y, h.z, 1.5, true, 2); }, i * 90);
+      glowPuff(hl.x + d * 0.2, hl.y, hl.z, 0xb48cf0, 1.6, 0.4); sfx.vibe(0.6); break;
+    }
+    case 'samekh': {
+      const cy = f.y + 1.2;
+      vibeRipple(x, cy, 0.1, 3.6, true, 4); vibeRipple(x, 0.06, 0, 4.2, false, 3);
+      addP.burst(34, x, cy, 0.1, 7, { life: [0.2, 0.5], size: [0.05, 0.13], color: COL.vibe, drag: 3 });
+      lightFlash(x, cy, 0x9a70ff, 70); shake = Math.max(shake, 0.2); sfx.vibe(1.1); sfx.boom(0.4); break;
+    }
+  }
+}
 const INTRO = {
   zeus: {
     anim: [[0, 'superFinish'], [0.5, 'superFinish'], [0.95, 'superCharge'], [1.75, 'superCharge'], [2.15, 'intro'], [2.6, 'stance']],
@@ -12825,6 +13231,11 @@ INTRO.apollo = {
     [0.3, (f, v) => { const p = new V3(0, -0.1, 0.2); v.m.j.lWr.localToWorld(p); for (let i = 0; i < 3; i++) musicNote(p.x, p.y + 0.2, p.z, 1.0, rand(-0.5, 0.5), rand(0.8, 1.4)); sfx.ring([523, 659], 0.5, 0.05); }],
     [0.65, (f, v) => { const p = new V3(0, -0.1, 0.2); v.m.j.lWr.localToWorld(p); for (let i = 0; i < 3; i++) musicNote(p.x, p.y + 0.2, p.z, 1.0, rand(-0.5, 0.5), rand(0.8, 1.4)); sfx.ring([587, 784], 0.5, 0.05); }],
     [1.72, (f, v) => { const p = new V3(0, -0.1, 0.1); v.m.j.lWr.localToWorld(p); slashStreak(p.x + f.facing * 1.5, p.y + 3, 0.2, 7, 0.14, f.facing * -0.45, [2.8, 1.9, 0.6], 0.5); glowPuff(p.x, p.y, p.z, 0xffd060, 2, 0.3); setTimeout(() => { glowPuff(f.x + f.facing * 4, 9, -2, 0xffe080, 6, 0.6); }, 200); sfx.tone(1800, 600, 0.2, 'triangle', 0.1); sfx.sweep(0.4, 2500, 7000, 2, 0.14); }]],
+};
+INTRO.beelzebub = {
+  anim: [[0, 'intro'], [1.2, 'intro'], [1.45, 'palmyra'], [2.1, 'palmyra'], [2.6, 'stance']],
+  fx: [[0.3, (f) => { vibeRipple(f.x, 0.06, 0, 2.6, false, 3); sfx.vibe(0.5); }],
+    [1.45, (f, v) => { const h = handOf(v, 'l'); vibeRipple(h.x, h.y, h.z, 1.8, true, 4); glowPuff(h.x, h.y, h.z, 0xb48cf0, 2.2, 0.5); sfx.vibe(1); }]],
 };
 INTRO.odin = {
   anim: [[0, 'summon'], [0.9, 'summon'], [1.15, 'superCall'], [1.75, 'superCall'], [2.15, 'intro'], [2.6, 'stance']],
@@ -12901,6 +13312,8 @@ const GAIT = {
     fx: (o, P) => { o.head[0] -= 0.03 * Math.abs(P.rs) * P.w; } },
   // the all-father: stately, measured strides, the spear arm planting its rhythm like a staff, the cape arm swinging
   odin: { cyc: 1.35, cycB: 1.15, duty: 0.6, lift: 0.1, bob: 0.02, roll: 0.03, yaw: 0.06, lean: 0.02, gather: 0.2, toe: 0.2, sink: 0.08, armL: 0.2, armR: 0.06, runCyc: 2.7, runArm: 0.3,
+    fx: (o, P) => { o.rSh[0] -= 0.08 * Math.max(0, P.rs) * P.w; o.rEl[0] += 0.08 * Math.max(0, P.rs) * P.w; } },
+  beelzebub: { cyc: 1.35, cycB: 1.15, duty: 0.6, lift: 0.1, bob: 0.02, roll: 0.03, yaw: 0.06, lean: 0.02, gather: 0.2, toe: 0.2, sink: 0.08, armL: 0.2, armR: 0.06, runCyc: 2.7, runArm: 0.3,
     fx: (o, P) => { o.rSh[0] -= 0.08 * Math.max(0, P.rs) * P.w; o.rEl[0] += 0.08 * Math.max(0, P.rs) * P.w; } },
 };
 for (const k in GAIT) GAIT[k] = Object.assign({}, GAIT_BASE, GAIT[k]);
@@ -12984,6 +13397,7 @@ const BACKSTEP = {
   apollo: { A: { lSh: [-0.15, 0, 0] }, B: { y: 0.05, rx: -0.1, lHip: [-0.3, 0, 0], lKn: [0.35, 0, 0], rHip: [-0.15, 0, 0], rKn: [0.3, 0, 0], lSh: [-0.35, 0, 0], lEl: [0.45, 0, 0], rSh: [0.45, 0, 0.1], rEl: [-0.7, 0, 0], head: [0.05, 0, 0] }, C: { lSh: [-0.2, 0, 0], lEl: [0.2, 0, 0], rSh: [0.2, 0, 0], rEl: [-0.3, 0, 0] }, land: 0.6 },
   // a stately step back: the spear butt pushes off the ground, the legs scissor, the cape arm sweeps the cloak wide
   odin: { A: { rSh: [0.2, 0, 0], rEl: [-0.2, 0, 0] }, B: { lHip: [0.45, 0, 0], lKn: [-0.25, 0, 0], rHip: [0.4, 0, 0], rKn: [-0.45, 0, 0], rAn: [0.1, 0, 0], lSh: [0, 0, 0.5], lEl: [0.4, 0, 0], rSh: [0.1, 0, 0], spine: [-0.02, 0, 0] }, C: { lHip: [0.05, 0, 0], rHip: [0.35, 0, 0], rKn: [-0.15, 0, 0], lSh: [0, 0, 0.25] }, land: 0.7 },
+  beelzebub: { A: { rSh: [0.2, 0, 0], rEl: [-0.2, 0, 0] }, B: { lHip: [0.45, 0, 0], lKn: [-0.25, 0, 0], rHip: [0.4, 0, 0], rKn: [-0.45, 0, 0], rAn: [0.1, 0, 0], lSh: [0, 0, 0.5], lEl: [0.4, 0, 0], rSh: [0.1, 0, 0], spine: [-0.02, 0, 0] }, C: { lHip: [0.05, 0, 0], rHip: [0.35, 0, 0], rKn: [-0.15, 0, 0], lSh: [0, 0, 0.25] }, land: 0.7 },
 };
 const BS_ANIM = [[0, 'stance'], [0.16, 'bsA'], [0.5, 'bsB'], [0.84, 'bsC'], [1, 'stance']];
 // build each god's backstep keys once its pose library is ready: the stance plus the generic hop plus its own touch
@@ -13419,6 +13833,14 @@ class FighterView {
       if (Math.random() < 0.3) { const p = new V3(0, -0.13, 0.08); M.j.lWr.localToWorld(p); addP.burst(1, p.x, p.y, p.z, 0.4, { life: [0.3, 0.6], size: [0.04, 0.09], color: Math.random() < 0.6 ? COL.odin : COL.rune, up: 1, drag: 1 }); }
       if (M.raven) M.raven.rotation.y = 0.5 + Math.sin(t * 1.3) * 0.25;
       updateCape(M, t, f.vx * f.facing + (f.state === 'dash' ? 6 : 0), f.state === 'attack' ? 0.9 : 0.35);
+    } else if (f.key === 'beelzebub') {
+      const flick = 0.85 + Math.random() * 0.3;
+      M.triGlow.material.opacity = (0.06 + this.glow * 0.8) * flick;
+      M.mats.gem.emissiveIntensity = 0.4 + this.glow * 2.2 * flick;
+      // the hand that touches hums (a faint ripple now and then) and the staff shivers while he strikes
+      if (this.glow > 0.3 && Math.random() < 0.12) { const p = new V3(0, -0.1, 0.05); M.j.lWr.localToWorld(p); ring(p.x, p.y, p.z, 0xb48cf0, 0.5, 0.18, true, 0.6); }
+      M.staff.rotation.z = this.glow > 0.3 ? Math.sin(t * 90) * 0.025 * this.glow : 0;
+      updateCape(M, t, f.vx * f.facing + (f.state === 'dash' ? 6 : 0), f.state === 'attack' ? 0.9 : 0.35);
     } else if (f.key === 'hades') {
       const flick = 0.8 + Math.random() * 0.4;
       M.triGlow.material.opacity = (0.2 + this.glow * 0.9) * flick;
@@ -13562,7 +13984,7 @@ function shot(id, pos, look, fov, roll, rate) {
   return { pos, look, fov, roll, rate: cut ? 100 : rate };
 }
 function cineShot(f, o, t, portrait) {
-  if (f.move && f.move.super2) return cineShot2(f, o, t / SUPER_K, portrait);
+  if (f.move && f.move.sd) return cineShot2(f, o, t / SUPER_K, portrait);
   const s = f.facing, fx = f.x, ox = o.x, fw = portrait ? 1.35 : 1;
   if (f.key === 'anubis' || f.key === 'susanoo') {
     // frame by the highest fighter: the lock lifts the victim and the final launch can take them well above the stage
@@ -13661,7 +14083,7 @@ function cineUpdate(dt) {
   if (on !== cineFlag) { cineFlag = on; document.body.classList.toggle('cine', on); cineFin = false; if (!on) cineCut = ''; }
   if (!c) return;
   const { f, t } = c, o = sim.fighters[1 - f.side];
-  if (f.move && f.move.super2) { super2Amb(f, o, t); if (t >= SUPER2[f.key].fin.t && !cineFin) { cineFin = true; cineTitle(f); } return; }
+  if (f.move && f.move.sd) { super2Amb(f, o, t); if (t >= f.move.sd.fin.t && !cineFin) { cineFin = true; cineTitle(f); } return; }
   if (f.key === 'zeus') {
     if (t > 0.55 && t < 1.3) {
       if (Math.random() < 0.35) skyBolt(f.x + rand(-6, 6), false);
@@ -13762,7 +14184,7 @@ function cineUpdate(dt) {
 function M_club(f, p) { const v = views[f.side]; if (v && v.m.club) v.m.club.localToWorld(p); return p; }
 function cineSlow() {
   const c = cineState(); if (!c) return 1;
-  if (c.f.move && c.f.move.super2) { const ft = SUPER2[c.f.key].fin.t; return c.t > ft - 0.03 && c.t < ft + 0.22 ? 0.3 : 1; }
+  if (c.f.move && c.f.move.sd) { const ft = c.f.move.sd.fin.t; return c.t > ft - 0.03 && c.t < ft + 0.22 ? 0.3 : 1; }
   if (c.f.key === 'zeus') return c.t > 1.56 && c.t < 1.82 ? 0.3 : 1;
   if (c.f.key === 'anubis') return c.t > 1.74 && c.t < 1.95 ? 0.3 : 1;
   if (c.f.key === 'thor') return c.t > 1.72 && c.t < 1.96 ? 0.3 : 1;
@@ -14396,7 +14818,7 @@ const bgm = {
   },
 };
 
-const WEAPON = { zeus: 'fist', poseidon: 'pole', anubis: 'blade', thor: 'hammer', susanoo: 'blade', heracles: 'club', hades: 'pole', odin: 'pole', shiva: 'fist', aphrodite: 'whip', shaka: 'fist', apollo: 'pole' };
+const WEAPON = { zeus: 'fist', poseidon: 'pole', anubis: 'blade', thor: 'hammer', susanoo: 'blade', heracles: 'club', hades: 'pole', odin: 'pole', shiva: 'fist', aphrodite: 'whip', shaka: 'fist', apollo: 'pole', beelzebub: 'pole' };
 const weaponOf = (f) => (f && f.move && f.move.weap) || (f ? WEAPON[f.key] || 'fist' : 'fist');
 const WEIGHT = { light: 0.3, medium: 0.55, heavy: 0.85, special: 1 };
 // player volume settings (1 = the original mix); saved per viewer when storage is available
@@ -14563,6 +14985,7 @@ const sfx = {
     else if (fx === 'cosmic' || fx === 'pralaya') { this.tone(520, 260, 0.2, 'triangle', 0.05, 0.01); if (fx === 'pralaya') this.noise(0.3, 1400, 200, 'lowpass', 0.8, 0.2, 0.01, 0.01, true); }
     else if (fx === 'love') { this.tone(1046, 1568, 0.15, 'sine', 0.04, 0.01); this.tone(1318, 1975, 0.18, 'sine', 0.03, 0.05); }
     else if (fx === 'dharma' || fx === 'nirvana') { this.ring(fx === 'nirvana' ? [262, 392, 523] : [784, 1175], fx === 'nirvana' ? 0.6 : 0.3, 0.035, 0.01); if (fx === 'nirvana') this.tone(110, 70, 0.4, 'sine', 0.12, 0.01); }
+    else if (fx === 'vibe') { this.tone(104, 88, 0.2, 'sine', 0.14, 0.005); this.tone(118, 100, 0.2, 'sine', 0.1, 0.005); }
     else if (fx === 'sun' || fx === 'solar') { this.tone(2093, 3136, 0.12, 'sine', 0.03, 0.01); this.noise(0.12, 6000, 2500, 'bandpass', 1.2, 0.08, 0.01); if (fx === 'solar') this.noise(0.4, 1200, 150, 'lowpass', 0.7, 0.2, 0.02, 0.01, true); }
     this.at();
   },
@@ -14592,6 +15015,8 @@ const sfx = {
     else if (kind === 'dharmaWheel') { this.ring([523, 784, 1046], 0.5, 0.05); this.sweep(0.3, 400, 1600, 1.2, 0.12); }
     else if (kind === 'buddhaPalm') { this.ring([131, 196, 262, 392], 1.4, 0.06); this.tone(98, 65, 0.9, 'sine', 0.2); }
     else if (kind === 'sunArrow') { this.tone(1800, 600, 0.12, 'triangle', 0.08); this.click(0.25, 4200); this.sweep(0.22, 2500, 7000, 2, 0.14); }
+    else if (kind === 'vibeWave') { this.vibe(0.7); this.sweep(0.25, 600, 2400, 1.6, 0.12); }
+    else if (kind === 'tremor') { this.vibe(0.5); }
     else if (kind === 'arrowRain') { for (let i = 0; i < 3; i++) this.tone(1700 - i * 150, 700, 0.1, 'triangle', 0.05, i * 0.05); this.sweep(0.35, 3000, 900, 1.5, 0.12, 0.3); }
     else if (kind === 'heart') { this.tone(880, 1320, 0.18, 'sine', 0.08); this.tone(1320, 1760, 0.22, 'sine', 0.05, 0.06); this.sweep(0.25, 1500, 4000, 1.5, 0.08); }
     else if (kind === 'bubble') { for (let i = 0; i < 4; i++) this.tone(rand(500, 900), rand(1100, 1600), 0.08, 'sine', 0.05, i * 0.05); }
@@ -14611,6 +15036,8 @@ const sfx = {
     this.noise(big ? 1.4 : 0.7, 700, 60, 'lowpass', 0.6, big ? 0.35 : 0.2, 0.05, 0.05);   // rolling thunder
   },
   water(k = 1) { this.noise(0.5 * k, 1600, 260, 'bandpass', 1, 0.36, 0, 0.02); this.noise(0.4 * k, 700, 120, 'lowpass', 0.6, 0.22, 0.05, 0.02); for (let i = 0; i < 3; i++) this.tone(rand(500, 900), rand(1000, 1600), 0.06, 'sine', 0.03, 0.05 + i * 0.07); },
+  // vibration: two low tones a few Hz apart (they beat against each other) over a soft rumble
+  vibe(k = 1) { const d = 0.22 + 0.2 * k; this.tone(96, 84, d, 'sine', 0.2 * Math.min(1.2, k + 0.3)); this.tone(110, 97, d, 'sine', 0.16 * Math.min(1.2, k + 0.3)); this.tone(292, 250, d * 0.7, 'triangle', 0.04 * k, 0.01); this.noise(d, 500, 90, 'lowpass', 0.7, 0.12 * k, 0, 0.02); },
   boom(k = 1) { this.click(0.3, 2500); this.kick(120, 30, 1.0 * k, 0.85); this.noise(1.1 * k, 800, 50, 'lowpass', 0.5, 0.35, 0.01, 0.01, true); },
   // super flash: a rising choir-like chord with sparkle and a deep hit underneath
   superFlash(bright) {
@@ -14742,7 +15169,7 @@ function handleEvents() {
       case 'super':
         cutin(f, e.name);
         sfx.superFlash(f.key === 'zeus' || f.key === 'thor' || f.key === 'susanoo' || f.key === 'odin' || f.key === 'aphrodite' || f.key === 'apollo');
-        screenFlash(0.6, f.key === 'zeus' ? '#cfe4ff' : f.key === 'thor' ? '#e4d8ff' : f.key === 'anubis' ? '#fff0c8' : f.key === 'susanoo' ? '#dcfff0' : f.key === 'heracles' ? '#fff0d8' : f.key === 'hades' ? '#ffe0e8' : f.key === 'odin' ? '#e6f0ff' : f.key === 'shiva' ? '#ffe8d0' : f.key === 'aphrodite' ? '#fff0f6' : f.key === 'shaka' ? '#fff4d8' : f.key === 'apollo' ? '#fff8d0' : '#c8fff6');
+        screenFlash(0.6, f.key === 'zeus' ? '#cfe4ff' : f.key === 'thor' ? '#e4d8ff' : f.key === 'anubis' ? '#fff0c8' : f.key === 'susanoo' ? '#dcfff0' : f.key === 'heracles' ? '#fff0d8' : f.key === 'hades' ? '#ffe0e8' : f.key === 'odin' ? '#e6f0ff' : f.key === 'shiva' ? '#ffe8d0' : f.key === 'aphrodite' ? '#fff0f6' : f.key === 'shaka' ? '#fff4d8' : f.key === 'apollo' ? '#fff8d0' : f.key === 'beelzebub' ? '#e6dcff' : '#c8fff6');
         stage.dimT = 1;
         callout(e.side, '超必殺技!', true);
         break;
@@ -14792,6 +15219,7 @@ function handleEvents() {
       case 'lyreAppear': { const v = views[e.side]; const p = new V3(e.x, 1.2, 0); if (v) { p.set(0, -0.1, 0.2); v.m.j.lWr.localToWorld(p); } glowPuff(p.x, p.y, p.z, 0xffe080, 1.8, 0.4); addP.burst(24, p.x, p.y, p.z, 2, { life: [0.3, 0.6], size: [0.04, 0.09], color: COL.sun, drag: 2, up: 1 }); for (let i = 0; i < 4; i++) musicNote(p.x + rand(-0.3, 0.3), p.y + 0.2, p.z, 1.0, rand(-0.6, 0.6), rand(0.8, 1.5)); sfx.ring([392, 494, 587, 784], 0.9, 0.05); break; }
       case 'twang': case 'laurelArc': case 'pythonStrike': case 'dawn': case 'swanWings': apolloFx(e); break;
       case 'sunCall': apolloSunCall(e); break;
+      case 'vibe': bzFx(e); break;
       case 'laurelBind': apolloLaurelBind(e); break;
       case 'laurelTight': ring(e.x, e.y, 0.3, 0x9cc94a, 2.2, 0.25, true); for (let i = 0; i < 8; i++) laurelLeaf(e.x + rand(-0.6, 0.6), e.y + rand(-0.6, 0.6), rand(-0.4, 0.4), 0.7, rand(-2, 2), rand(0, 2), rand(-1, 1)); sfx.noise(0.15, 600, 2400, 'bandpass', 0.6, 0.08); sfx.kick(160, 70, 0.08, 0.25); break;
       case 'sunChariot': apolloSunChariot(e); break;
@@ -14965,7 +15393,7 @@ function frame(now) {
   clock += rdt;
   if (started && !paused) {
     runTime += rdt;
-    if (!fpsChecked && runTime > 2) { fpsAcc += rdt; fpsN++; if (fpsN > 150) { fpsChecked = true; const fps = fpsN / fpsAcc; if (fps < 32 && quality === 'high') { quality = 'low'; applyQuality(); } } }
+    // (no automatic drop to low quality: the player chooses it in the menu)
   }
   // a KO landed by a super already has its own finisher slow-motion: don't stack the KO slow-mo on top
   if (sim.phase === 'ko') { if (cineState()) koBySuper = true; } else koBySuper = false;
@@ -15078,7 +15506,7 @@ function modelFor(side, key) {
   }
   const u = modelUse.indexOf(id); if (u >= 0) modelUse.splice(u, 1); modelUse.push(id);
   while (modelUse.length > MODEL_KEEP) freeModel(modelUse.shift());
-  if (!modelCache[id]) modelCache[id] = key === 'zeus' ? buildZeus(FT) : key === 'anubis' ? buildAnubis(FT) : key === 'thor' ? buildThor(FT) : key === 'susanoo' ? buildSusanoo(FT) : key === 'heracles' ? buildHeracles(FT) : key === 'hades' ? buildHades(FT) : key === 'odin' ? buildOdin(FT) : key === 'shiva' ? buildShiva(FT) : key === 'aphrodite' ? buildAphrodite(FT) : key === 'shaka' ? buildShaka(FT) : key === 'apollo' ? buildApollo(FT) : buildPoseidon(FT);
+  if (!modelCache[id]) modelCache[id] = key === 'zeus' ? buildZeus(FT) : key === 'anubis' ? buildAnubis(FT) : key === 'thor' ? buildThor(FT) : key === 'susanoo' ? buildSusanoo(FT) : key === 'heracles' ? buildHeracles(FT) : key === 'hades' ? buildHades(FT) : key === 'odin' ? buildOdin(FT) : key === 'shiva' ? buildShiva(FT) : key === 'aphrodite' ? buildAphrodite(FT) : key === 'shaka' ? buildShaka(FT) : key === 'apollo' ? buildApollo(FT) : key === 'beelzebub' ? buildBeelzebub(FT) : buildPoseidon(FT);
   if (!modelCache[id].outlined) { modelCache[id].outlined = true; if (!isMobile) addOutline(modelCache[id].root); iblPolicy(modelCache[id].root, true); modelParts(modelCache[id], (x) => partUses.set(x, (partUses.get(x) || 0) + 1)); }
   return modelCache[id];
 }
@@ -15155,6 +15583,7 @@ const GOD = {
   aphrodite: { acc: '#ff9cc8', acc2: '#7a1a4a', emb: `<svg viewBox="0 0 64 64" class="emb"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/><path d="M32 47C19 37.500 15 30 19 23.500c3.500-5.500 10-4.500 13 1 3-5.500 9.500-6.500 13-1 4 6.500 0 14-13 23.500z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M20 54c4-3 8 3 12 0s8 3 12 0" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>`, tag: '愛と美の女神', desc: '海の泡から生まれた愛の女神。長いリボンで中間距離を舞い、魅了の口づけを受けた相手は無防備に歩み寄ってしまう。泡沫の舞でひらりと身をかわす。', stats: [['攻撃', 3], ['速度', 5], ['射程', 4], ['防御', 2]] },
   shaka: { acc: '#ff9e4a', acc2: '#6a2a0a', emb: `<svg viewBox="0 0 64 64" class="emb"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/><circle cx="32" cy="32" r="15" fill="none" stroke="currentColor" stroke-width="2.6"/><circle cx="32" cy="32" r="4" fill="currentColor"/><path d="M32 17v30M17 32h30M21.4 21.4l21.2 21.2M42.6 21.4 21.4 42.6" stroke="currentColor" stroke-width="2.2"/><g fill="currentColor"><circle cx="32" cy="13" r="2.4"/><circle cx="32" cy="51" r="2.4"/><circle cx="13" cy="32" r="2.4"/><circle cx="51" cy="32" r="2.4"/><circle cx="18.6" cy="18.6" r="2.2"/><circle cx="45.4" cy="45.4" r="2.2"/><circle cx="45.4" cy="18.6" r="2.2"/><circle cx="18.6" cy="45.4" r="2.2"/></g></svg>`, tag: '天上天下の覚者', desc: '悟りを開いた覚者。ほとんど動かず、印を結ぶだけで光が間合いの先を打つ。降魔印の地走り、蓮華化生の打ち上げ、獅子吼、寝釈迦のすべり込み。施無畏印で打撃を受け流し、坐禅で神威を溜める。ふわりと浮く跳躍、削りダメージ無効。', stats: [['攻撃', 3], ['速度', 2], ['射程', 3], ['防御', 5]] },
   apollo: { acc: '#ffe14d', acc2: '#8a5a00', emb: `<svg viewBox="0 0 64 64" class="emb"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/><circle cx="32" cy="32" r="9" fill="currentColor"/><g stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M32 13v6M32 45v6M13 32h6M45 32h6M18.6 18.6l4.2 4.2M41.2 41.2l4.2 4.2M45.4 18.6l-4.2 4.2M22.8 41.2l-4.2 4.2"/></g><path d="M14 50C24 40 40 24 50 14" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M46 12l5 1-1 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>`, tag: '太陽と弓矢の神', desc: '太陽と音楽と弓を司る美しき神。遠くから射るほど強くなる光の矢、空中からの斜め撃ち、立ちガード必須の矢の雨で距離を支配する。神託で次の一撃を予知してかわす。', stats: [['攻撃', 3], ['速度', 4], ['射程', 5], ['防御', 2]] },
+  beelzebub: { acc: '#b48cf0', acc2: '#2a1458', emb: `<svg viewBox="0 0 64 64" class="emb"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/><g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 32c3-7 5-7 8 0s5 7 8 0 5-7 8 0 5 7 8 0 5-7 8 0"/><path d="M18 21c3-4 5-4 7 0s4 4 7 0 5-4 7 0 4 4 7 0" opacity=".6"/><path d="M18 43c3-4 5-4 7 0s4 4 7 0 5-4 7 0 4 4 7 0" opacity=".6"/></g></svg>`, tag: '蠅の王', desc: '振動を操る蠅の王。触れるだけで相手を内側から揺さぶり、その震えはガードの上からでも体力を削る。左手の振動殻「パルミラ」で打撃を受け流して飛び道具を跳ね返し、足元から突き上げる共鳴震で守りを崩す。', stats: [['攻撃', 4], ['速度', 3], ['射程', 4], ['防御', 3]] },
   odin: { acc: '#b8d8ff', acc2: '#1a2a5a', emb: `<svg viewBox="0 0 64 64" class="emb"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/><path d="M32 13L44 34H20Z M24 22L36 43H12Z M40 22L52 43H28Z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><path d="M32 46v8" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>`, tag: '九界の主神', desc: '隻眼の全知神。決して外れぬ神槍グングニルを投げ、二羽の鴉とルーン魔術で間合いを支配する、神座の主にして最後の壁。', stats: [['攻撃', 4], ['速度', 3], ['射程', 5], ['防御', 4]] },
 };
 // the roster's face icons: 16x16 pixel art, drawn by hand. [palette as (letter + rrggbb)..., 256 cells row by row, '.' = clear]
@@ -15369,10 +15798,11 @@ function moveFacts(key, id) {
     if (m.ghost) tags.push('すり抜け');
     if (m.leap) tags.push('跳躍');
     if (m.reflect) tags.push('飛び道具反射');
+    if (m.hits.some((h) => h.chip)) tags.push('ガードの上から削る');
     if (m.low) tags.push('姿勢が低い（上段・飛び道具をくぐる）');
     if (m.hits[0].range[0] >= 0.5) tags.push('離れた位置を打つ');
   } else if (m.counter) { facts.push(['受付', Math.round(m.counter[0] * 60) + '〜' + Math.round(m.counter[1] * 60) + 'F']); tags.push('当て身（打撃を返す）'); }
-  else if (m.parry) { facts.push(['受付', Math.round(m.parry[0] * 60) + '〜' + Math.round(m.parry[1] * 60) + 'F']); tags.push('受け流し（相手をよろけさせる）', '飛び道具を消す'); }
+  else if (m.parry) { facts.push(['受付', Math.round(m.parry[0] * 60) + '〜' + Math.round(m.parry[1] * 60) + 'F']); tags.push('受け流し（相手をよろけさせる）', m.reflect ? '飛び道具を跳ね返す' : '飛び道具を消す'); }
   else if (m.meditate) { facts.push(['ゲージ', '+' + m.meditate[2] + '%'], ['全体', f(m.dur) + 'F']); tags.push('神威ゲージ溜め'); }
   else if (m.oracle) { facts.push(['持続', m.oracle[1].toFixed(1) + '秒'], ['全体', f(m.dur) + 'F']); tags.push('次の攻撃を自動回避'); }
   else if (m.type === 'super') { facts.push(['消費', '神威ゲージ100%'], ['発生', '暗転後 約10F'], m.grab ? ['届く距離', '密着（つかみ）'] : ['ガード時', '約-43F（確定反撃あり）']); tags.push('超必殺技'); if (m.grab) tags.push('ガード不能', '空中の相手には届かない'); }
@@ -15550,6 +15980,9 @@ const STORY = {
     apollo: { motive: 'デルポイの神託は告げた――「神座に光を灯すは、太陽の弓なり」と。予言は外れない。外させはしない。', path: ['aphrodite', 'heracles', 'poseidon', 'zeus'],
       challenge: '僕の矢は、もう君の負けを射抜いている。神託どおりにね。', reply: '太陽の前に、影は残らない。さあ、構えて。', lose: '……予言にない結末だ。いや、僕が読み違えたのかな。',
       ending: ['夜明けとともに、太陽の神は神座へと昇った。', '「神託は成就した。……でも、未来はまだ書き換えられる。」', 'アポロンが竪琴を奏でると、九柱のムーサが歌い、世界は光に満ちた。', '以来、神々の頂には、沈まぬ太陽が輝き続けている――。'] },
+    beelzebub: { motive: '触れたものは皆、壊れていった。この身に巣食う震えを止められる者を探して――蠅の王は、神々の頂へ歩き出す。', path: ['apollo', 'shiva', 'hades', 'zeus'],
+      challenge: '君は……僕を壊せるかな。それとも、君が先に壊れるかな。', reply: '近づかない方がいい。僕に触れたものは、みんな震えて崩れる。', lose: '……ああ。やっと、静かになった。',
+      ending: ['神座の上で、蠅の王はひとり掌を見つめていた。', '「誰も、僕を壊せなかった。……なら、この震えは世界のために使おう。」', 'その日から、神々の頂には絶えず低い共鳴が響いている。', 'それは祈りにも似た、止むことのない鼓動だった――。'] },
   },
   // the final boss waiting on the throne of the gods
   boss: {
@@ -15591,6 +16024,10 @@ const STORY = {
     'apollo>poseidon': [['o', 'トロイアの城壁を共に築いた仲だろう、アポロン。'], ['p', '報酬を踏み倒された仲でもあるね。今日はその分も払ってもらうよ。']],
     'apollo>heracles': [['o', 'デルポイの三脚台を奪い合って以来だな、アポロン！'], ['p', '覚えているよ、ヘラクレス。あの時の決着、つけさせてもらう。']],
     'apollo>anubis': [['o', '太陽の神か。我が国の太陽は、ラーただ一柱。'], ['p', '冥府の番人に、この光は眩しすぎるかな？']],
+    'beelzebub>hades': [['o', 'ベルゼブブ。まだ、己を壊す者を探しているのか。'], ['p', '……あなたなら、と思ったんだ。ハデス。']],
+    'hades>beelzebub': [['o', 'ハデス。僕に構うと、あなたまで壊れる。'], ['p', '構わぬ。冥府の王が、同胞を見捨てたことは一度もない。']],
+    'beelzebub>zeus': [['o', '蠅の王か。その暗い眼、嫌いではないぞ。'], ['p', '主神ゼウス。あなたの雷で、この震えを止めてみせて。']],
+    'beelzebub>shiva': [['o', '震えか。それもまた、宇宙の鼓動だ。共に踊るか。'], ['p', '踊りは知らない。僕が知っているのは、壊し方だけだ。']],
     'apollo>odin': [['o', '予言の神か。我もまた、終末の予言を知る者だ。'], ['p', 'なら分かるはずだ。予言は、覆すためにある。']],
     'aphrodite>odin': [['o', '愛の女神が、戦士の館に何の用だ。'], ['p', '片目で見ても、わたくしは美しいでしょう？ その玉座、いただくわ。'], ['o', '……知恵は、色香には曇らぬ。来るがよい。']],
     'thor>odin': [['o', '……来たか、トール。我が息子よ。'], ['p', '親父！？ まさか神座の主ってのは――！'], ['o', '左様。この座を継ぐに足るか、父が自ら量ってやろう。'], ['p', 'ハハッ、上等だ！ ミョルニルの重さ、親父にも教えてやる！']],
@@ -15640,13 +16077,13 @@ Object.assign(STORY, {
     zeus: 'ひれ伏せ――雷霆の名のもとに！', poseidon: '海の怒り、その身で知れ！', anubis: '秤は掲げられた。始めよう。',
     thor: 'さあ、派手にいこうぜ！', susanoo: '嵐よ、吹き荒れろ！', heracles: '十三番目の試練だ――いくぞ！',
     hades: '聞こえるか。冥府の門が開く音が。', shiva: '踊れ。そして、灰となれ。', aphrodite: 'さあ、わたくしに見惚れなさい。',
-    shaka: '――参ろう。', apollo: '太陽よ、僕の矢に光を。', odin: '来るがよい。グングニルは的を外さぬ。',
+    shaka: '――参ろう。', apollo: '太陽よ、僕の矢に光を。', beelzebub: '……始めよう。なるべく、早く終わらせる。', odin: '来るがよい。グングニルは的を外さぬ。',
   },
   win: {
     zeus: '天に逆らう者の末路だ。覚えておけ。', poseidon: '潮は満ちた。大人しく退くがよい。', anubis: '量り終えた。汝の心臓は、羽より重い。',
     thor: 'ハハッ、いい戦いだったぜ！ またやろうな！', susanoo: 'どうだ、嵐の味は！ 目が覚めたか？', heracles: '試練、またひとつ越えたぞ……！',
     hades: '冥府で待っていろ。いずれ、また会う。', shiva: '終わりは美しい。……次の始まりもまた。', aphrodite: 'ふふっ。これであなたも、わたくしの虜ね。',
-    shaka: '怒りは鎮まったか。……それでよい。', apollo: '神託どおりだ。……少しだけ、ほっとしたけどね。', odin: '未だ足りぬ。九つの世界を背負うには、な。',
+    shaka: '怒りは鎮まったか。……それでよい。', apollo: '神託どおりだ。……少しだけ、ほっとしたけどね。', beelzebub: '君も、僕を壊せなかったか。', odin: '未だ足りぬ。九つの世界を背負うには、な。',
   },
 });
 Object.assign(STORY.vs, {
@@ -15927,8 +16364,8 @@ window.addEventListener('blur', () => { for (const k in held) held[k] = false; c
 // ============================================================
 //  Menu backdrops: dedicated title / mode and character-select scenes (the arena is hidden outside matches)
 // ============================================================
-const MENU_KEYS = ['zeus', 'poseidon', 'anubis', 'thor', 'susanoo', 'heracles', 'hades', 'shiva', 'aphrodite', 'shaka', 'apollo', 'odin'];
-const MENU_COL = { zeus: 0xffd77a, poseidon: 0x5ff0e6, anubis: 0xf0c46a, thor: 0xc8b0ff, susanoo: 0x9fffd8, heracles: 0xffb870, hades: 0xff5a78, shiva: 0x8fa8ff, aphrodite: 0xff9cc8, shaka: 0xff9e4a, apollo: 0xffe14d, odin: 0xa8d0ff };
+const MENU_KEYS = ['zeus', 'poseidon', 'anubis', 'thor', 'susanoo', 'heracles', 'hades', 'shiva', 'aphrodite', 'shaka', 'apollo', 'beelzebub', 'odin'];
+const MENU_COL = { zeus: 0xffd77a, poseidon: 0x5ff0e6, anubis: 0xf0c46a, thor: 0xc8b0ff, susanoo: 0x9fffd8, heracles: 0xffb870, hades: 0xff5a78, shiva: 0x8fa8ff, aphrodite: 0xff9cc8, shaka: 0xff9e4a, apollo: 0xffe14d, beelzebub: 0xb48cf0, odin: 0xa8d0ff };
 const menuBG = { title: null, select: null, arena: null, t: 0, flash: 0, boltT: 2 };
 
 // collect everything a builder adds to the scene into one group so whole backdrops can be toggled
@@ -16245,7 +16682,7 @@ function buildTitleBackdrop() {
     // five colossi of the pantheon standing on cliffs, glowing eyes and a beam of their colour
     const bronze = new THREE.MeshStandardMaterial({ color: 0x2a2530, metalness: 0.55, roughness: 0.42 });
     const cliffM = new THREE.MeshStandardMaterial({ color: 0x2a2232, roughness: 0.95, flatShading: true });
-    const builders = { zeus: buildZeus, poseidon: buildPoseidon, anubis: buildAnubis, thor: buildThor, susanoo: buildSusanoo, heracles: buildHeracles, hades: buildHades, shiva: buildShiva, aphrodite: buildAphrodite, shaka: buildShaka, apollo: buildApollo, odin: buildOdin };
+    const builders = { zeus: buildZeus, poseidon: buildPoseidon, anubis: buildAnubis, thor: buildThor, susanoo: buildSusanoo, heracles: buildHeracles, hades: buildHades, shiva: buildShiva, aphrodite: buildAphrodite, shaka: buildShaka, apollo: buildApollo, beelzebub: buildBeelzebub, odin: buildOdin };
     MENU_KEYS.forEach((k, i) => {
       const u = (i - (MENU_KEYS.length - 1) / 2) / ((MENU_KEYS.length - 1) / 2);   // -1..1
       const x = u * 30, z = -44 + Math.abs(u) * 10, y = 1.5 - Math.abs(u) * 2.5;
@@ -16352,7 +16789,7 @@ function buildSelectBackdrop() {
         g.strokeStyle = c; g.lineWidth = 6; g.strokeRect(14, 14, w - 28, h - 70);
         g.fillStyle = c; g.beginPath(); g.moveTo(14, h - 56); g.lineTo(w / 2, h - 6); g.lineTo(w - 14, h - 56); g.closePath(); g.fill();
         g.font = '900 120px serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
-        const glyph = { zeus: 'Ζ', poseidon: 'Ψ', anubis: '𓁢', thor: 'ᚦ', susanoo: '嵐', heracles: 'Η', hades: 'Ϙ', shiva: 'ॐ', aphrodite: '♡', shaka: '卍', apollo: '☉', odin: 'ᚨ' }[k];
+        const glyph = { zeus: 'Ζ', poseidon: 'Ψ', anubis: '𓁢', thor: 'ᚦ', susanoo: '嵐', heracles: 'Η', hades: 'Ϙ', shiva: 'ॐ', aphrodite: '♡', shaka: '卍', apollo: '☉', beelzebub: '蠅', odin: 'ᚨ' }[k];
         g.shadowColor = c; g.shadowBlur = 30; g.fillText(glyph, w / 2, h * 0.38);
         g.shadowBlur = 0; g.font = '700 30px serif'; g.fillText(CHARS[k].en, w / 2, h * 0.62);
       });
@@ -16891,7 +17328,8 @@ function applyStageLight(id) {
 // resolve the select-screen choice ('auto' = the opponent's home stage, 'random')
 function resolveStage(choice, keys) {
   if (choice === 'random') return STAGE_IDS[Math.floor(Math.random() * STAGE_IDS.length)];
-  if (choice === 'auto') return STAGE_IDS.find((id) => STAGES[id].owner === keys[1]) || 'olympus';
+  // (Beelzebub has no hall of his own: he is met in the underworld that took him in)
+  if (choice === 'auto') { const own = keys[1] === 'beelzebub' ? 'hades' : keys[1]; return STAGE_IDS.find((id) => STAGES[id].owner === own) || 'olympus'; }
   return STAGES[choice] ? choice : 'olympus';
 }
 function updateStages(dt, t, arenaOn) {
@@ -16957,7 +17395,7 @@ const WARM_KINDS = ['bloom', 'gateShut', 'gungnir', 'heartBurst', 'hellfire', 'j
 function warmFx() {
   pinPrograms();
   let todo = WARM_EVENTS.map((type) => ({ type })).concat(WARM_KINDS.map((kind) => ({ type: 'superImpact', kind })));
-  for (const k in SUPER2) { const D = SUPER2[k]; for (const ev of new Set([D.conn.ev, ...D.hits.map((h) => h[3]).filter(Boolean), D.fin.ev])) todo.push({ type: 'sup2', k, ev, i: 0 }); }
+  for (const D0 of [SUPER1, SUPER2]) for (const k in D0) { const D = D0[k]; for (const ev of new Set([D.conn.ev, ...D.hits.map((h) => h[3]).filter(Boolean), D.fin.ev])) todo.push({ type: 'sup2', k, ev, i: 0 }); }
   // every god takes a turn (its sword trails and ribbons are built with the match, so each is drawn at least once)
   for (const k of MENU_KEYS) {
     setupMatch({ mode: 'auto', keys: [k, k === 'zeus' ? 'poseidon' : 'zeus'], attract: true });
