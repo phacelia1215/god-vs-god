@@ -1924,7 +1924,7 @@ const CHARS = {
   zeus: {
     key: 'zeus', name: 'ゼウス', en: 'ZEUS', title: '天空の雷神', hp: 1040, walk: 2.7, back: 2.0, dash: 8.5,
     jumpV: 10.2, jumpX: 3.6, width: 0.42, height: 2.15, moves: ZEUS_MOVES, air: 'z_air', super: 'z_super',
-    guard: 0.58, aggro: 0.85,
+    guard: 0.58, aggro: 0.85, stepCancel: true,
     routes: [
       ['z_jab', 'z_jab', 'z_straight'],
       ['z_jab', 'z_straight', 'z_body', 'z_upper'],
@@ -2410,6 +2410,8 @@ const AI_HUMAN = [
 // every super's opening plays fast: whatever its authored wind-up, it reaches its first strike this long after the
 // flash (real seconds), so a super closes a combo cleanly and is a real threat in neutral
 const SUP_TAKE = 0.18;
+// Zeus' step cancel: how long the step lasts, how soon the next move may come out of it, how many a string may use
+const DC_T = 0.2, DC_GO = 0.1, DC_MAX = 2;
 // a foe this close to the wall is comboed with the corner routes
 const AI_CORNER = 1.5;
 const AI_SUPER = { zeus: [2.3, 0.45], poseidon: [2.3, 0.4], anubis: [2.3, 0.32], thor: [9, 0.37], susanoo: [9, 0.37], heracles: [9, 0.4], hades: [9, 0.42], shiva: [9, 0.4], aphrodite: [5.6, 0.58], shaka: [5.6, 0.4], apollo: [5.6, 0.42], odin: [5.6, 0.4], beelzebub: [4.0, 0.34] };
@@ -2426,22 +2428,23 @@ const AI_STYLE = {
 // ---- every god's highest-damage combos, found by searching the fight engine itself (each one played out against
 // several foes and distances; the average damage is the number in front). Per first move: [midscreen, midscreen
 // ending in a super, corner, corner ending in a super] ('' / missing: same as midscreen). g: the foe standing,
-// a: the foe already in the air. '>' is a link (the next move starts after the last one recovered); every other
+// a: the foe already in the air. '>' is a link (the next move starts after the last one recovered), '~' Zeus' forward
+// step cancel (the string goes on from the step); every other
 // step cancels the move before it. Each cancel chain uses a move once, as a player's does. raw: a super on its own.
 const AI_COMBO = {
   zeus: {
     pre: 'z_', raw: [218, 191],
     g: {
-      jab: ['306 upper knee > hammer knee upper jab straight bolt', '384 upper knee > upper > hammer knee upper body straight super', '379 hammer knee upper > hammer upper > hammer upper body straight knee jab', '555 hammer knee upper > hammer upper > hammer upper body straight knee jab super'],
-      straight: ['287 body upper knee > straight knee body upper hammer bolt', '388 body upper knee > straight knee body upper hammer super', '331 knee hammer upper > hammer upper > hammer upper body straight knee jab', '448 knee hammer upper > hammer upper > hammer upper body straight knee jab super'],
-      body: ['328 upper knee > hammer knee upper jab straight bolt', '407 upper knee > hammer body knee upper jab straight super', '401 hammer knee upper > hammer upper > hammer upper body straight knee jab', '577 hammer knee upper > hammer upper > hammer upper body straight knee jab super'],
-      knee: ['309 upper > straight body knee upper hammer bolt', '462 upper > straight body knee jab upper hammer super', '392 hammer upper > hammer > straight hammer upper knee jab > jab body straight', '568 hammer upper > hammer > straight hammer upper knee jab > jab body straight super'],
-      upper: ['329 knee > upper > hammer knee upper body bolt', '450 knee > upper > hammer knee body upper jab straight super', '345 knee > upper > upper hammer knee body straight bolt', '508 knee > upper > hammer upper knee body straight jab super'],
-      hammer: ['283 knee upper > jab knee hammer upper straight bolt', '383 knee upper > jab knee hammer upper straight super', '393 knee upper > hammer upper > hammer body jab knee upper straight', '569 knee upper > hammer upper > hammer body jab knee upper straight super'],
+      jab: ['374 ~ hammer upper > hammer ~ upper > hammer knee upper body jab straight', '550 ~ hammer upper > hammer ~ upper > hammer knee upper body jab straight super', '375 ~ hammer upper > hammer upper > hammer upper body straight knee jab', '551 ~ hammer upper > hammer upper > hammer upper body straight knee jab super'],
+      straight: ['459 jab ~ hammer upper > hammer ~ upper > hammer knee upper body straight', '635 jab ~ hammer upper > hammer ~ upper > hammer knee upper body straight super', '465 jab ~ hammer upper > hammer upper > hammer upper body jab bolt', '637 jab ~ hammer upper > hammer upper > hammer upper body straight knee super'],
+      body: ['396 ~ hammer upper > hammer ~ upper > hammer knee upper body jab straight', '572 ~ hammer upper > hammer ~ upper > hammer knee upper body jab straight super', '397 ~ hammer upper > hammer upper > hammer upper body straight knee jab', '573 ~ hammer upper > hammer upper > hammer upper body straight knee jab super'],
+      knee: ['390 ~ hammer upper > hammer ~ upper > hammer knee upper body jab straight', '566 ~ hammer upper > hammer ~ upper > hammer knee upper body jab straight super', '391 hammer upper > hammer upper > hammer upper body straight knee jab', '567 hammer upper > hammer upper > hammer upper body straight knee jab super'],
+      upper: ['355 > hammer ~ upper > upper hammer knee body jab straight', '531 > hammer ~ upper > upper hammer knee body jab straight super', '363 > hammer ~ upper > upper hammer straight knee jab bolt', '532 > hammer ~ upper > upper hammer body straight knee jab super'],
+      hammer: ['398 body ~ upper > hammer ~ upper > upper hammer body knee straight jab', '574 body ~ upper > hammer ~ upper > upper hammer body knee straight jab super'],
     },
     a: {
-      jab: ['73 > straight knee upper hammer > hammer upper straight knee body jab', '184 hammer super', '207 > straight hammer > straight upper hammer jab > straight jab knee upper body', '325 > straight hammer > straight upper hammer jab > straight jab knee upper body super'],
-      straight: ['113 bolt', '251 hammer super', '234 > straight hammer > straight hammer upper knee jab > jab knee upper body', '351 > straight hammer > straight hammer upper knee jab > jab knee upper body super'],
+      jab: ['200 ~ hammer > hammer ~ knee upper > straight upper knee hammer jab', '317 ~ hammer > hammer ~ knee upper > straight upper knee hammer jab super', '207 ~ hammer > hammer upper > upper hammer body straight knee jab', '324 ~ hammer > hammer upper > upper hammer body straight knee jab super'],
+      straight: ['160 ~ hammer > hammer ~ upper > straight hammer upper knee jab', '292 ~ hammer super', '326 ~ hammer > hammer upper > upper hammer body straight knee jab', '502 ~ hammer > hammer upper > upper hammer body straight knee jab super'],
       upper: ['39', '167 super'],
       hammer: ['70', '262 super', '47', '175 super'],
     },
@@ -2688,7 +2691,7 @@ function aiCombos(key) {
   const src = AI_COMBO[key], C = CHARS[key], out = { g: {}, a: {}, raw: {} };
   out.raw[C.super] = src.raw[0]; if (C.super2) out.raw[C.super2] = src.raw[1];
   for (const grp of ['g', 'a']) for (const st in src[grp]) {
-    const v = src[grp][st].map((t) => { if (!t) return null; const w = t.split(' '); return { dmg: +w[0], seq: [src.pre + st, ...w.slice(1).map((x) => (x === '>' ? x : src.pre + x))] }; });
+    const v = src[grp][st].map((t) => { if (!t) return null; const w = t.split(' '); return { dmg: +w[0], seq: [src.pre + st, ...w.slice(1).map((x) => (x === '>' || x === '~' ? x : src.pre + x))] }; });
     out[grp][src.pre + st] = { p: v[0] || null, s: v[1] || null, cp: v[2] || v[0] || null, cs: v[3] || v[1] || null };
   }
   return (AIC[key] = out);
@@ -2858,6 +2861,20 @@ class Sim {
   setState(f, s) {
     f.state = s; f.st = 0;
     if (s !== 'attack') { f.move = null; f.moveId = null; }
+    if (s !== 'attack' && s !== 'dash') { f.dcN = 0; f.dcKeep = false; f.dcPlan = false; }
+  }
+  // Zeus' forward-step cancel: a connected normal is cut short by a quick step in, and the string carries on from it
+  // (at most DC_MAX steps a string; a move already used in the string is not used again)
+  canStepCancel(f) {
+    const m = f.move;
+    return !!(f.c.stepCancel && m && m.type === 'normal' && f.contact && m.cancel && f.mt >= m.cancel[0] && f.mt <= m.cancel[1] && (f.dcN || 0) < DC_MAX);
+  }
+  stepCancel(f) {
+    const keepChain = f.chain;
+    f.dcN = (f.dcN || 0) + 1;
+    f.state = 'dash'; f.st = 0; f.move = null; f.moveId = null; f.dashDir = f.facing; f.dashT = DC_T; f.ai.t = DC_T;
+    f.chain = keepChain; f.dcKeep = true;
+    this.emit('dash', { side: f.side, dir: f.facing, cancel: true });
   }
 
   // --------------------------------------------------------
@@ -2986,6 +3003,7 @@ class Sim {
         if (f.walkT <= 0) this.setState(f, 'idle');
         break;
       case 'dash':
+        if (f.dcPlan && f.st >= DC_GO) { f.dcPlan = false; if (f.plan.length && this.nextInPlan(f, o)) break; f.plan = []; }
         f.vx = f.dashDir * c.dash * (f.dashDir === f.facing ? 1 : 0.85);
         if (f.dashDir !== f.facing) f.y = Math.sin(clamp(f.st / f.dashT, 0, 1) * Math.PI) * 0.25;
         if (f.st >= f.dashT) { f.y = 0; this.setState(f, 'idle'); }
@@ -3778,7 +3796,7 @@ class Sim {
       // the push: the foe is driven back through the open gate
       if (t >= 1.62 && t < 1.86) {
         once('push', () => { s.px0 = o.x; this.emit('gatePush', { side: f.side, x: s.gx }); });
-        if (locked) { const k = easeIn((t - 1.62) / 0.24); o.x = lerp(s.px0, s.gx + s.dir * 0.5, k); o.y = 0.2 + k * 0.5; }
+        if (locked) { const k = easeIn((t - 1.62) / 0.24); o.x = clamp(lerp(s.px0, s.gx + s.dir * 0.5, k), -STAGE, STAGE); o.y = 0.2 + k * 0.5; }
       }
       if (t >= 1.86) once('final', () => {
         this.emit('superImpact', { side: f.side, x: s.gx ?? o.x, kind: 'gateShut' });
@@ -4300,10 +4318,10 @@ class Sim {
     // as long a part of it as this CPU can carry out
     const seq = [];
     let n = 0;
-    for (const x of B.seq) { if (x !== '>') { if (n >= L.maxCombo) break; n++; } seq.push(x); }
-    while (seq[seq.length - 1] === '>') seq.pop();
+    for (const x of B.seq) { if (x !== '>' && x !== '~') { if (n >= L.maxCombo) break; n++; } seq.push(x); }
+    while (seq[seq.length - 1] === '>' || seq[seq.length - 1] === '~') seq.pop();
     // a gauge that fills on the way (or a full one the route did not use) is spent on the last hit
-    if (n === B.seq.length - B.seq.filter((x) => x === '>').length && f.c.moves[seq[seq.length - 1]].type !== 'super' && R() < L.superRoute) seq.push('SUPER');
+    if (n === B.seq.length - B.seq.filter((x) => x === '>' || x === '~').length && f.c.moves[seq[seq.length - 1]].type !== 'super' && R() < L.superRoute) seq.push('SUPER');
     return seq;
   }
   // what a combo from `id` is worth to this CPU: its best route's damage to the degree it goes for those
@@ -4856,6 +4874,8 @@ class Sim {
             if (nx) { take('J'); f.chain.push(nx); this.startMove(f, nx); return; }
           }
         }
+        // Zeus: a forward double-tap steps in out of the move
+        if (b.DASH > 0 && (cmd.dashDir || toward) === toward && this.canStepCancel(f)) { take('DASH'); this.stepCancel(f); return; }
         // a super cancels out of a move that connected
         if (b.O > 0 && f.meter >= 100) { take('O'); this.startMove(f, (dir === 'f' || dir === 'b') && c.super2 ? c.super2 : c.super); return; }
         for (const k of ['J', 'K', 'L']) if (take(k)) { const id = map[k][dir]; if (f.chain.includes(id) || f.chain.length >= 6) continue; f.chain.push(id); this.startMove(f, id); return; }
@@ -4866,7 +4886,11 @@ class Sim {
     // O alone: the first super; forward or back + O: the second
     const supId = (dir === 'f' || dir === 'b') && c.super2 ? c.super2 : c.super;
     if (take('O') && f.meter >= 100) { this.startMove(f, supId); return; }
-    for (const k of ['J', 'K', 'L']) if (take(k)) { f.chain = [map[k][dir]]; this.startMove(f, map[k][dir]); return; }
+    for (const k of ['J', 'K', 'L']) if (take(k)) {
+      const id = map[k][dir];
+      if (f.state === 'dash' && f.dcKeep) { if (f.chain.includes(id)) continue; f.chain.push(id); } else f.chain = [id];
+      this.startMove(f, id); return;
+    }
     if ((cmd.up || take('UP')) && f.grounded) { this.jump(f, dx); return; }
     if (take('DASH') && (f.state === 'idle' || f.state === 'walk')) { this.dash(f, cmd.dashDir || toward, 0.3); return; }
     if (f.state === 'dash') return;
@@ -4918,6 +4942,11 @@ class Sim {
     if (R() < drop) { f.plan = []; return false; } // human-like drop
     // hit-confirm: a CPU that sees its chain guarded stops it there rather than finish an unsafe string
     if (f.ctl === 'ai' && (o.state === 'blockstun' || o.state === 'block') && R() < this.aiLevel(f).confirm) { f.plan = []; return false; }
+    // '~': Zeus steps forward out of this move, and the string carries on from the step
+    if (f.plan[0] === '~') {
+      if (!this.canStepCancel(f)) { f.plan = []; return false; }
+      f.plan.shift(); this.stepCancel(f); f.dcPlan = true; return true;
+    }
     const id = f.plan.shift();
     if (id === 'SUPER') {
       if (f.ctl === 'ai' && o.state !== 'hitstun' && o.state !== 'juggle' && o.state !== 'locked') { f.plan = []; return false; }
@@ -15575,7 +15604,7 @@ function showScreen(name) {
 }
 
 const GOD = {
-  zeus: { acc: '#ffd77a', acc2: '#b3741a', emb: `<svg viewBox="0 0 64 64" class="emb"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/><path d="M36 6 18 35h11l-5 23 22-31H33z" fill="currentColor"/></svg>`, tag: '天空の雷神', desc: '雷を拳に宿し、鍛え上げた肉体ひとつで敵を粉砕する主神。重い一撃と圧倒的な耐久力で押し切る。', stats: [['攻撃', 5], ['速度', 2], ['射程', 2], ['防御', 4]] },
+  zeus: { acc: '#ffd77a', acc2: '#b3741a', emb: `<svg viewBox="0 0 64 64" class="emb"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/><path d="M36 6 18 35h11l-5 23 22-31H33z" fill="currentColor"/></svg>`, tag: '天空の雷神', desc: '雷を拳に宿し、鍛え上げた肉体ひとつで敵を粉砕する主神。重い一撃と圧倒的な耐久力で押し切る。技が当たった瞬間に→→で踏み込む「前ステップキャンセル」で連撃をつなぐ。', stats: [['攻撃', 5], ['速度', 2], ['射程', 2], ['防御', 4]] },
   poseidon: { acc: '#5ff0e6', acc2: '#0d6f90', emb: `<svg viewBox="0 0 64 64" class="emb"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/><g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12v40M20 16v12c0 6 5 9 12 9s12-3 12-9V16"/><path d="M26 49h12"/></g><path d="M20 10l-3 7h6zM32 6l-3 7h6zM44 10l-3 7h6z" fill="currentColor"/></svg>`, tag: '大海の支配者', desc: '三叉槍と海流を自在に操る身軽な覇者。長い間合いと素早い動きで、攻防を支配する。', stats: [['攻撃', 3], ['速度', 5], ['射程', 5], ['防御', 2]] },
   anubis: { acc: '#f0c46a', acc2: '#1d3f8a', emb: `<svg viewBox="0 0 64 64" class="emb"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/><path d="M14 40 26 22 32 30 38 22 50 40 40 46 32 42 24 46Z" fill="currentColor"/><path d="M32 30v22" stroke="currentColor" stroke-width="3"/></svg>`, tag: '冥府の審判者', desc: '冥府の双剣を舞わせる俊敏な審判者。瞬間的な踏み込みで間合いを潰し、天秤の裁きで敵の魂を断つ。', stats: [['攻撃', 3], ['速度', 5], ['射程', 2], ['防御', 3]] },
   thor: { acc: '#c8b0ff', acc2: '#5a3aa0', emb: `<svg viewBox="0 0 64 64" class="emb"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/><path d="M18 14h28v14H18z" fill="currentColor"/><path d="M29 28h6v20h-6z" fill="currentColor"/><circle cx="32" cy="51" r="3.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M36 30 30 38h5l-3 6" fill="none" stroke="currentColor" stroke-width="2" opacity=".8"/></svg>`, tag: '雷槌の戦神', desc: '鉄の籠手と神鎚ミョルニルを振るう北欧の戦神。一撃一撃が重く、投げた鎚は雷をまとって手元へ戻る。', stats: [['攻撃', 5], ['速度', 2], ['射程', 3], ['防御', 5]] },
@@ -17560,6 +17589,7 @@ function buildMoveList() {
       <h4>超必殺技</h4><ul class="sp"><li>${mv[c.super].name}（O）</li>${c.super2 ? `<li>${mv[c.super2].name}（←/→+O）${mv[c.super2].grab ? '〔ガード不能〕' : ''}</li>` : ''}</ul>
       <h4>必殺技</h4><ul>${list('special')}</ul>
       <h4>通常技</h4><ul class="row">${list('normal')}${list('air')}</ul>
+      ${c.stepCancel ? '<h4>固有システム</h4><ul><li>前ステップキャンセル：通常技が当たった（ガードされた）瞬間に →→ で踏み込み、そのまま次の技へ（1連携に2回まで）</li></ul>' : ''}
       <h4>コンボルート</h4><ul class="combo">${routes}</ul></section>`);
   }
   $('movesBody').innerHTML = html.join('');
