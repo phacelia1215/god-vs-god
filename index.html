@@ -2410,6 +2410,10 @@ const AI_HUMAN = [
 // every super's opening plays fast: whatever its authored wind-up, it reaches its first strike this long after the
 // flash (real seconds), so a super closes a combo cleanly and is a real threat in neutral
 const SUP_TAKE = 0.18;
+// how high a super's opening strike reaches (the foe's feet): a foe jumping free above this is out of reach, so a
+// super is no answer to a jump at its height. A foe already reeling in a combo (hitstun / juggle) is taken at any
+// height, so a super still closes an air combo exactly as before.
+const SUPER_AIR_H = 0.9;
 // Zeus' step cancel: how long the step lasts, how soon the next move may come out of it, how many a string may use
 const DC_T = 0.2, DC_GO = 0.1, DC_MAX = 2;
 // a foe this close to the wall is comboed with the corner routes
@@ -3507,6 +3511,7 @@ class Sim {
   // --------------------------------------------------------
   canLock(o, range = 2.8) {
     const f = o === this.fighters[0] ? this.fighters[1] : this.fighters[0];
+    if (o.y > SUPER_AIR_H && !['juggle', 'hitstun', 'locked'].includes(o.state)) return false;
     return !(o.invuln > 0) && !['down', 'getup', 'ko'].includes(o.state) && !this.canBlock(o) && (Math.abs(o.x - f.x) < range || (['juggle', 'hitstun'].includes(o.state) && Math.abs(o.x - f.x) < 4));
   }
   lock(f, o) {
@@ -4243,6 +4248,12 @@ class Sim {
   // guarding foe and otherwise picks either
   aiSuperFor(f, o, d, win = 9, air = false) {
     if (f.meter < 100) return null;
+    if (o.y > 0.01 && !['juggle', 'hitstun', 'locked'].includes(o.state)) {
+      // a foe jumping free: only if they will be low enough when the opening strike lands (the flash stops them)
+      const g = (o.state === 'jump' || (o.move && o.move.type === 'air')) ? JUMP_GRAV * (o.c.jumpGrav || 1) : GRAV, t = SUP_TAKE + 0.02;
+      const y = o.y + o.vy * t - 0.5 * g * t * t;
+      if (y > SUPER_AIR_H - 0.15 || y < 0.05) return null;
+    }
     const c = f.c, opts = [];
     const SR = AI_SUPER[f.key];
     if (SR && d <= SR[0] && win >= SUP_TAKE + 0.03) opts.push([c.super, 1]);
@@ -15838,7 +15849,7 @@ function moveFacts(key, id) {
   else if (m.parry) { facts.push(['受付', Math.round(m.parry[0] * 60) + '〜' + Math.round(m.parry[1] * 60) + 'F']); tags.push('受け流し（相手をよろけさせる）', m.reflect ? '飛び道具を跳ね返す' : '飛び道具を消す'); }
   else if (m.meditate) { facts.push(['ゲージ', '+' + m.meditate[2] + '%'], ['全体', f(m.dur) + 'F']); tags.push('神威ゲージ溜め'); }
   else if (m.oracle) { facts.push(['持続', m.oracle[1].toFixed(1) + '秒'], ['全体', f(m.dur) + 'F']); tags.push('次の攻撃を自動回避'); }
-  else if (m.type === 'super') { facts.push(['消費', '神威ゲージ100%'], ['発生', '暗転後 約10F'], m.grab ? ['届く距離', '密着（つかみ）'] : ['ガード時', '約-43F（確定反撃あり）']); tags.push('超必殺技'); if (m.grab) tags.push('ガード不能', '空中の相手には届かない'); }
+  else if (m.type === 'super') { facts.push(['消費', '神威ゲージ100%'], ['発生', '暗転後 約10F'], m.grab ? ['届く距離', '密着（つかみ）'] : ['ガード時', '約-43F（確定反撃あり）']); tags.push('超必殺技'); if (m.grab) tags.push('ガード不能', '空中の相手には届かない'); else tags.push('高く跳んだ相手には届かない（コンボ中は届く）'); }
   return { facts, tags };
 }
 function renderViewer() {
